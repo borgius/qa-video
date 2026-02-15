@@ -4,15 +4,20 @@ import { Command } from 'commander';
 import { resolve, basename, dirname, join } from 'path';
 import { existsSync, mkdirSync, readdirSync } from 'fs';
 import { rm } from 'fs/promises';
+import { createRequire } from 'module';
 import { runPipeline } from './pipeline.js';
 import { PipelineConfig, DEFAULT_CONFIG } from './types.js';
+import { ensureDeps } from './ffmpeg-paths.js';
+
+const require = createRequire(import.meta.url);
+const pkg = require('../package.json');
 
 const program = new Command();
 
 program
   .name('qa-video')
   .description('Generate flashcard videos from YAML Q&A files with TTS narration')
-  .version('1.0.0');
+  .version(pkg.version);
 
 function buildConfig(inputPath: string, opts: any): PipelineConfig {
   const inputName = basename(inputPath, '.yaml').replace(/\.yml$/, '');
@@ -228,4 +233,5 @@ program
     }
   });
 
+await ensureDeps();
 program.parse();

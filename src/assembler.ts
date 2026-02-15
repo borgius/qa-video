@@ -3,6 +3,7 @@ import { writeFile } from 'fs/promises';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 import { Segment } from './types.js';
+import { getFfmpegPath } from './ffmpeg-paths.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -46,7 +47,7 @@ export async function createSilentClip(
   durationSec: number,
   outputPath: string
 ): Promise<void> {
-  await execFileAsync('ffmpeg', [
+  await execFileAsync(getFfmpegPath(), [
     '-y',
     '-loop', '1', '-i', imagePath,
     '-f', 'lavfi', '-i', 'anullsrc=r=48000:cl=stereo',
