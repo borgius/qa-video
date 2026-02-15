@@ -1,4 +1,6 @@
 config:
+  name: "DevOps-Interview-Questions: Containers & Orchestration"
+  description: In-depth coverage of Docker containerization and Kubernetes orchestration including images, volumes, networking, deployments, services, scaling, security, and cluster management.
   questionDelay: 20
   answerDelay: 5
 questions:

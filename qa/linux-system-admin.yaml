@@ -1,4 +1,6 @@
 config:
+  name: "DevOps-Interview-Questions: Linux & System Administration"
+  description: Deep dive into Linux system administration covering file permissions, process management, networking, security hardening, performance optimization, storage management, virtualization, and high availability clustering.
   questionDelay: 20
   answerDelay: 5
 questions:

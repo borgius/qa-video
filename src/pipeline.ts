@@ -5,6 +5,7 @@ import { renderSlide } from './renderer.js';
 import { createSegmentClip, createSilentClip, concatenateClips } from './assembler.js';
 import { Segment, PipelineConfig, DEFAULT_CONFIG } from './types.js';
 import { sha, cachedPath, isCached } from './cache.js';
+import { preprocessForTTS } from './tts-preprocess.js';
 
 function elapsed(start: number): string {
   return ((Date.now() - start) / 1000).toFixed(1);
@@ -60,8 +61,9 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
     const card = cards[i];
     const progress = `[${i + 1}/${cards.length}]`;
 
-    // Question audio — SHA keyed on text + voice
-    const qAudioHash = `audio:${card.question}:${config.voice}`;
+    // Question audio — SHA keyed on preprocessed text + voice
+    const qTTSText = preprocessForTTS(card.question);
+    const qAudioHash = `audio:${qTTSText}:${config.voice}`;
     const qAudioPath = cachedPath(config.tempDir, `q_${i}`, qAudioHash, 'wav');
 
     if (isCached(qAudioPath, force)) {
@@ -78,7 +80,7 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
       if (!ttsInitialized) { await initTTS(config.voice); ttsInitialized = true; }
       const qStart = Date.now();
       process.stdout.write(`  ${progress} Q: "${card.question.substring(0, 50)}..." `);
-      await synthesize(card.question, qAudioPath, config.voice);
+      await synthesize(qTTSText, qAudioPath, config.voice);
       const qDuration = await getAudioDuration(qAudioPath);
       totalAudioDuration += qDuration;
       console.log(`(${qDuration.toFixed(1)}s audio, ${elapsed(qStart)}s)`);
@@ -89,8 +91,9 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
       });
     }
 
-    // Answer audio
-    const aAudioHash = `audio:${card.answer}:${config.voice}`;
+    // Answer audio — SHA keyed on preprocessed text + voice
+    const aTTSText = preprocessForTTS(card.answer);
+    const aAudioHash = `audio:${aTTSText}:${config.voice}`;
     const aAudioPath = cachedPath(config.tempDir, `a_${i}`, aAudioHash, 'wav');
 
     if (isCached(aAudioPath, force)) {
@@ -107,7 +110,7 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
       if (!ttsInitialized) { await initTTS(config.voice); ttsInitialized = true; }
       const aStart = Date.now();
       process.stdout.write(`  ${progress} A: "${card.answer.substring(0, 50)}..." `);
-      await synthesize(card.answer, aAudioPath, config.voice);
+      await synthesize(aTTSText, aAudioPath, config.voice);
       const aDuration = await getAudioDuration(aAudioPath);
       totalAudioDuration += aDuration;
       console.log(`(${aDuration.toFixed(1)}s audio, ${elapsed(aStart)}s)`);
@@ -167,8 +170,9 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
 
   for (let i = 0; i < segments.length; i++) {
     const seg = segments[i];
-    // Clip hash: based on audio hash + slide hash + timing
-    const clipHash = `clip:${sha(`audio:${seg.text}:${config.voice}`)}:${sha(`slide:${seg.text}:${seg.type}:${seg.cardIndex}:${seg.totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}`)}:${seg.totalDuration}`;
+    // Clip hash: based on audio hash (preprocessed text) + slide hash + timing
+    const segTTSText = preprocessForTTS(seg.text);
+    const clipHash = `clip:${sha(`audio:${segTTSText}:${config.voice}`)}:${sha(`slide:${seg.text}:${seg.type}:${seg.cardIndex}:${seg.totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}`)}:${seg.totalDuration}`;
     const clipPath = cachedPath(config.tempDir, `clip_${i}`, clipHash, 'mp4');
     const clipNum = clipPaths.length + 1;
 

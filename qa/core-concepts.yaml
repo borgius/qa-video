@@ -1,4 +1,6 @@
 config:
+  name: "DevOps-Interview-Questions: Core Concepts"
+  description: Covers fundamental DevOps concepts including CI/CD, Infrastructure as Code, containerization, microservices, monitoring, security, and key methodologies like GitOps, SRE, and progressive delivery.
   questionDelay: 20
   answerDelay: 5
 questions:

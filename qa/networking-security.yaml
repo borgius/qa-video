@@ -1,4 +1,6 @@
 config:
+  name: "DevOps-Interview-Questions: Networking & Security"
+  description: Covers networking fundamentals and security practices including IP addressing, DNS, firewalls, VPNs, encryption, load balancing, zero trust security, Kubernetes RBAC, and OWASP Top 10 vulnerabilities.
   questionDelay: 20
   answerDelay: 5
 questions:

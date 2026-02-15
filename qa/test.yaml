@@ -1,4 +1,6 @@
 config:
+  name: "DevOps-Interview-Questions: Test"
+  description: A quick test configuration with sample DevOps interview questions for validating the video generation pipeline.
   questionDelay: 2
   answerDelay: 2
 questions:

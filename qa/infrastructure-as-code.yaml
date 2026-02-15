@@ -1,4 +1,6 @@
 config:
+  name: "DevOps-Interview-Questions: Infrastructure as Code"
+  description: Comprehensive guide to Infrastructure as Code covering Terraform, Ansible, and AWS CloudFormation including state management, modules, secrets handling, CI/CD integration, and multi-cloud deployments.
   questionDelay: 20
   answerDelay: 5
 questions:

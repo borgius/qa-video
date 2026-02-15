@@ -1,4 +1,6 @@
 export interface YamlConfig {
+  name?: string;            // video title (used for YouTube upload)
+  description?: string;     // video description (used for YouTube upload)
   questionDelay?: number;   // seconds of silence after question TTS
   answerDelay?: number;     // seconds of silence after answer TTS
   cardGap?: number;         // seconds between cards

@@ -5,9 +5,14 @@ import { resolve, basename, dirname, join } from 'path';
 import { existsSync, mkdirSync, readdirSync } from 'fs';
 import { rm } from 'fs/promises';
 import { createRequire } from 'module';
+import { createInterface } from 'readline';
 import { runPipeline } from './pipeline.js';
 import { PipelineConfig, DEFAULT_CONFIG } from './types.js';
 import { ensureDeps } from './ffmpeg-paths.js';
+import { parseYamlFile } from './parser.js';
+import { generateTitle, generateDescription } from './metadata.js';
+import { runAuthFlow, getAuthenticatedClient } from './youtube-auth.js';
+import { uploadToYouTube } from './uploader.js';
 
 const require = createRequire(import.meta.url);
 const pkg = require('../package.json');
@@ -145,6 +150,13 @@ sharedOptions(
         };
         const config = buildConfig(inputPath, fileOpts);
 
+        if (!opts.force && existsSync(config.outputPath)) {
+          console.log(`Output: ${config.outputPath}`);
+          console.log(`  Skipped (video already exists, use --force to regenerate)`);
+          results.push({ file, status: 'SKIPPED', time: '0.0s' });
+          continue;
+        }
+
         console.log(`Output: ${config.outputPath}`);
         await runPipeline(config);
 
@@ -160,16 +172,17 @@ sharedOptions(
     // Batch summary
     const totalTime = ((Date.now() - batchStart) / 1000).toFixed(1);
     const ok = results.filter(r => r.status === 'OK').length;
-    const failed = results.length - ok;
+    const skipped = results.filter(r => r.status === 'SKIPPED').length;
+    const failed = results.length - ok - skipped;
 
     console.log(`\n${'═'.repeat(60)}`);
     console.log(`  BATCH SUMMARY`);
     console.log(`${'═'.repeat(60)}`);
     for (const r of results) {
-      const icon = r.status === 'OK' ? 'OK' : 'FAIL';
+      const icon = r.status === 'OK' ? 'OK' : r.status === 'SKIPPED' ? 'SKIP' : 'FAIL';
       console.log(`  [${icon}] ${r.file} (${r.time})`);
     }
-    console.log(`\n  Total: ${ok} succeeded, ${failed} failed, ${totalTime}s elapsed`);
+    console.log(`\n  Total: ${ok} succeeded, ${skipped} skipped, ${failed} failed, ${totalTime}s elapsed`);
 
     if (failed > 0) process.exit(1);
   } catch (err: any) {
@@ -233,5 +246,114 @@ program
     }
   });
 
-await ensureDeps();
+// YouTube auth (one-time setup)
+program
+  .command('auth')
+  .description('Authenticate with YouTube (one-time setup)')
+  .option('--credentials <path>', 'Path to client_secret.json (~/.qa-video/client_secret.json)')
+  .action(async (opts) => {
+    try {
+      await runAuthFlow(opts.credentials);
+    } catch (err: any) {
+      console.error(`\nError: ${err.message}`);
+      if (process.env.DEBUG) console.error(err.stack);
+      process.exit(1);
+    }
+  });
+
+// Upload to YouTube
+program
+  .command('upload')
+  .description('Upload a generated video to YouTube')
+  .requiredOption('-i, --input <path>', 'Path to source YAML file')
+  .option('-v, --video <path>', 'Path to video file (default: output/<name>.mp4)')
+  .option('--title <text>', 'Video title (default: auto-generated from YAML)')
+  .option('--description <text>', 'Video description (default: auto-generated)')
+  .option('--privacy <level>', 'Privacy: public, unlisted, private', 'unlisted')
+  .option('--category <id>', 'YouTube category ID', '27')
+  .option('--tags <csv>', 'Comma-separated tags', 'interview,qa,flashcards')
+  .option('--credentials <path>', 'Path to client_secret.json')
+  .option('--dry-run', 'Preview metadata without uploading', false)
+  .action(async (opts) => {
+    try {
+      const inputPath = resolve(opts.input);
+      if (!existsSync(inputPath)) {
+        console.error(`Error: Input file not found: ${inputPath}`);
+        process.exit(1);
+      }
+
+      // Resolve video path
+      const inputName = basename(inputPath, '.yaml').replace(/\.yml$/, '');
+      const videoPath = opts.video
+        ? resolve(opts.video)
+        : join(dirname(inputPath), '..', 'output', `${inputName}.mp4`);
+
+      if (!existsSync(videoPath)) {
+        console.error(`Error: Video not found: ${videoPath}`);
+        console.error(`Run "qa-video generate -i ${opts.input}" first.`);
+        process.exit(1);
+      }
+
+      // Parse YAML for metadata
+      const yamlData = await parseYamlFile(inputPath);
+
+      let title = opts.title ?? generateTitle(inputPath, yamlData);
+      let description = opts.description ?? generateDescription(inputPath, yamlData);
+      const tags = (opts.tags as string).split(',').map((t: string) => t.trim());
+
+      console.log(`\n╔══════════════════════════════════╗`);
+      console.log(`║     YouTube Upload               ║`);
+      console.log(`╚══════════════════════════════════╝`);
+      console.log(`Video:       ${videoPath}`);
+      console.log(`Title:       ${title}`);
+      console.log(`Privacy:     ${opts.privacy}`);
+      console.log(`Tags:        ${tags.join(', ')}`);
+      console.log(`\nDescription:\n${description}`);
+
+      if (opts.dryRun) {
+        console.log(`\n  --dry-run: No upload performed.\n`);
+        return;
+      }
+
+      // Interactive confirmation — let user edit title/description before upload
+      const rl = createInterface({ input: process.stdin, output: process.stdout });
+      const prompt = (q: string): Promise<string> =>
+        new Promise(resolve => rl.question(q, resolve));
+
+      console.log(`\n─── Confirm before upload ───`);
+      const newTitle = await prompt(`Title [Enter to keep]: `);
+      if (newTitle.trim()) title = newTitle.trim();
+
+      const newDesc = await prompt(`Description [Enter to keep]: `);
+      if (newDesc.trim()) description = newDesc.trim();
+
+      const confirm = await prompt(`\nUpload "${title}"? (y/N): `);
+      rl.close();
+
+      if (confirm.toLowerCase() !== 'y') {
+        console.log(`\n  Upload cancelled.\n`);
+        return;
+      }
+
+      const authClient = await getAuthenticatedClient(opts.credentials);
+      await uploadToYouTube(authClient, {
+        videoPath,
+        title,
+        description,
+        privacy: opts.privacy as 'public' | 'unlisted' | 'private',
+        categoryId: opts.category,
+        tags,
+      });
+    } catch (err: any) {
+      console.error(`\nError: ${err.message}`);
+      if (process.env.DEBUG) console.error(err.stack);
+      process.exit(1);
+    }
+  });
+
+// Only require ffmpeg for generate/batch commands
+const cmd = process.argv[2];
+if (cmd === 'generate' || cmd === 'batch') {
+  await ensureDeps();
+}
 program.parse();

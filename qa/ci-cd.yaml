@@ -1,4 +1,6 @@
 config:
+  name: "DevOps-Interview-Questions: CI/CD Pipelines"
+  description: Comprehensive coverage of Continuous Integration and Continuous Deployment including pipeline design, deployment strategies, security, testing, and tools like Jenkins, GitHub Actions, and GitLab CI/CD.
   questionDelay: 20
   answerDelay: 5
 questions:

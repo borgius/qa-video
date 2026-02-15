@@ -1,4 +1,6 @@
 config:
+  name: "DevOps-Interview-Questions: Cloud Computing"
+  description: A comprehensive guide to cloud computing covering fundamental concepts, service models, security practices, and advanced deployment strategies across AWS, Azure, and GCP platforms.
   questionDelay: 20
   answerDelay: 5
 questions:

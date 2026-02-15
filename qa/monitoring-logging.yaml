@@ -1,4 +1,6 @@
 config:
+  name: "DevOps-Interview-Questions: Monitoring & Logging"
+  description: Comprehensive coverage of monitoring and logging tools including Prometheus, Grafana, ELK Stack, Loki, and Filebeat with alerting, dashboards, query optimization, and scalability strategies.
   questionDelay: 20
   answerDelay: 5
 questions:

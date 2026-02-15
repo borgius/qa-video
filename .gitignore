@@ -2,3 +2,4 @@ node_modules
 output
 dist
 build
+client_secret.json

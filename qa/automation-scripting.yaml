@@ -1,4 +1,6 @@
 config:
+  name: "DevOps-Interview-Questions: Automation & Scripting"
+  description: Covers automation fundamentals in DevOps including Bash scripting, Python scripting, Groovy, YAML configuration, and CI/CD pipeline automation with practical examples and best practices.
   questionDelay: 20
   answerDelay: 5
 questions:
