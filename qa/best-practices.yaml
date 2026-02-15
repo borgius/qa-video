@@ -1,0 +1,150 @@
+config:
+  questionDelay: 20
+  answerDelay: 5
+questions:
+- question: What are DevOps best practices?
+  answer: 'Key DevOps best practices include:
+
+    Infrastructure as Code (IaC)
+
+    Continuous Integration and Continuous Deployment (CI/CD)
+
+    Monitoring and Logging
+
+    Automated Testing
+
+    Security as Code'
+- question: What is the purpose of Infrastructure as Code (IaC)?
+  answer: IaC enables automated and consistent provisioning of infrastructure using tools like Terraform, CloudFormation,
+    and Ansible.
+- question: Why is version control important in DevOps?
+  answer: Version control (e.g., Git) helps track changes, collaborate effectively, and rollback if needed.
+- question: What is Continuous Integration (CI)?
+  answer: CI is the practice of frequently merging code changes into a shared repository and automatically testing them.
+- question: What are the key components of a CI/CD pipeline?
+  answer: 'Code commit
+
+    Build
+
+    Test
+
+    Deploy
+
+    Monitor'
+- question: What is the difference between Continuous Deployment and Continuous Delivery?
+  answer: 'Continuous Delivery: Automated testing, but manual deployment approval.
+
+    Continuous Deployment: Fully automated release process.'
+- question: What is the importance of automated testing in DevOps?
+  answer: Automated testing ensures code quality, catches bugs early, and speeds up deployment.
+- question: What is the purpose of monitoring in DevOps?
+  answer: Monitoring tools (e.g., Prometheus, Grafana, ELK) track system performance and detect issues in real-time.
+- question: What are blue-green deployments?
+  answer: A deployment strategy where two environments (blue & green) run simultaneously, allowing easy rollback in case of
+    failure.
+- question: What is the role of logging in DevOps?
+  answer: Logging helps in troubleshooting, analyzing trends, and ensuring application reliability.
+- question: What is shift-left testing in DevOps?
+  answer: Shift-left means testing earlier in the development lifecycle to catch bugs sooner.
+- question: What is feature flagging?
+  answer: Feature flags allow enabling or disabling features without deploying new code.
+- question: What is immutable infrastructure?
+  answer: Infrastructure that is replaced rather than modified to ensure consistency.
+- question: What are rolling deployments?
+  answer: A deployment strategy that gradually updates instances to avoid downtime.
+- question: What is canary deployment?
+  answer: A method where new changes are rolled out to a small subset of users before a full deployment.
+- question: What are microservices, and how do they impact DevOps?
+  answer: Microservices are small, independent services that allow faster development, scalability, and easier deployments.
+- question: How do you manage secrets in DevOps?
+  answer: Using secret management tools like HashiCorp Vault, AWS Secrets Manager, and Kubernetes Secrets.
+- question: What is GitOps?
+  answer: A DevOps practice where Git is the single source of truth for infrastructure and application deployment.
+- question: Why is containerization important in DevOps?
+  answer: Containers provide portability, consistency, and efficient resource utilization.
+- question: What is the 12-Factor App methodology?
+  answer: A set of best practices for building scalable, cloud-native applications.
+- question: How do you handle configuration management in DevOps?
+  answer: Using tools like Ansible, Puppet, and Chef to automate configurations.
+- question: How do you ensure high availability in a cloud-based architecture?
+  answer: Using load balancing, auto-scaling, multi-region deployments, and failover mechanisms.
+- question: What is the difference between monolithic and microservices architectures?
+  answer: 'Monolithic: A single large application.
+
+    Microservices: Independent services communicating over APIs.'
+- question: How do you monitor microservices effectively?
+  answer: Using distributed tracing (Jaeger), centralized logging (ELK), and service mesh (Istio).
+- question: How do you secure a CI/CD pipeline?
+  answer: 'Use least privilege access.
+
+    Store secrets securely.
+
+    Scan dependencies for vulnerabilities.
+
+    Implement code signing.'
+- question: What are some common DevOps anti-patterns?
+  answer: 'Siloed teams
+
+    Manual deployments
+
+    Lack of monitoring
+
+    Ignoring security'
+- question: How do you implement DevSecOps?
+  answer: Integrate security into every stage of development using tools like SonarQube, Snyk, and Trivy.
+- question: What is a Service Level Agreement (SLA)?
+  answer: An SLA defines the expected level of service, including uptime and response times.
+- question: How do you ensure compliance in DevOps?
+  answer: By automating security checks, auditing, and following regulatory frameworks like GDPR and SOC 2.
+- question: What is a chaos engineering experiment?
+  answer: Intentionally injecting failures into a system to test its resilience (e.g., Netflix's Chaos Monkey).
+- question: How do you reduce deployment downtime?
+  answer: Using rolling updates, blue-green deployments, and zero-downtime migrations.
+- question: How do you handle database migrations in CI/CD?
+  answer: Using tools like Flyway, Liquibase, or Django migrations in an automated pipeline.
+- question: What is an API gateway, and why is it used?
+  answer: An API gateway manages API requests, security, and load balancing in microservices.
+- question: How do you implement infrastructure testing?
+  answer: Using tools like Terratest (for Terraform), InSpec, and Pester.
+- question: How do you manage multi-cloud deployments?
+  answer: Using Terraform, Kubernetes, and cloud-agnostic tools like HashiCorp Vault and Istio.
+- question: What is the difference between SLO and SLI?
+  answer: 'SLO (Service Level Objective): A target level of reliability (e.g., 99.9% uptime).
+
+    SLI (Service Level Indicator): A measurable metric (e.g., response time'
+- question: How do you manage dependencies in DevOps?
+  answer: Using dependency managers like pip, npm, Maven, and scanning tools like Snyk and OWASP Dependency-Check.
+- question: How do you handle rollback in a Kubernetes environment?
+  answer: Using kubectl rollout undo deployment .
+- question: What are the best practices for writing Dockerfiles?
+  answer: 'Use lightweight base images.
+
+    Minimize layers.
+
+    Avoid hardcoding secrets.
+
+    Use multi-stage builds.'
+- question: What is FinOps in cloud computing?
+  answer: A practice for optimizing cloud costs and budgeting efficiently.
+- question: How do you implement policy-as-code in DevOps?
+  answer: Using tools like Open Policy Agent (OPA) and HashiCorp Sentinel.
+- question: How do you handle incident response in DevOps?
+  answer: Using an on-call rotation, alerting, and post-mortems.
+- question: What is site reliability engineering (SRE)?
+  answer: A discipline that applies software engineering principles to system reliability.
+- question: How do you enforce security compliance in a DevOps pipeline?
+  answer: By integrating security scanning, linting, and automated compliance tests.
+- question: How do you manage hybrid cloud environments?
+  answer: Using tools like Anthos, Azure Arc, and Terraform.
+- question: What is an SBOM (Software Bill of Materials)?
+  answer: A list of all components in software, used for security analysis.
+- question: How do you implement auto-remediation in DevOps?
+  answer: Using AWS Lambda, Ansible, or Kubernetes operators to fix issues automatically.
+- question: How do you secure a Kubernetes cluster?
+  answer: 'Use RBAC (Role-Based Access Control)
+
+    Enable Pod Security Policies
+
+    Rotate TLS certificates'
+- question: How do you optimize cloud costs in a DevOps environment?
+  answer: By using spot instances, auto-scaling, and rightsizing resources.

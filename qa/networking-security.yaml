@@ -1,0 +1,196 @@
+config:
+  questionDelay: 20
+  answerDelay: 5
+questions:
+- question: What is a network?
+  answer: A network is a group of interconnected devices that communicate to share resources and information. It can be wired
+    or wireless.
+- question: What is an IP address?
+  answer: An IP (Internet Protocol) address is a unique numerical identifier assigned to each device on a network to facilitate
+    communication.
+- question: What is the difference between IPv4 and IPv6?
+  answer: 'IPv4: 32-bit addressing, supports 4.3 billion addresses.
+
+    IPv6: 128-bit addressing, supports an enormous number of addresses, improving scalability and security.'
+- question: What are private and public IP addresses?
+  answer: 'Private IPs: Used within local networks (e.g., 192.168.x.x).
+
+    Public IPs: Used on the internet and assigned by ISPs.'
+- question: What is a subnet mask?
+  answer: A subnet mask divides an IP address into network and host portions, determining which part identifies the network
+    and which part identifies the device.
+- question: What is DHCP, and how does it work?
+  answer: The Dynamic Host Configuration Protocol (DHCP) automatically assigns IP addresses to devices in a network, reducing
+    manual configuration.
+- question: What is DNS, and why is it important?
+  answer: The Domain Name System (DNS) translates domain names (e.g., google.com) into IP addresses, making it easier to access
+    websites.
+- question: What is NAT (Network Address Translation)?
+  answer: NAT allows multiple devices on a local network to share a single public IP address for internet access.
+- question: What is a firewall?
+  answer: A firewall is a security system that monitors and controls incoming and outgoing network traffic based on security
+    rules.
+- question: What are the types of firewalls?
+  answer: 'Packet Filtering Firewall
+
+    Stateful Inspection Firewall
+
+    Proxy Firewall
+
+    Next-Generation Firewall (NGFW)'
+- question: What is a VPN?
+  answer: A Virtual Private Network (VPN) encrypts internet connections, providing secure remote access and anonymity.
+- question: What is SSH, and why is it used?
+  answer: SSH (Secure Shell) is a protocol used for secure remote access to servers using encrypted communication.
+- question: What is HTTP and HTTPS?
+  answer: 'HTTP (Hypertext Transfer Protocol): Unencrypted web communication.
+
+    HTTPS (HTTP Secure): Secure, encrypted communication using SSL/TLS.'
+- question: What is an SSL/TLS certificate?
+  answer: An SSL/TLS certificate encrypts website traffic, ensuring secure communication and trustworthiness.
+- question: What is a load balancer?
+  answer: A load balancer distributes incoming network traffic across multiple servers to optimize performance and availability.
+- question: What are different types of load balancers?
+  answer: 'Layer 4 Load Balancer (Transport Layer)
+
+    Layer 7 Load Balancer (Application Layer)'
+- question: What is a DMZ in networking?
+  answer: A Demilitarized Zone (DMZ) is a security buffer between an internal network and the internet, hosting public-facing
+    services securely.
+- question: What is port forwarding?
+  answer: Port forwarding redirects network traffic from one port to another, often used to expose internal services externally.
+- question: What is ARP (Address Resolution Protocol)?
+  answer: ARP translates IP addresses into MAC addresses to enable communication within a local network.
+- question: What is an IDS and IPS?
+  answer: 'IDS (Intrusion Detection System): Monitors network traffic for threats.
+
+    IPS (Intrusion Prevention System): Blocks malicious traffic automatically.'
+- question: What is Zero Trust Security?
+  answer: Zero Trust is a security model that assumes no entity (inside or outside the network) is trusted by default.
+- question: What is the difference between symmetric and asymmetric encryption?
+  answer: 'Symmetric Encryption: Uses one key for encryption and decryption.
+
+    Asymmetric Encryption: Uses a public-private key pair (e.g., RSA).'
+- question: What is a CDN (Content Delivery Network)?
+  answer: A CDN improves website speed and security by distributing content across multiple servers worldwide.
+- question: What is the difference between TCP and UDP?
+  answer: 'TCP: Reliable, connection-oriented, ensures data delivery.
+
+    UDP: Faster, connectionless, best for real-time applications.'
+- question: How does a reverse proxy improve security?
+  answer: A reverse proxy sits between users and backend servers, protecting them from direct exposure and filtering malicious
+    traffic.
+- question: What are the benefits of HTTPS over HTTP?
+  answer: 'Encryption
+
+    Data integrity
+
+    Authentication'
+- question: How does multi-factor authentication (MFA) enhance security?
+  answer: MFA adds an extra security layer by requiring multiple verification methods (e.g., password + OTP).
+- question: What is a bastion host?
+  answer: A bastion host is a highly secured jump server used to access internal networks securely.
+- question: What is OSI Model and its layers?
+  answer: 'The OSI model has 7 layers: Physical, Data Link, Network, Transport, Session, Presentation, Application.'
+- question: What is a WAF (Web Application Firewall)?
+  answer: A WAF protects web applications by filtering and blocking malicious HTTP traffic.
+- question: What is a honeypot in cybersecurity?
+  answer: A honeypot is a security system designed to detect and study cyberattacks by mimicking real systems.
+- question: What is BGP (Border Gateway Protocol)?
+  answer: BGP is a routing protocol used for exchanging routing information between networks on the internet.
+- question: What is DDoS, and how can it be mitigated?
+  answer: A Distributed Denial-of-Service (DDoS) attack overwhelms a system. It can be mitigated using rate limiting, firewalls,
+    and cloud-based protection.
+- question: What is the CIA Triad in security?
+  answer: The CIA Triad stands for Confidentiality, Integrity, and Availability, which are fundamental security principles.
+- question: What is SSO (Single Sign-On)?
+  answer: SSO allows users to log in to multiple applications using a single authentication process.
+- question: What is a security token?
+  answer: A security token is a physical or digital device used for authentication.
+- question: What is an access control list (ACL)?
+  answer: An ACL defines rules that allow or deny traffic based on IP, ports, or protocols.
+- question: What is a container network security concern?
+  answer: Containers share OS kernels, so misconfigurations can expose services to security threats.
+- question: What is network segmentation?
+  answer: It is dividing a network into smaller parts to improve security and performance.
+- question: What is the difference between active and passive reconnaissance?
+  answer: 'Active reconnaissance: Direct interaction with the target.
+
+    Passive reconnaissance: Collecting data without direct interaction.'
+- question: What is mutual TLS (mTLS), and why is it used?
+  answer: Mutual TLS (mTLS) ensures both client and server authenticate each other before communication, enhancing security
+    in microservices and API interactions.
+- question: What is the difference between L3, L4, and L7 firewalls?
+  answer: 'L3 Firewall (Network Layer): Filters traffic based on IP addresses.
+
+    L4 Firewall (Transport Layer): Filters based on ports and TCP/UDP protocols.
+
+    L7 Firewall (Application Layer): Filters based on application-specific data (e.g., HTTP, FTP).'
+- question: How does AWS Security Groups differ from Network ACLs?
+  answer: 'Security Groups: Act as virtual firewalls at the instance level, stateful.
+
+    Network ACLs: Act at the subnet level, stateless.'
+- question: What is a SIEM (Security Information and Event Management) system?
+  answer: SIEM aggregates security data from multiple sources to detect, analyze, and respond to threats.
+- question: What is a threat model in security?
+  answer: Threat modeling identifies potential threats and vulnerabilities in a system to proactively mitigate risks.
+- question: What is an ephemeral port, and how is it used?
+  answer: Ephemeral ports (e.g., 49152-65535) are temporary ports used by client applications for outbound connections.
+- question: How does DNSSEC enhance DNS security?
+  answer: DNSSEC (DNS Security Extensions) prevents DNS spoofing by adding cryptographic signatures to DNS records.
+- question: What are the different types of VPNs?
+  answer: 'Remote Access VPN (for individuals connecting to a network remotely).
+
+    Site-to-Site VPN (connects entire networks).'
+- question: How does a service mesh improve security in Kubernetes?
+  answer: A service mesh (e.g., Istio, Linkerd) provides mTLS, authentication, and observability for secure communication
+    between microservices.
+- question: What are some common OWASP Top 10 security risks?
+  answer: 'Injection (e.g., SQL injection)
+
+    Broken Authentication
+
+    Sensitive Data Exposure
+
+    XML External Entities (XXE)
+
+    Broken Access Control
+
+    Security Misconfiguration
+
+    Cross-Site Scripting (XSS)
+
+    Insecure Deserialization
+
+    Using Components with Known Vulnerabilities
+
+    Insufficient Logging & Monitoring'
+- question: How do WebSockets handle security concerns?
+  answer: WebSockets require authentication, encryption (WSS), and proper origin checks to prevent attacks.
+- question: What is an SSRF (Server-Side Request Forgery) attack?
+  answer: An SSRF attack tricks a server into making requests to internal services, leading to data leaks or system compromise.
+- question: How does an AWS WAF protect applications?
+  answer: AWS WAF filters web traffic based on rules, rate limiting, and bot mitigation to prevent common attacks like SQL
+    injection and XSS.
+- question: How does Kubernetes RBAC (Role-Based Access Control) work?
+  answer: Kubernetes RBAC grants permissions based on Roles, RoleBindings, ClusterRoles, and ClusterRoleBindings, restricting
+    access to resources.
+- question: What is a MAC address, and how does MAC filtering enhance security?
+  answer: A MAC address is a unique identifier for network interfaces. MAC filtering allows or denies network access based
+    on these addresses.
+- question: How does DNS poisoning work, and how can it be prevented?
+  answer: DNS poisoning tricks users into visiting malicious sites by altering DNS records. Prevention includes DNSSEC, monitoring,
+    and secure DNS resolvers.
+- question: What is a federated identity in security?
+  answer: Federated identity allows users to authenticate across multiple applications using a single set of credentials (e.g.,
+    Google or Microsoft sign-in).
+- question: How does Kubernetes Network Policy improve security?
+  answer: Kubernetes Network Policies define rules for pod communication, restricting traffic based on namespaces, labels,
+    and IP ranges.
+- question: What is the principle of least privilege (PoLP)?
+  answer: PoLP ensures users and applications only have the minimum access needed to perform their tasks, reducing security
+    risks.
+- question: How do HSTS (HTTP Strict Transport Security) and CSP (Content Security Policy) improve web security?
+  answer: 'HSTS: Forces HTTPS connections to prevent downgrade attacks.
+
+    CSP: Restricts allowed content sources to prevent XSS attacks.'

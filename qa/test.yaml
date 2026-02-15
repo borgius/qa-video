@@ -1,0 +1,8 @@
+config:
+  questionDelay: 2
+  answerDelay: 2
+questions:
+- question: What is DevOps?
+  answer: DevOps is a set of practices that combine software development and IT operations.
+- question: What is Docker?
+  answer: Docker is a platform for containerizing applications.

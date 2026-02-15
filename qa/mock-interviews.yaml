@@ -1,0 +1,352 @@
+config:
+  questionDelay: 20
+  answerDelay: 5
+questions:
+- question: What is DevOps, and why is it important?
+  answer: DevOps is a set of practices that combines software development (Dev) and IT operations (Ops) to shorten the software
+    development lifecycle (SDLC) while ensuring high quality and reliability.
+- question: How does DevOps differ from traditional IT operations?
+  answer: 'Aspect
+
+    Traditional IT Operations
+
+    DevOps
+
+    Development & Operations
+
+    Separate teams
+
+    Integrated teams
+
+    Deployment Frequency
+
+    Weeks/Months
+
+    Daily/Weekly
+
+    Automation
+
+    Limited
+
+    Extensive (CI/CD, IaC)
+
+    Collaboration
+
+    Siloed
+
+    Cross-functional
+
+    Feedback Loop
+
+    Slow
+
+    Fast (Continuous Monitoring)'
+- question: What are the key principles of DevOps?
+  answer: 'Collaboration – Breaking silos between Dev & Ops
+
+    Automation – CI/CD, Infrastructure as Code (IaC)
+
+    Continuous Integration & Continuous Deployment (CI/CD)
+
+    Monitoring & Logging – Observability, real-time feedback
+
+    Security (DevSecOps) – Security integrated into SDLC'
+- question: Explain the DevOps lifecycle.
+  answer: 'Plan – Jira, Trello
+
+    Develop – Git, GitHub
+
+    Build – Maven, Gradle
+
+    Test – Selenium, JUnit
+
+    Release – GitHub Actions, Jenkins
+
+    Deploy – Kubernetes, Docker
+
+    Monitor – Prometheus, Grafana'
+- question: What are some common DevOps tools?
+  answer: 'CI/CD: Jenkins, GitHub Actions, GitLab CI
+
+    Configuration Management: Ansible, Puppet
+
+    Containerization: Docker, Kubernetes
+
+    Monitoring & Logging: Prometheus, Grafana, ELK Stack'
+- question: What is CI/CD, and how does it work?
+  answer: 'CI/CD is a DevOps practice that automates code integration, testing, and deployment.
+
+    Continuous Integration (CI) – Automates code merging & testing.
+
+    Continuous Deployment (CD) – Automates production releases.'
+- question: Explain the difference between Continuous Deployment and Continuous Delivery.
+  answer: 'Aspect
+
+    Continuous Delivery
+
+    Continuous Deployment
+
+    Automation
+
+    Deployments require manual approval
+
+    Fully automated deployments
+
+    Risk
+
+    Lower risk, manual control
+
+    Higher automation, requires testing reliability'
+- question: What is version control, and why is Git used in DevOps?
+  answer: 'Version control tracks code changes, allowing collaboration. Git is widely used because of:
+
+    Branching & Merging – Parallel development
+
+    Distributed Version Control – No central dependency'
+- question: What is Infrastructure as Code (IaC)?
+  answer: 'IaC automates infrastructure provisioning using code. Example: Terraform, Ansible, CloudFormation.'
+- question: How does a DevOps engineer handle configuration management?
+  answer: Using Ansible, Puppet, Chef, engineers automate configuration setup, ensuring consistency.
+- question: What is a container, and how does Docker help DevOps?
+  answer: A container packages an app with dependencies, ensuring it runs identically anywhere. Docker simplifies container
+    management.
+- question: Explain Kubernetes and why it’s used in DevOps.
+  answer: Kubernetes orchestrates containers, automating deployment, scaling, and networking.
+- question: What is a microservices architecture?
+  answer: Microservices break apps into independent, loosely coupled services for scalability and agility.
+- question: What is a reverse proxy, and why use Nginx in DevOps?
+  answer: A reverse proxy (e.g., Nginx) balances traffic, improves security, and caches content.
+- question: How do you monitor system performance in DevOps?
+  answer: Using tools like Prometheus, Grafana, ELK Stack to track logs, metrics, and alerts.
+- question: What is the purpose of logging in DevOps?
+  answer: 'Logging helps capture system and application events, allowing developers and operations teams to diagnose issues
+    and improve performance.
+
+    Tools: ELK Stack, Loki, Splunk'
+- question: What are environment variables, and why are they important in DevOps?
+  answer: Environment variables store configuration settings (e.g., API keys, DB credentials). They help manage different
+    environments (Dev, QA, Production) without modifying code.
+- question: What is a load balancer, and why is it used?
+  answer: 'A load balancer distributes traffic across multiple servers to improve availability, reliability, and performance.
+
+    Example: Nginx, AWS ELB'
+- question: What is a service discovery mechanism in microservices?
+  answer: 'Service discovery helps microservices locate and communicate with each other dynamically.
+
+    Examples: Consul, Eureka, Kubernetes Service Discovery'
+- question: How do you implement error handling in a CI/CD pipeline?
+  answer: 'Automated Testing – Detects issues early
+
+    Logging & Monitoring – Alerts and logs errors
+
+    Rollback Strategy – Deploys a stable version if errors occur'
+- question: Explain the difference between Docker and Kubernetes.
+  answer: 'Feature
+
+    Docker
+
+    Kubernetes
+
+    Purpose
+
+    Containerization tool
+
+    Orchestration of containers
+
+    Deployment
+
+    Single-node containers
+
+    Multi-node cluster management
+
+    Scaling
+
+    Manual scaling
+
+    Auto-scaling'
+- question: What is Blue-Green Deployment?
+  answer: 'A strategy where two environments (Blue & Green) exist:
+
+    Blue – Active
+
+    Green – Staging (new version)
+
+    Switching traffic to Green reduces downtime.'
+- question: How does Terraform differ from Ansible?
+  answer: 'Terraform: Declarative, cloud provisioning
+
+    Ansible: Configuration management, procedural'
+- question: What is Canary Deployment?
+  answer: A small subset of users receives the new update before a full rollout.
+- question: What are Helm charts in Kubernetes?
+  answer: Helm automates Kubernetes app deployment using predefined templates.
+- question: What is a rolling update in Kubernetes?
+  answer: A rolling update gradually replaces old pods with new ones without downtime.
+- question: How do you handle secrets securely in a DevOps pipeline?
+  answer: 'HashiCorp Vault
+
+    AWS Secrets Manager
+
+    Kubernetes Secrets'
+- question: What is an immutable infrastructure?
+  answer: Infrastructure where components are never modified after deployment, reducing configuration drift.
+- question: What are the different types of Kubernetes services?
+  answer: 'ClusterIP – Internal communication
+
+    NodePort – Exposes a service on a port
+
+    LoadBalancer – External traffic balancing'
+- question: How does Prometheus monitor Kubernetes clusters?
+  answer: 'Uses exporters to collect metrics
+
+    Stores time-series data
+
+    Alerts on anomalies via Alertmanager'
+- question: What is the difference between monolithic and microservices architectures?
+  answer: 'Aspect
+
+    Monolithic
+
+    Microservices
+
+    Scalability
+
+    Harder
+
+    Easier
+
+    Deployment
+
+    Single unit
+
+    Independent services
+
+    Maintenance
+
+    Complex
+
+    Easier'
+- question: How does Ansible differ from Chef and Puppet?
+  answer: 'Ansible – Agentless, YAML-based, simple
+
+    Chef/Puppet – Require agents, more complex'
+- question: How do you ensure high availability in a cloud environment?
+  answer: 'Multi-AZ Deployments
+
+    Load Balancing
+
+    Auto Scaling'
+- question: How do you handle stateful applications in Kubernetes?
+  answer: Using StatefulSets, Persistent Volumes, and Storage Classes.
+- question: What is a sidecar container pattern in Kubernetes?
+  answer: A sidecar runs alongside the main app container to handle logging, monitoring, or proxying.
+- question: How do you implement security in a CI/CD pipeline?
+  answer: 'Static Code Analysis (SAST)
+
+    Container Scanning
+
+    Dependency Scanning'
+- question: What is the concept of "Shift Left" in DevOps security?
+  answer: '"Shift Left" integrates security earlier in the development cycle, reducing vulnerabilities.'
+- question: What is a Kubernetes DaemonSet?
+  answer: A DaemonSet ensures that a pod runs on every node.
+- question: What is the difference between proactive and reactive monitoring?
+  answer: 'Proactive – Prevents issues (threshold-based alerts)
+
+    Reactive – Responds to issues (post-failure logs)'
+- question: What is the role of service mesh in Kubernetes?
+  answer: A service mesh (e.g., Istio) manages service-to-service communication, security, and monitoring.
+- question: How do you secure a Kubernetes cluster?
+  answer: 'RBAC (Role-Based Access Control)
+
+    Network Policies
+
+    Secrets Management'
+- question: How would you handle a production failure in a CI/CD pipeline?
+  answer: 'Identify the failure (logs, monitoring tools)
+
+    Rollback the last stable version
+
+    Fix and test the issue
+
+    Redeploy the fixed version
+
+    Post-mortem analysis'
+- question: What is GitOps, and how does it work?
+  answer: GitOps automates infrastructure and app deployment using Git as the single source of truth.
+- question: How do you monitor microservices?
+  answer: 'Distributed Tracing (Jaeger, Zipkin)
+
+    Centralized Logging (ELK, Loki)
+
+    Metrics (Prometheus, Grafana)'
+- question: How does service mesh improve microservices security?
+  answer: 'A service mesh (e.g., Istio) provides:
+
+    mTLS (Mutual TLS)
+
+    Traffic control & observability'
+- question: What is Open Policy Agent (OPA)?
+  answer: OPA enforces security policies in cloud environments.
+- question: How do you manage secrets in Kubernetes?
+  answer: 'Kubernetes Secrets
+
+    Vault by HashiCorp
+
+    AWS Secrets Manager'
+- question: How do you optimize Kubernetes performance?
+  answer: 'Pod Auto-scaling (HPA, VPA)
+
+    Resource Limits & Requests
+
+    Efficient Networking'
+- question: How do you ensure compliance in DevOps pipelines?
+  answer: 'Automated Policy Enforcement (OPA, Kyverno)
+
+    Audit Logging
+
+    Access Control & Role-Based Permissions'
+- question: What is Chaos Engineering, and why is it used?
+  answer: Chaos Engineering tests system resilience by simulating failures (e.g., Chaos Monkey).
+- question: How do you implement zero-downtime deployments?
+  answer: 'Blue-Green Deployments
+
+    Canary Releases
+
+    Rolling Updates'
+- question: What are the best practices for managing multi-cloud infrastructure?
+  answer: 'Use a common IaC tool (Terraform)
+
+    Standardized security policies
+
+    Cross-cloud monitoring'
+- question: How do you secure container images?
+  answer: 'Use minimal base images (Alpine, Distroless)
+
+    Scan images for vulnerabilities (Trivy, Clair)'
+- question: How do you manage Kubernetes upgrades with zero downtime?
+  answer: 'Rolling Updates
+
+    Node Drain & Replace
+
+    Backup & Disaster Recovery Plan'
+- question: What is Policy as Code (PaC)?
+  answer: PaC enforces policies using code-driven automation (e.g., Open Policy Agent).
+- question: How do you debug failed Kubernetes deployments?
+  answer: 'kubectl describe pod
+
+    kubectl logs
+
+    kubectl get events'
+- question: How does eBPF enhance observability in Kubernetes?
+  answer: eBPF (Extended Berkeley Packet Filter) runs sandboxed programs inside the Linux kernel for deep observability.
+- question: How do you handle disaster recovery in Kubernetes?
+  answer: 'Backup etcd
+
+    Cluster snapshots
+
+    Multi-region deployments'
+- question: What is progressive delivery, and how does it differ from traditional deployments?
+  answer: Progressive delivery deploys updates gradually using techniques like feature flags and A/B testing.
+- question: What are Kubernetes operators, and why are they useful?
+  answer: Kubernetes Operators automate complex application deployment and lifecycle management.
