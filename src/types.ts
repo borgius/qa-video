@@ -1,3 +1,11 @@
+export interface YoutubeInfo {
+  videoId: string;
+  url: string;
+  uploadedAt: string;       // ISO 8601 timestamp
+  privacy?: string;
+  contentSha?: string;      // SHA of questions+answers, used as YouTube tag for dedup
+}
+
 export interface YamlConfig {
   name?: string;            // video title (used for YouTube upload)
   description?: string;     // video description (used for YouTube upload)
@@ -10,6 +18,7 @@ export interface YamlConfig {
   questionColor?: string;
   answerColor?: string;
   textColor?: string;
+  youtube?: YoutubeInfo;    // populated after successful YouTube upload
 }
 
 export interface YamlCard {

@@ -150,3 +150,22 @@ questions:
     Rotate TLS certificates'
 - question: How do you optimize cloud costs in a DevOps environment?
   answer: By using spot instances, auto-scaling, and rightsizing resources.
+- question: What is environment parity, and why does it matter?
+  answer: 'Environment parity means keeping development, staging, and production as similar as possible to reduce
+    "works on my machine" issues.
+
+    Use identical OS, dependencies, and configurations across environments.
+
+    Containers and IaC tools help enforce parity automatically.'
+- question: What is toil in SRE, and how do you reduce it?
+  answer: 'Toil is manual, repetitive, automatable work that scales linearly with service growth.
+
+    Reduce toil by automating runbooks, self-healing infrastructure, and eliminating manual deployment steps.
+
+    SRE teams aim to keep toil below 50% of their work.'
+- question: What is ChatOps, and how does it benefit DevOps teams?
+  answer: 'ChatOps integrates operational workflows into chat platforms like Slack or Microsoft Teams using bots.
+
+    Teams can trigger deployments, check status, and respond to incidents directly from chat.
+
+    It improves visibility, collaboration, and faster incident response.'

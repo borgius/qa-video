@@ -2,8 +2,9 @@
 
 import { Command } from 'commander';
 import { resolve, basename, dirname, join } from 'path';
-import { existsSync, mkdirSync, readdirSync } from 'fs';
-import { rm } from 'fs/promises';
+import { existsSync, mkdirSync, readdirSync, statSync } from 'fs';
+import { readFile, rm, writeFile } from 'fs/promises';
+import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
 import { createRequire } from 'module';
 import { createInterface } from 'readline';
 import { runPipeline } from './pipeline.js';
@@ -12,7 +13,8 @@ import { ensureDeps } from './ffmpeg-paths.js';
 import { parseYamlFile } from './parser.js';
 import { generateTitle, generateDescription } from './metadata.js';
 import { runAuthFlow, getAuthenticatedClient } from './youtube-auth.js';
-import { uploadToYouTube } from './uploader.js';
+import { uploadToYouTube, findVideoByShaTag, ensureVideoHasShaTag } from './uploader.js';
+import { sha } from './cache.js';
 import { getDriver, listDrivers, driverNames } from './importers/index.js';
 
 const require = createRequire(import.meta.url);
@@ -262,11 +264,118 @@ program
     }
   });
 
+// ── Upload helpers ──
+
+/** Save youtube upload info back to the YAML file's config section */
+async function saveYoutubeInfo(
+  yamlPath: string,
+  info: { videoId: string; url: string; privacy: string; contentSha?: string },
+) {
+  const raw = await readFile(yamlPath, 'utf-8');
+  const doc = parseYaml(raw) ?? {};
+  if (!doc.config) doc.config = {};
+  doc.config.youtube = {
+    videoId: info.videoId,
+    url: info.url,
+    uploadedAt: new Date().toISOString(),
+    privacy: info.privacy,
+    ...(info.contentSha && { contentSha: info.contentSha }),
+  };
+  await writeFile(
+    yamlPath,
+    stringifyYaml(doc, { lineWidth: 120, defaultKeyType: 'PLAIN', defaultStringType: 'PLAIN' }),
+    'utf-8',
+  );
+}
+
+/** Resolve a single input (video path, yaml path, or bare name) to { videoPath, yamlPath? } */
+function resolveUploadTarget(input: string): { videoPath: string; yamlPath?: string } {
+  let inputPath = resolve(input);
+
+  if (inputPath.endsWith('.mp4')) {
+    const videoPath = inputPath;
+    const videoName = basename(inputPath, '.mp4');
+    const yamlPath = [
+      join(process.cwd(), 'qa', `${videoName}.yaml`),
+      join(process.cwd(), 'qa', `${videoName}.yml`),
+      join(dirname(inputPath), `${videoName}.yaml`),
+      join(dirname(inputPath), `${videoName}.yml`),
+    ].find(p => existsSync(p));
+    if (!existsSync(videoPath)) {
+      throw new Error(`Video not found: ${videoPath}`);
+    }
+    return { videoPath, yamlPath };
+  }
+
+  if (inputPath.endsWith('.yaml') || inputPath.endsWith('.yml')) {
+    if (!existsSync(inputPath)) throw new Error(`Input file not found: ${inputPath}`);
+    const inputName = basename(inputPath, '.yaml').replace(/\.yml$/, '');
+    const videoPath = join(dirname(inputPath), '..', 'output', `${inputName}.mp4`);
+    return { videoPath, yamlPath: inputPath };
+  }
+
+  // No extension — try yaml, yml, mp4
+  if (existsSync(inputPath + '.yaml')) {
+    return resolveUploadTarget(inputPath + '.yaml');
+  }
+  if (existsSync(inputPath + '.yml')) {
+    return resolveUploadTarget(inputPath + '.yml');
+  }
+  if (existsSync(inputPath + '.mp4')) {
+    return resolveUploadTarget(inputPath + '.mp4');
+  }
+
+  throw new Error(`Input file not found: ${inputPath}`);
+}
+
+/** Collect all .mp4 files from a directory */
+function collectVideosFromDir(dirPath: string): string[] {
+  return readdirSync(dirPath)
+    .filter(f => f.endsWith('.mp4'))
+    .sort()
+    .map(f => join(dirPath, f));
+}
+
+/** Resolve metadata for a single video */
+async function resolveMetadata(
+  videoPath: string,
+  yamlPath: string | undefined,
+  opts: { title?: string; description?: string; tags: string },
+) {
+  let title: string;
+  let description: string;
+  let contentSha: string | undefined;
+  if (yamlPath && existsSync(yamlPath)) {
+    const yamlData = await parseYamlFile(yamlPath);
+    title = opts.title ?? generateTitle(yamlPath, yamlData);
+    description = opts.description ?? generateDescription(yamlPath, yamlData);
+    contentSha = sha(yamlData.questions.map(q => q.question + q.answer).join('\n'));
+  } else {
+    const videoName = basename(videoPath, '.mp4');
+    title = opts.title ?? videoName.replace(/[-_]/g, ' ');
+    description = opts.description ?? '';
+  }
+  const tags = (opts.tags as string).split(',').map((t: string) => t.trim());
+  return { title, description, tags, contentSha };
+}
+
+/** Prompt with pre-filled editable value */
+function promptEditable(
+  rl: ReturnType<typeof createInterface>,
+  label: string,
+  defaultValue: string,
+): Promise<string> {
+  return new Promise(res => {
+    rl.question(`${label}: `, answer => res(answer || defaultValue));
+    rl.write(defaultValue);
+  });
+}
+
 // Upload to YouTube
 program
   .command('upload')
-  .description('Upload a generated video to YouTube')
-  .requiredOption('-i, --input <path>', 'Path to source YAML file or video (.mp4)')
+  .description('Upload generated video(s) to YouTube')
+  .option('-i, --input <path>', 'Video file, YAML file, or directory (default: output/)')
   .option('-v, --video <path>', 'Path to video file (default: output/<name>.mp4)')
   .option('--title <text>', 'Video title (default: auto-generated from YAML)')
   .option('--description <text>', 'Video description (default: auto-generated)')
@@ -274,127 +383,185 @@ program
   .option('--category <id>', 'YouTube category ID', '27')
   .option('--tags <csv>', 'Comma-separated tags', 'interview,qa,flashcards')
   .option('--credentials <path>', 'Path to client_secret.json')
+  .option('--no-confirm', 'Skip interactive editing and confirmation prompts')
+  .option('--force', 'Force re-upload even if already uploaded')
   .option('--dry-run', 'Preview metadata without uploading', false)
   .action(async (opts) => {
     try {
-      let inputPath = resolve(opts.input);
-      let videoPath: string;
+      // Determine list of videos to upload
+      const inputArg = opts.input ?? 'output';
+      const resolvedInput = resolve(inputArg);
+      let targets: { videoPath: string; yamlPath?: string }[];
 
-      if (inputPath.endsWith('.mp4')) {
-        // User passed a video file directly — use it as the video path
-        // and try to find the corresponding YAML
-        videoPath = opts.video ? resolve(opts.video) : inputPath;
-        const videoName = basename(inputPath, '.mp4');
-        const yamlCandidates = [
-          join(process.cwd(), 'qa', `${videoName}.yaml`),
-          join(process.cwd(), 'qa', `${videoName}.yml`),
-          join(dirname(inputPath), `${videoName}.yaml`),
-          join(dirname(inputPath), `${videoName}.yml`),
-        ];
-        const foundYaml = yamlCandidates.find(p => existsSync(p));
-        if (foundYaml) {
-          inputPath = foundYaml;
-        } else if (!existsSync(videoPath)) {
-          console.error(`Error: Video not found: ${videoPath}`);
+      if (existsSync(resolvedInput) && statSync(resolvedInput).isDirectory()) {
+        const videos = collectVideosFromDir(resolvedInput);
+        if (videos.length === 0) {
+          console.error(`Error: No .mp4 files found in: ${resolvedInput}`);
           process.exit(1);
         }
+        targets = videos.map(v => {
+          const videoName = basename(v, '.mp4');
+          const yamlPath = [
+            join(process.cwd(), 'qa', `${videoName}.yaml`),
+            join(process.cwd(), 'qa', `${videoName}.yml`),
+          ].find(p => existsSync(p));
+          return { videoPath: v, yamlPath };
+        });
       } else {
-        // Input is a YAML file (or no extension)
-        if (!inputPath.endsWith('.yaml') && !inputPath.endsWith('.yml')) {
-          // Try appending extensions
-          if (existsSync(inputPath + '.yaml')) inputPath = inputPath + '.yaml';
-          else if (existsSync(inputPath + '.yml')) inputPath = inputPath + '.yml';
-          else if (existsSync(inputPath + '.mp4')) {
-            // Treat as video path
-            videoPath = inputPath + '.mp4';
-            const videoName = basename(inputPath);
-            const yamlCandidates = [
-              join(process.cwd(), 'qa', `${videoName}.yaml`),
-              join(process.cwd(), 'qa', `${videoName}.yml`),
-            ];
-            const foundYaml = yamlCandidates.find(p => existsSync(p));
-            if (foundYaml) inputPath = foundYaml;
+        const target = opts.video
+          ? { ...resolveUploadTarget(inputArg), videoPath: resolve(opts.video) }
+          : resolveUploadTarget(inputArg);
+        targets = [target];
+      }
+
+      const isBatch = targets.length > 1;
+      if (isBatch) {
+        console.log(`\n╔══════════════════════════════════╗`);
+        console.log(`║   YouTube Upload — Batch         ║`);
+        console.log(`╚══════════════════════════════════╝`);
+        console.log(`Videos: ${targets.length}`);
+      }
+
+      let authClient: Awaited<ReturnType<typeof getAuthenticatedClient>> | undefined;
+      const results: { file: string; status: string }[] = [];
+
+      for (let i = 0; i < targets.length; i++) {
+        const { videoPath, yamlPath } = targets[i];
+        const label = basename(videoPath);
+
+        if (isBatch) {
+          console.log(`\n${'─'.repeat(50)}`);
+          console.log(`  [${i + 1}/${targets.length}] ${label}`);
+          console.log(`${'─'.repeat(50)}`);
+        }
+
+        if (!existsSync(videoPath)) {
+          const msg = `Video not found: ${videoPath}`;
+          if (isBatch) {
+            console.error(`  ${msg} — skipped.`);
+            results.push({ file: label, status: 'MISSING' });
+            continue;
+          }
+          console.error(`Error: ${msg}`);
+          console.error(`Run "qa-video generate -i ${inputArg}" first.`);
+          process.exit(1);
+        }
+
+        let { title, description, tags, contentSha } = await resolveMetadata(videoPath, yamlPath, opts);
+        const shaTag = contentSha ? `qavideo-${contentSha}` : undefined;
+
+        // Append SHA tag to the tags list
+        if (shaTag) tags.push(shaTag);
+
+        console.log(`${isBatch ? '' : '\n╔══════════════════════════════════╗\n║     YouTube Upload               ║\n╚══════════════════════════════════╝\n'}Video:       ${videoPath}`);
+        console.log(`Title:       ${title}`);
+        console.log(`Privacy:     ${opts.privacy}`);
+        console.log(`Tags:        ${tags.join(', ')}`);
+        if (contentSha) console.log(`Content SHA: ${contentSha}`);
+        console.log(`\nDescription:\n${description}`);
+
+        if (opts.dryRun) {
+          console.log(`\n  --dry-run: skipped.`);
+          results.push({ file: label, status: 'DRY-RUN' });
+          continue;
+        }
+
+        // Check YouTube for existing video with this SHA tag (skip unless --force)
+        if (shaTag && !opts.force) {
+          if (!authClient) {
+            authClient = await getAuthenticatedClient(opts.credentials);
+          }
+
+          // Fast path: YAML already has a videoId — verify it on YouTube and patch tag if needed
+          let alreadyExists = false;
+          if (yamlPath && existsSync(yamlPath)) {
+            const raw = await readFile(yamlPath, 'utf-8');
+            const doc = parseYaml(raw);
+            const knownId = doc?.config?.youtube?.videoId;
+            if (knownId) {
+              const tagStatus = await ensureVideoHasShaTag(authClient, knownId, shaTag);
+              if (tagStatus === 'tagged') {
+                console.log(`\n  Already on YouTube: https://youtu.be/${knownId}`);
+                results.push({ file: label, status: 'EXISTS' });
+                alreadyExists = true;
+              } else if (tagStatus === 'added') {
+                console.log(`\n  Already on YouTube: https://youtu.be/${knownId} (tag added)`);
+                results.push({ file: label, status: 'EXISTS' });
+                alreadyExists = true;
+              }
+              // 'not_found' — video was deleted from YouTube, proceed to re-upload
+            }
+          }
+          if (alreadyExists) continue;
+
+          // Slow path: search all user's videos by SHA tag
+          const existing = await findVideoByShaTag(authClient, shaTag);
+          if (existing) {
+            console.log(`\n  Already on YouTube: ${existing.url}`);
+            console.log(`  Use --force to re-upload.`);
+            results.push({ file: label, status: 'EXISTS' });
+            continue;
           }
         }
 
-        if (!videoPath! && !existsSync(inputPath)) {
-          console.error(`Error: Input file not found: ${inputPath}`);
-          process.exit(1);
+        if (opts.confirm) {
+          const rl = createInterface({ input: process.stdin, output: process.stdout });
+
+          console.log(`\n─── Confirm before upload ───`);
+          title = await promptEditable(rl, 'Title', title);
+          description = await promptEditable(rl, 'Description', description);
+
+          const confirm = await new Promise<string>(res =>
+            rl.question(`\nUpload "${title}"? (Y/n): `, res),
+          );
+          rl.close();
+
+          if (confirm.toLowerCase() === 'n') {
+            console.log(`\n  Skipped.\n`);
+            results.push({ file: label, status: 'SKIPPED' });
+            continue;
+          }
         }
 
-        // Resolve video path from YAML input (unless already resolved)
-        if (!videoPath!) {
-          const inputName = basename(inputPath, '.yaml').replace(/\.yml$/, '');
-          videoPath = opts.video
-            ? resolve(opts.video)
-            : join(dirname(inputPath), '..', 'output', `${inputName}.mp4`);
+        if (!authClient) {
+          authClient = await getAuthenticatedClient(opts.credentials);
         }
+
+        const uploadResult = await uploadToYouTube(authClient, {
+          videoPath,
+          title,
+          description,
+          privacy: opts.privacy as 'public' | 'unlisted' | 'private',
+          categoryId: opts.category,
+          tags,
+        });
+
+        // Save upload info to YAML
+        if (yamlPath && existsSync(yamlPath)) {
+          await saveYoutubeInfo(yamlPath, {
+            videoId: uploadResult.videoId,
+            url: uploadResult.url,
+            privacy: opts.privacy,
+            contentSha,
+          });
+          console.log(`  Saved to: ${yamlPath}`);
+        }
+
+        results.push({ file: label, status: 'OK' });
       }
 
-      if (!existsSync(videoPath)) {
-        console.error(`Error: Video not found: ${videoPath}`);
-        console.error(`Run "qa-video generate -i ${opts.input}" first.`);
-        process.exit(1);
+      // Batch summary
+      if (isBatch) {
+        const ok = results.filter(r => r.status === 'OK').length;
+        const skipped = results.filter(r => r.status !== 'OK').length;
+        console.log(`\n${'═'.repeat(50)}`);
+        console.log(`  UPLOAD SUMMARY`);
+        console.log(`${'═'.repeat(50)}`);
+        for (const r of results) {
+          console.log(`  [${r.status.padEnd(7)}] ${r.file}`);
+        }
+        console.log(`\n  ${ok} uploaded, ${skipped} skipped\n`);
       }
-
-      // Parse YAML for metadata (if available)
-      const hasYaml = inputPath.endsWith('.yaml') || inputPath.endsWith('.yml');
-      let title: string;
-      let description: string;
-      if (hasYaml && existsSync(inputPath)) {
-        const yamlData = await parseYamlFile(inputPath);
-        title = opts.title ?? generateTitle(inputPath, yamlData);
-        description = opts.description ?? generateDescription(inputPath, yamlData);
-      } else {
-        const videoName = basename(videoPath, '.mp4');
-        title = opts.title ?? videoName.replace(/[-_]/g, ' ');
-        description = opts.description ?? '';
-      }
-      const tags = (opts.tags as string).split(',').map((t: string) => t.trim());
-
-      console.log(`\n╔══════════════════════════════════╗`);
-      console.log(`║     YouTube Upload               ║`);
-      console.log(`╚══════════════════════════════════╝`);
-      console.log(`Video:       ${videoPath}`);
-      console.log(`Title:       ${title}`);
-      console.log(`Privacy:     ${opts.privacy}`);
-      console.log(`Tags:        ${tags.join(', ')}`);
-      console.log(`\nDescription:\n${description}`);
-
-      if (opts.dryRun) {
-        console.log(`\n  --dry-run: No upload performed.\n`);
-        return;
-      }
-
-      // Interactive confirmation — let user edit title/description before upload
-      const rl = createInterface({ input: process.stdin, output: process.stdout });
-      const prompt = (q: string): Promise<string> =>
-        new Promise(resolve => rl.question(q, resolve));
-
-      console.log(`\n─── Confirm before upload ───`);
-      const newTitle = await prompt(`Title [Enter to keep]: `);
-      if (newTitle.trim()) title = newTitle.trim();
-
-      const newDesc = await prompt(`Description [Enter to keep]: `);
-      if (newDesc.trim()) description = newDesc.trim();
-
-      const confirm = await prompt(`\nUpload "${title}"? (y/N): `);
-      rl.close();
-
-      if (confirm.toLowerCase() !== 'y') {
-        console.log(`\n  Upload cancelled.\n`);
-        return;
-      }
-
-      const authClient = await getAuthenticatedClient(opts.credentials);
-      await uploadToYouTube(authClient, {
-        videoPath,
-        title,
-        description,
-        privacy: opts.privacy as 'public' | 'unlisted' | 'private',
-        categoryId: opts.category,
-        tags,
-      });
     } catch (err: any) {
       console.error(`\nError: ${err.message}`);
       if (process.env.DEBUG) console.error(err.stack);

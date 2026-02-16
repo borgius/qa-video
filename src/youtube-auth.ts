@@ -9,7 +9,9 @@ import { createServer, IncomingMessage, ServerResponse } from 'http';
 const CONFIG_DIR = join(homedir(), '.qa-video');
 const CREDENTIALS_PATH = join(CONFIG_DIR, 'client_secret.json');
 const TOKENS_PATH = join(CONFIG_DIR, 'tokens.json');
-const SCOPES = ['https://www.googleapis.com/auth/youtube.upload'];
+const SCOPES = [
+  'https://www.googleapis.com/auth/youtube',  // full access: upload, read, update tags
+];
 const REDIRECT_PORT = 3000;
 const REDIRECT_URI = `http://localhost:${REDIRECT_PORT}`;
 

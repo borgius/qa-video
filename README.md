@@ -82,11 +82,47 @@ The `--from` flag is optional when the file extension uniquely identifies the fo
 # One-time auth setup
 qa-video auth
 
-# Upload
-qa-video upload -i qa/core-concepts.yaml
-qa-video upload -i qa/core-concepts.yaml --privacy public --tags "devops,interview"
-qa-video upload -i qa/core-concepts.yaml --dry-run   # preview without uploading
+# Upload a single video (any of these work)
+qa-video upload -i output/core-concepts.mp4
+qa-video upload -i output/core-concepts       # auto-detects .mp4
+qa-video upload -i qa/core-concepts.yaml      # resolves to output/core-concepts.mp4
+
+# Upload all videos in a directory
+qa-video upload -i output/
+
+# Upload all videos in output/ (default when no -i)
+qa-video upload
+
+# Customize metadata
+qa-video upload -i output/core-concepts.mp4 --privacy public --tags "devops,interview"
+
+# Preview without uploading
+qa-video upload --dry-run
+
+# Skip interactive editing/confirmation prompts
+qa-video upload --no-confirm
+
+# Force re-upload
+qa-video upload --force
 ```
+
+Before each upload you are prompted to edit the title and description inline (pre-filled with auto-generated values), then confirm. Use `--no-confirm` to skip all prompts, or `--dry-run` to preview.
+
+#### Upload options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `-i, --input <path>` | `output/` | Video file, YAML file, or directory |
+| `-v, --video <path>` | *auto* | Explicit path to video file |
+| `--title <text>` | *auto from YAML* | Video title |
+| `--description <text>` | *auto from YAML* | Video description |
+| `--privacy <level>` | `unlisted` | `public`, `unlisted`, or `private` |
+| `--category <id>` | `27` | YouTube category ID |
+| `--tags <csv>` | `interview,qa,flashcards` | Comma-separated tags |
+| `--credentials <path>` | `~/.qa-video/client_secret.json` | Path to OAuth credentials |
+| `--no-confirm` | — | Skip interactive editing and confirmation |
+| `--force` | — | Force re-upload even if already uploaded |
+| `--dry-run` | `false` | Preview metadata without uploading |
 
 ### Clear cached artifacts
 
