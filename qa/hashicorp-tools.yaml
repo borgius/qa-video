@@ -1,0 +1,156 @@
+config:
+  name: "DevOps-Interview-Questions: HashiCorp Tools"
+  description: In-depth coverage of HashiCorp's DevOps toolchain including Vault for secrets management, Consul for service discovery, Packer for image building, Nomad for workload orchestration, and Vagrant for development environments.
+  questionDelay: 20
+  answerDelay: 5
+
+questions:
+- question: What is HashiCorp, and what tools do they provide?
+  answer: HashiCorp is a software company that provides a suite of open-source and enterprise tools for cloud infrastructure automation. Their key products include Terraform for infrastructure provisioning, Vault for secrets management, Consul for service networking, Nomad for workload orchestration, Packer for image building, Vagrant for development environments, and Boundary for secure remote access.
+
+- question: What is HashiCorp Vault?
+  answer: Vault is a secrets management tool that provides secure storage, dynamic secrets generation, encryption as a service, and identity-based access control. It supports multiple authentication methods and secrets engines, can generate temporary credentials for databases and cloud providers, and provides detailed audit logging of all secrets access.
+
+- question: What are secrets engines in Vault?
+  answer: Secrets engines are components in Vault that store, generate, or encrypt data. The KV secrets engine stores static key-value secrets. The database engine generates dynamic credentials with automatic rotation. The PKI engine manages TLS certificates. The AWS engine generates temporary IAM credentials. Each engine is mounted at a path and configured independently.
+
+- question: What is the KV secrets engine in Vault?
+  answer: The KV secrets engine stores arbitrary key-value pairs as secrets. Version 1 stores only the latest value, while version 2 supports versioning with configurable history. KV v2 allows you to retrieve previous versions, set metadata, and configure maximum versions and deletion policies. It is the most commonly used secrets engine for storing application configuration and credentials.
+
+- question: What are dynamic secrets in Vault?
+  answer: Dynamic secrets are generated on demand by Vault when a client requests them, and they are automatically revoked after a configurable time-to-live period. For example, the database secrets engine creates temporary database credentials that are revoked after use. This eliminates long-lived credentials and reduces the blast radius of a credential leak.
+
+- question: How does Vault authentication work?
+  answer: Vault supports multiple authentication methods including token, userpass, LDAP, GitHub, Kubernetes service accounts, AWS IAM, Azure, and GCP. Each auth method verifies the client's identity and returns a Vault token with associated policies. The Kubernetes auth method is especially popular in DevOps, allowing pods to authenticate using their service account tokens.
+
+- question: What are Vault policies?
+  answer: Vault policies define what secrets and operations a token or identity can access. They are written in HCL or JSON and specify path-based rules with capabilities like create, read, update, delete, list, and sudo. Policies follow a deny-by-default model, meaning access must be explicitly granted. Multiple policies can be attached to a token or identity.
+
+- question: What is Vault's seal and unseal mechanism?
+  answer: When Vault starts, it is in a sealed state and cannot access its encrypted data. Unsealing requires a threshold number of unseal keys generated during initialization using Shamir's secret sharing. Auto-unseal can be configured using cloud KMS services like AWS KMS or Azure Key Vault. Sealing Vault immediately protects all secrets if a breach is suspected.
+
+- question: What is transit secrets engine in Vault?
+  answer: The transit engine provides encryption as a service without storing the data. Applications send plaintext to Vault for encryption and receive ciphertext back, or send ciphertext for decryption. This allows applications to encrypt data without managing encryption keys themselves. Transit supports key rotation, and previously encrypted data can be re-encrypted with new keys.
+
+- question: What is the PKI secrets engine in Vault?
+  answer: The PKI secrets engine generates dynamic X.509 certificates for TLS encryption. It acts as a certificate authority that can issue certificates with configurable parameters like TTL, allowed domains, and key types. This eliminates manual certificate management and enables short-lived certificates that are automatically renewed, improving security by reducing the window of compromise.
+
+- question: How does Vault integrate with Kubernetes?
+  answer: Vault integrates with Kubernetes through the Kubernetes auth method for authentication and the Vault Agent Injector or CSI provider for secret delivery. The Agent Injector runs as a mutating webhook that automatically injects Vault Agent sidecars into pods, which fetch and renew secrets. The CSI provider mounts secrets directly as volumes.
+
+- question: What is the Vault Agent?
+  answer: Vault Agent is a client daemon that handles authentication, secret caching, and template rendering. It automatically authenticates to Vault using configured auth methods, caches secrets locally, and renders templates that inject secret values into configuration files. In Kubernetes, it runs as a sidecar container and keeps secrets up to date without application code changes.
+
+- question: What are Vault namespaces?
+  answer: Vault namespaces provide multi-tenancy by creating isolated environments within a single Vault deployment. Each namespace has its own secrets engines, auth methods, policies, and tokens. This allows organizations to give teams independent Vault environments without deploying separate Vault clusters. Namespaces are an enterprise feature.
+
+- question: What is HashiCorp Consul?
+  answer: Consul is a service networking solution that provides service discovery, health checking, key-value storage, and service mesh capabilities. Services register with Consul and can discover other services through DNS or HTTP APIs. Consul's health checking ensures traffic is only routed to healthy instances, and its Connect feature provides automatic mTLS for service-to-service communication.
+
+- question: How does service discovery work in Consul?
+  answer: Services register with the Consul agent running on their node, providing their name, address, port, and health check configuration. Other services discover them through Consul's DNS interface or HTTP API. Consul returns only healthy service instances, providing built-in load balancing. Service discovery works across data centers for multi-region deployments.
+
+- question: What are Consul health checks?
+  answer: Consul health checks verify the health of services and nodes. Types include HTTP checks that call an endpoint, TCP checks that verify port connectivity, script checks that run commands, TTL checks that require periodic heartbeats, and gRPC checks. Unhealthy services are removed from DNS responses and service discovery results until they recover.
+
+- question: What is Consul Connect?
+  answer: Consul Connect is the service mesh feature of Consul that provides automatic mutual TLS encryption and identity-based authorization between services. It uses sidecar proxies, either built-in or Envoy, to handle encrypted communication without application code changes. Intentions define which services are allowed to communicate, providing fine-grained access control.
+
+- question: What is the Consul KV store?
+  answer: Consul includes a distributed key-value store that can be used for dynamic configuration, feature flags, and coordination between services. It supports hierarchical keys, blocking queries for watching changes, and atomic check-and-set operations. While not a replacement for dedicated databases, it is useful for configuration that needs to be shared across services.
+
+- question: How does Consul handle multi-datacenter deployments?
+  answer: Consul supports multi-datacenter deployments where each datacenter runs its own Consul cluster with its own Raft consensus group. Datacenters are connected through WAN gossip protocol, enabling cross-datacenter service discovery and configuration sharing. Requests can be forwarded between datacenters, allowing services to discover and connect to services in remote datacenters.
+
+- question: What is HashiCorp Packer?
+  answer: Packer is a tool for creating identical machine images for multiple platforms from a single configuration. It automates the creation of AMIs for AWS, VM images for Azure and GCP, Docker images, and Vagrant boxes. Packer uses builders for each platform, provisioners to configure the image, and post-processors for additional processing like uploading to a registry.
+
+- question: What is a Packer template?
+  answer: A Packer template defines how to build a machine image using HCL2 or JSON format. It specifies the source builder that defines the base image and platform, the build block with provisioners that install and configure software, and optional post-processors that handle the output. HCL2 templates support variables, locals, and data sources for dynamic configuration.
+
+- question: What are Packer builders?
+  answer: Packer builders are components responsible for creating a machine image for a specific platform. Common builders include amazon-ebs for AWS AMIs, azure-arm for Azure images, googlecompute for GCP images, docker for container images, and virtualbox-iso for VirtualBox. Each builder handles the platform-specific details of launching, configuring, and capturing the image.
+
+- question: What are Packer provisioners?
+  answer: Packer provisioners install and configure software within the running machine before the image is captured. Common provisioners include shell for running scripts, ansible for running Ansible playbooks, file for copying files, and powershell for Windows. Provisioners run sequentially and transform the base image into the desired final state.
+
+- question: How does Packer fit into a CI/CD pipeline?
+  answer: Packer is typically run in CI/CD pipelines to build golden images whenever the configuration or software changes. The pipeline runs packer build to create new images, tests them, and publishes them to the appropriate cloud registry. Infrastructure tools like Terraform then reference the latest image version when provisioning instances, ensuring consistent and pre-configured machines.
+
+- question: What is the difference between Packer and Docker?
+  answer: Packer creates machine images for various platforms including cloud VMs, containers, and bare metal, while Docker specifically builds container images. Packer can actually use Docker as a builder to create container images. Packer is preferred for VM images in immutable infrastructure patterns, while Docker is the standard for containerized applications.
+
+- question: What is HashiCorp Nomad?
+  answer: Nomad is a flexible workload orchestrator that can deploy and manage containers, virtual machines, standalone binaries, and Java applications. Unlike Kubernetes which focuses on containers, Nomad supports multiple workload types through task drivers. It features a single binary architecture, multi-region federation, and integrates natively with Consul for service discovery and Vault for secrets.
+
+- question: How does Nomad compare to Kubernetes?
+  answer: Nomad is simpler to deploy and operate as a single binary with no external dependencies, while Kubernetes has a more complex architecture with many components. Nomad supports non-container workloads natively, whereas Kubernetes is container-focused. Kubernetes has a larger ecosystem and more third-party tooling. Nomad is often chosen for its operational simplicity and multi-workload support.
+
+- question: What is a Nomad job specification?
+  answer: A Nomad job specification defines the workload to be deployed, written in HCL. It contains a job block with one or more task groups, each containing one or more tasks. The specification includes resource requirements, constraints, scheduling strategy, networking configuration, and service registration. Job types include service for long-running, batch for short-lived, and system for node-level tasks.
+
+- question: What are Nomad task drivers?
+  answer: Task drivers are plugins that handle the execution of tasks in Nomad. The Docker driver runs container workloads, exec runs isolated binaries, Java runs JVM applications, and raw_exec runs processes without isolation. Additional community drivers support technologies like Podman, Firecracker, and QEMU. This flexibility allows Nomad to orchestrate diverse workload types.
+
+- question: What is HashiCorp Vagrant?
+  answer: Vagrant is a tool for building and managing portable development environments. It uses providers like VirtualBox, VMware, or Docker to create virtual machines from a Vagrantfile configuration. Vagrant standardizes development environments across a team, eliminating the "works on my machine" problem. It supports provisioning with shell scripts, Ansible, Chef, or Puppet.
+
+- question: What is HashiCorp Boundary?
+  answer: Boundary is a tool for secure remote access to infrastructure without exposing the network. It provides identity-based access control, session recording, and credential injection for accessing hosts, databases, and services. Users authenticate through their identity provider, and Boundary brokers connections with just-in-time credentials from Vault, eliminating the need for VPNs or SSH key distribution.
+
+- question: What is HashiCorp Waypoint?
+  answer: Waypoint is a tool that provides a consistent workflow for building, deploying, and releasing applications across platforms. It abstracts the underlying infrastructure details and provides a URL-based deployment experience. Waypoint supports multiple platforms including Kubernetes, ECS, Nomad, and serverless. However, it has seen less adoption compared to other HashiCorp tools.
+
+- question: How does Vault handle secret rotation?
+  answer: Vault handles secret rotation through dynamic secrets that have a configurable time-to-live and are automatically revoked when they expire. For static secrets, Vault supports automatic rotation for database root credentials. Applications using the Vault Agent receive renewed credentials before expiration through template rendering. This eliminates the need for manual credential rotation.
+
+- question: What is Vault's audit logging?
+  answer: Vault provides detailed audit logging of every request and response, including who accessed what secret and when. Audit logs can be sent to files, syslog, or socket backends. Every operation is logged with the authentication information, request path, and whether it was successful. This is crucial for compliance and security incident investigation.
+
+- question: What are Vault response wrapping?
+  answer: Response wrapping creates a single-use token that wraps the actual secret response. The wrapped token can be securely passed to another system, which then unwraps it to retrieve the secret. This provides an additional layer of security during secret distribution because the wrapped token can only be unwrapped once, and any interception attempt is detectable.
+
+- question: How do you configure Vault high availability?
+  answer: Vault supports high availability through a leader-standby architecture where one node is the active leader and others are standby nodes ready to take over. The storage backend must support HA, with Consul and integrated Raft storage being common choices. Performance replication allows read-only access across multiple clusters, while disaster recovery replication provides failover.
+
+- question: What is Vault's integrated storage?
+  answer: Vault's integrated storage uses the Raft consensus protocol built directly into Vault, eliminating the need for an external storage backend like Consul. This simplifies deployment by reducing dependencies and provides automatic leader election, log replication, and snapshot capabilities. Integrated storage is the recommended backend for new Vault deployments.
+
+- question: What is Consul's consensus protocol?
+  answer: Consul uses the Raft consensus protocol for leader election and log replication among server nodes. Raft ensures that a majority of servers agree on the cluster state before committing changes. A minimum of three server nodes is recommended for fault tolerance, with five servers for production deployments, allowing the cluster to tolerate one or two node failures respectively.
+
+- question: What is Consul's gossip protocol?
+  answer: Consul uses the Serf gossip protocol for membership management and failure detection across all nodes. The LAN gossip pool handles communication within a datacenter, while the WAN gossip pool connects servers across datacenters. Gossip provides fast, decentralized failure detection and membership tracking without requiring a central coordinator.
+
+- question: How does Consul DNS interface work?
+  answer: Consul provides a DNS interface that resolves service names to healthy instance addresses. Services are queried using the format service-name.service.consul, and Consul returns the IP addresses of healthy instances. Node lookups use node-name.node.consul. The DNS interface can be integrated with existing DNS infrastructure through forwarding rules, making it transparent to applications.
+
+- question: What are Consul intentions?
+  answer: Intentions are Consul Connect's access control mechanism that define which services are allowed or denied communication with other services. They can be configured through the UI, CLI, or API and support both allow and deny rules with precedence ordering. Intentions provide a simple, identity-based security model that is easier to manage than network-level firewall rules.
+
+- question: What is the Consul agent?
+  answer: The Consul agent is a long-running daemon that runs on every node in a Consul cluster. It can operate in either server or client mode. Server agents participate in the consensus protocol and store cluster state, while client agents forward requests to servers and run local health checks. The agent handles service registration, health checking, and gossip communication.
+
+- question: How do you use Packer with Ansible?
+  answer: Packer integrates with Ansible through the ansible provisioner, which runs Ansible playbooks on the machine being built. You specify the playbook file and optional variables in the Packer template. Packer handles SSH connectivity to the build instance, and Ansible configures the software. This allows teams to reuse existing Ansible roles for both machine image building and configuration management.
+
+- question: What are Packer post-processors?
+  answer: Post-processors run after the image build is complete to process or transform the output. Common post-processors include the manifest post-processor that writes build metadata to a JSON file, the compress post-processor that creates archives, and the docker-push post-processor that pushes images to a registry. Post-processors can be chained together in a sequence.
+
+- question: What is immutable infrastructure, and how do Packer and Terraform support it?
+  answer: Immutable infrastructure is a pattern where servers are never modified after deployment. Instead of updating existing servers, you build a new image with Packer containing the desired changes, then use Terraform to replace the running instances with new ones based on the updated image. This eliminates configuration drift and ensures consistency across all instances.
+
+- question: What is the Vault Secrets Operator for Kubernetes?
+  answer: The Vault Secrets Operator is a Kubernetes operator that syncs secrets from Vault into Kubernetes Secret resources. It uses custom resources like VaultStaticSecret and VaultDynamicSecret to define which Vault secrets to sync and where to store them. The operator handles authentication, lease renewal, and automatic secret rotation, providing a Kubernetes-native way to consume Vault secrets.
+
+- question: How does Nomad handle scheduling?
+  answer: Nomad uses a bin-packing scheduler that efficiently places workloads based on resource requirements and constraints. The scheduler evaluates available capacity across all client nodes and selects optimal placements. It supports spread scheduling for high availability, affinity rules for preferred placement, and constraints for hard requirements like required hardware or data locality.
+
+- question: What is HashiCorp Terraform Cloud?
+  answer: Terraform Cloud is a managed service that provides remote state storage, collaborative workspaces, policy enforcement with Sentinel, a private module registry, and cost estimation. It runs Terraform operations remotely, enabling team collaboration with locking, approval workflows, and audit trails. Teams use it to move beyond local Terraform execution to a governed, collaborative workflow.
+
+- question: How do HashiCorp tools integrate with each other?
+  answer: HashiCorp tools are designed to work together as a cohesive stack. Terraform provisions infrastructure and can configure Vault, Consul, and Nomad. Vault manages secrets that Terraform, Consul, and Nomad consume. Consul provides service discovery used by Nomad and integrated with Vault. Packer builds images that Terraform deploys. This integration creates a complete infrastructure automation platform.
+
+- question: What is Sentinel in HashiCorp tools?
+  answer: Sentinel is a policy-as-code framework embedded in HashiCorp enterprise products. It allows you to define and enforce governance policies for Terraform plans, Vault access, Consul configurations, and Nomad jobs. Policies can enforce rules like requiring specific tags on resources, restricting instance sizes, or mandating encryption. Sentinel uses its own policy language with advisory, soft mandatory, and hard mandatory enforcement levels.

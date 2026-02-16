@@ -1,0 +1,153 @@
+config:
+  name: "DevOps-Interview-Questions: GitOps & ArgoCD"
+  description: Comprehensive coverage of GitOps methodology and tools including ArgoCD, Flux, declarative infrastructure management, sync strategies, application sets, multi-cluster deployments, and progressive delivery with GitOps workflows.
+  questionDelay: 20
+  answerDelay: 5
+
+questions:
+- question: What is GitOps?
+  answer: GitOps is an operational framework that uses Git as the single source of truth for declarative infrastructure and application configuration. Changes to the system are made through Git commits and pull requests, and an automated agent ensures the live system matches the desired state in Git. This approach provides version control, audit trails, and easy rollbacks for infrastructure.
+
+- question: What are the core principles of GitOps?
+  answer: The four core principles of GitOps are that the entire system is described declaratively, the canonical desired system state is versioned in Git, approved changes are applied automatically to the system, and software agents ensure correctness and alert on divergence. These principles enable reproducibility, auditability, and self-healing infrastructure.
+
+- question: What is ArgoCD?
+  answer: ArgoCD is a declarative GitOps continuous delivery tool for Kubernetes. It continuously monitors Git repositories and compares the desired state with the live state in the cluster, automatically or manually syncing differences. ArgoCD provides a web UI, CLI, and API for managing applications, and supports Helm charts, Kustomize, Jsonnet, and plain YAML manifests.
+
+- question: How does ArgoCD work?
+  answer: ArgoCD runs as a set of controllers in your Kubernetes cluster that watch Git repositories for changes. When it detects a difference between the desired state in Git and the live state in the cluster, it marks the application as out of sync. Depending on the sync policy, it either automatically applies the changes or waits for manual approval through the UI or CLI.
+
+- question: What is an ArgoCD Application resource?
+  answer: An ArgoCD Application is a custom Kubernetes resource that defines the source repository, the path within that repository, the target cluster and namespace, and the sync policy. It tells ArgoCD where to find the desired state and where to deploy it. Applications can reference Helm charts, Kustomize overlays, or plain YAML directories.
+
+- question: What is the difference between automatic and manual sync in ArgoCD?
+  answer: Automatic sync configures ArgoCD to apply changes to the cluster as soon as it detects a difference between Git and the live state. Manual sync requires an operator to explicitly trigger the sync through the UI, CLI, or API. Automatic sync is convenient for development environments, while manual sync provides a safety gate for production deployments.
+
+- question: What is self-heal in ArgoCD?
+  answer: Self-heal is an ArgoCD feature that automatically reverts any manual changes made directly to the cluster that diverge from the desired state in Git. If someone modifies a resource using kubectl or another tool, ArgoCD detects the drift and corrects it by reapplying the Git state. This ensures Git remains the single source of truth.
+
+- question: What is auto-prune in ArgoCD?
+  answer: Auto-prune configures ArgoCD to automatically delete resources from the cluster when they are removed from Git. Without auto-prune, removing a resource definition from Git leaves the resource running in the cluster. Enabling auto-prune ensures the cluster state stays exactly in sync with the repository, including resource removal.
+
+- question: What are sync waves in ArgoCD?
+  answer: Sync waves allow you to control the order in which resources are applied during a sync operation. Resources are annotated with a wave number, and ArgoCD applies them in ascending wave order, waiting for each wave to be healthy before proceeding to the next. This is useful for ensuring dependencies like databases are created before the applications that use them.
+
+- question: What are sync hooks in ArgoCD?
+  answer: Sync hooks are resources annotated to run at specific phases of the sync process, similar to Helm hooks. ArgoCD supports PreSync hooks that run before the main sync, Sync hooks that run during the sync, PostSync hooks that run after successful sync, and SyncFail hooks that run when a sync fails. These are commonly used for database migrations and integration tests.
+
+- question: What is an ApplicationSet in ArgoCD?
+  answer: An ApplicationSet is an ArgoCD resource that generates multiple Application resources from a single template using generators. Generators can create applications based on Git directory structure, cluster lists, pull requests, or other dynamic sources. This enables managing deployments across many clusters or environments without manually creating individual Application resources.
+
+- question: What are ApplicationSet generators?
+  answer: ApplicationSet generators produce the parameters used to template multiple Applications. Common generators include the list generator for explicit values, the cluster generator for deploying to all registered clusters, the Git directory generator for creating apps per directory, the Git file generator for reading parameters from files, and the pull request generator for deploying PR previews.
+
+- question: What is the App of Apps pattern in ArgoCD?
+  answer: The App of Apps pattern uses a root ArgoCD Application that manages other Application resources stored in Git. This creates a hierarchy where syncing the root application creates or updates all child applications. It provides a single entry point for bootstrapping an entire platform and makes it easy to add new applications by simply adding their definitions to the repository.
+
+- question: How does ArgoCD handle Helm charts?
+  answer: ArgoCD can deploy Helm charts by specifying the chart repository and chart name in the Application source, or by pointing to a local chart in a Git repository. It renders the Helm templates and manages the resulting manifests using its own sync mechanism rather than Helm's release tracking. Values can be specified inline or referenced from files in the repository.
+
+- question: How does ArgoCD handle Kustomize?
+  answer: ArgoCD natively supports Kustomize and automatically detects it when a kustomization.yaml file is present in the source path. You can specify Kustomize-specific settings like image overrides and name prefix in the Application spec. ArgoCD runs kustomize build and manages the resulting manifests through its standard sync process.
+
+- question: What is Flux CD?
+  answer: Flux is a GitOps toolkit for Kubernetes maintained by the CNCF. It consists of specialized controllers that watch Git repositories, Helm repositories, and OCI registries for changes and reconcile them to the cluster. Flux follows a modular architecture with separate controllers for source management, Kustomize, Helm releases, notifications, and image automation.
+
+- question: How does Flux differ from ArgoCD?
+  answer: Flux takes a more modular, toolkit approach with separate controllers for different functions, while ArgoCD provides an integrated platform with a rich web UI. Flux uses native Kubernetes custom resources exclusively and does not have a built-in UI, relying on the Flux CLI or third-party dashboards. ArgoCD has stronger multi-tenancy support, while Flux excels at Helm-native workflows and image automation.
+
+- question: What is a Flux GitRepository resource?
+  answer: A GitRepository is a Flux custom resource that defines a Git repository as a source of Kubernetes manifests. It specifies the repository URL, branch or tag, sync interval, and authentication credentials. The source controller periodically fetches the repository and produces an artifact that other Flux controllers consume to reconcile the cluster state.
+
+- question: What is a Flux Kustomization resource?
+  answer: A Flux Kustomization resource defines a set of Kubernetes resources to be reconciled from a source. It specifies the source reference, path within the source, reconciliation interval, and optional health checks. Despite its name, it works with plain YAML directories and supports Kustomize overlays. It can also manage dependencies between Kustomizations.
+
+- question: What is a Flux HelmRelease resource?
+  answer: A HelmRelease is a Flux custom resource that declaratively manages a Helm release. It specifies the chart source, version, values, and upgrade/rollback settings. The Helm controller watches HelmRelease resources and performs installations, upgrades, and rollbacks as needed. This integrates Helm into the GitOps workflow while keeping all configuration in Git.
+
+- question: What is image automation in Flux?
+  answer: Flux image automation controllers watch container registries for new image tags and automatically update the Git repository with new image references. The ImageRepository resource defines which registry to watch, ImagePolicy defines the tag selection strategy like semver or alphabetical, and ImageUpdateAutomation commits the changes back to Git, maintaining the GitOps workflow.
+
+- question: What is the pull-based vs push-based deployment model?
+  answer: In a push-based model, the CI/CD pipeline directly applies changes to the cluster after building and testing. In a pull-based model used by GitOps, an agent running inside the cluster pulls the desired state from Git and applies changes. The pull model is more secure because the cluster does not need to expose an API to the CI system and credentials stay within the cluster.
+
+- question: How does GitOps handle secrets?
+  answer: Secrets in GitOps require special handling since they cannot be stored as plaintext in Git. Common solutions include Sealed Secrets which encrypt secrets that can be safely committed, External Secrets Operator which syncs secrets from external stores like Vault or AWS Secrets Manager, and SOPS which encrypts secret values within YAML files using cloud KMS or PGP keys.
+
+- question: What is Sealed Secrets?
+  answer: Sealed Secrets is a Kubernetes controller and CLI tool that encrypts secrets into SealedSecret resources that can be safely stored in Git. Only the controller running in the cluster has the private key to decrypt them. When a SealedSecret is applied, the controller decrypts it and creates a standard Kubernetes Secret. This enables storing encrypted secrets in Git repositories.
+
+- question: What is SOPS and how is it used with GitOps?
+  answer: SOPS, which stands for Secrets OPerationS, is a Mozilla tool that encrypts the values in YAML, JSON, or other files while leaving the keys in plaintext. It supports encryption using AWS KMS, GCP KMS, Azure Key Vault, and PGP keys. In GitOps workflows, SOPS-encrypted files are committed to Git and decrypted during the sync process by ArgoCD or Flux.
+
+- question: How does ArgoCD handle multi-cluster deployments?
+  answer: ArgoCD can manage applications across multiple Kubernetes clusters by registering additional clusters through the CLI or declaratively. Each Application resource specifies its target cluster, and a central ArgoCD instance can manage workloads across all registered clusters. This enables a single pane of glass for deployments across development, staging, production, and multi-cloud environments.
+
+- question: What is ArgoCD Notifications?
+  answer: ArgoCD Notifications is a component that monitors ArgoCD applications and sends notifications based on configurable triggers. It supports integrations with Slack, email, GitHub, Grafana, and webhooks. Common notifications include sync success or failure alerts, health degradation warnings, and new version deployment notifications.
+
+- question: What is the difference between GitOps and traditional CI/CD?
+  answer: Traditional CI/CD uses push-based pipelines that build, test, and deploy directly to environments. GitOps adds a Git-centric control loop where the desired state is declared in Git and an agent continuously reconciles the live state to match. GitOps provides better auditability, easier rollbacks through git revert, drift detection, and clearer separation between CI and CD.
+
+- question: How do you handle rollbacks in GitOps?
+  answer: In GitOps, rolling back is as simple as reverting the Git commit that introduced the change using git revert. The GitOps agent detects the change in Git and syncs the previous state back to the cluster. ArgoCD also provides a rollback feature in its UI that syncs to a previous revision. This approach provides a clear audit trail of what was rolled back and why.
+
+- question: What is drift detection in GitOps?
+  answer: Drift detection is the process of comparing the live state of resources in the cluster with the desired state defined in Git. When differences are found, the system is considered out of sync. ArgoCD continuously performs drift detection and shows the differences in its UI. With self-heal enabled, drift is automatically corrected by reapplying the Git state.
+
+- question: What is a monorepo vs multi-repo approach in GitOps?
+  answer: A monorepo stores all application and infrastructure configurations in a single repository, simplifying cross-cutting changes but potentially creating bottleneck and access control challenges. A multi-repo approach uses separate repositories per application or team, providing better isolation and ownership. Many organizations use a hybrid with separate app repos and a shared infrastructure repo.
+
+- question: How do you structure a GitOps repository?
+  answer: A common structure separates base configurations from environment-specific overlays using Kustomize. The base directory contains default manifests, and overlay directories for dev, staging, and production contain patches and value overrides. Another approach uses separate directories per environment with complete manifests. The structure should make it clear what is deployed where.
+
+- question: What is progressive delivery in the context of GitOps?
+  answer: Progressive delivery extends GitOps with gradual rollout strategies like canary deployments, blue-green deployments, and A/B testing. Tools like Argo Rollouts and Flagger integrate with GitOps workflows to automate progressive delivery by analyzing metrics during rollouts and automatically promoting or rolling back based on success criteria.
+
+- question: What is Argo Rollouts?
+  answer: Argo Rollouts is a Kubernetes controller that provides advanced deployment strategies like canary and blue-green deployments. It extends the standard Kubernetes Deployment with a Rollout resource that supports traffic shifting, metric analysis, and automated promotion or rollback. It integrates with service meshes and ingress controllers for traffic management and with Prometheus for metric analysis.
+
+- question: What is Flagger?
+  answer: Flagger is a progressive delivery tool that automates the promotion of canary deployments using service mesh or ingress controller traffic shifting and Prometheus metrics. It works with Istio, Linkerd, App Mesh, NGINX, and other providers. Flagger gradually increases traffic to the canary while monitoring key metrics and automatically rolls back if thresholds are breached.
+
+- question: How does GitOps handle environment promotion?
+  answer: Environment promotion in GitOps typically involves updating the configuration in the target environment's directory or branch in Git. This can be automated through CI pipelines that open pull requests to promote changes from staging to production. Some teams use a single branch with directory-per-environment, while others use branch-per-environment with merge-based promotion.
+
+- question: What is the role of CI in a GitOps workflow?
+  answer: In GitOps, CI is responsible for building artifacts, running tests, and updating the desired state in the Git repository. The CI pipeline builds container images, pushes them to a registry, and updates the image tags in the GitOps repository. The actual deployment is handled by the GitOps agent. This creates a clean separation between building and deploying.
+
+- question: How do you handle database migrations in GitOps?
+  answer: Database migrations in GitOps are typically handled using sync hooks or init containers. In ArgoCD, a PreSync hook can run a migration job before the application is updated. Alternatively, migration containers can run as Kubernetes Jobs or init containers within the deployment. The migration code and configuration are stored in Git alongside the application manifests.
+
+- question: What is ArgoCD RBAC?
+  answer: ArgoCD provides a built-in role-based access control system that manages user and group permissions for applications, projects, and clusters. Policies are defined using a Casbin-based configuration that maps users or groups to allowed actions. ArgoCD integrates with SSO providers through OIDC and SAML for authentication and maps external groups to internal roles.
+
+- question: What is an ArgoCD Project?
+  answer: An ArgoCD Project is a logical grouping of applications that defines allowed source repositories, destination clusters and namespaces, and permitted resource types. Projects provide multi-tenancy by restricting what each team can deploy and where. The default project has no restrictions, but creating team-specific projects with proper constraints is a security best practice.
+
+- question: How do you bootstrap a GitOps setup?
+  answer: Bootstrapping involves installing the GitOps operator, connecting it to the Git repository, and creating the initial Application or Kustomization resources. ArgoCD can be bootstrapped using the App of Apps pattern where a single root application manages all others. Flux provides a bootstrap command that installs itself and creates the initial source and Kustomization resources automatically.
+
+- question: What are health checks in ArgoCD?
+  answer: ArgoCD performs health assessments on Kubernetes resources to determine if they are healthy, degraded, progressing, or missing. Built-in health checks cover standard resources like Deployments, StatefulSets, and Services. Custom health checks can be defined using Lua scripts for custom resources. The overall application health is derived from the health of all its resources.
+
+- question: What is the resource tracking method in ArgoCD?
+  answer: ArgoCD uses labels or annotations to track which resources belong to which application. The default method adds a label to managed resources. An alternative annotation-based tracking method avoids label limitations and supports resources that cannot have labels modified. The tracking method ensures ArgoCD can detect drift and prune resources that are no longer defined in Git.
+
+- question: How do you handle configuration drift alerts?
+  answer: GitOps tools provide built-in drift detection that identifies when the live state diverges from the desired state in Git. ArgoCD shows out-of-sync status in its UI and can send notifications through ArgoCD Notifications. Flux emits Kubernetes events and supports notification providers for alerts. Teams should set up alerts for persistent drift that indicates unauthorized changes.
+
+- question: What is the difference between ArgoCD Sync and Refresh?
+  answer: Refresh compares the desired state from Git with the live state in the cluster and updates the diff display without making any changes. Sync actually applies the desired state to the cluster to bring it in line with Git. Refresh happens periodically on a configurable interval, while sync is triggered either automatically or manually depending on the sync policy.
+
+- question: How does ArgoCD handle CRDs?
+  answer: ArgoCD can manage Custom Resource Definitions and their instances, but ordering matters since CRDs must exist before custom resources that use them. Sync waves can ensure CRDs are applied first with a lower wave number. Alternatively, CRDs can be managed by a separate Application that syncs before the applications that depend on them.
+
+- question: What is the ArgoCD CLI?
+  answer: The ArgoCD CLI is a command-line tool for interacting with ArgoCD. It supports operations like logging in, creating and syncing applications, managing repositories and clusters, and viewing application status and logs. The CLI is useful for scripting, automation, and quick operations. All CLI operations can also be performed through the web UI or the REST API.
+
+- question: How do you secure a GitOps workflow?
+  answer: Securing GitOps involves protecting the Git repository with branch protection and required reviews, encrypting secrets with Sealed Secrets or SOPS, using RBAC in both Git and the GitOps tool, running the agent with minimal cluster permissions, and auditing all changes through Git history. Network policies should restrict the GitOps agent's access to only necessary endpoints.
+
+- question: What monitoring should you set up for a GitOps deployment?
+  answer: Essential monitoring includes tracking sync status and frequency, detecting persistent out-of-sync states, monitoring application health status changes, alerting on failed syncs, and tracking reconciliation loop performance. Both ArgoCD and Flux expose Prometheus metrics for their controllers. Dashboards should show the current state of all applications across all clusters.

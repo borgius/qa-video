@@ -13,6 +13,7 @@ import { parseYamlFile } from './parser.js';
 import { generateTitle, generateDescription } from './metadata.js';
 import { runAuthFlow, getAuthenticatedClient } from './youtube-auth.js';
 import { uploadToYouTube } from './uploader.js';
+import { getDriver, listDrivers, driverNames } from './importers/index.js';
 
 const require = createRequire(import.meta.url);
 const pkg = require('../package.json');
@@ -21,7 +22,7 @@ const program = new Command();
 
 program
   .name('qa-video')
-  .description('Generate flashcard videos from YAML Q&A files with TTS narration')
+  .description('Generate flashcard videos from YAML Q&A files with TTS narration.\n\nImport flashcards from Anki, Brainscape, RemNote, Knowt, Gizmo, or Mochi,\nthen generate YouTube-ready videos with offline neural TTS narration.')
   .version(pkg.version);
 
 function buildConfig(inputPath: string, opts: any): PipelineConfig {
@@ -344,6 +345,82 @@ program
         categoryId: opts.category,
         tags,
       });
+    } catch (err: any) {
+      console.error(`\nError: ${err.message}`);
+      if (process.env.DEBUG) console.error(err.stack);
+      process.exit(1);
+    }
+  });
+
+// Import from external formats
+program
+  .command('import')
+  .description('Import Q&A from Anki, Brainscape, RemNote, Knowt, Gizmo, or Mochi into YAML')
+  .requiredOption('-i, --input <path>', 'Source file (.apkg, .csv, .md, .tsv, .mochi)')
+  .option('-o, --output <path>', 'Output YAML path (default: qa/<name>.yaml)')
+  .option('--from <driver>', `Source format (${driverNames().join(', ')}); auto-detected from extension if omitted`)
+  .option('--question-delay <seconds>', 'questionDelay in config', '2')
+  .option('--answer-delay <seconds>', 'answerDelay in config', '3')
+  .action(async (opts) => {
+    try {
+      const inputPath = resolve(opts.input);
+      if (!existsSync(inputPath)) {
+        console.error(`Error: Input file not found: ${inputPath}`);
+        process.exit(1);
+      }
+
+      // Resolve driver: explicit --from flag, or infer from file extension
+      let driverName: string | undefined = opts.from;
+      if (!driverName) {
+        const ext = inputPath.slice(inputPath.lastIndexOf('.')).toLowerCase().replace(/^\./, '');
+        driverName = ext;
+      }
+
+      const driver = getDriver(driverName!);
+      if (!driver) {
+        console.error(`Error: Unknown format "${driverName}".`);
+        console.error(`Supported formats: ${driverNames().join(', ')}`);
+        console.error(`\nAvailable drivers:`);
+        for (const d of listDrivers()) {
+          console.error(`  ${d.name} (${d.extensions.join(', ')}) — ${d.description}`);
+        }
+        process.exit(1);
+      }
+
+      console.log(`\n╔══════════════════════════════════╗`);
+      console.log(`║        QA Import                 ║`);
+      console.log(`╚══════════════════════════════════╝`);
+      console.log(`Input:  ${inputPath}`);
+      console.log(`Driver: ${driver.name} — ${driver.description}`);
+
+      const result = await driver.extract(inputPath);
+
+      // Override delays from CLI if provided
+      result.config.questionDelay = parseFloat(opts.questionDelay);
+      result.config.answerDelay = parseFloat(opts.answerDelay);
+
+      // Determine output path
+      const inputName = basename(inputPath).replace(/\.[^.]+$/, '');
+      const outputPath = opts.output
+        ? resolve(opts.output)
+        : join(process.cwd(), 'qa', `${inputName}.yaml`);
+
+      mkdirSync(dirname(outputPath), { recursive: true });
+
+      // Build YAML content
+      const { stringify } = await import('yaml');
+      const yamlContent = stringify(
+        { config: result.config, questions: result.questions },
+        { lineWidth: 120, defaultKeyType: 'PLAIN', defaultStringType: 'PLAIN' },
+      );
+
+      const { writeFileSync } = await import('fs');
+      writeFileSync(outputPath, yamlContent, 'utf-8');
+
+      console.log(`\nExtracted ${result.questions.length} Q&A pairs`);
+      console.log(`Output:  ${outputPath}`);
+      console.log(`\nDone. You can now run:`);
+      console.log(`  qa-video generate -i ${outputPath}`);
     } catch (err: any) {
       console.error(`\nError: ${err.message}`);
       if (process.env.DEBUG) console.error(err.stack);

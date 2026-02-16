@@ -1,0 +1,153 @@
+config:
+  name: "DevOps-Interview-Questions: API Gateways & Load Balancing"
+  description: Comprehensive coverage of API gateways and load balancing including Kong, Traefik, HAProxy, NGINX, AWS ALB, rate limiting, authentication, SSL termination, reverse proxying, and traffic management patterns for modern applications.
+  questionDelay: 20
+  answerDelay: 5
+
+questions:
+- question: What is an API gateway?
+  answer: An API gateway is a server that acts as the single entry point for all client requests to backend services. It handles cross-cutting concerns like authentication, rate limiting, request routing, response transformation, and logging. API gateways decouple clients from the internal service architecture and simplify client communication by providing a unified interface.
+
+- question: What is the difference between an API gateway and a reverse proxy?
+  answer: A reverse proxy forwards requests to backend servers based on routing rules and handles basic concerns like SSL termination and load balancing. An API gateway provides all reverse proxy functionality plus higher-level features like API key management, request transformation, analytics, developer portals, and API versioning. An API gateway is essentially a specialized reverse proxy for API traffic.
+
+- question: What is the difference between an API gateway and a load balancer?
+  answer: A load balancer distributes incoming traffic across multiple backend instances to ensure availability and performance, typically operating at Layer 4 or Layer 7. An API gateway operates exclusively at Layer 7 and adds application-aware features like authentication, rate limiting, and request transformation. Many architectures use both, with a load balancer in front of API gateway instances.
+
+- question: What is Kong?
+  answer: Kong is an open-source, cloud-native API gateway built on top of NGINX and OpenResty. It provides a plugin architecture for extending functionality with features like rate limiting, authentication, logging, and request transformation. Kong supports declarative configuration, a database-backed mode, and a Kubernetes ingress controller. Kong Enterprise adds features like developer portals and analytics.
+
+- question: What is Kong's plugin architecture?
+  answer: Kong uses a plugin system where each plugin intercepts requests and responses at different phases of the request lifecycle. Plugins can handle authentication, rate limiting, transformation, logging, and custom logic. They can be applied globally, per service, per route, or per consumer. Kong supports plugins written in Lua, Go, JavaScript, and Python.
+
+- question: What is Traefik?
+  answer: Traefik is a modern, cloud-native reverse proxy and API gateway designed for microservices. It automatically discovers services from orchestrators like Kubernetes, Docker, and Consul and configures routing dynamically. Traefik provides automatic TLS certificate management through Let's Encrypt, middleware for authentication and rate limiting, and a built-in dashboard for monitoring.
+
+- question: How does Traefik automatic service discovery work?
+  answer: Traefik uses providers to discover services from different platforms. The Kubernetes provider watches for Ingress resources and IngressRoute custom resources. The Docker provider detects containers with specific labels. Traefik automatically creates routes based on the discovered configuration, eliminating the need for manual route management. This makes it ideal for dynamic environments where services change frequently.
+
+- question: What is Traefik middleware?
+  answer: Traefik middleware is a mechanism for modifying requests and responses as they pass through the proxy. Built-in middleware includes authentication like BasicAuth and ForwardAuth, rate limiting, IP whitelist, circuit breaker, retry, and headers manipulation. Middleware can be chained together to create processing pipelines, and in Kubernetes they are configured as custom resources.
+
+- question: What is NGINX?
+  answer: NGINX is a high-performance web server, reverse proxy, and load balancer widely used in DevOps. It handles static content serving, SSL termination, HTTP caching, and request proxying with extremely efficient resource usage. NGINX Plus is the commercial version that adds active health checks, session persistence, dynamic configuration, and a monitoring dashboard.
+
+- question: What is the difference between NGINX and NGINX Plus?
+  answer: NGINX is the open-source version providing core web server, reverse proxy, and basic load balancing capabilities. NGINX Plus is the commercial offering that adds advanced features like active health checks, session persistence, live activity monitoring, dynamic configuration through an API, high availability with zone sync, and commercial support. NGINX Plus also includes the NGINX App Protect WAF.
+
+- question: What is NGINX Ingress Controller?
+  answer: NGINX Ingress Controller is a Kubernetes ingress controller that uses NGINX as the data plane to route external traffic to services inside the cluster. It watches Kubernetes Ingress resources and configures NGINX accordingly. There are two variants, the community version maintained by the Kubernetes project and the NGINX Inc version with additional features from NGINX Plus.
+
+- question: What is HAProxy?
+  answer: HAProxy is a high-performance, open-source load balancer and proxy that supports both TCP and HTTP traffic. It is known for its reliability, efficiency, and advanced load balancing algorithms. HAProxy provides features like health checking, SSL termination, sticky sessions, connection limiting, and detailed statistics. It is widely used for high-traffic websites and API infrastructure.
+
+- question: What load balancing algorithms are commonly used?
+  answer: Common algorithms include round robin which distributes requests sequentially, least connections which sends to the server with fewest active connections, weighted round robin which accounts for different server capacities, IP hash which provides session persistence by hashing the client IP, and random with two choices which balances load with low overhead. The best algorithm depends on the workload characteristics.
+
+- question: What is Layer 4 vs Layer 7 load balancing?
+  answer: Layer 4 load balancing operates at the transport layer, routing traffic based on IP addresses and TCP/UDP ports without inspecting the packet content. Layer 7 load balancing operates at the application layer and can make routing decisions based on HTTP headers, URLs, cookies, and request content. Layer 7 provides more intelligent routing but with slightly higher overhead.
+
+- question: What is SSL/TLS termination?
+  answer: SSL/TLS termination is the process of decrypting encrypted traffic at the load balancer or reverse proxy before forwarding it to backend servers as unencrypted HTTP. This offloads the CPU-intensive encryption work from application servers and centralizes certificate management. For end-to-end encryption, TLS can be re-established between the proxy and backends, known as SSL re-encryption.
+
+- question: What is SSL passthrough?
+  answer: SSL passthrough forwards encrypted traffic directly to backend servers without decrypting it at the load balancer. The backend server handles TLS termination. This is used when the backend must see the original client certificate, when end-to-end encryption is required without re-encryption, or when the load balancer should not have access to the decrypted traffic.
+
+- question: What is rate limiting, and how is it implemented?
+  answer: Rate limiting controls the number of requests a client can make within a time window to protect services from abuse and overload. It can be implemented by API gateways using algorithms like token bucket, sliding window, or fixed window. Rate limits can be applied per client IP, API key, or user identity. Responses typically include rate limit headers so clients know their quota status.
+
+- question: What is the token bucket algorithm?
+  answer: The token bucket algorithm is a rate limiting strategy where tokens are added to a bucket at a fixed rate. Each request consumes one token. When the bucket is empty, requests are rejected or queued. The bucket has a maximum capacity that determines the burst size. This algorithm allows bursts of traffic while enforcing an average rate over time.
+
+- question: What is an API key, and how is it used for authentication?
+  answer: An API key is a unique identifier passed with API requests to authenticate the caller and track usage. API gateways validate keys and apply associated policies like rate limits and access permissions. Keys are typically sent in a header or query parameter. While simple to implement, API keys alone are not sufficient for security sensitive applications and should be combined with stronger authentication methods.
+
+- question: What is OAuth2, and how do API gateways use it?
+  answer: OAuth2 is an authorization framework that enables third-party applications to access resources on behalf of a user without sharing credentials. API gateways often act as the OAuth2 resource server, validating access tokens from an identity provider before forwarding requests to backend services. This centralizes authentication logic and keeps backend services focused on business logic.
+
+- question: What is JWT validation in an API gateway?
+  answer: JWT validation is the process of verifying JSON Web Tokens presented by clients. The API gateway checks the token signature using the issuer's public key, validates claims like expiration time and audience, and can extract user information to forward to backend services. This offloads authentication from backend services and provides a consistent security layer.
+
+- question: What is request transformation in an API gateway?
+  answer: Request transformation modifies incoming requests before forwarding them to backend services. This includes adding or removing headers, changing the request body format, rewriting URL paths, and injecting data from authentication. Transformation allows the gateway to adapt between different client expectations and backend API formats without changing either side.
+
+- question: What is response transformation?
+  answer: Response transformation modifies the backend response before returning it to the client. This includes filtering sensitive fields, reformatting data, adding CORS headers, aggregating responses from multiple backends, and compressing content. Response transformation helps maintain a consistent external API even when internal services have different response formats.
+
+- question: What is API versioning, and how is it handled at the gateway level?
+  answer: API versioning manages multiple versions of an API to maintain backward compatibility while evolving the interface. Common strategies include URL path versioning like /v1/users, header versioning using a custom version header, and query parameter versioning. API gateways route requests to the appropriate backend version based on the version identifier, enabling multiple versions to coexist.
+
+- question: What is a circuit breaker in an API gateway?
+  answer: A circuit breaker in an API gateway monitors backend health and automatically stops forwarding requests to failing services. When errors exceed a threshold, the circuit opens and returns errors immediately without hitting the backend. After a timeout, the circuit enters half-open state and allows test requests through. This prevents cascading failures and gives failing services time to recover.
+
+- question: What is health checking in load balancers?
+  answer: Health checking periodically tests backend server availability by sending probe requests and evaluating responses. Passive health checks monitor real traffic for errors, while active health checks send dedicated probe requests. Unhealthy backends are removed from the rotation until they recover. Configurable parameters include check interval, timeout, healthy and unhealthy thresholds.
+
+- question: What is sticky sessions?
+  answer: Sticky sessions, also called session affinity, route all requests from a given client to the same backend server. This is implemented using cookies, client IP hashing, or custom headers. Sticky sessions are useful for applications that store session state locally but can cause uneven load distribution. Stateless application design eliminates the need for sticky sessions.
+
+- question: What is a Web Application Firewall?
+  answer: A WAF inspects HTTP traffic and blocks malicious requests based on rules that detect attacks like SQL injection, cross-site scripting, and other OWASP Top 10 vulnerabilities. WAFs can be integrated into API gateways or deployed as separate inline components. They use signature-based rules, anomaly detection, and custom rules to protect web applications from attacks.
+
+- question: What is CORS, and how do API gateways handle it?
+  answer: Cross-Origin Resource Sharing is a browser security mechanism that restricts web pages from making requests to a different domain. API gateways handle CORS by adding the appropriate response headers like Access-Control-Allow-Origin and responding to preflight OPTIONS requests. Centralizing CORS configuration at the gateway level avoids duplicating it across every backend service.
+
+- question: What is gRPC proxying?
+  answer: gRPC proxying involves routing gRPC traffic, which uses HTTP/2 and Protocol Buffers, through a reverse proxy or API gateway. NGINX, Envoy, and Traefik support gRPC proxying with features like load balancing, TLS termination, and health checking. gRPC proxying requires HTTP/2 support and proper handling of gRPC-specific headers and trailers.
+
+- question: What is WebSocket proxying?
+  answer: WebSocket proxying handles persistent, bidirectional WebSocket connections through a reverse proxy. The proxy must support the HTTP upgrade mechanism that initiates WebSocket connections and maintain the long-lived connection. NGINX, HAProxy, and Traefik all support WebSocket proxying, though configuration is needed to handle the protocol upgrade and connection timeouts appropriately.
+
+- question: What is Envoy Proxy, and how is it used as an API gateway?
+  answer: Envoy is a high-performance proxy originally developed at Lyft that supports advanced features like dynamic configuration through xDS APIs, circuit breaking, retries, rate limiting, and comprehensive observability. While commonly used as a sidecar proxy in service meshes, Envoy can also serve as an edge API gateway. It is the data plane for Istio and several commercial API gateway products.
+
+- question: What is AWS Application Load Balancer?
+  answer: AWS Application Load Balancer operates at Layer 7 and supports advanced routing based on host headers, URL paths, HTTP methods, and query parameters. It provides features like WebSocket support, HTTP/2, authentication integration with Cognito and OIDC, target groups for flexible backend routing, and integration with WAF. ALB integrates natively with ECS, EKS, and Lambda.
+
+- question: What is AWS API Gateway?
+  answer: AWS API Gateway is a managed service for creating, publishing, and managing REST, HTTP, and WebSocket APIs. It handles authentication, rate limiting, request validation, response transformation, and caching. API Gateway integrates directly with Lambda for serverless backends, and with other AWS services. It supports API keys, usage plans, and custom domain names.
+
+- question: What is the difference between AWS ALB and AWS API Gateway?
+  answer: ALB is a general-purpose Layer 7 load balancer optimized for distributing traffic to backend targets like EC2, ECS, and Lambda. API Gateway is a fully managed API management service with features like request validation, SDK generation, and usage plans. ALB is better for internal microservice routing, while API Gateway excels at exposing public APIs with management and monetization features.
+
+- question: What is Google Cloud Load Balancing?
+  answer: Google Cloud provides several load balancing options including the Global HTTP/S Load Balancer that distributes traffic across regions, the Regional Load Balancer for single-region deployments, and the TCP/UDP Load Balancer for non-HTTP traffic. Google's load balancers leverage their global network backbone, providing low latency and integration with CDN, Cloud Armor WAF, and Certificate Manager.
+
+- question: What is an ingress controller in Kubernetes?
+  answer: An ingress controller is a Kubernetes component that implements the Ingress resource specification by configuring an actual reverse proxy or load balancer. Popular ingress controllers include NGINX, Traefik, HAProxy, Istio, and Kong. They watch for Ingress resource changes and dynamically configure routing rules. The Kubernetes Gateway API is the newer, more expressive replacement for the Ingress specification.
+
+- question: What is the Kubernetes Gateway API?
+  answer: The Kubernetes Gateway API is a collection of resources that model service networking in Kubernetes, designed as the successor to the Ingress resource. It provides more expressive routing with GatewayClass, Gateway, HTTPRoute, and other resources. It supports features like header-based routing, traffic splitting, and cross-namespace references that the original Ingress specification lacked.
+
+- question: What is content-based routing?
+  answer: Content-based routing directs requests to different backend services based on the content of the request, such as URL path, HTTP headers, query parameters, or request body. API gateways and Layer 7 load balancers implement content-based routing. This enables a single entry point to route to multiple microservices based on the request characteristics.
+
+- question: What is connection draining?
+  answer: Connection draining, also called deregistration delay, allows a backend server being removed from a load balancer to finish processing active requests before stopping to receive new ones. This prevents in-flight requests from being abruptly terminated during deployments or scaling events. The drain timeout is configurable and should be set based on typical request duration.
+
+- question: What is request retry in load balancers?
+  answer: Request retry automatically re-sends failed requests to a different backend when the initial attempt fails. Load balancers can retry on connection errors, timeouts, or specific HTTP status codes. Retries improve reliability but must be configured carefully with limits and backoff to avoid amplifying problems. Only idempotent requests should be retried to prevent duplicate side effects.
+
+- question: What is blue-green deployment with load balancers?
+  answer: Blue-green deployment uses a load balancer to switch traffic between two identical environments. The blue environment runs the current version while green runs the new version. After testing green, the load balancer switches all traffic from blue to green. If issues arise, traffic can be switched back instantly. This provides zero-downtime deployments with simple rollback.
+
+- question: What is canary deployment with load balancers?
+  answer: Canary deployment uses load balancer traffic splitting to gradually route a small percentage of traffic to the new version while the majority continues going to the current version. The percentage is incrementally increased while monitoring error rates and latency. If the new version performs well, it eventually receives all traffic. This reduces the risk of deploying problematic changes.
+
+- question: What is geographic load balancing?
+  answer: Geographic load balancing routes users to the nearest data center or region based on their geographic location. This is implemented through DNS-based routing, anycast IP addressing, or global load balancers that use the client's IP to determine the closest backend. Geographic routing reduces latency and can provide compliance with data residency requirements.
+
+- question: What is a reverse proxy cache?
+  answer: A reverse proxy cache stores backend responses and serves them directly for subsequent identical requests without hitting the backend. NGINX, Varnish, and CDNs provide caching capabilities. Cache behavior is controlled by HTTP headers like Cache-Control, Expires, and ETag. Caching dramatically reduces backend load and improves response times for cacheable content.
+
+- question: What are the benefits of centralizing cross-cutting concerns at the API gateway?
+  answer: Centralizing concerns like authentication, rate limiting, logging, and CORS at the gateway level prevents each backend service from implementing them independently. This ensures consistent behavior, reduces code duplication, simplifies service development, and makes security policies easier to audit and update. Services can focus purely on business logic while the gateway handles operational concerns.
+
+- question: What is mTLS termination in load balancers?
+  answer: Mutual TLS termination at the load balancer verifies both the server and client certificates before forwarding the request to backend services. The load balancer extracts client certificate information and can pass it to backends via headers. This centralizes certificate validation and simplifies backend configuration while still providing strong client authentication for service-to-service communication.
+
+- question: How do you monitor API gateway performance?
+  answer: Key metrics include request rate, error rate, latency percentiles, active connections, bandwidth usage, and cache hit ratio. Tools like Prometheus collect gateway metrics, and Grafana visualizes dashboards. Alerting should cover high error rates, increased latency, and approaching rate limits. Most API gateways provide built-in dashboards or integrate with observability platforms for comprehensive monitoring.
+
+- question: What is API throttling?
+  answer: API throttling limits the rate at which clients can call an API to protect backend services from overload. Unlike rate limiting which typically rejects excess requests, throttling may queue requests or apply backpressure. Throttling can be configured per client, per endpoint, or globally. It ensures fair resource allocation among API consumers and maintains service stability during traffic spikes.

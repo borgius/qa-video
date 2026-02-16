@@ -1,4 +1,5 @@
-import { execFileSync } from 'child_process';
+import { execFileSync, execSync } from 'child_process';
+import { accessSync, chmodSync, constants } from 'fs';
 
 function which(bin: string): string | null {
   try {
@@ -50,8 +51,19 @@ export async function ensureDeps(): Promise<void> {
     process.exit(1);
   }
 
+  ensureExecutable(_ffmpegPath);
+  ensureExecutable(_ffprobePath);
+
   process.env.FFMPEG_PATH = _ffmpegPath;
   process.env.FFPROBE_PATH = _ffprobePath;
+}
+
+function ensureExecutable(filePath: string): void {
+  try {
+    accessSync(filePath, constants.X_OK);
+  } catch {
+    chmodSync(filePath, 0o755);
+  }
 }
 
 export function getFfmpegPath(): string {

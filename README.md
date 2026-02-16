@@ -27,27 +27,76 @@ pnpm build
 
 ## Usage
 
-### Single file
+### Generate a video
 
 ```bash
-node dist/index.js generate -i qa/core-concepts.yaml
+# Single file
+qa-video generate -i qa/core-concepts.yaml
+
+# All files in a directory
+qa-video batch -d qa/
 ```
 
-### All files in a directory
+### Import flashcards from other apps
+
+Convert flashcard exports from popular apps into YAML, then generate videos from them.
 
 ```bash
-node dist/index.js batch -d qa/
+qa-video import -i deck.apkg                      # Anki (auto-detect by extension)
+qa-video import -i cards.csv --from brainscape     # Brainscape CSV
+qa-video import -i notes.md --from remnote         # RemNote Markdown
+qa-video import -i flashcards.tsv --from knowt     # Knowt / Quizlet TSV
+qa-video import -i export.csv --from gizmo         # Gizmo CSV
+qa-video import -i deck.mochi                      # Mochi Cards (auto-detect)
+
+# Then generate the video
+qa-video generate -i qa/deck.yaml
+```
+
+#### Supported import formats
+
+| App | `--from` | Aliases | File ext | Format |
+|-----|----------|---------|----------|--------|
+| **Anki / AnkiDroid** | `apkg` | `anki` | `.apkg` | ZIP archive containing SQLite database |
+| **Brainscape** | `brainscape` | `csv` | `.csv` | CSV with question, answer columns (no header) |
+| **RemNote** | `remnote` | `md`, `rem` | `.md` `.rem` | Markdown with `>>` `::` `;;` separators |
+| **Knowt / Quizlet** | `knowt` | `tsv`, `quizlet` | `.tsv` | Tab-separated term + definition |
+| **Gizmo** | `gizmo` | — | `.csv` | CSV with header auto-detection (front/back, question/answer) |
+| **Mochi Cards** | `mochi` | — | `.mochi` | ZIP archive containing EDN or JSON data |
+
+The `--from` flag is optional when the file extension uniquely identifies the format (e.g. `.apkg`, `.mochi`, `.tsv`). For ambiguous extensions like `.csv`, use `--from` to specify the driver.
+
+#### Import options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `-i, --input <path>` | *required* | Path to source file |
+| `-o, --output <path>` | `qa/<name>.yaml` | Output YAML path |
+| `--from <driver>` | *auto-detect* | Source format (see table above) |
+| `--question-delay <sec>` | `2` | questionDelay in output config |
+| `--answer-delay <sec>` | `3` | answerDelay in output config |
+
+### Upload to YouTube
+
+```bash
+# One-time auth setup
+qa-video auth
+
+# Upload
+qa-video upload -i qa/core-concepts.yaml
+qa-video upload -i qa/core-concepts.yaml --privacy public --tags "devops,interview"
+qa-video upload -i qa/core-concepts.yaml --dry-run   # preview without uploading
 ```
 
 ### Clear cached artifacts
 
 ```bash
-node dist/index.js clear              # clear all caches
-node dist/index.js clear -i qa/test.yaml  # clear cache for one file
-node dist/index.js clear -d qa/          # clear caches for all files in dir
+qa-video clear                        # clear all caches
+qa-video clear -i qa/test.yaml        # clear cache for one file
+qa-video clear -d qa/                 # clear caches for all files in dir
 ```
 
-### Options
+### Generate options
 
 | Option | Default | Description |
 |--------|---------|-------------|
@@ -62,6 +111,8 @@ node dist/index.js clear -d qa/          # clear caches for all files in dir
 
 ```yaml
 config:
+  name: "Video Title"
+  description: "Video description for YouTube"
   questionDelay: 2
   answerDelay: 3
 questions:
@@ -90,14 +141,51 @@ Videos are saved to `output/<filename>.mp4`.
 
 ```
 src/
-├── index.ts      # CLI entry point (commander)
-├── types.ts      # Shared types & defaults
-├── parser.ts     # YAML parser
-├── tts.ts        # Kokoro TTS synthesis
-├── renderer.ts   # Slide rendering (@napi-rs/canvas)
-├── assembler.ts  # FFmpeg video assembly
-├── pipeline.ts   # 4-stage orchestration
-└── cache.ts      # SHA-based artifact caching
+├── index.ts           # CLI entry point (commander)
+├── types.ts           # Shared types & defaults
+├── parser.ts          # YAML parser
+├── tts.ts             # Kokoro TTS synthesis
+├── tts-preprocess.ts  # Text preprocessing for TTS
+├── renderer.ts        # Slide rendering (@napi-rs/canvas)
+├── assembler.ts       # FFmpeg video assembly
+├── pipeline.ts        # 4-stage orchestration
+├── cache.ts           # SHA-based artifact caching
+├── metadata.ts        # YouTube metadata generation
+├── youtube-auth.ts    # OAuth2 authentication
+├── uploader.ts        # YouTube upload
+└── importers/         # Flashcard import drivers
+    ├── types.ts       # ImportDriver interface
+    ├── index.ts       # Driver registry
+    ├── apkg.ts        # Anki / AnkiDroid (.apkg)
+    ├── brainscape.ts  # Brainscape (.csv)
+    ├── remnote.ts     # RemNote (.md)
+    ├── knowt.ts       # Knowt / Quizlet (.tsv)
+    ├── gizmo.ts       # Gizmo (.csv)
+    └── mochi.ts       # Mochi Cards (.mochi)
+```
+
+### Adding a new import driver
+
+Create a file in `src/importers/` implementing the `ImportDriver` interface:
+
+```typescript
+import { ImportDriver, ImportResult } from './types.js';
+
+export const myDriver: ImportDriver = {
+  name: 'myapp',
+  extensions: ['.myext'],
+  description: 'MyApp flashcard export',
+  async extract(filePath: string): Promise<ImportResult> {
+    // parse the file and return { config, questions }
+  },
+};
+```
+
+Then register it in `src/importers/index.ts`:
+
+```typescript
+import { myDriver } from './mydriver.js';
+register(myDriver, 'alias1', 'alias2');
 ```
 
 ## Tech Stack
@@ -106,6 +194,7 @@ src/
 - **Canvas:** [@napi-rs/canvas](https://www.npmjs.com/package/@napi-rs/canvas) — Skia-based, zero system deps
 - **Video:** [fluent-ffmpeg](https://www.npmjs.com/package/fluent-ffmpeg) + system FFmpeg
 - **CLI:** [commander](https://www.npmjs.com/package/commander)
+- **Import:** [better-sqlite3](https://www.npmjs.com/package/better-sqlite3) (Anki), [adm-zip](https://www.npmjs.com/package/adm-zip) (Anki/Mochi)
 
 ## License
 

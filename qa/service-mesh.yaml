@@ -1,0 +1,159 @@
+config:
+  name: "DevOps-Interview-Questions: Service Mesh"
+  description: Comprehensive coverage of service mesh technology including Istio, Linkerd, Envoy proxy, sidecar patterns, traffic management, mutual TLS, observability, circuit breaking, canary deployments, and service-to-service communication in microservices.
+  questionDelay: 20
+  answerDelay: 5
+
+questions:
+- question: What is a service mesh?
+  answer: A service mesh is a dedicated infrastructure layer that handles service-to-service communication in a microservices architecture. It provides features like traffic management, security through mutual TLS, and observability without requiring changes to application code. The mesh is typically implemented using lightweight network proxies deployed alongside each service instance.
+
+- question: What problem does a service mesh solve?
+  answer: A service mesh solves the complexity of managing communication between microservices, including service discovery, load balancing, encryption, authentication, retries, and circuit breaking. Without a mesh, each service must implement these capabilities individually, leading to duplicated effort and inconsistent behavior. The mesh extracts this logic into a shared infrastructure layer.
+
+- question: What is the sidecar proxy pattern?
+  answer: The sidecar proxy pattern deploys a proxy container alongside each application container in the same pod. All network traffic to and from the application passes through this proxy, which handles routing, security, and observability transparently. This pattern allows the mesh to manage traffic without any modifications to the application code.
+
+- question: What is the difference between the data plane and control plane in a service mesh?
+  answer: The data plane consists of the sidecar proxies that handle the actual network traffic between services. The control plane manages and configures these proxies, providing service discovery, certificate management, and policy distribution. In Istio, Envoy serves as the data plane and Istiod serves as the control plane.
+
+- question: What is Istio?
+  answer: Istio is the most widely adopted open-source service mesh platform for Kubernetes. It uses Envoy proxies as sidecars to manage traffic between services, providing features like traffic management, security with mutual TLS, and detailed observability. Istio is maintained by Google, IBM, and the broader community under the CNCF.
+
+- question: What is the architecture of Istio?
+  answer: Istio's architecture consists of the data plane made up of Envoy sidecar proxies and the control plane called Istiod. Istiod combines the functionality of the previously separate Pilot, Citadel, and Galley components into a single binary. It handles service discovery, configuration management, certificate issuance, and proxy configuration distribution.
+
+- question: What is Istiod?
+  answer: Istiod is the unified control plane component of Istio that consolidates Pilot, Citadel, and Galley into a single process. Pilot handles traffic management and proxy configuration, Citadel manages certificates for mutual TLS, and Galley validates and distributes configuration. This consolidation simplified Istio's deployment and reduced resource overhead.
+
+- question: What is Envoy proxy?
+  answer: Envoy is a high-performance, open-source edge and service proxy originally developed at Lyft. It serves as the default data plane in Istio and supports advanced features like dynamic service discovery, load balancing, circuit breaking, rate limiting, and detailed L7 observability. Envoy is configured dynamically through APIs rather than static configuration files.
+
+- question: What is a VirtualService in Istio?
+  answer: A VirtualService defines traffic routing rules that control how requests are directed to services within the mesh. It can route traffic based on HTTP headers, URI paths, or other criteria, and supports traffic splitting for canary deployments. VirtualServices work in conjunction with DestinationRules to provide fine-grained control over traffic behavior.
+
+- question: What is a DestinationRule in Istio?
+  answer: A DestinationRule configures policies that are applied to traffic after routing has occurred based on VirtualService rules. It defines subsets of a service based on labels, configures load balancing algorithms, connection pool settings, and outlier detection. DestinationRules are essential for implementing circuit breaking and advanced traffic policies.
+
+- question: What is an Istio Gateway?
+  answer: An Istio Gateway configures a load balancer operating at the edge of the mesh to handle incoming and outgoing HTTP and TCP connections. Unlike Kubernetes Ingress, Istio Gateways provide more granular control over TLS settings and traffic routing. They work with VirtualServices to route external traffic to the appropriate services inside the mesh.
+
+- question: How does mutual TLS work in a service mesh?
+  answer: Mutual TLS, or mTLS, requires both the client and server to present certificates during the TLS handshake, ensuring both parties are authenticated. In Istio, the control plane automatically issues and rotates certificates for all services. The sidecar proxies handle the TLS termination and origination transparently, encrypting all service-to-service communication without code changes.
+
+- question: What is PeerAuthentication in Istio?
+  answer: PeerAuthentication is an Istio resource that configures mutual TLS settings for services. It can be set at the mesh, namespace, or workload level. Modes include STRICT which requires mTLS for all traffic, PERMISSIVE which accepts both plaintext and mTLS for migration scenarios, and DISABLE which turns off mTLS. PERMISSIVE mode is useful during the initial rollout of a service mesh.
+
+- question: What is an AuthorizationPolicy in Istio?
+  answer: AuthorizationPolicy defines access control rules for services in the mesh. It specifies which services or users can access a particular service based on criteria like source identity, HTTP method, path, or headers. Policies can ALLOW, DENY, or use CUSTOM actions for integration with external authorization systems. This provides zero-trust security within the mesh.
+
+- question: How does traffic splitting work in Istio?
+  answer: Traffic splitting in Istio is configured through VirtualService resources that distribute traffic across different versions of a service based on weight percentages. For example, you can send 90 percent of traffic to version one and 10 percent to version two for a canary deployment. The weights must add up to 100, and adjustments can be made gradually.
+
+- question: How do you implement canary deployments with a service mesh?
+  answer: Canary deployments in a service mesh use VirtualService traffic splitting to gradually route a small percentage of traffic to the new version. You start with a small weight like 5 percent, monitor metrics and error rates, and gradually increase the weight if everything looks healthy. The mesh provides observability to compare the performance of both versions side by side.
+
+- question: What is circuit breaking in a service mesh?
+  answer: Circuit breaking prevents cascading failures by limiting the impact of a failing service on the rest of the system. In Istio, it is configured through DestinationRules with connection pool and outlier detection settings. When a service exceeds error thresholds or connection limits, the circuit breaker trips and returns errors immediately rather than overloading the failing service.
+
+- question: What is fault injection in Istio?
+  answer: Fault injection allows you to test the resilience of your application by deliberately introducing failures. Istio supports two types of faults through VirtualService configuration, delays that add latency to requests and aborts that return specific HTTP error codes. This is useful for chaos engineering and verifying that retry logic and circuit breakers work correctly.
+
+- question: What are retry policies in a service mesh?
+  answer: Retry policies automatically retry failed requests based on configurable conditions like connection failures or specific HTTP status codes. In Istio, retries are configured in VirtualServices with settings for the number of attempts, per-try timeout, and retry conditions. Proper retry configuration improves reliability but must include backoff to avoid overwhelming failing services.
+
+- question: What is timeout configuration in a service mesh?
+  answer: Timeout configuration sets the maximum time a service waits for a response before considering the request failed. In Istio, timeouts are set in VirtualServices and can be configured per route. Proper timeouts prevent requests from hanging indefinitely and help maintain overall system responsiveness. They should be set thoughtfully to account for normal latency variation.
+
+- question: What is rate limiting in a service mesh?
+  answer: Rate limiting controls the number of requests a service can receive within a given time period to protect against overload. Istio supports both local rate limiting at the Envoy proxy level and global rate limiting using an external rate limit service. Rate limits can be applied based on source identity, headers, or other request attributes.
+
+- question: What is Linkerd?
+  answer: Linkerd is a lightweight, open-source service mesh for Kubernetes that focuses on simplicity, performance, and low resource overhead. Unlike Istio, Linkerd uses its own purpose-built micro-proxy written in Rust instead of Envoy. It provides automatic mTLS, observability, and reliability features with a simpler operational model and faster startup times.
+
+- question: How does Linkerd compare to Istio?
+  answer: Linkerd is simpler to install and operate, has lower resource consumption, and uses a Rust-based micro-proxy optimized for the service mesh use case. Istio offers more features and flexibility, including advanced traffic management, extensive policy control, and multi-cluster capabilities. Linkerd is often chosen for simplicity while Istio is preferred when advanced features are required.
+
+- question: What is Kiali?
+  answer: Kiali is an observability console for Istio that provides a graphical interface to visualize the service mesh topology, monitor traffic flow, and validate Istio configurations. It shows the relationships between services, traffic metrics, error rates, and latency. Kiali integrates with Prometheus for metrics and Jaeger for distributed tracing.
+
+- question: How does a service mesh provide observability?
+  answer: The sidecar proxies in a service mesh automatically generate detailed telemetry for all traffic including request rates, error rates, and latency distributions. This data is collected without any application instrumentation. The mesh also supports distributed tracing by propagating trace headers and integrates with tools like Prometheus, Grafana, Jaeger, and Zipkin.
+
+- question: What is an ingress gateway in a service mesh?
+  answer: An ingress gateway is a dedicated proxy at the edge of the mesh that handles incoming traffic from outside the cluster. It acts as the entry point for external requests and applies mesh policies like TLS termination, authentication, and routing rules. In Istio, the ingress gateway is a standalone Envoy deployment configured through Gateway and VirtualService resources.
+
+- question: What is an egress gateway in a service mesh?
+  answer: An egress gateway controls and monitors traffic leaving the mesh to external services. It provides a single exit point for outbound traffic, enabling centralized policy enforcement, logging, and security scanning. Egress gateways are important for organizations that need to audit or restrict external network access from within the mesh.
+
+- question: What is a ServiceEntry in Istio?
+  answer: A ServiceEntry adds external services to Istio's internal service registry, allowing mesh features like traffic management, monitoring, and security policies to apply to traffic destined for services outside the mesh. Without a ServiceEntry, external traffic bypasses mesh controls. This is useful for managing access to external APIs, databases, or third-party services.
+
+- question: How does service discovery work in a service mesh?
+  answer: The service mesh control plane integrates with the underlying platform's service discovery mechanism, such as Kubernetes DNS and service endpoints. It maintains an up-to-date registry of all services and their instances, distributing this information to the sidecar proxies. The proxies use this information to route traffic to healthy instances with appropriate load balancing.
+
+- question: What load balancing algorithms does a service mesh support?
+  answer: Service meshes typically support multiple load balancing algorithms including round robin, least connections, random, and consistent hashing for session affinity. In Istio, load balancing is configured through DestinationRules. The proxies can also perform health-based load balancing by routing traffic away from unhealthy instances detected through outlier detection.
+
+- question: What is outlier detection in a service mesh?
+  answer: Outlier detection identifies and temporarily removes unhealthy service instances from the load balancing pool based on observed error rates. In Istio, it is configured in DestinationRules with settings for consecutive errors, interval, base ejection time, and maximum ejection percentage. This prevents requests from being sent to failing instances while giving them time to recover.
+
+- question: What is a multi-cluster service mesh?
+  answer: A multi-cluster service mesh extends mesh capabilities across multiple Kubernetes clusters, enabling cross-cluster service discovery, traffic management, and security. Istio supports multi-cluster configurations through shared control planes or replicated control planes. This is useful for disaster recovery, geographic distribution, and hybrid cloud deployments.
+
+- question: What is Consul Connect?
+  answer: Consul Connect is HashiCorp's service mesh solution built into Consul. It provides service-to-service networking with automatic TLS encryption and identity-based authorization. Unlike Istio, Consul works across multiple platforms including Kubernetes, virtual machines, and bare metal, making it suitable for heterogeneous environments with both containerized and legacy workloads.
+
+- question: What is AWS App Mesh?
+  answer: AWS App Mesh is a managed service mesh offering from Amazon that uses Envoy as its data plane proxy. It integrates with AWS services like ECS, EKS, and EC2, providing traffic management, observability through CloudWatch and X-Ray, and encrypted communication. Being a managed service, it reduces the operational burden of running a service mesh.
+
+- question: When should you NOT use a service mesh?
+  answer: A service mesh may be unnecessary for small deployments with few services, monolithic applications, or environments where the added complexity and resource overhead outweigh the benefits. The sidecar proxies add latency and consume CPU and memory. Teams should consider whether simpler alternatives like client-side libraries or basic Kubernetes features can meet their needs first.
+
+- question: What is the performance overhead of a service mesh?
+  answer: A service mesh adds latency due to the extra network hops through sidecar proxies, typically in the range of one to five milliseconds per hop. It also consumes additional CPU and memory for each proxy instance. Linkerd's Rust-based proxy has lower overhead than Envoy. Teams should benchmark the overhead in their specific environment and optimize proxy resource allocations.
+
+- question: How does a service mesh differ from an API gateway?
+  answer: An API gateway operates at the edge of a network handling north-south traffic from external clients to internal services, providing features like authentication, rate limiting, and API versioning. A service mesh manages east-west traffic between internal services. While their features overlap, they serve different purposes and are often used together in a complete architecture.
+
+- question: What is traffic mirroring in a service mesh?
+  answer: Traffic mirroring, also called shadowing, copies live production traffic to a test service without affecting the primary request flow. The mirrored traffic receives the same requests as production but responses are discarded. In Istio, mirroring is configured in VirtualServices and is useful for testing new service versions with real traffic patterns before routing actual users to them.
+
+- question: What is a request timeout vs a retry in a service mesh?
+  answer: A timeout defines the maximum duration to wait for a response before giving up, while a retry automatically re-sends a failed request. Timeouts prevent requests from blocking indefinitely, and retries increase reliability for transient failures. They work together but must be configured carefully, as retries without proper timeouts can amplify failures.
+
+- question: How do you gradually migrate to a service mesh?
+  answer: Migration typically starts by installing the mesh in permissive mode, which allows both plaintext and mTLS traffic. You then inject sidecar proxies namespace by namespace, monitor for issues at each step, and gradually enable strict mTLS once all services have proxies. This phased approach minimizes disruption and allows teams to learn the mesh incrementally.
+
+- question: What is the Envoy filter chain?
+  answer: The Envoy filter chain is the sequence of processing stages that a request passes through within the Envoy proxy. It includes listener filters, network filters, and HTTP filters that handle tasks like TLS termination, routing, rate limiting, and observability. Filters are extensible, and custom filters can be added using WebAssembly or Lua scripting.
+
+- question: What is WebAssembly in the context of service mesh?
+  answer: WebAssembly, or Wasm, allows extending Envoy proxy functionality with custom plugins written in languages like C++, Rust, or Go. Wasm plugins run in a sandboxed environment within the proxy, enabling custom authentication, transformation, or logging logic without modifying Envoy itself. Istio supports Wasm extensions through the WasmPlugin resource.
+
+- question: What are Envoy clusters and listeners?
+  answer: In Envoy, a listener is a named network address that accepts incoming connections, while a cluster is a group of upstream service endpoints that Envoy routes traffic to. Listeners define how traffic enters the proxy, including TLS settings and filter chains. Clusters define where traffic is sent, including load balancing policies and health check configuration.
+
+- question: How does a service mesh handle gRPC traffic?
+  answer: Service meshes handle gRPC natively since gRPC uses HTTP/2 as its transport protocol. Envoy and other mesh proxies can perform gRPC-aware load balancing, routing, and observability. This is important because standard TCP-level load balancing does not work well with HTTP/2 multiplexing, and the mesh provides per-request load balancing for gRPC connections.
+
+- question: What is locality-aware routing in a service mesh?
+  answer: Locality-aware routing preferentially sends traffic to service instances in the same zone or region to minimize latency and cross-zone data transfer costs. In Istio, this is configured through DestinationRules and uses Kubernetes node labels for zone and region information. Traffic spills over to other zones only when local capacity is insufficient.
+
+- question: What is a sidecar resource in Istio?
+  answer: The Sidecar resource in Istio configures the scope of the sidecar proxy's traffic interception and the set of services it can reach. By default, proxies are configured to reach every service in the mesh, which can be resource intensive. The Sidecar resource limits this scope to reduce proxy memory usage and configuration size, improving performance in large meshes.
+
+- question: How do you monitor the health of a service mesh?
+  answer: Monitoring a service mesh involves tracking proxy metrics like connection counts, request rates, and error percentages, as well as control plane metrics like configuration sync latency and certificate rotation status. Tools like Prometheus collect proxy metrics, Grafana visualizes dashboards, and Kiali provides topology views. Alerting should cover both data plane and control plane health.
+
+- question: What is the difference between mTLS STRICT and PERMISSIVE modes in Istio?
+  answer: STRICT mode requires all incoming traffic to use mutual TLS, rejecting any plaintext connections. PERMISSIVE mode accepts both mTLS and plaintext traffic, which is useful during migration when not all services have sidecar proxies yet. Starting with PERMISSIVE mode and gradually switching to STRICT is the recommended approach for adopting mTLS across a mesh.
+
+- question: What are request headers and how does a service mesh use them?
+  answer: Service meshes use HTTP headers for routing decisions, authentication, and tracing. Istio can route traffic based on headers like user-agent or custom headers for A/B testing. The mesh automatically injects headers for distributed tracing and identity propagation. Applications must forward tracing headers like x-request-id and x-b3-traceid for end-to-end trace correlation.
+
+- question: What is the ambient mesh mode in Istio?
+  answer: Ambient mesh is a newer Istio deployment model that eliminates sidecar proxies in favor of a shared per-node proxy called ztunnel for Layer 4 features and optional per-namespace waypoint proxies for Layer 7 features. This reduces resource overhead and simplifies operations by not requiring sidecar injection. It provides the same security and observability benefits with lower per-pod costs.
+
+- question: How does a service mesh integrate with external authorization?
+  answer: Service meshes can integrate with external authorization services through the CUSTOM action in AuthorizationPolicies. Envoy sends authorization requests to an external service that returns allow or deny decisions. This enables integration with systems like Open Policy Agent, OAuth2 providers, or custom authorization services for fine-grained access control beyond what the mesh provides natively.

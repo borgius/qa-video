@@ -1,0 +1,189 @@
+config:
+  name: "DevOps-Interview-Questions: Git & Version Control"
+  description: Comprehensive coverage of Git version control including core commands, branching strategies, GitFlow, trunk-based development, rebasing, cherry-picking, hooks, submodules, monorepo vs polyrepo, conflict resolution, and advanced Git workflows.
+  questionDelay: 20
+  answerDelay: 5
+
+questions:
+- question: What is Git, and why is it widely used in DevOps?
+  answer: Git is a distributed version control system that tracks changes in source code during software development. It is widely used in DevOps because it enables collaboration among developers, supports branching and merging workflows, and integrates seamlessly with CI/CD pipelines. Every developer has a full copy of the repository, which makes it resilient and fast.
+
+- question: What is the difference between git fetch and git pull?
+  answer: Git fetch downloads new data from a remote repository but does not integrate it into your working branch. Git pull, on the other hand, performs a fetch followed by a merge, automatically integrating the remote changes into your current branch. Using fetch is safer when you want to inspect changes before merging them.
+
+- question: What is the difference between git merge and git rebase?
+  answer: Git merge creates a new merge commit that combines two branches, preserving the full history of both branches. Git rebase replays your commits on top of another branch, creating a linear history without merge commits. Rebase produces a cleaner history but should generally be avoided on shared branches since it rewrites commit history.
+
+- question: What is a Git branch, and why are branches important?
+  answer: A Git branch is a lightweight movable pointer to a specific commit, allowing you to diverge from the main line of development. Branches are important because they let developers work on features, fixes, and experiments in isolation without affecting the main codebase. Once work is complete, branches can be merged back into the main branch.
+
+- question: Explain the GitFlow branching strategy.
+  answer: GitFlow is a branching model that uses long-lived branches like main and develop, along with short-lived feature, release, and hotfix branches. Feature branches are created from develop, and when complete they merge back into develop. Release branches are cut from develop for final testing, and hotfix branches are created from main for urgent production fixes. This model works well for projects with scheduled releases.
+
+- question: What is trunk-based development?
+  answer: Trunk-based development is a branching strategy where all developers commit to a single main branch, often called trunk or main, with very short-lived feature branches. Developers integrate their changes frequently, typically at least once a day, to avoid long-lived branches and merge conflicts. This approach encourages continuous integration and is commonly used by high-performing DevOps teams.
+
+- question: What is GitHub Flow?
+  answer: GitHub Flow is a simplified branching model where there is a single main branch that is always deployable. Developers create feature branches from main, make their changes, open a pull request for review, and merge back into main after approval. It is simpler than GitFlow and well suited for projects that deploy continuously.
+
+- question: What is an interactive rebase in Git?
+  answer: An interactive rebase allows you to modify, reorder, squash, or drop commits before applying them to a new base. You invoke it with git rebase -i followed by a reference to the commit range you want to edit. This is useful for cleaning up commit history before merging a feature branch, such as squashing several small commits into a single meaningful commit.
+
+- question: What is git cherry-pick?
+  answer: Git cherry-pick applies the changes from a specific commit onto your current branch without merging the entire source branch. It creates a new commit with the same changes but a different commit hash. This is useful when you need to port a specific bug fix from one branch to another without bringing along unrelated changes.
+
+- question: What are Git hooks?
+  answer: Git hooks are scripts that Git executes automatically before or after events such as commit, push, or merge. They are stored in the .git/hooks directory and can be used to enforce coding standards, run linters, validate commit messages, or trigger automated tests. Common hooks include pre-commit, commit-msg, pre-push, and post-merge.
+
+- question: What is a pre-commit hook, and how is it commonly used?
+  answer: A pre-commit hook is a script that runs before a commit is finalized, and it can prevent the commit if the script exits with a non-zero status. It is commonly used to run linters, formatters, or static analysis tools to ensure code quality before changes are committed. Tools like Husky and pre-commit framework make it easy to manage these hooks across a team.
+
+- question: What is git stash?
+  answer: Git stash temporarily saves uncommitted changes in a stack so you can switch branches or work on something else without committing incomplete work. You can later restore stashed changes with git stash pop or git stash apply. Stash supports multiple entries, and you can list them with git stash list or apply a specific one by its index.
+
+- question: What is git bisect, and when would you use it?
+  answer: Git bisect is a binary search tool that helps you find the commit that introduced a bug. You mark a known good commit and a known bad commit, and Git checks out the midpoint for you to test. By repeatedly marking commits as good or bad, you can efficiently narrow down the problematic commit in logarithmic time. It can also be automated with a test script.
+
+- question: What are Git submodules?
+  answer: Git submodules allow you to include one Git repository as a subdirectory of another repository. Each submodule points to a specific commit in the external repository, and changes to the submodule must be committed separately. Submodules are useful for managing shared libraries or dependencies, but they can be complex to work with and require extra steps when cloning or updating.
+
+- question: What are Git subtrees, and how do they differ from submodules?
+  answer: Git subtrees merge the contents of an external repository directly into a subdirectory of your repository, making the files part of your main repo's history. Unlike submodules, subtrees do not require special commands when cloning, and the external code is directly available. However, pushing changes back upstream is more complex with subtrees than with submodules.
+
+- question: What is a monorepo, and what are its advantages?
+  answer: A monorepo is a version control strategy where multiple projects or services are stored in a single repository. Advantages include easier code sharing, atomic cross-project changes, unified CI/CD pipelines, and simplified dependency management. Companies like Google, Meta, and Microsoft use monorepos at massive scale with specialized tooling like Bazel or Nx.
+
+- question: What is a polyrepo strategy?
+  answer: A polyrepo strategy uses separate repositories for each project or microservice. This provides clear ownership boundaries, independent release cycles, and smaller repository sizes. However, it can make cross-project changes harder and requires additional tooling for dependency management and coordinated releases.
+
+- question: How do you resolve merge conflicts in Git?
+  answer: When a merge conflict occurs, Git marks the conflicting sections in the affected files with conflict markers. You manually edit the file to choose the correct changes, remove the conflict markers, and then stage the resolved file with git add. Finally, you complete the merge with git commit. Tools like VS Code, IntelliJ, or dedicated merge tools can help visualize and resolve conflicts.
+
+- question: What is git reflog?
+  answer: Git reflog records every change to the tip of branches and other references in your local repository, even changes that are not part of the commit graph. It acts as a safety net because you can recover lost commits, undo accidental resets, or find commits that were removed by rebase. Reflog entries expire after 90 days by default.
+
+- question: What are Git tags, and what is the difference between lightweight and annotated tags?
+  answer: Git tags are references that point to specific commits, typically used to mark release points like v1.0.0. Lightweight tags are simply pointers to a commit with no additional metadata. Annotated tags are full Git objects that store the tagger name, email, date, and a message, and they can be GPG-signed. Annotated tags are recommended for releases.
+
+- question: What is semantic versioning, and how does it relate to Git tags?
+  answer: Semantic versioning uses a three-part version number in the format MAJOR.MINOR.PATCH. The major version increments for breaking changes, minor for backward-compatible features, and patch for backward-compatible fixes. Git tags are commonly used to mark these version points in the repository history, enabling automated release workflows.
+
+- question: What is a .gitignore file?
+  answer: A .gitignore file specifies patterns for files and directories that Git should not track. Common entries include build artifacts, dependency directories like node_modules, environment files with secrets, and IDE configuration files. Patterns support wildcards and negation, and you can have .gitignore files at multiple levels in a repository.
+
+- question: What is Git LFS?
+  answer: Git Large File Storage is an extension that replaces large files with text pointers in Git while storing the actual file content on a remote server. It is designed for binary files like images, videos, datasets, and compiled assets that would otherwise bloat the repository. LFS uses the same push and pull workflow but tracks specified file types separately.
+
+- question: What is a shallow clone in Git?
+  answer: A shallow clone downloads only a limited number of commits from a repository's history, rather than the entire history. You create one with git clone --depth followed by a number. This is useful in CI/CD pipelines where you only need the latest code and want to reduce clone time and disk usage.
+
+- question: What is sparse checkout in Git?
+  answer: Sparse checkout allows you to check out only a subset of files from a repository, which is useful for large monorepos where you only need certain directories. You configure it with git sparse-checkout set followed by the paths you want. This reduces the working directory size and speeds up operations on large repositories.
+
+- question: What is git blame?
+  answer: Git blame shows the last commit that modified each line of a file, along with the author and timestamp. It is useful for understanding when and why a particular line of code was changed. You can use the -L flag to limit blame to specific line ranges, and the -w flag to ignore whitespace changes.
+
+- question: What is git log, and what useful flags does it support?
+  answer: Git log displays the commit history of a repository. Useful flags include --oneline for a compact view, --graph for a visual branch topology, --author to filter by author, --since and --until for date ranges, and --grep to search commit messages. The -p flag shows the actual diff for each commit.
+
+- question: What are signed commits in Git?
+  answer: Signed commits use GPG or SSH keys to cryptographically verify that a commit was made by the claimed author. You enable signing with git commit -S, and others can verify signatures with git log --show-signature. Many organizations require signed commits for compliance and to prevent commit impersonation.
+
+- question: What is git worktree?
+  answer: Git worktree allows you to have multiple working directories attached to the same repository simultaneously. Each worktree checks out a different branch, so you can work on a hotfix while keeping your feature branch untouched in another directory. This eliminates the need to stash or commit incomplete work when switching contexts.
+
+- question: What are branch protection rules?
+  answer: Branch protection rules are settings on platforms like GitHub, GitLab, or Bitbucket that restrict what actions can be performed on specific branches. Common rules include requiring pull request reviews before merging, requiring status checks to pass, preventing force pushes, and requiring signed commits. These rules help maintain code quality and prevent accidental changes to important branches.
+
+- question: What is a pull request, and why is it important?
+  answer: A pull request is a mechanism for proposing changes from one branch to another, enabling code review before merging. It is important because it facilitates team collaboration, catches bugs early, ensures code quality through peer review, and creates a documented history of why changes were made. Pull requests often integrate with CI/CD to run automated checks.
+
+- question: What is the difference between git reset, git revert, and git checkout?
+  answer: Git reset moves the branch pointer backward and can modify the staging area and working directory depending on the mode, soft, mixed, or hard. Git revert creates a new commit that undoes the changes from a previous commit without rewriting history. Git checkout switches branches or restores files from a specific commit without modifying branch history.
+
+- question: What are the three modes of git reset?
+  answer: Git reset --soft moves the branch pointer but keeps changes staged and in the working directory. Git reset --mixed, which is the default, moves the pointer and unstages changes but keeps them in the working directory. Git reset --hard moves the pointer and discards all changes from both the staging area and working directory, which can cause data loss.
+
+- question: What is a fast-forward merge in Git?
+  answer: A fast-forward merge occurs when the target branch has not diverged from the source branch, so Git simply moves the branch pointer forward without creating a merge commit. This results in a linear history. You can enforce merge commits even when fast-forward is possible using git merge --no-ff, which is common in GitFlow workflows.
+
+- question: What is a Git conflict marker, and what does it look like?
+  answer: When Git cannot automatically merge changes, it inserts conflict markers in the affected file. The markers include angle brackets showing HEAD for your current changes and the branch name for incoming changes, separated by equals signs. You must manually resolve the conflict by editing the file, removing the markers, and choosing the correct content.
+
+- question: How do you undo the last commit without losing changes?
+  answer: You can use git reset --soft HEAD~1 to undo the last commit while keeping all changes staged, or git reset --mixed HEAD~1 to undo the commit and unstage the changes while keeping them in the working directory. This is useful when you committed too early or need to modify the changes before committing again.
+
+- question: What is git commit --amend?
+  answer: The amend flag allows you to modify the most recent commit by adding new staged changes or editing the commit message. It replaces the previous commit with a new one, which means the commit hash changes. You should avoid amending commits that have already been pushed to a shared branch because it rewrites history.
+
+- question: What is a detached HEAD state in Git?
+  answer: A detached HEAD occurs when you check out a specific commit instead of a branch, meaning HEAD points directly to a commit rather than a branch reference. Any new commits made in this state are not associated with any branch and can be lost when you switch branches. To keep your work, you should create a new branch from the detached HEAD.
+
+- question: What is git clean?
+  answer: Git clean removes untracked files from the working directory. The -n flag performs a dry run to show what would be deleted, the -f flag forces the deletion, and -d includes untracked directories. This is useful for cleaning up build artifacts or generated files that are not tracked by Git.
+
+- question: What is the difference between git diff and git diff --staged?
+  answer: Git diff shows the differences between the working directory and the staging area, meaning changes you have made but not yet staged. Git diff --staged, also called --cached, shows the differences between the staging area and the last commit, meaning changes that are staged and ready to be committed.
+
+- question: What is a Git remote?
+  answer: A Git remote is a reference to a copy of the repository hosted on a server or another location. The default remote is typically called origin. You can add multiple remotes for different purposes, such as upstream for the original repository in a fork workflow. Remotes are managed with commands like git remote add, git remote remove, and git remote -v.
+
+- question: What is a fork in Git workflows?
+  answer: A fork is a personal copy of someone else's repository on a platform like GitHub. You make changes in your fork and submit a pull request to the original repository. This workflow is common in open-source development because it allows contributions without granting write access to the main repository.
+
+- question: What is git rebase --onto, and when is it useful?
+  answer: Git rebase --onto allows you to rebase a range of commits onto a different base, which is more flexible than a standard rebase. It is useful when you need to move a feature branch that was based on another feature branch onto main instead. The syntax is git rebase --onto newbase oldbase branch.
+
+- question: How do you squash commits in Git?
+  answer: You can squash commits using interactive rebase with git rebase -i, marking commits as squash or fixup to combine them into a single commit. Another approach is using git merge --squash, which combines all commits from a branch into a single commit on the target branch. Squashing helps keep the main branch history clean and readable.
+
+- question: What is git archive?
+  answer: Git archive creates a tar or zip archive of files from a specific commit or branch without including Git metadata. This is useful for creating release packages or distributing source code without the .git directory. You can specify the format and output file with flags like --format and --output.
+
+- question: What is the purpose of the HEAD pointer in Git?
+  answer: HEAD is a special pointer that refers to the current commit in your working directory, usually pointing to the tip of the current branch. When you make a new commit, HEAD moves forward to point to it. HEAD~1 refers to the parent commit, HEAD~2 to the grandparent, and so on, which is useful for referencing recent commits.
+
+- question: What is git grep, and how does it differ from regular grep?
+  answer: Git grep searches for patterns in tracked files within a Git repository and is faster than regular grep because it only searches files known to Git. It respects .gitignore and can search specific commits or branches. This makes it useful for finding code patterns without matching untracked or generated files.
+
+- question: What is a commit message convention, and why is it important?
+  answer: A commit message convention is a standardized format for writing commit messages, such as Conventional Commits which uses prefixes like feat, fix, chore, and docs. Consistent conventions make the history easier to read, enable automated changelog generation, and help tools determine semantic version bumps. Teams often enforce conventions with commit-msg hooks.
+
+- question: What is Conventional Commits?
+  answer: Conventional Commits is a specification for writing structured commit messages using a type, optional scope, and description, such as feat(auth) add OAuth2 login. It facilitates automated versioning and changelog generation. Common types include feat for features, fix for bug fixes, docs for documentation, and chore for maintenance tasks.
+
+- question: What is git config, and what are its three levels?
+  answer: Git config manages Git settings at three levels. System level applies to all users on the machine, global level applies to all repositories for the current user, and local level applies to a specific repository. Local settings override global, which override system. Common settings include user.name, user.email, and core.editor.
+
+- question: How does Git store data internally?
+  answer: Git stores data as a content-addressable filesystem using four types of objects, blobs for file content, trees for directory structure, commits for snapshots with metadata, and tags for annotated references. Each object is identified by a SHA-1 hash of its content. This design enables efficient storage through deduplication and makes Git's integrity verification robust.
+
+- question: What is the Git staging area?
+  answer: The staging area, also called the index, is an intermediate zone between the working directory and the repository. When you run git add, changes move from the working directory to the staging area. The staging area lets you selectively choose which changes to include in the next commit, giving you fine-grained control over your commits.
+
+- question: What is git patch, and how do you create and apply patches?
+  answer: Git format-patch creates patch files from commits that can be shared and applied to other repositories. You generate patches with git format-patch and apply them with git am or git apply. Patches are useful for sharing changes via email or when direct push access is not available, which was the original Linux kernel development workflow.
+
+- question: What is git rerere?
+  answer: Git rerere stands for reuse recorded resolution and automatically remembers how you resolved merge conflicts. When the same conflict appears again, Git applies the previously recorded resolution automatically. This is especially useful during long-running rebases or when you frequently merge the same branches.
+
+- question: How do you recover a deleted branch in Git?
+  answer: You can recover a deleted branch using git reflog to find the last commit of the deleted branch, then create a new branch pointing to that commit with git branch branch-name commit-hash. Reflog entries are kept for 90 days by default, so recovery is possible as long as the reflog has not expired.
+
+- question: What is git revert, and when should you use it instead of reset?
+  answer: Git revert creates a new commit that undoes the changes introduced by a specified previous commit. You should use revert instead of reset when working on shared branches because revert does not rewrite history. It is the safe way to undo changes that have already been pushed, while reset is appropriate for local-only changes.
+
+- question: What is the difference between origin and upstream in Git?
+  answer: Origin is the default name for your primary remote repository, typically the one you cloned from or your fork. Upstream usually refers to the original repository that you forked from. In a fork workflow, you pull updates from upstream and push your changes to origin before submitting pull requests.
+
+- question: What is a Git alias, and how do you create one?
+  answer: A Git alias is a custom shortcut for Git commands configured through git config. For example, git config --global alias.co checkout creates a shortcut so git co works like git checkout. Aliases can also reference complex commands with multiple flags or even shell commands, making frequently used operations faster.
+
+- question: What is the purpose of .gitattributes?
+  answer: The .gitattributes file controls how Git handles specific file types, including line ending normalization, diff behavior, and merge strategies. It can mark files as binary, configure Git LFS tracking, and ensure consistent line endings across different operating systems. This file is committed to the repository so all developers share the same settings.
+
+- question: What is git fsck?
+  answer: Git fsck, which stands for file system check, verifies the integrity of objects in the Git database and identifies any corruption or dangling objects. It checks connectivity and validity of all objects in the repository. This command is useful for diagnosing repository issues and finding unreachable commits or orphaned blobs.
+
+- question: What is the difference between git clone and git fork?
+  answer: Git clone is a Git command that creates a local copy of a repository on your machine. Fork is a platform feature on GitHub, GitLab, or Bitbucket that creates a server-side copy of a repository under your account. You typically fork a repository first and then clone your fork locally to start working on it.

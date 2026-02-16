@@ -1,0 +1,138 @@
+config:
+  name: "DevOps-Interview-Questions: Container Security"
+  description: Comprehensive coverage of container security including image scanning with Trivy and Snyk, Kubernetes security, pod security standards, network policies, runtime security, supply chain security, secrets management, and security best practices for containerized environments.
+  questionDelay: 20
+  answerDelay: 5
+
+questions:
+- question: What is container security, and why is it important?
+  answer: Container security encompasses the practices and tools used to protect containerized applications throughout their lifecycle, from image building to runtime. It is important because containers share the host kernel, making a compromised container a potential threat to other containers and the host. Container security covers image scanning, runtime protection, network policies, and access control.
+
+- question: What is container image scanning?
+  answer: Container image scanning analyzes container images for known vulnerabilities in operating system packages and application dependencies. Scanners compare image contents against vulnerability databases like the National Vulnerability Database. Scanning should occur in CI/CD pipelines to catch issues before deployment and in registries to detect newly discovered vulnerabilities in deployed images.
+
+- question: What is Trivy?
+  answer: Trivy is an open-source, comprehensive security scanner developed by Aqua Security that scans container images, filesystems, Git repositories, and Kubernetes clusters. It detects vulnerabilities in OS packages and application dependencies, misconfigurations in IaC files, exposed secrets, and generates SBOMs. Trivy is known for its speed, ease of use, and zero-configuration setup.
+
+- question: What is Snyk Container?
+  answer: Snyk Container is a commercial security tool that scans container images for vulnerabilities and provides remediation advice. It monitors images continuously and alerts when new vulnerabilities are discovered. Snyk integrates with CI/CD pipelines, container registries, and Kubernetes. Its differentiating feature is actionable fix advice, such as suggesting base image upgrades that resolve the most vulnerabilities.
+
+- question: What is Clair?
+  answer: Clair is an open-source vulnerability scanner for container images originally developed by CoreOS. It performs static analysis of images by extracting the installed packages and comparing them against known vulnerability databases. Clair integrates with container registries like Harbor and Quay to automatically scan images as they are pushed.
+
+- question: What is Grype?
+  answer: Grype is an open-source vulnerability scanner for container images and filesystems developed by Anchore. It scans for vulnerabilities in OS packages, language-specific dependencies, and provides detailed vulnerability reports. Grype works well with Syft, another Anchore tool that generates SBOMs. Together, they provide comprehensive vulnerability analysis and software composition tracking.
+
+- question: What is the principle of least privilege in container security?
+  answer: The principle of least privilege means giving containers only the minimum permissions and capabilities needed to function. This includes running containers as non-root users, dropping unnecessary Linux capabilities, using read-only root filesystems, limiting network access, and restricting volume mounts. Applying least privilege reduces the impact of a container compromise.
+
+- question: Why should containers not run as root?
+  answer: Running containers as root means a process escape vulnerability could give an attacker root access to the host system. Non-root containers limit the damage an attacker can do even if they escape the container. Dockerfiles should use the USER directive to switch to a non-root user, and Kubernetes Pod Security Standards can enforce this requirement across the cluster.
+
+- question: What are Linux capabilities in the context of container security?
+  answer: Linux capabilities split the privileges traditionally associated with root into distinct units that can be independently enabled or disabled. Docker containers run with a default set of capabilities that includes some privileged operations. Security best practices involve dropping all capabilities and adding back only those specifically needed, using the --cap-drop ALL and --cap-add flags.
+
+- question: What is a read-only root filesystem for containers?
+  answer: A read-only root filesystem prevents a container from writing to its own filesystem, which blocks many types of attacks that depend on writing malicious files. Applications that need to write temporary data can use volume mounts for specific writable directories. This is configured with the readOnlyRootFilesystem security context in Kubernetes or the --read-only flag in Docker.
+
+- question: What are Kubernetes Pod Security Standards?
+  answer: Pod Security Standards define three security profiles for Kubernetes pods. Privileged allows unrestricted access for system-level workloads. Baseline prevents known privilege escalations while being broadly compatible. Restricted enforces hardening best practices like running as non-root, dropping capabilities, and read-only filesystems. These standards replaced the deprecated PodSecurityPolicy.
+
+- question: What is the Pod Security Admission controller?
+  answer: The Pod Security Admission controller is a built-in Kubernetes admission controller that enforces Pod Security Standards at the namespace level. It can operate in three modes, enforce which rejects violating pods, warn which allows but shows warnings, and audit which logs violations. Namespaces are labeled with the desired standard and mode.
+
+- question: What was PodSecurityPolicy, and why was it deprecated?
+  answer: PodSecurityPolicy was a Kubernetes resource that defined security constraints for pods, such as preventing root containers and restricting volume types. It was deprecated in Kubernetes 1.21 and removed in 1.25 because it had usability issues, confusing authorization models, and the inability to apply policies to specific users. Pod Security Standards and third-party tools like OPA Gatekeeper replaced it.
+
+- question: What is OPA Gatekeeper?
+  answer: OPA Gatekeeper is an admission controller for Kubernetes that uses Open Policy Agent to enforce custom policies. It uses constraint templates written in Rego to define policy rules and constraints to apply them to specific resources. Gatekeeper can enforce security policies like requiring non-root containers, limiting image registries, and mandating resource limits.
+
+- question: What is Kyverno?
+  answer: Kyverno is a Kubernetes-native policy engine that uses YAML-based policies instead of a specialized language. It can validate, mutate, and generate Kubernetes resources based on policy rules. Kyverno is often preferred over OPA Gatekeeper for its simplicity, as policies are written in familiar Kubernetes YAML rather than Rego. It can enforce security standards, apply default configurations, and generate resources automatically.
+
+- question: What are Kubernetes network policies?
+  answer: Network policies are Kubernetes resources that control traffic flow between pods, namespaces, and external endpoints at the IP and port level. By default, all pods can communicate with each other. Network policies implement a firewall-like allow model where only explicitly permitted traffic is allowed. They require a CNI plugin like Calico or Cilium that supports network policy enforcement.
+
+- question: What is a default deny network policy?
+  answer: A default deny policy blocks all ingress and egress traffic for pods in a namespace unless explicitly allowed by other network policies. This follows the zero-trust principle where no communication is trusted by default. Creating default deny policies for all namespaces and then adding specific allow policies is a security best practice for Kubernetes clusters.
+
+- question: What is Falco?
+  answer: Falco is an open-source runtime security tool that monitors container and Kubernetes activity for suspicious behavior. It uses kernel-level system call monitoring through eBPF to detect threats like unexpected process execution, file access, network connections, and privilege escalation. Falco rules define what constitutes suspicious activity, and alerts can be sent to various notification channels.
+
+- question: What is runtime security for containers?
+  answer: Runtime security monitors and protects containers during execution, detecting and preventing threats that static scanning cannot catch. It includes monitoring for unexpected processes, file modifications, network connections, and privilege escalation attempts. Tools like Falco, Aqua Security, and Sysdig Secure provide runtime protection by comparing actual container behavior against expected baselines.
+
+- question: What is a distroless container image?
+  answer: A distroless image contains only the application and its runtime dependencies, without a package manager, shell, or other OS utilities. Google's distroless images are popular examples. By removing unnecessary components, distroless images dramatically reduce the attack surface and the number of potential vulnerabilities. They also prevent attackers from using common tools if they gain access to the container.
+
+- question: What is the difference between distroless and Alpine-based images?
+  answer: Alpine images use a minimal Linux distribution with musl libc and are very small but still include a shell and package manager. Distroless images remove everything except the application runtime, including the shell and package manager. Alpine provides a good balance of size and debuggability, while distroless offers the smallest attack surface at the cost of making container debugging harder.
+
+- question: What is multi-stage Docker builds for security?
+  answer: Multi-stage builds use multiple FROM statements in a Dockerfile where build tools and dependencies are used in early stages and only the final application binary is copied to the production image. This prevents build tools, source code, and development dependencies from being included in the final image, reducing both the attack surface and image size.
+
+- question: What is image pinning, and why is it important for security?
+  answer: Image pinning means referencing container images by their SHA-256 digest rather than a mutable tag. This ensures that the exact same image is used every time, preventing supply chain attacks where a tag is overwritten with a malicious image. Even when using version tags, pinning to a digest provides the strongest guarantee that the deployed image has not been tampered with.
+
+- question: What is container escape?
+  answer: Container escape is when an attacker breaks out of a container's isolation to access the host system or other containers. Attack vectors include kernel vulnerabilities, misconfigured containers running in privileged mode, exposed Docker sockets, and writable host mounts. Prevention includes running non-root containers, keeping the kernel updated, using seccomp and AppArmor profiles, and avoiding privileged mode.
+
+- question: What is a privileged container, and why is it dangerous?
+  answer: A privileged container runs with nearly all the capabilities of the host system, including access to all devices and the ability to modify the host kernel. This effectively disables container isolation. Privileged containers are occasionally needed for system-level tasks like network plugins, but they should be avoided for application workloads because a compromise gives full host access.
+
+- question: What is seccomp in container security?
+  answer: Seccomp, or Secure Computing Mode, is a Linux kernel feature that restricts which system calls a process can make. Docker applies a default seccomp profile that blocks dangerous system calls. Custom seccomp profiles can further restrict the syscall surface for specific applications. Kubernetes supports seccomp profiles through the security context, and Pod Security Standards require seccomp in the restricted profile.
+
+- question: What is AppArmor in container security?
+  answer: AppArmor is a Linux security module that restricts what files and capabilities a process can access through profiles. Docker applies a default AppArmor profile that prevents writing to many system paths. Custom profiles can restrict specific container activities like network access, file writes, and capability use. AppArmor provides an additional layer of defense beyond standard container isolation.
+
+- question: What is SELinux in container security?
+  answer: SELinux, or Security-Enhanced Linux, provides mandatory access control that assigns security labels to processes and files. It enforces policies that restrict container actions even if a container runs as root. SELinux is commonly used on Red Hat-based systems and provides strong isolation between containers and the host. It can prevent containers from accessing files or network resources beyond their policy.
+
+- question: What is secrets management in Kubernetes?
+  answer: Kubernetes Secrets store sensitive data like passwords, tokens, and certificates separately from application code and pod specs. However, Kubernetes Secrets are only base64 encoded, not encrypted at rest by default. Best practices include enabling encryption at rest in etcd, using external secrets managers like Vault, restricting RBAC access to secrets, and using tools like Sealed Secrets for GitOps workflows.
+
+- question: What is RBAC in Kubernetes security?
+  answer: Role-Based Access Control in Kubernetes restricts API access based on roles assigned to users and service accounts. Roles define permissions for specific API resources and verbs like get, list, create, and delete. RoleBindings assign roles at the namespace level, while ClusterRoleBindings assign them cluster-wide. Following least privilege, service accounts should have only the permissions they need.
+
+- question: What is a Kubernetes admission controller?
+  answer: An admission controller intercepts requests to the Kubernetes API server before objects are persisted, allowing it to validate or modify requests. Built-in controllers handle tasks like setting default values, enforcing resource quotas, and applying pod security. Custom admission controllers using webhooks enable organizations to enforce their own policies, such as requiring image scanning or blocking insecure configurations.
+
+- question: What is container image provenance?
+  answer: Image provenance verifies where and how a container image was built, providing confidence that the image was not tampered with. SLSA attestations, Sigstore cosign signatures, and in-toto provenance records document the build process. Admission controllers can verify provenance before allowing images to run, ensuring only images from trusted build systems are deployed.
+
+- question: What is the Docker socket security concern?
+  answer: Mounting the Docker socket into a container gives that container full control over the Docker daemon, effectively granting root access to the host. This is sometimes done for CI/CD tools or monitoring agents, but it is a significant security risk. Alternatives include using Docker-in-Docker with proper isolation, using Kaniko for building images, or using rootless Docker.
+
+- question: What is rootless Docker?
+  answer: Rootless Docker runs the Docker daemon and containers entirely within a user namespace without requiring root privileges on the host. This significantly reduces the attack surface because even if a container escape occurs, the attacker only gains the privileges of an unprivileged user. Rootless mode has some limitations with networking and storage but is recommended for improved security.
+
+- question: What is Podman, and how does it improve container security?
+  answer: Podman is a daemonless container engine that runs containers without a central daemon process, eliminating the Docker daemon as a single point of attack. Podman runs containers rootless by default, uses user namespaces for isolation, and is compatible with Docker CLI commands and Dockerfiles. Its architecture inherently provides better security than the traditional Docker daemon model.
+
+- question: What is vulnerability prioritization in container security?
+  answer: Vulnerability prioritization helps teams focus on the most impactful issues rather than being overwhelmed by vulnerability scanner output. Factors include CVSS severity score, whether a known exploit exists, whether the vulnerable package is reachable in the application, and the environment's exposure. Focusing on critical and high severity vulnerabilities with known exploits in internet-facing services maximizes security impact.
+
+- question: What is a Kubernetes security audit?
+  answer: A Kubernetes security audit systematically reviews cluster configuration, RBAC policies, network policies, pod security settings, and operational practices against security benchmarks. The CIS Kubernetes Benchmark provides comprehensive security recommendations. Tools like kube-bench automate benchmark checks, and kubeaudit scans for common security misconfigurations. Regular audits catch configuration drift and emerging security gaps.
+
+- question: What is the CIS Kubernetes Benchmark?
+  answer: The CIS Kubernetes Benchmark is a set of security recommendations published by the Center for Internet Security for hardening Kubernetes clusters. It covers control plane configuration, etcd security, API server settings, node security, and network policies. The kube-bench tool automates checking Kubernetes clusters against these benchmarks and reports compliance status and remediation steps.
+
+- question: What is supply chain security for containers?
+  answer: Container supply chain security protects every step from source code to running container. It includes using trusted base images, scanning for vulnerabilities and malware, signing images to verify integrity, generating SBOMs for component tracking, securing the CI/CD pipeline, and enforcing policies at deployment. Frameworks like SLSA provide maturity levels for assessing supply chain security posture.
+
+- question: What is image allowlisting?
+  answer: Image allowlisting restricts which container images can run in a cluster by maintaining a list of approved images or registries. Admission controllers like OPA Gatekeeper or Kyverno enforce that only images from approved registries or matching specific patterns can be deployed. This prevents developers from deploying untrusted or unscanned images and is a fundamental container security control.
+
+- question: What is namespace isolation in Kubernetes?
+  answer: Namespace isolation uses Kubernetes namespaces combined with RBAC, network policies, and resource quotas to create security boundaries between different teams or applications. While namespaces alone do not provide strong isolation, combining them with network policies that restrict cross-namespace traffic, RBAC that limits access, and pod security standards creates effective multi-tenant boundaries.
+
+- question: What is etcd security in Kubernetes?
+  answer: Etcd stores all Kubernetes cluster data including secrets, making its security critical. Best practices include enabling TLS for client and peer communication, encrypting data at rest, restricting network access to only the API server, implementing authentication, performing regular backups, and running etcd on dedicated nodes. A compromised etcd gives full access to all cluster data.
+
+- question: What is a security context in Kubernetes?
+  answer: A security context defines privilege and access control settings for a pod or container. It includes settings like runAsUser, runAsNonRoot, readOnlyRootFilesystem, capabilities, seccompProfile, and allowPrivilegeEscalation. Security contexts can be set at both the pod level and individual container level, with container-level settings taking precedence. They are the primary mechanism for hardening container runtime security.
+
+- question: What is the principle of defense in depth for containers?
+  answer: Defense in depth applies multiple security layers so that if one layer fails, others continue to protect the system. For containers, this means scanning images in CI/CD, signing images, enforcing admission policies, applying pod security standards, implementing network policies, monitoring runtime behavior, and encrypting data. No single control is sufficient; the combination of all layers provides robust security.
