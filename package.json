@@ -18,7 +18,10 @@
     "build": "tsc",
     "prepublishOnly": "tsc",
     "start": "node dist/index.js",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "dev:server": "tsx src/server.ts",
+    "dev:web": "cd web && npx vite",
+    "dev:app": "npx concurrently \"npm run dev:server\" \"npm run dev:web\""
   },
   "license": "MIT",
   "dependencies": {
@@ -34,14 +37,19 @@
     "googleapis": "^171.4.0",
     "kokoro-js": "^1.2.1",
     "open": "^11.0.0",
-    "yaml": "^2.8.2"
+    "yaml": "^2.8.2",
+    "express": "^5.1.0",
+    "cors": "^2.8.5"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.7",
     "@types/better-sqlite3": "^7.6.13",
     "@types/fluent-ffmpeg": "^2.1.28",
     "@types/fs-extra": "^11.0.4",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.2",
     "@types/node": "^25.2.3",
+    "concurrently": "^9.1.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },

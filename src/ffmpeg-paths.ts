@@ -1,5 +1,5 @@
 import { execFileSync, execSync } from 'child_process';
-import { accessSync, chmodSync, constants } from 'fs';
+import { accessSync, chmodSync, constants, existsSync } from 'fs';
 
 function which(bin: string): string | null {
   try {
@@ -11,16 +11,16 @@ function which(bin: string): string | null {
 
 async function resolveFfmpegPath(): Promise<string | null> {
   try {
-    const mod = await import('ffmpeg-static');
-    if (mod.default) return mod.default;
+    const p: string | null = (await import('ffmpeg-static')).default;
+    if (p && existsSync(p)) return p;
   } catch {}
   return process.env.FFMPEG_PATH || which('ffmpeg');
 }
 
 async function resolveFfprobePath(): Promise<string | null> {
   try {
-    const mod = await import('@ffprobe-installer/ffprobe');
-    if (mod.path) return mod.path;
+    const p: string | undefined = (await import('@ffprobe-installer/ffprobe')).path;
+    if (p && existsSync(p)) return p;
   } catch {}
   return process.env.FFPROBE_PATH || which('ffprobe');
 }

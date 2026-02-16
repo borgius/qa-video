@@ -1,0 +1,63 @@
+:root {
+  --bg-primary: #1a1a2e;
+  --bg-question: #16213e;
+  --bg-answer: #0f3460;
+  --text-primary: #ffffff;
+  --badge-question: #e94560;
+  --badge-answer: #0cca4a;
+  --sidebar-bg: #0d0d1a;
+  --sidebar-border: #2a2a4a;
+  --accent: #e94560;
+  --accent-green: #0cca4a;
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --text-muted: rgba(255, 255, 255, 0.3);
+  --header-overlay: rgba(0, 0, 0, 0.3);
+  --footer-line: rgba(255, 255, 255, 0.15);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

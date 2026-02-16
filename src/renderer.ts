@@ -95,27 +95,45 @@ export async function renderSlide(
   ctx.textAlign = 'center';
   ctx.fillText(badgeText, badgeX + badgeSize / 2, badgeY + 43);
 
-  // Main text
-  ctx.font = `${fontSize}px "Arial", "Helvetica", sans-serif`;
+  // Main text — auto-size to fit
   ctx.textAlign = 'center';
   ctx.fillStyle = textColor;
 
   const maxTextWidth = width - 200;
-  const lines = wrapText(ctx, text, maxTextWidth);
-  const lineHeight = fontSize * 1.4;
-  const totalTextHeight = lines.length * lineHeight;
-
-  // Center vertically (below header)
   const contentAreaTop = headerHeight;
-  const contentAreaHeight = height - contentAreaTop;
-  let startY = contentAreaTop + (contentAreaHeight - totalTextHeight) / 2 + fontSize;
+  const contentAreaHeight = height - contentAreaTop - 20; // 20px bottom padding
+  const minFontSize = 16;
 
-  // Clamp so text doesn't go above header
-  if (startY < contentAreaTop + fontSize + 20) {
-    startY = contentAreaTop + fontSize + 20;
+  let currentFontSize = fontSize;
+  let lines: string[];
+  let lineHeight: number;
+  let totalTextHeight: number;
+
+  // Shrink font until text fits in the content area
+  while (currentFontSize > minFontSize) {
+    ctx.font = `${currentFontSize}px "Arial", "Helvetica", sans-serif`;
+    lines = wrapText(ctx, text, maxTextWidth);
+    lineHeight = currentFontSize * 1.4;
+    totalTextHeight = lines.length * lineHeight;
+
+    if (totalTextHeight <= contentAreaHeight) break;
+    currentFontSize -= 2;
   }
 
-  for (const line of lines) {
+  // Final values after sizing
+  ctx.font = `${currentFontSize}px "Arial", "Helvetica", sans-serif`;
+  lines = wrapText(ctx, text, maxTextWidth);
+  lineHeight = currentFontSize * 1.4;
+  totalTextHeight = lines.length * lineHeight;
+
+  let startY = contentAreaTop + (contentAreaHeight - totalTextHeight) / 2 + currentFontSize;
+
+  // Clamp so text doesn't go above header
+  if (startY < contentAreaTop + currentFontSize + 20) {
+    startY = contentAreaTop + currentFontSize + 20;
+  }
+
+  for (const line of lines!) {
     ctx.fillText(line, width / 2, startY);
     startY += lineHeight;
   }

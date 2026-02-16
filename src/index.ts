@@ -266,7 +266,7 @@ program
 program
   .command('upload')
   .description('Upload a generated video to YouTube')
-  .requiredOption('-i, --input <path>', 'Path to source YAML file')
+  .requiredOption('-i, --input <path>', 'Path to source YAML file or video (.mp4)')
   .option('-v, --video <path>', 'Path to video file (default: output/<name>.mp4)')
   .option('--title <text>', 'Video title (default: auto-generated from YAML)')
   .option('--description <text>', 'Video description (default: auto-generated)')
@@ -277,17 +277,59 @@ program
   .option('--dry-run', 'Preview metadata without uploading', false)
   .action(async (opts) => {
     try {
-      const inputPath = resolve(opts.input);
-      if (!existsSync(inputPath)) {
-        console.error(`Error: Input file not found: ${inputPath}`);
-        process.exit(1);
-      }
+      let inputPath = resolve(opts.input);
+      let videoPath: string;
 
-      // Resolve video path
-      const inputName = basename(inputPath, '.yaml').replace(/\.yml$/, '');
-      const videoPath = opts.video
-        ? resolve(opts.video)
-        : join(dirname(inputPath), '..', 'output', `${inputName}.mp4`);
+      if (inputPath.endsWith('.mp4')) {
+        // User passed a video file directly — use it as the video path
+        // and try to find the corresponding YAML
+        videoPath = opts.video ? resolve(opts.video) : inputPath;
+        const videoName = basename(inputPath, '.mp4');
+        const yamlCandidates = [
+          join(process.cwd(), 'qa', `${videoName}.yaml`),
+          join(process.cwd(), 'qa', `${videoName}.yml`),
+          join(dirname(inputPath), `${videoName}.yaml`),
+          join(dirname(inputPath), `${videoName}.yml`),
+        ];
+        const foundYaml = yamlCandidates.find(p => existsSync(p));
+        if (foundYaml) {
+          inputPath = foundYaml;
+        } else if (!existsSync(videoPath)) {
+          console.error(`Error: Video not found: ${videoPath}`);
+          process.exit(1);
+        }
+      } else {
+        // Input is a YAML file (or no extension)
+        if (!inputPath.endsWith('.yaml') && !inputPath.endsWith('.yml')) {
+          // Try appending extensions
+          if (existsSync(inputPath + '.yaml')) inputPath = inputPath + '.yaml';
+          else if (existsSync(inputPath + '.yml')) inputPath = inputPath + '.yml';
+          else if (existsSync(inputPath + '.mp4')) {
+            // Treat as video path
+            videoPath = inputPath + '.mp4';
+            const videoName = basename(inputPath);
+            const yamlCandidates = [
+              join(process.cwd(), 'qa', `${videoName}.yaml`),
+              join(process.cwd(), 'qa', `${videoName}.yml`),
+            ];
+            const foundYaml = yamlCandidates.find(p => existsSync(p));
+            if (foundYaml) inputPath = foundYaml;
+          }
+        }
+
+        if (!videoPath! && !existsSync(inputPath)) {
+          console.error(`Error: Input file not found: ${inputPath}`);
+          process.exit(1);
+        }
+
+        // Resolve video path from YAML input (unless already resolved)
+        if (!videoPath!) {
+          const inputName = basename(inputPath, '.yaml').replace(/\.yml$/, '');
+          videoPath = opts.video
+            ? resolve(opts.video)
+            : join(dirname(inputPath), '..', 'output', `${inputName}.mp4`);
+        }
+      }
 
       if (!existsSync(videoPath)) {
         console.error(`Error: Video not found: ${videoPath}`);
@@ -295,11 +337,19 @@ program
         process.exit(1);
       }
 
-      // Parse YAML for metadata
-      const yamlData = await parseYamlFile(inputPath);
-
-      let title = opts.title ?? generateTitle(inputPath, yamlData);
-      let description = opts.description ?? generateDescription(inputPath, yamlData);
+      // Parse YAML for metadata (if available)
+      const hasYaml = inputPath.endsWith('.yaml') || inputPath.endsWith('.yml');
+      let title: string;
+      let description: string;
+      if (hasYaml && existsSync(inputPath)) {
+        const yamlData = await parseYamlFile(inputPath);
+        title = opts.title ?? generateTitle(inputPath, yamlData);
+        description = opts.description ?? generateDescription(inputPath, yamlData);
+      } else {
+        const videoName = basename(videoPath, '.mp4');
+        title = opts.title ?? videoName.replace(/[-_]/g, ' ');
+        description = opts.description ?? '';
+      }
       const tags = (opts.tags as string).split(',').map((t: string) => t.trim());
 
       console.log(`\n╔══════════════════════════════════╗`);

@@ -1,0 +1,1347 @@
+config:
+  name: "DevOps-Interview-Questions: Amazon Web Services (AWS)"
+  description: A comprehensive collection of 200+ AWS interview questions covering core services, compute, storage, networking, databases, security, serverless, containers, monitoring, and architecture best practices.
+  questionDelay: 20
+  answerDelay: 5
+questions:
+# ──────────────────────────────────────────────
+# AWS Basics & Global Infrastructure
+# ──────────────────────────────────────────────
+- question: What is Amazon Web Services (AWS)?
+  answer: AWS is a comprehensive cloud computing platform provided by Amazon that offers on-demand services such as compute, storage, networking, databases, machine learning, and more. It operates on a pay-as-you-go pricing model and serves millions of customers worldwide.
+
+- question: What is the AWS Global Infrastructure?
+  answer: 'The AWS Global Infrastructure consists of:
+
+    Regions: Geographically isolated areas containing multiple data centers.
+
+    Availability Zones (AZs): Physically separate data centers within a region connected by low-latency links.
+
+    Edge Locations: Endpoints used by CloudFront for content caching and delivery closer to users.
+
+    Local Zones and Wavelength Zones: Extensions that bring AWS services closer to end users for ultra-low latency.'
+
+- question: What is an AWS Region?
+  answer: An AWS Region is a geographical area that contains at least two Availability Zones. Each Region is completely independent, providing fault isolation. Users choose Regions based on latency, compliance requirements, and service availability.
+
+- question: What is an Availability Zone (AZ) in AWS?
+  answer: An Availability Zone is one or more discrete data centers within a Region, each with redundant power, networking, and connectivity. AZs are designed to be isolated from failures in other AZs, enabling high availability when applications span multiple AZs.
+
+- question: What are AWS Edge Locations?
+  answer: Edge Locations are data centers used by Amazon CloudFront and other services to cache content closer to end users. They reduce latency by serving content from the nearest location rather than the origin server.
+
+- question: What is the AWS Shared Responsibility Model?
+  answer: 'AWS and the customer share security responsibilities:
+
+    AWS is responsible for security OF the cloud — hardware, software, networking, and facilities.
+
+    The customer is responsible for security IN the cloud — data, identity management, OS patching, firewall configuration, and encryption.'
+
+- question: What is the AWS Free Tier?
+  answer: 'The AWS Free Tier provides limited free usage of many AWS services to help new users get started. It includes three types:
+
+    Always Free: Services that are always free within limits (e.g., Lambda 1M requests/month).
+
+    12-Month Free: Available for 12 months after sign-up (e.g., 750 hours/month of EC2 t2.micro).
+
+    Trials: Short-term free trials for specific services.'
+
+- question: What is the AWS Well-Architected Framework?
+  answer: 'The AWS Well-Architected Framework provides best practices across six pillars:
+
+    Operational Excellence: Automating operations and responding to events.
+
+    Security: Protecting data and systems.
+
+    Reliability: Recovering from failures and meeting demand.
+
+    Performance Efficiency: Using resources efficiently.
+
+    Cost Optimization: Avoiding unnecessary costs.
+
+    Sustainability: Minimizing environmental impact.'
+
+- question: What is the AWS Management Console?
+  answer: The AWS Management Console is a web-based user interface for accessing and managing AWS services. It provides dashboards, wizards, and workflows for configuring resources without using the CLI or SDKs.
+
+- question: What is the AWS CLI?
+  answer: The AWS Command Line Interface (CLI) is a unified tool for managing AWS services from the terminal. It supports scripting and automation and is available on Windows, macOS, and Linux.
+
+- question: What are AWS SDKs?
+  answer: AWS SDKs (Software Development Kits) are libraries for various programming languages (Python, Java, JavaScript, Go, etc.) that allow developers to interact programmatically with AWS services from their applications.
+
+- question: What is AWS CloudShell?
+  answer: AWS CloudShell is a browser-based shell environment available directly from the AWS Management Console. It comes pre-installed with the AWS CLI, SDKs, and common development tools, with 1 GB of persistent storage per Region.
+
+- question: What is an ARN in AWS?
+  answer: 'An Amazon Resource Name (ARN) is a unique identifier for AWS resources. The format is: arn:partition:service:region:account-id:resource-type/resource-id. ARNs are used in IAM policies and API calls to specify resources unambiguously.'
+
+- question: What are AWS Tags?
+  answer: Tags are key-value pairs attached to AWS resources for organization, cost tracking, automation, and access control. For example, you might tag resources with Environment=Production or Team=DevOps.
+
+# ──────────────────────────────────────────────
+# IAM (Identity and Access Management)
+# ──────────────────────────────────────────────
+- question: What is AWS IAM?
+  answer: AWS Identity and Access Management (IAM) is a service that lets you securely control access to AWS resources. It allows you to create and manage users, groups, roles, and policies to define who can access which resources and what actions they can perform.
+
+- question: What is an IAM Policy?
+  answer: An IAM Policy is a JSON document that defines permissions. It specifies which actions are allowed or denied on which resources. Policies can be attached to users, groups, or roles. They follow the principle of least privilege.
+
+- question: What is the difference between IAM Users, Groups, and Roles?
+  answer: 'IAM Users: Individual identities with long-term credentials for people or applications.
+
+    IAM Groups: Collections of users that share the same permissions, simplifying policy management.
+
+    IAM Roles: Temporary identities that can be assumed by users, services, or applications. Roles use temporary security credentials and are preferred over long-term access keys.'
+
+- question: What is the IAM root user?
+  answer: The root user is the account owner created when an AWS account is first set up. It has unrestricted access to all resources. Best practice is to lock away root user credentials, enable MFA, and use IAM users or roles for day-to-day tasks.
+
+- question: What is MFA in AWS?
+  answer: Multi-Factor Authentication (MFA) adds an extra layer of security by requiring a second form of verification (e.g., a code from a virtual or hardware MFA device) in addition to a password when signing in to the AWS Console or performing sensitive API operations.
+
+- question: What is an IAM Role and when would you use one?
+  answer: 'An IAM Role is an identity with specific permissions that can be assumed temporarily. Common use cases include:
+
+    Allowing an EC2 instance to access S3 without embedding credentials.
+
+    Cross-account access between AWS accounts.
+
+    Federating external identity providers (SAML, OIDC).
+
+    Granting Lambda functions access to other AWS services.'
+
+- question: What is an IAM Instance Profile?
+  answer: An Instance Profile is a container for an IAM Role that is attached to an EC2 instance. It allows the instance to assume the role and obtain temporary credentials automatically, eliminating the need to store access keys on the instance.
+
+- question: What is the principle of least privilege in IAM?
+  answer: The principle of least privilege means granting only the minimum permissions required for a user, group, or role to perform their tasks. This reduces the attack surface and limits the blast radius if credentials are compromised.
+
+- question: What are IAM Policy conditions?
+  answer: 'Policy conditions allow you to add fine-grained restrictions to IAM policies. Examples include:
+
+    aws:SourceIp — restrict access to specific IP ranges.
+
+    aws:MultiFactorAuthPresent — require MFA.
+
+    aws:RequestedRegion — limit actions to specific Regions.
+
+    StringEquals, DateGreaterThan, IpAddress — condition operators for matching values.'
+
+- question: What is AWS STS?
+  answer: AWS Security Token Service (STS) is a service that provides temporary, limited-privilege security credentials. It is used by IAM Roles, federation, and cross-account access. The AssumeRole API is the most common STS operation.
+
+- question: What is an IAM Permission Boundary?
+  answer: A Permission Boundary is an advanced IAM feature that sets the maximum permissions an IAM entity (user or role) can have. Even if broader policies are attached, the effective permissions are the intersection of the identity policy and the permission boundary.
+
+- question: What is AWS IAM Identity Center (formerly AWS SSO)?
+  answer: AWS IAM Identity Center provides centralized access management for multiple AWS accounts and business applications. It supports integration with external identity providers (Active Directory, Okta, etc.) and provides a single sign-on portal for users.
+
+- question: What is an IAM Access Key?
+  answer: An IAM Access Key consists of an access key ID and a secret access key used for programmatic access to AWS via the CLI, SDKs, or APIs. Best practice is to rotate access keys regularly and prefer IAM Roles over long-term access keys.
+
+# ──────────────────────────────────────────────
+# EC2 (Elastic Compute Cloud)
+# ──────────────────────────────────────────────
+- question: What is Amazon EC2?
+  answer: Amazon Elastic Compute Cloud (EC2) is a web service that provides resizable virtual servers (instances) in the cloud. It allows you to launch instances with various operating systems, configure networking and security, and scale capacity up or down as needed.
+
+- question: What are the different EC2 instance types?
+  answer: 'EC2 instance types are grouped into families based on workload:
+
+    General Purpose (t3, m5): Balanced compute, memory, and networking.
+
+    Compute Optimized (c5, c6g): High-performance processors for batch processing and HPC.
+
+    Memory Optimized (r5, x1): Large in-memory databases and caching.
+
+    Storage Optimized (i3, d2): High sequential read/write access to large datasets.
+
+    Accelerated Computing (p4, g5): GPU-based workloads like ML training and graphics rendering.'
+
+- question: What are EC2 pricing models?
+  answer: 'AWS offers several EC2 pricing options:
+
+    On-Demand: Pay per second with no commitment, ideal for unpredictable workloads.
+
+    Reserved Instances: 1- or 3-year commitment for up to 72% savings.
+
+    Savings Plans: Flexible pricing based on committed usage ($/hour) for 1 or 3 years.
+
+    Spot Instances: Up to 90% discount by using spare capacity, but instances can be interrupted.
+
+    Dedicated Hosts: Physical servers dedicated to your use for licensing or compliance.'
+
+- question: What is an Amazon Machine Image (AMI)?
+  answer: An AMI is a template that contains a software configuration (OS, application server, and applications) used to launch EC2 instances. AMIs can be public, shared, or private, and can be created from existing instances for reuse.
+
+- question: What is an EC2 Key Pair?
+  answer: A Key Pair consists of a public key (stored by AWS) and a private key (downloaded by the user) used for SSH access to Linux instances or decrypting Windows passwords. AWS supports ED25519 and RSA key types.
+
+- question: What is an EC2 Security Group?
+  answer: A Security Group acts as a virtual firewall for EC2 instances, controlling inbound and outbound traffic. Rules are stateful (return traffic is automatically allowed), specified by protocol, port, and source/destination. By default, all inbound traffic is denied and all outbound traffic is allowed.
+
+- question: What is the difference between a Security Group and a Network ACL?
+  answer: 'Security Groups: Operate at the instance level, are stateful, support only allow rules, and evaluate all rules before deciding.
+
+    Network ACLs: Operate at the subnet level, are stateless, support both allow and deny rules, and evaluate rules in order by rule number.'
+
+- question: What is EC2 User Data?
+  answer: User Data is a script (bash or PowerShell) that runs automatically when an EC2 instance first launches. It is used for bootstrapping tasks like installing packages, configuring services, or pulling code from repositories.
+
+- question: What is an Elastic IP address?
+  answer: An Elastic IP is a static, public IPv4 address that you can allocate and associate with an EC2 instance. It remains assigned to your account until released and can be remapped to another instance quickly in case of failure.
+
+- question: What is EC2 Instance Metadata?
+  answer: Instance Metadata is data about a running instance accessible from within the instance at http://169.254.169.254/latest/meta-data/. It provides information like instance ID, public IP, IAM role credentials, and security groups. IMDSv2 (token-based) is recommended for security.
+
+- question: What is an EC2 Placement Group?
+  answer: 'Placement Groups control how instances are placed on underlying hardware:
+
+    Cluster: Packs instances close together in a single AZ for low-latency networking.
+
+    Spread: Distributes instances across distinct hardware to reduce correlated failures.
+
+    Partition: Divides instances into logical partitions, each on separate racks, for large distributed systems like HDFS or Cassandra.'
+
+- question: What are EC2 Spot Instances?
+  answer: Spot Instances let you use spare EC2 capacity at up to 90% discount compared to On-Demand. AWS can reclaim them with a 2-minute warning when capacity is needed. They are ideal for fault-tolerant workloads like batch processing, CI/CD, and data analysis.
+
+- question: What is an EC2 Auto Scaling Group?
+  answer: An Auto Scaling Group (ASG) automatically adjusts the number of EC2 instances based on demand. You define minimum, maximum, and desired capacity, along with scaling policies triggered by CloudWatch metrics like CPU utilization or request count.
+
+- question: What is an EC2 Launch Template?
+  answer: A Launch Template specifies instance configuration details such as AMI ID, instance type, key pair, security groups, and user data. It supports versioning and is used by Auto Scaling Groups and the RunInstances API. Launch Templates have replaced Launch Configurations.
+
+- question: What is the difference between stopping and terminating an EC2 instance?
+  answer: 'Stopping an instance shuts it down but preserves the root EBS volume and instance metadata. You can restart it later. Terminating an instance permanently deletes it and, by default, deletes the root EBS volume. Stopped instances do not incur compute charges but EBS storage charges still apply.'
+
+- question: What is EC2 Hibernation?
+  answer: EC2 Hibernation saves the contents of instance RAM to the root EBS volume before stopping. When the instance starts again, it restores RAM contents and resumes processes. This provides faster startup compared to a cold boot. The root volume must be encrypted and large enough to hold the RAM contents.
+
+- question: What is a Dedicated Host vs a Dedicated Instance?
+  answer: 'Dedicated Host: A physical server fully dedicated to your use, giving visibility into sockets, cores, and host ID. Useful for bring-your-own-license (BYOL) scenarios.
+
+    Dedicated Instance: Runs on hardware dedicated to your account but you do not control placement or have visibility into the physical host.'
+
+# ──────────────────────────────────────────────
+# EBS (Elastic Block Store)
+# ──────────────────────────────────────────────
+- question: What is Amazon EBS?
+  answer: Amazon Elastic Block Store (EBS) provides persistent block-level storage volumes for EC2 instances. EBS volumes are automatically replicated within their Availability Zone and can be attached to running instances. They persist independently from the life of an instance.
+
+- question: What are the different EBS volume types?
+  answer: 'AWS offers several EBS volume types:
+
+    gp3/gp2 (General Purpose SSD): Balanced price and performance for most workloads.
+
+    io2/io1 (Provisioned IOPS SSD): High-performance for latency-sensitive, I/O-intensive workloads like databases.
+
+    st1 (Throughput Optimized HDD): Low-cost for frequently accessed, throughput-intensive workloads.
+
+    sc1 (Cold HDD): Lowest cost for infrequently accessed data.'
+
+- question: What is an EBS Snapshot?
+  answer: An EBS Snapshot is a point-in-time backup of an EBS volume stored in S3. Snapshots are incremental — only changed blocks are stored. They can be used to create new volumes, copy volumes across Regions, or share volumes with other accounts.
+
+- question: What is EBS Encryption?
+  answer: EBS Encryption encrypts data at rest, data in transit between the instance and the volume, and all snapshots. It uses AWS KMS keys and has minimal impact on performance. Encryption can be enabled by default at the account level for all new volumes.
+
+- question: What is EBS Multi-Attach?
+  answer: EBS Multi-Attach allows a single io2 volume to be attached to up to 16 Nitro-based EC2 instances in the same Availability Zone simultaneously. It is useful for clustered applications that manage concurrent write operations.
+
+- question: How do you increase the size of an EBS volume?
+  answer: 'You can modify an EBS volume using the Elastic Volumes feature without detaching it. Steps include: using the ModifyVolume API or Console to increase size, then extending the filesystem on the instance using resize2fs (ext4) or xfs_growfs (XFS). Volume modifications may take time to complete.'
+
+# ──────────────────────────────────────────────
+# S3 (Simple Storage Service)
+# ──────────────────────────────────────────────
+- question: What is Amazon S3?
+  answer: Amazon Simple Storage Service (S3) is a scalable object storage service that provides 99.999999999% (11 nines) durability. It stores data as objects in buckets and is used for backups, static website hosting, data lakes, application assets, and more.
+
+- question: What are S3 storage classes?
+  answer: 'S3 offers multiple storage classes:
+
+    S3 Standard: Frequently accessed data with low latency.
+
+    S3 Intelligent-Tiering: Automatically moves data between tiers based on access patterns.
+
+    S3 Standard-IA: Infrequently accessed data with rapid access when needed.
+
+    S3 One Zone-IA: Infrequently accessed data stored in a single AZ.
+
+    S3 Glacier Instant Retrieval: Archive with millisecond retrieval.
+
+    S3 Glacier Flexible Retrieval: Archive with retrieval in minutes to hours.
+
+    S3 Glacier Deep Archive: Lowest cost for long-term archive with 12-hour retrieval.'
+
+- question: What is an S3 Bucket Policy?
+  answer: An S3 Bucket Policy is a JSON-based resource policy attached directly to a bucket. It defines who can access the bucket and what actions they can perform. Bucket policies support cross-account access and are commonly used to grant public read access for static website hosting.
+
+- question: What is S3 Versioning?
+  answer: S3 Versioning keeps multiple variants of an object in the same bucket. When enabled, every overwrite or delete creates a new version rather than replacing the object. This protects against accidental deletion and allows you to restore previous versions.
+
+- question: What is S3 Lifecycle Management?
+  answer: S3 Lifecycle policies automate transitioning objects between storage classes or deleting them after a defined period. For example, you can move objects to S3 Glacier after 90 days and delete them after 365 days, optimizing storage costs.
+
+- question: What is S3 Cross-Region Replication (CRR)?
+  answer: CRR automatically replicates objects from a source bucket in one Region to a destination bucket in a different Region. It requires versioning to be enabled on both buckets and is used for compliance, latency reduction, and disaster recovery.
+
+- question: What is S3 Transfer Acceleration?
+  answer: S3 Transfer Acceleration speeds up uploads to S3 by routing data through CloudFront Edge Locations using optimized network paths. It is beneficial for long-distance transfers and uses a distinct endpoint (bucketname.s3-accelerate.amazonaws.com).
+
+- question: What is an S3 Pre-signed URL?
+  answer: A Pre-signed URL grants temporary access to a private S3 object without requiring AWS credentials. The URL is generated with a specific expiration time and can be used for secure, time-limited downloads or uploads.
+
+- question: What is S3 Object Lock?
+  answer: 'S3 Object Lock prevents objects from being deleted or overwritten for a specified period. It supports two retention modes:
+
+    Governance Mode: Users with special permissions can override the lock.
+
+    Compliance Mode: No one, including the root user, can delete the object until the retention period expires.'
+
+- question: What is S3 Event Notification?
+  answer: S3 Event Notifications trigger actions when specific events occur in a bucket, such as object creation or deletion. Notifications can be sent to Lambda functions, SQS queues, SNS topics, or EventBridge for event-driven architectures.
+
+- question: What is S3 Select and S3 Glacier Select?
+  answer: S3 Select allows you to retrieve a subset of data from an object using SQL expressions, reducing the amount of data transferred. Glacier Select does the same for archived data. Both support CSV, JSON, and Parquet formats.
+
+- question: How does S3 ensure data consistency?
+  answer: S3 provides strong read-after-write consistency for all operations. After a successful write (PUT) or delete, any subsequent read request immediately returns the latest version of the object. This applies to all S3 storage classes.
+
+- question: What is S3 Multipart Upload?
+  answer: Multipart Upload allows you to upload large objects in parts (up to 10,000 parts). Each part is uploaded independently and can be retried on failure. It is recommended for objects larger than 100 MB and is required for objects larger than 5 GB.
+
+# ──────────────────────────────────────────────
+# VPC (Virtual Private Cloud)
+# ──────────────────────────────────────────────
+- question: What is Amazon VPC?
+  answer: Amazon Virtual Private Cloud (VPC) lets you create a logically isolated network within AWS where you can launch resources in a virtual network you define. You control IP address ranges, subnets, route tables, and gateways.
+
+- question: What is a Subnet in AWS VPC?
+  answer: 'A Subnet is a range of IP addresses within a VPC, confined to a single Availability Zone. Subnets are classified as:
+
+    Public Subnet: Has a route to an Internet Gateway, allowing internet access.
+
+    Private Subnet: No direct route to the internet, used for backend resources like databases.'
+
+- question: What is an Internet Gateway?
+  answer: An Internet Gateway (IGW) is a horizontally scaled, redundant VPC component that allows communication between instances in a VPC and the internet. It supports IPv4 and IPv6 and performs network address translation for instances with public IPs.
+
+- question: What is a NAT Gateway?
+  answer: A NAT Gateway allows instances in private subnets to access the internet for updates and patches while preventing inbound connections from the internet. It is managed by AWS, supports up to 45 Gbps bandwidth, and is deployed in a public subnet.
+
+- question: What is a Route Table in VPC?
+  answer: A Route Table contains a set of rules (routes) that determine where network traffic is directed. Each subnet must be associated with a route table. Routes specify a destination CIDR block and a target (IGW, NAT Gateway, VPC Peering, etc.).
+
+- question: What is VPC Peering?
+  answer: VPC Peering creates a networking connection between two VPCs, allowing instances in either VPC to communicate using private IP addresses. Peering can be between VPCs in the same account, different accounts, or different Regions. It is non-transitive.
+
+- question: What is AWS Transit Gateway?
+  answer: AWS Transit Gateway acts as a central hub that connects multiple VPCs, VPN connections, and Direct Connect gateways. It simplifies network topology by replacing complex VPC peering meshes and supports transitive routing between connected networks.
+
+- question: What is a VPC Endpoint?
+  answer: 'A VPC Endpoint allows private connectivity to AWS services without traversing the internet:
+
+    Gateway Endpoint: For S3 and DynamoDB, added to route tables.
+
+    Interface Endpoint (PrivateLink): Creates an ENI in your subnet for services like SQS, KMS, and third-party services.'
+
+- question: What is AWS PrivateLink?
+  answer: AWS PrivateLink provides private connectivity between VPCs, AWS services, and on-premises networks without exposing traffic to the public internet. It uses Interface VPC Endpoints and is the recommended way to access services privately.
+
+- question: What are VPC Flow Logs?
+  answer: VPC Flow Logs capture information about IP traffic going to and from network interfaces in a VPC. They can be published to CloudWatch Logs, S3, or Kinesis Data Firehose and are used for monitoring, troubleshooting, and security analysis.
+
+- question: What is a CIDR block in VPC?
+  answer: A CIDR (Classless Inter-Domain Routing) block defines the IP address range for a VPC or subnet. For example, 10.0.0.0/16 provides 65,536 IP addresses. VPCs support IPv4 CIDR blocks from /16 to /28 and can have secondary CIDR blocks added.
+
+- question: What is a Network ACL (NACL)?
+  answer: A Network ACL is a stateless firewall at the subnet level that controls inbound and outbound traffic with numbered rules. Rules are evaluated in order, and both allow and deny rules are supported. The default NACL allows all traffic.
+
+# ──────────────────────────────────────────────
+# ELB (Elastic Load Balancing)
+# ──────────────────────────────────────────────
+- question: What is Elastic Load Balancing (ELB)?
+  answer: ELB automatically distributes incoming application traffic across multiple targets (EC2 instances, containers, IPs, Lambda functions) in one or more Availability Zones. It improves fault tolerance and provides high availability for applications.
+
+- question: What are the types of AWS Load Balancers?
+  answer: 'AWS provides three types of load balancers:
+
+    Application Load Balancer (ALB): Layer 7, HTTP/HTTPS, supports path-based and host-based routing, WebSockets, and gRPC.
+
+    Network Load Balancer (NLB): Layer 4, TCP/UDP/TLS, handles millions of requests per second with ultra-low latency, supports static IPs.
+
+    Gateway Load Balancer (GWLB): Layer 3, deploys and scales third-party virtual appliances like firewalls and intrusion detection systems.'
+
+- question: What is an ALB Target Group?
+  answer: A Target Group routes requests to registered targets (instances, IPs, or Lambda functions) based on health checks and routing rules. ALBs use Target Groups to distribute traffic, and a single ALB can route to multiple Target Groups based on URL path or hostname.
+
+- question: What is sticky sessions (session affinity) in ELB?
+  answer: Sticky sessions bind a user's session to a specific target, ensuring all requests from the same client go to the same instance. ALB supports application-based cookies and duration-based cookies. This is useful for stateful applications but can cause uneven load distribution.
+
+- question: What is connection draining (deregistration delay)?
+  answer: Connection draining ensures that in-flight requests are completed before an instance is deregistered from the load balancer. The default deregistration delay is 300 seconds. During this period, no new requests are sent to the deregistering instance.
+
+- question: How does ALB path-based routing work?
+  answer: 'ALB path-based routing directs requests to different Target Groups based on the URL path. For example:
+
+    /api/* routes to API server Target Group.
+
+    /images/* routes to image server Target Group.
+
+    Default route (/*) goes to the main web server Target Group.
+
+    This enables microservices architecture behind a single load balancer.'
+
+# ──────────────────────────────────────────────
+# Route 53
+# ──────────────────────────────────────────────
+- question: What is Amazon Route 53?
+  answer: Amazon Route 53 is a scalable and highly available Domain Name System (DNS) web service. It provides domain registration, DNS routing, and health checking. The name refers to port 53, the standard DNS port.
+
+- question: What are the Route 53 routing policies?
+  answer: 'Route 53 supports several routing policies:
+
+    Simple: Returns a single resource for a domain.
+
+    Weighted: Distributes traffic based on assigned weights.
+
+    Latency-based: Routes to the Region with lowest latency.
+
+    Failover: Routes to a standby resource when the primary is unhealthy.
+
+    Geolocation: Routes based on the geographic location of the user.
+
+    Geoproximity: Routes based on geographic location with bias shifting.
+
+    Multi-value Answer: Returns multiple healthy resources (up to 8).'
+
+- question: What are Route 53 Health Checks?
+  answer: Route 53 Health Checks monitor the health of endpoints by sending requests at regular intervals. If an endpoint fails health checks, Route 53 stops routing traffic to it. Health checks can monitor endpoints, CloudWatch alarms, or other health checks (calculated health checks).
+
+- question: What is a Route 53 Hosted Zone?
+  answer: 'A Hosted Zone is a container for DNS records for a domain:
+
+    Public Hosted Zone: Resolves queries from the internet for a public domain.
+
+    Private Hosted Zone: Resolves queries from within associated VPCs for private domain names.'
+
+- question: What is the difference between an Alias record and a CNAME record in Route 53?
+  answer: 'A CNAME maps one domain name to another but cannot be used at the zone apex (e.g., example.com). An Alias record is AWS-specific, can be used at the zone apex, is free of charge for queries, and can point to AWS resources like ALBs, CloudFront, and S3 buckets. Alias records are generally preferred.'
+
+# ──────────────────────────────────────────────
+# CloudFront
+# ──────────────────────────────────────────────
+- question: What is Amazon CloudFront?
+  answer: Amazon CloudFront is a Content Delivery Network (CDN) that caches and delivers content from Edge Locations worldwide. It accelerates delivery of static and dynamic web content, APIs, and video streaming with low latency and high transfer speeds.
+
+- question: What is a CloudFront Origin?
+  answer: A CloudFront Origin is the source of the content that CloudFront distributes. Origins can be S3 buckets, ALBs, EC2 instances, or any HTTP server. CloudFront retrieves content from the origin when it is not cached at an Edge Location.
+
+- question: What is a CloudFront Distribution?
+  answer: 'A CloudFront Distribution is the configuration for how content is delivered. There are two types:
+
+    Web Distribution: For websites, APIs, and HTTP/HTTPS content.
+
+    RTMP Distribution (deprecated): For media streaming.
+
+    Distributions specify origins, cache behaviors, SSL certificates, and geographic restrictions.'
+
+- question: What is Origin Access Control (OAC) in CloudFront?
+  answer: Origin Access Control restricts direct access to an S3 bucket, ensuring users can only access content through CloudFront. OAC replaces the older Origin Access Identity (OAI) and supports S3 server-side encryption with KMS, dynamic requests, and S3 in all Regions.
+
+- question: What are CloudFront Functions and Lambda@Edge?
+  answer: 'CloudFront Functions: Lightweight JavaScript functions for simple request/response transformations at Edge Locations, executing in under 1ms.
+
+    Lambda@Edge: Node.js or Python functions that run at Regional Edge Caches with more compute power, network access, and up to 30-second execution time. Both enable customizations like URL rewrites, header manipulation, and A/B testing.'
+
+- question: What is CloudFront Cache Invalidation?
+  answer: Cache Invalidation removes objects from CloudFront Edge Location caches before their TTL expires. You can invalidate specific files or use wildcard patterns. Invalidation requests are free for the first 1,000 paths per month.
+
+# ──────────────────────────────────────────────
+# RDS (Relational Database Service)
+# ──────────────────────────────────────────────
+- question: What is Amazon RDS?
+  answer: Amazon Relational Database Service (RDS) is a managed service that simplifies setting up, operating, and scaling relational databases. It supports MySQL, PostgreSQL, MariaDB, Oracle, SQL Server, and Amazon Aurora, handling backups, patching, and replication.
+
+- question: What is Amazon Aurora?
+  answer: Amazon Aurora is an AWS-built relational database compatible with MySQL and PostgreSQL. It provides up to 5x the throughput of MySQL and 3x of PostgreSQL, with storage that automatically scales up to 128 TB. It replicates data across 3 AZs with 6 copies.
+
+- question: What is an RDS Multi-AZ deployment?
+  answer: Multi-AZ deployment creates a synchronous standby replica in a different Availability Zone. It provides high availability and automatic failover (typically 60-120 seconds). The standby is not available for read queries — it is purely for failover.
+
+- question: What are RDS Read Replicas?
+  answer: Read Replicas are asynchronous copies of the primary database used to offload read traffic. They can be created within the same Region, across Regions, or promoted to standalone databases. Up to 15 read replicas are supported for Aurora.
+
+- question: What is RDS automated backup?
+  answer: RDS automated backups create daily snapshots and capture transaction logs. They enable point-in-time recovery to any second within the retention period (1-35 days). Backups are stored in S3 and have zero impact on database performance for Multi-AZ deployments.
+
+- question: What is an RDS DB Subnet Group?
+  answer: A DB Subnet Group is a collection of subnets (typically private) across multiple Availability Zones that you designate for your RDS instances. It ensures the database can be deployed in a Multi-AZ configuration within your VPC.
+
+- question: What is Amazon RDS Proxy?
+  answer: RDS Proxy is a fully managed database proxy that pools and shares database connections. It improves application scalability, reduces database failover time by up to 66%, and enforces IAM authentication. It is especially useful for Lambda functions that create many short-lived connections.
+
+- question: What is the difference between RDS Multi-AZ and Read Replicas?
+  answer: 'Multi-AZ: Synchronous replication, automatic failover, same Region only, standby not readable. Purpose is high availability.
+
+    Read Replicas: Asynchronous replication, no automatic failover, can be cross-Region, readable. Purpose is read scalability and disaster recovery.'
+
+# ──────────────────────────────────────────────
+# DynamoDB
+# ──────────────────────────────────────────────
+- question: What is Amazon DynamoDB?
+  answer: Amazon DynamoDB is a fully managed NoSQL key-value and document database. It delivers single-digit millisecond performance at any scale, with built-in security, backup, and in-memory caching. It supports both key-value and document data models.
+
+- question: What are DynamoDB partition keys and sort keys?
+  answer: 'The partition key (hash key) determines which partition stores the data. The sort key (range key) is optional and enables range queries within a partition. Together they form the primary key:
+
+    Simple primary key: Partition key only.
+
+    Composite primary key: Partition key + sort key.'
+
+- question: What is DynamoDB capacity mode?
+  answer: 'DynamoDB offers two capacity modes:
+
+    Provisioned: You specify read/write capacity units (RCUs/WCUs) with optional auto-scaling. More cost-effective for predictable workloads.
+
+    On-Demand: Automatically scales to handle any traffic level. No capacity planning needed. Better for unpredictable or spiky workloads.'
+
+- question: What is a DynamoDB Global Secondary Index (GSI)?
+  answer: A GSI is an index with a partition key and optional sort key different from the primary key. It allows querying on non-key attributes. GSIs have their own provisioned throughput and contain a projection of the base table's attributes.
+
+- question: What is DynamoDB Streams?
+  answer: DynamoDB Streams captures a time-ordered sequence of item-level changes (inserts, updates, deletes) in a table. Streams can trigger Lambda functions for event-driven processing, enabling use cases like cross-region replication, analytics, and aggregation.
+
+- question: What is DynamoDB Global Tables?
+  answer: Global Tables provide multi-Region, multi-active replication for DynamoDB tables. Changes are replicated to all regions within seconds, providing low-latency access for globally distributed applications and disaster recovery.
+
+- question: What is DynamoDB Accelerator (DAX)?
+  answer: DAX is an in-memory cache for DynamoDB that delivers up to 10x performance improvement — from milliseconds to microseconds. It is fully managed, API-compatible with DynamoDB, and requires no application code changes beyond changing the endpoint.
+
+- question: What is DynamoDB Time to Live (TTL)?
+  answer: TTL automatically deletes expired items from a DynamoDB table based on a timestamp attribute. It is useful for session data, temporary records, and log entries. TTL deletions do not consume write capacity and are processed within 48 hours of expiration.
+
+# ──────────────────────────────────────────────
+# Lambda
+# ──────────────────────────────────────────────
+- question: What is AWS Lambda?
+  answer: AWS Lambda is a serverless compute service that runs code in response to events without provisioning or managing servers. You pay only for compute time consumed. Lambda supports Python, Node.js, Java, Go, .NET, Ruby, and custom runtimes.
+
+- question: What are common Lambda triggers?
+  answer: 'Common Lambda triggers include:
+
+    API Gateway (HTTP requests), S3 (object events), DynamoDB Streams (table changes), SQS (message processing), SNS (notifications), CloudWatch Events/EventBridge (scheduled tasks), Kinesis (stream processing), Cognito (authentication events), and ALB (HTTP requests).'
+
+- question: What are Lambda Layers?
+  answer: Lambda Layers allow you to package libraries, custom runtimes, and other dependencies separately from your function code. Layers can be shared across multiple functions and accounts. A function can use up to 5 layers, and the total unzipped size must be under 250 MB.
+
+- question: What is Lambda concurrency?
+  answer: 'Lambda concurrency is the number of function instances serving requests simultaneously:
+
+    Unreserved Concurrency: Shared pool across all functions (default account limit is 1,000).
+
+    Reserved Concurrency: Guarantees a set number of concurrent executions for a function.
+
+    Provisioned Concurrency: Pre-initializes instances to avoid cold starts, ensuring consistent latency.'
+
+- question: What is a Lambda cold start?
+  answer: A cold start occurs when Lambda creates a new execution environment for a function invocation. It includes downloading code, starting the runtime, and running initialization code. Cold starts add latency (typically 100ms to several seconds) and can be mitigated with Provisioned Concurrency.
+
+- question: What are Lambda environment variables?
+  answer: Environment variables are key-value pairs configured for a Lambda function that are accessible in code at runtime. They are useful for storing configuration values, API keys, and database connection strings. Environment variables can be encrypted using KMS.
+
+- question: What is Lambda versioning and aliases?
+  answer: 'Versions: Immutable snapshots of a Lambda function including code and configuration.
+
+    Aliases: Named pointers to specific versions (e.g., prod, staging). Aliases support traffic shifting for gradual deployments. For example, you can route 90% of traffic to v1 and 10% to v2 for canary deployments.'
+
+- question: What is the maximum execution time for a Lambda function?
+  answer: The maximum execution timeout for a Lambda function is 15 minutes (900 seconds). For longer-running tasks, consider using Step Functions, ECS, or Fargate. The default timeout is 3 seconds.
+
+- question: What is Lambda Destinations?
+  answer: Lambda Destinations route the result of asynchronous invocations to downstream services. You can configure separate destinations for success and failure, including SQS, SNS, Lambda, and EventBridge. Destinations are preferred over Dead Letter Queues for async processing.
+
+- question: What is Lambda@Edge vs CloudFront Functions?
+  answer: 'Lambda@Edge runs at Regional Edge Caches with up to 10 seconds (viewer) or 30 seconds (origin) execution time, supports Node.js and Python, and can access external services. CloudFront Functions run at Edge Locations with sub-millisecond execution, support only JavaScript, and are limited to lightweight transformations like header manipulation and URL rewrites.'
+
+# ──────────────────────────────────────────────
+# API Gateway
+# ──────────────────────────────────────────────
+- question: What is Amazon API Gateway?
+  answer: Amazon API Gateway is a fully managed service for creating, publishing, maintaining, and securing APIs at any scale. It supports REST APIs, HTTP APIs, and WebSocket APIs. It integrates with Lambda, EC2, and other AWS services.
+
+- question: What is the difference between REST API and HTTP API in API Gateway?
+  answer: 'REST API: Full-featured with API keys, request validation, WAF integration, caching, and resource policies. More expensive.
+
+    HTTP API: Lightweight, lower latency, 70% cheaper, supports OIDC/OAuth2 natively, but fewer features. Ideal for Lambda proxy integrations and simple API needs.'
+
+- question: What are API Gateway stages?
+  answer: Stages represent different environments (e.g., dev, staging, prod) for your API. Each stage has its own URL, configuration, and stage variables. You can deploy different API versions to different stages and enable canary deployments for gradual rollouts.
+
+- question: What is API Gateway throttling?
+  answer: 'API Gateway provides throttling to protect backends from traffic spikes:
+
+    Account-level: 10,000 requests per second with a 5,000 request burst.
+
+    Per-method/per-client: Configurable via usage plans and API keys.
+
+    Throttled requests receive a 429 Too Many Requests response.'
+
+- question: What is API Gateway caching?
+  answer: API Gateway caching stores responses in a cache to reduce backend calls and improve latency. Cache capacity ranges from 0.5 GB to 237 GB, with a configurable TTL (default 300 seconds). Caching is available for REST APIs and can be configured per method.
+
+# ──────────────────────────────────────────────
+# SQS (Simple Queue Service)
+# ──────────────────────────────────────────────
+- question: What is Amazon SQS?
+  answer: Amazon Simple Queue Service (SQS) is a fully managed message queuing service that decouples and scales microservices, distributed systems, and serverless applications. It eliminates the complexity of managing messaging infrastructure.
+
+- question: What is the difference between SQS Standard and FIFO queues?
+  answer: 'Standard Queue: Nearly unlimited throughput, at-least-once delivery, best-effort ordering. Messages may be delivered more than once or out of order.
+
+    FIFO Queue: Exactly-once processing, strict ordering, up to 300 messages/second (3,000 with batching). Messages are delivered in the exact order they are sent.'
+
+- question: What is SQS Visibility Timeout?
+  answer: Visibility Timeout is the period during which a message is hidden from other consumers after being read. If the consumer does not delete the message within this period, it becomes visible again for reprocessing. Default is 30 seconds, maximum is 12 hours.
+
+- question: What is an SQS Dead Letter Queue (DLQ)?
+  answer: A Dead Letter Queue receives messages that could not be processed successfully after a specified number of attempts (maxReceiveCount). DLQs help isolate and debug problematic messages without losing them.
+
+- question: What is SQS Long Polling?
+  answer: Long Polling waits for messages to arrive before returning a response, reducing empty responses and API costs. It is configured by setting the WaitTimeSeconds parameter (1-20 seconds). Long Polling is preferred over Short Polling for most use cases.
+
+- question: What is the maximum message size in SQS?
+  answer: The maximum SQS message size is 256 KB. For larger payloads, use the SQS Extended Client Library, which stores the payload in S3 and sends a reference pointer in the SQS message, supporting payloads up to 2 GB.
+
+# ──────────────────────────────────────────────
+# SNS (Simple Notification Service)
+# ──────────────────────────────────────────────
+- question: What is Amazon SNS?
+  answer: Amazon Simple Notification Service (SNS) is a fully managed pub/sub messaging service. It enables fan-out to multiple subscribers including SQS queues, Lambda functions, HTTP endpoints, email, SMS, and mobile push notifications.
+
+- question: What is the difference between SNS and SQS?
+  answer: 'SNS is a push-based pub/sub service that sends messages to multiple subscribers simultaneously (fan-out). SQS is a pull-based queue where consumers poll for messages. They are often used together — SNS fans out messages to multiple SQS queues for parallel processing.'
+
+- question: What is an SNS FIFO Topic?
+  answer: SNS FIFO Topics provide strict message ordering and exactly-once delivery. They can only deliver to SQS FIFO queues. FIFO Topics support message deduplication and ordering by message group ID, ensuring messages are processed in the correct sequence.
+
+- question: What is SNS Message Filtering?
+  answer: SNS Message Filtering allows subscribers to receive only a subset of messages published to a topic. Filter policies are JSON documents attached to subscriptions that match message attributes. This eliminates the need for subscribers to filter messages themselves.
+
+# ──────────────────────────────────────────────
+# CloudWatch
+# ──────────────────────────────────────────────
+- question: What is Amazon CloudWatch?
+  answer: Amazon CloudWatch is a monitoring and observability service that collects metrics, logs, and events from AWS resources and applications. It provides dashboards, alarms, and automated actions to help you monitor performance and operational health.
+
+- question: What are CloudWatch Metrics?
+  answer: CloudWatch Metrics are time-series data points representing resource utilization and performance. AWS services automatically publish standard metrics (e.g., CPU utilization, network traffic). Custom metrics can be published via the PutMetricData API for application-specific monitoring.
+
+- question: What are CloudWatch Alarms?
+  answer: 'CloudWatch Alarms watch a single metric and trigger actions when a threshold is breached. Alarm states include OK, ALARM, and INSUFFICIENT_DATA. Actions can include SNS notifications, Auto Scaling policies, and EC2 instance actions (stop, terminate, reboot).'
+
+- question: What is CloudWatch Logs?
+  answer: CloudWatch Logs collects, stores, and analyzes log data from AWS services, EC2 instances, and applications. It supports log groups, log streams, metric filters, subscription filters, and retention policies. Logs can be exported to S3 or streamed to Lambda and Elasticsearch.
+
+- question: What is CloudWatch Logs Insights?
+  answer: CloudWatch Logs Insights is an interactive query service for analyzing log data. It uses a purpose-built query language to search and aggregate log events across multiple log groups. It can generate visualizations and is useful for troubleshooting and operational analysis.
+
+- question: What are CloudWatch Events and Amazon EventBridge?
+  answer: CloudWatch Events (now Amazon EventBridge) is a serverless event bus that routes events from AWS services, SaaS applications, and custom sources to targets like Lambda, SQS, and Step Functions. EventBridge adds schema registry, cross-account event routing, and third-party integrations.
+
+- question: What is CloudWatch Container Insights?
+  answer: Container Insights collects, aggregates, and summarizes metrics and logs from containerized applications on ECS, EKS, and Kubernetes. It provides performance data at the cluster, node, pod, and task level, including CPU, memory, disk, and network metrics.
+
+# ──────────────────────────────────────────────
+# CloudFormation
+# ──────────────────────────────────────────────
+- question: What is AWS CloudFormation?
+  answer: AWS CloudFormation is an Infrastructure as Code (IaC) service that lets you define and provision AWS resources using JSON or YAML templates. It manages resources as stacks, supports rollback on failure, and ensures consistent, repeatable deployments.
+
+- question: What are the main sections of a CloudFormation template?
+  answer: 'Key sections include:
+
+    AWSTemplateFormatVersion: Template version.
+
+    Description: Template description.
+
+    Parameters: Input values provided at stack creation.
+
+    Mappings: Static key-value lookups.
+
+    Conditions: Conditional resource creation.
+
+    Resources (required): The AWS resources to create.
+
+    Outputs: Values returned after stack creation (e.g., endpoint URLs).'
+
+- question: What is a CloudFormation Stack?
+  answer: A Stack is a collection of AWS resources managed as a single unit. When you create, update, or delete a stack, CloudFormation creates, updates, or deletes all resources in the template. Stacks support rollback, drift detection, and change sets.
+
+- question: What is a CloudFormation Change Set?
+  answer: A Change Set previews the changes that will be made to a stack before executing them. It shows which resources will be added, modified, or replaced, helping you understand the impact of an update before applying it.
+
+- question: What is CloudFormation Drift Detection?
+  answer: Drift Detection identifies resources whose actual configuration differs from the stack template. This happens when resources are modified manually outside of CloudFormation. Drift detection helps maintain infrastructure consistency and compliance.
+
+- question: What are CloudFormation StackSets?
+  answer: StackSets extend CloudFormation by enabling you to deploy stacks across multiple AWS accounts and Regions with a single operation. They are useful for applying governance policies, security baselines, and shared infrastructure across an organization.
+
+- question: What is the Fn::Ref function in CloudFormation?
+  answer: 'Fn::Ref (or !Ref shorthand) returns the value of a parameter or the physical ID of a resource. For example, !Ref MyEC2Instance returns the instance ID. It is one of the most commonly used intrinsic functions in CloudFormation templates.'
+
+# ──────────────────────────────────────────────
+# ECS & EKS (Containers)
+# ──────────────────────────────────────────────
+- question: What is Amazon ECS?
+  answer: Amazon Elastic Container Service (ECS) is a fully managed container orchestration service that runs Docker containers. It supports two launch types — EC2 (you manage the instances) and Fargate (serverless). ECS integrates with ALB, IAM, CloudWatch, and other AWS services.
+
+- question: What is AWS Fargate?
+  answer: AWS Fargate is a serverless compute engine for containers that works with both ECS and EKS. It eliminates the need to provision and manage servers. You specify CPU and memory requirements, and Fargate handles the infrastructure. You pay only for the resources your containers use.
+
+- question: What is Amazon EKS?
+  answer: Amazon Elastic Kubernetes Service (EKS) is a managed Kubernetes service that runs the Kubernetes control plane across multiple AZs. It supports EC2 and Fargate for worker nodes and integrates with AWS services for networking, security, and monitoring.
+
+- question: What is an ECS Task Definition?
+  answer: A Task Definition is a JSON document that describes one or more containers forming an application. It specifies container images, CPU/memory, port mappings, environment variables, volumes, logging, and IAM roles. It is like a blueprint for your containers.
+
+- question: What is an ECS Service?
+  answer: An ECS Service maintains a desired count of task instances running simultaneously. It integrates with ELB for load balancing, supports rolling updates, and restarts tasks that fail health checks. Services ensure your application is always available.
+
+- question: What is the difference between ECS and EKS?
+  answer: 'ECS: AWS-native, simpler to set up, tight integration with AWS services, uses Task Definitions, proprietary API.
+
+    EKS: Managed Kubernetes, portable across clouds, larger ecosystem and community, uses standard Kubernetes manifests, steeper learning curve but more flexible.'
+
+- question: What is Amazon ECR?
+  answer: Amazon Elastic Container Registry (ECR) is a fully managed Docker container registry that stores, manages, and deploys container images. It supports image scanning for vulnerabilities, encryption at rest, and lifecycle policies for image cleanup.
+
+- question: What is ECS Exec?
+  answer: ECS Exec allows you to interactively execute commands inside a running container without SSH. It uses AWS Systems Manager Session Manager for secure connections. It is useful for debugging, troubleshooting, and running one-off commands in production containers.
+
+# ──────────────────────────────────────────────
+# Step Functions
+# ──────────────────────────────────────────────
+- question: What is AWS Step Functions?
+  answer: AWS Step Functions is a serverless orchestration service that coordinates multiple AWS services into workflows using state machines defined in Amazon States Language (JSON). It supports sequential, parallel, branching, and error-handling patterns.
+
+- question: What are the two workflow types in Step Functions?
+  answer: 'Standard Workflows: Long-running (up to 1 year), exactly-once execution, full execution history, higher cost. Ideal for ETL, ML pipelines, and order processing.
+
+    Express Workflows: Short-lived (up to 5 minutes), at-least-once execution, higher throughput, lower cost. Ideal for high-volume event processing, streaming data, and IoT.'
+
+- question: What are common Step Functions states?
+  answer: 'Key state types include:
+
+    Task: Performs work by invoking Lambda, ECS, SNS, SQS, or other services.
+
+    Choice: Adds branching logic based on input.
+
+    Parallel: Executes branches concurrently.
+
+    Wait: Delays execution for a specified time.
+
+    Map: Iterates over a collection, processing each item.
+
+    Pass: Passes input to output, optionally transforming data.
+
+    Succeed/Fail: Terminates the state machine.'
+
+# ──────────────────────────────────────────────
+# AWS Security Services
+# ──────────────────────────────────────────────
+- question: What is AWS KMS?
+  answer: AWS Key Management Service (KMS) creates and manages cryptographic keys for encrypting data across AWS services. It supports symmetric and asymmetric keys, automatic key rotation, and integration with over 100 AWS services. Keys never leave KMS unencrypted.
+
+- question: What is AWS Secrets Manager?
+  answer: AWS Secrets Manager securely stores and automatically rotates secrets such as database credentials, API keys, and tokens. It integrates with RDS, Redshift, and DocumentDB for automatic credential rotation and provides SDK-based retrieval in application code.
+
+- question: What is the difference between KMS and Secrets Manager?
+  answer: 'KMS manages encryption keys used to encrypt data. Secrets Manager stores and rotates secrets (passwords, API keys, certificates). Secrets Manager uses KMS to encrypt the secrets it stores. Use KMS for encryption operations and Secrets Manager for secret lifecycle management.'
+
+- question: What is AWS WAF?
+  answer: AWS Web Application Firewall (WAF) protects web applications from common exploits like SQL injection, XSS, and bot attacks. It integrates with CloudFront, ALB, and API Gateway. Rules can filter traffic based on IP addresses, headers, body content, and rate limits.
+
+- question: What is AWS Shield?
+  answer: 'AWS Shield provides DDoS protection:
+
+    Shield Standard: Free, automatic protection against common Layer 3/4 attacks for all AWS customers.
+
+    Shield Advanced: Paid service with enhanced DDoS protection, 24/7 DDoS Response Team (DRT), cost protection, and advanced detection for Layer 7 attacks.'
+
+- question: What is Amazon GuardDuty?
+  answer: Amazon GuardDuty is a threat detection service that continuously monitors AWS accounts and workloads for malicious activity. It analyzes VPC Flow Logs, DNS logs, CloudTrail events, and S3 data events using machine learning to identify threats like compromised instances and unauthorized access.
+
+- question: What is AWS Security Hub?
+  answer: AWS Security Hub provides a comprehensive view of your security state across AWS accounts. It aggregates findings from GuardDuty, Inspector, Macie, Firewall Manager, and third-party tools. It runs automated compliance checks against standards like CIS and PCI DSS.
+
+- question: What is Amazon Inspector?
+  answer: Amazon Inspector is an automated vulnerability management service that continuously scans EC2 instances, container images in ECR, and Lambda functions for software vulnerabilities and unintended network exposure. It provides prioritized findings with risk scores.
+
+- question: What is Amazon Macie?
+  answer: Amazon Macie is a data security service that uses machine learning to discover, classify, and protect sensitive data stored in S3. It identifies personally identifiable information (PII), financial data, and credentials, helping organizations meet compliance requirements.
+
+- question: What is AWS CloudTrail?
+  answer: AWS CloudTrail records API calls and events across your AWS account, providing an audit trail of user activity and resource changes. It captures who made the call, when, from where, and what parameters were used. Trails can deliver logs to S3 and CloudWatch.
+
+- question: What is the difference between CloudTrail and CloudWatch?
+  answer: 'CloudTrail: Records API activity and events (who did what and when) for auditing and compliance.
+
+    CloudWatch: Monitors resource performance metrics and logs (how are things running) for operational monitoring. They are complementary — CloudTrail for governance, CloudWatch for performance.'
+
+- question: What is AWS Certificate Manager (ACM)?
+  answer: AWS Certificate Manager provisions, manages, and deploys public and private SSL/TLS certificates. Public certificates are free and automatically renewed. ACM integrates with ALB, CloudFront, API Gateway, and other AWS services for easy HTTPS enablement.
+
+- question: What is AWS Config?
+  answer: AWS Config continuously records and evaluates resource configurations against desired settings. It provides a configuration history, compliance auditing, and change management. Config Rules can automatically assess whether resources comply with your policies.
+
+# ──────────────────────────────────────────────
+# ElastiCache
+# ──────────────────────────────────────────────
+- question: What is Amazon ElastiCache?
+  answer: Amazon ElastiCache is a fully managed in-memory caching service that supports Redis and Memcached. It improves application performance by caching frequently accessed data, reducing database load, and providing sub-millisecond response times.
+
+- question: What is the difference between ElastiCache Redis and Memcached?
+  answer: 'Redis: Supports complex data structures, persistence, replication, pub/sub, Lua scripting, and cluster mode. Ideal for caching, session stores, real-time analytics, and leaderboards.
+
+    Memcached: Simple key-value store, multi-threaded, no persistence, no replication. Ideal for simple caching with large nodes and horizontal scaling.'
+
+- question: What are ElastiCache caching strategies?
+  answer: 'Lazy Loading (Cache-Aside): Data is loaded into cache only when requested. Cache misses result in a database query. Stale data is possible.
+
+    Write-Through: Data is written to cache and database simultaneously. Always up-to-date but adds write latency.
+
+    TTL (Time to Live): Expiration time on cached data to limit staleness. Used with both strategies.'
+
+# ──────────────────────────────────────────────
+# Kinesis
+# ──────────────────────────────────────────────
+- question: What is Amazon Kinesis?
+  answer: 'Amazon Kinesis is a platform for real-time streaming data on AWS. It includes:
+
+    Kinesis Data Streams: Real-time data streaming with custom processing.
+
+    Kinesis Data Firehose: Loads streaming data into S3, Redshift, Elasticsearch, and Splunk.
+
+    Kinesis Data Analytics: Analyzes streaming data using SQL or Apache Flink.
+
+    Kinesis Video Streams: Captures and processes video streams.'
+
+- question: What is the difference between Kinesis Data Streams and SQS?
+  answer: 'Kinesis Data Streams: Real-time, ordered, multiple consumers can read the same data, data retained for 1-365 days, suited for streaming analytics.
+
+    SQS: Message queue, per-message processing, each message consumed once (standard) or exactly-once (FIFO), 14-day retention max, suited for decoupling and task distribution.'
+
+- question: What is a Kinesis Shard?
+  answer: A Shard is the base throughput unit of a Kinesis Data Stream. Each shard provides 1 MB/sec input and 2 MB/sec output. Streams scale by adding or removing shards. Data is partitioned across shards using partition keys.
+
+# ──────────────────────────────────────────────
+# AWS Storage Services
+# ──────────────────────────────────────────────
+- question: What is Amazon EFS?
+  answer: Amazon Elastic File System (EFS) is a fully managed, scalable, elastic NFS file system for Linux workloads. It can be mounted by multiple EC2 instances simultaneously across AZs, automatically grows and shrinks, and supports standard NFS protocols.
+
+- question: What is the difference between EBS, EFS, and S3?
+  answer: 'EBS: Block storage attached to a single EC2 instance (except Multi-Attach io2), single AZ, good for databases and boot volumes.
+
+    EFS: File storage mountable by multiple instances across AZs, NFS protocol, good for shared file systems and content management.
+
+    S3: Object storage, accessed via HTTP/API, unlimited capacity, good for backups, static content, and data lakes.'
+
+- question: What is Amazon FSx?
+  answer: 'Amazon FSx provides fully managed file systems:
+
+    FSx for Windows File Server: Windows-native file system with SMB protocol, Active Directory integration.
+
+    FSx for Lustre: High-performance file system for HPC, ML, and media processing. Integrates with S3.
+
+    FSx for NetApp ONTAP: Multi-protocol file system with data management features.
+
+    FSx for OpenZFS: High-performance ZFS-based file system.'
+
+- question: What is AWS Storage Gateway?
+  answer: 'AWS Storage Gateway connects on-premises environments to cloud storage:
+
+    File Gateway: NFS/SMB interface to S3.
+
+    Volume Gateway: iSCSI block storage backed by S3 with EBS snapshots.
+
+    Tape Gateway: Virtual tape library backed by S3 and Glacier.
+
+    It is used for hybrid cloud storage, backup, and disaster recovery.'
+
+- question: What is AWS Snow Family?
+  answer: 'The Snow Family provides physical devices for edge computing and data migration:
+
+    Snowcone: 8-14 TB, portable, rugged. For edge computing and small data transfers.
+
+    Snowball Edge: 80-210 TB, with compute capability. For large data migrations and edge computing.
+
+    Snowmobile: Up to 100 PB in a shipping container. For exabyte-scale data center migrations.'
+
+# ──────────────────────────────────────────────
+# AWS Serverless & Application Integration
+# ──────────────────────────────────────────────
+- question: What is Amazon EventBridge?
+  answer: Amazon EventBridge is a serverless event bus that connects applications using events from AWS services, SaaS apps, and custom sources. It supports event filtering, transformation, archiving, and replay. It replaces CloudWatch Events with additional features.
+
+- question: What is AWS AppSync?
+  answer: AWS AppSync is a managed GraphQL service that simplifies application development by providing a flexible API for accessing, manipulating, and combining data from multiple sources. It supports real-time subscriptions, offline access, and data synchronization.
+
+- question: What is Amazon Cognito?
+  answer: 'Amazon Cognito provides user identity management:
+
+    User Pools: User directories for sign-up, sign-in, and MFA. Supports SAML and OIDC federation.
+
+    Identity Pools: Provides temporary AWS credentials for accessing AWS services. Supports anonymous and authenticated users.
+
+    Together they handle authentication, authorization, and user management for web and mobile apps.'
+
+- question: What is AWS SAM (Serverless Application Model)?
+  answer: AWS SAM is an open-source framework for building serverless applications. It extends CloudFormation with simplified syntax for defining Lambda functions, APIs, DynamoDB tables, and event sources. The SAM CLI enables local testing and debugging.
+
+# ──────────────────────────────────────────────
+# AWS Data & Analytics
+# ──────────────────────────────────────────────
+- question: What is Amazon Redshift?
+  answer: Amazon Redshift is a fully managed petabyte-scale data warehouse service. It uses columnar storage, massively parallel processing (MPP), and query optimization to deliver fast SQL analytics on structured and semi-structured data.
+
+- question: What is Amazon Athena?
+  answer: Amazon Athena is a serverless interactive query service that analyzes data in S3 using standard SQL. It supports CSV, JSON, Parquet, and ORC formats. You pay only for the data scanned. Athena is commonly used for ad-hoc queries on data lakes.
+
+- question: What is AWS Glue?
+  answer: AWS Glue is a fully managed ETL (Extract, Transform, Load) service. It includes a Data Catalog for metadata management, crawlers for schema discovery, and Spark-based ETL jobs. Glue simplifies data preparation for analytics and machine learning.
+
+- question: What is Amazon OpenSearch Service?
+  answer: Amazon OpenSearch Service (formerly Elasticsearch Service) is a managed service for real-time search, monitoring, and log analytics. It deploys and scales OpenSearch clusters and provides Kibana/OpenSearch Dashboards for visualization.
+
+- question: What is AWS Lake Formation?
+  answer: AWS Lake Formation simplifies building, securing, and managing data lakes on S3. It automates data ingestion, cataloging, transformation, and security. It provides fine-grained access control at the column and row level.
+
+- question: What is Amazon QuickSight?
+  answer: Amazon QuickSight is a cloud-native business intelligence service that creates interactive dashboards and visualizations. It supports SPICE (Super-fast, Parallel, In-memory Calculation Engine) for fast queries and integrates with RDS, Redshift, S3, and other data sources.
+
+# ──────────────────────────────────────────────
+# AWS Migration & Transfer
+# ──────────────────────────────────────────────
+- question: What is AWS Database Migration Service (DMS)?
+  answer: AWS DMS migrates databases to AWS with minimal downtime. It supports homogeneous (e.g., Oracle to Oracle) and heterogeneous (e.g., Oracle to Aurora) migrations. It can run continuous replication for real-time data synchronization.
+
+- question: What is the AWS Schema Conversion Tool (SCT)?
+  answer: AWS SCT converts database schemas and code from one database engine to another (e.g., Oracle to PostgreSQL). It identifies and highlights conversion issues, generates equivalent code where possible, and works alongside DMS for heterogeneous migrations.
+
+- question: What are the AWS Migration Strategies (6 Rs)?
+  answer: 'The 6 Rs of cloud migration are:
+
+    Rehost (Lift and Shift): Move as-is to the cloud.
+
+    Replatform (Lift and Reshape): Make minor optimizations.
+
+    Repurchase: Move to a SaaS product.
+
+    Refactor/Re-architect: Redesign using cloud-native features.
+
+    Retire: Decommission unneeded applications.
+
+    Retain: Keep on-premises for now.'
+
+- question: What is AWS Application Migration Service (MGN)?
+  answer: AWS Application Migration Service (formerly CloudEndure Migration) automates lift-and-shift migrations. It continuously replicates source servers to AWS, enabling non-disruptive testing and cutover with minimal downtime.
+
+- question: What is AWS DataSync?
+  answer: AWS DataSync is a data transfer service that automates moving data between on-premises storage and AWS (S3, EFS, FSx). It handles scheduling, monitoring, encryption, and data integrity verification, and can transfer data up to 10x faster than open-source tools.
+
+# ──────────────────────────────────────────────
+# AWS Networking
+# ──────────────────────────────────────────────
+- question: What is AWS Direct Connect?
+  answer: AWS Direct Connect establishes a dedicated private network connection from your data center to AWS. It provides consistent network performance, reduced bandwidth costs, and a private connection that does not traverse the public internet. It supports 1 Gbps and 10 Gbps connections.
+
+- question: What is AWS VPN?
+  answer: 'AWS VPN provides encrypted connections between your network and AWS:
+
+    Site-to-Site VPN: Connects on-premises networks to VPCs over IPsec tunnels through a Virtual Private Gateway or Transit Gateway.
+
+    Client VPN: Enables remote users to securely access AWS resources and on-premises networks using OpenVPN-based clients.'
+
+- question: What is AWS Global Accelerator?
+  answer: AWS Global Accelerator improves application availability and performance by routing traffic through the AWS global network instead of the public internet. It provides two static anycast IP addresses, automatic failover, and traffic dials for weighted routing across Regions.
+
+- question: What is the difference between CloudFront and Global Accelerator?
+  answer: 'CloudFront: CDN that caches content at Edge Locations, best for static/dynamic web content and video streaming.
+
+    Global Accelerator: Routes traffic through AWS backbone network to optimal endpoints, best for non-HTTP protocols (TCP/UDP), gaming, IoT, and applications requiring static IPs or deterministic failover.'
+
+- question: What is an Elastic Network Interface (ENI)?
+  answer: An ENI is a virtual network interface that can be attached to an EC2 instance. It includes a primary private IP, one or more secondary private IPs, an optional Elastic IP, security groups, and a MAC address. ENIs can be moved between instances for failover.
+
+- question: What is AWS PrivateLink?
+  answer: AWS PrivateLink enables private connectivity between VPCs, supported AWS services, and on-premises networks without exposing traffic to the internet. Traffic stays on the Amazon network. It uses Interface VPC Endpoints powered by ENIs in your VPC.
+
+# ──────────────────────────────────────────────
+# AWS Cost Management
+# ──────────────────────────────────────────────
+- question: What is AWS Cost Explorer?
+  answer: AWS Cost Explorer is a tool for visualizing and analyzing AWS spending patterns over time. It provides forecasts, shows cost trends by service or tag, identifies savings opportunities, and supports custom reports with filtering and grouping.
+
+- question: What is AWS Budgets?
+  answer: AWS Budgets lets you set custom cost and usage budgets with alerts when thresholds are exceeded. You can create budgets based on cost, usage, Reserved Instance utilization, or Savings Plans coverage. Alerts can trigger SNS notifications or automated actions.
+
+- question: What are AWS Savings Plans?
+  answer: 'Savings Plans provide discounted pricing in exchange for a commitment to a consistent amount of usage ($/hour) for 1 or 3 years:
+
+    Compute Savings Plans: Apply to EC2, Lambda, and Fargate regardless of instance family, size, or Region.
+
+    EC2 Instance Savings Plans: Apply to specific instance families in a Region for higher discounts.'
+
+- question: What is the AWS Pricing Calculator?
+  answer: The AWS Pricing Calculator is a web tool that helps estimate the cost of AWS services before deployment. You can model different configurations, compare pricing options, and generate detailed cost estimates for projects and proposals.
+
+- question: What are AWS Reserved Instances?
+  answer: 'Reserved Instances provide up to 72% discount compared to On-Demand by committing to 1 or 3 years of usage:
+
+    Standard RIs: Highest discount, limited flexibility to change instance attributes.
+
+    Convertible RIs: Lower discount but can change instance family, OS, and tenancy.
+
+    Payment options: All Upfront (highest discount), Partial Upfront, or No Upfront.'
+
+- question: What is AWS Cost Allocation Tags?
+  answer: Cost Allocation Tags are key-value pairs used to organize and track AWS costs. AWS-generated tags (e.g., aws:createdBy) and user-defined tags can be activated in the Billing Console to appear in cost reports, enabling cost attribution by team, project, or environment.
+
+# ──────────────────────────────────────────────
+# AWS Systems Manager
+# ──────────────────────────────────────────────
+- question: What is AWS Systems Manager?
+  answer: AWS Systems Manager provides a unified interface for managing AWS resources at scale. It includes capabilities for patching, configuration management, remote access, inventory, parameter storage, and automation across EC2 instances and on-premises servers.
+
+- question: What is Systems Manager Parameter Store?
+  answer: 'Parameter Store provides secure, hierarchical storage for configuration data and secrets. It supports:
+
+    String, StringList, and SecureString (KMS-encrypted) types.
+
+    Versioning and hierarchical naming (e.g., /app/prod/db-password).
+
+    Free for standard parameters (up to 10,000). It integrates with Lambda, ECS, CloudFormation, and other services.'
+
+- question: What is the difference between Parameter Store and Secrets Manager?
+  answer: 'Parameter Store: Free (standard tier), stores configuration and secrets, no automatic rotation, simpler.
+
+    Secrets Manager: Paid ($0.40/secret/month), specialized for secrets, automatic rotation for RDS/Redshift/DocumentDB, cross-account access. Use Parameter Store for general configuration and Secrets Manager when automatic rotation is needed.'
+
+- question: What is Systems Manager Session Manager?
+  answer: Session Manager provides secure, auditable shell access to EC2 instances without opening inbound ports, managing SSH keys, or using bastion hosts. Sessions are logged to S3 and CloudWatch for auditing. It supports port forwarding and works through the SSM Agent.
+
+- question: What is Systems Manager Patch Manager?
+  answer: Patch Manager automates the process of patching managed instances with security and other updates. It uses patch baselines to define which patches to approve, maintenance windows to schedule patching, and provides compliance reporting.
+
+# ──────────────────────────────────────────────
+# AWS Organizations & Governance
+# ──────────────────────────────────────────────
+- question: What is AWS Organizations?
+  answer: AWS Organizations enables centralized management of multiple AWS accounts. It provides consolidated billing, hierarchical organization units (OUs), and Service Control Policies (SCPs) to enforce governance across all accounts.
+
+- question: What are Service Control Policies (SCPs)?
+  answer: SCPs are policies in AWS Organizations that set permission guardrails for member accounts. They restrict which AWS services and actions are available, even if IAM policies grant access. SCPs do not grant permissions — they only limit them. They do not affect the management account.
+
+- question: What is AWS Control Tower?
+  answer: AWS Control Tower automates the setup and governance of a secure, multi-account AWS environment. It provides a landing zone, guardrails (preventive and detective), account factory for provisioning new accounts, and a dashboard for compliance monitoring.
+
+- question: What is AWS RAM (Resource Access Manager)?
+  answer: AWS RAM enables you to share AWS resources (VPC subnets, Transit Gateways, License Manager configurations, Route 53 Resolver rules) with other AWS accounts or within your Organization, reducing resource duplication and cost.
+
+# ──────────────────────────────────────────────
+# Elastic Beanstalk
+# ──────────────────────────────────────────────
+- question: What is AWS Elastic Beanstalk?
+  answer: AWS Elastic Beanstalk is a PaaS service that deploys and manages applications without worrying about infrastructure. You upload your code, and Beanstalk handles provisioning, load balancing, auto-scaling, and monitoring. It supports Java, .NET, Python, Node.js, Go, Docker, and more.
+
+- question: What deployment strategies does Elastic Beanstalk support?
+  answer: 'Elastic Beanstalk supports:
+
+    All at once: Deploys to all instances simultaneously. Fast but causes downtime.
+
+    Rolling: Deploys in batches, maintaining partial availability.
+
+    Rolling with additional batch: Launches new instances for the batch to maintain full capacity.
+
+    Immutable: Launches a full set of new instances, swaps when healthy.
+
+    Traffic splitting: Canary-style deployment that shifts traffic gradually.'
+
+# ──────────────────────────────────────────────
+# AWS CI/CD Services
+# ──────────────────────────────────────────────
+- question: What is AWS CodePipeline?
+  answer: AWS CodePipeline is a fully managed continuous delivery service that automates build, test, and deploy pipelines. It integrates with CodeCommit, CodeBuild, CodeDeploy, Lambda, CloudFormation, and third-party tools like GitHub and Jenkins.
+
+- question: What is AWS CodeBuild?
+  answer: AWS CodeBuild is a fully managed continuous integration service that compiles source code, runs tests, and produces deployable artifacts. It scales automatically, supports custom build environments via Docker, and charges per build minute.
+
+- question: What is AWS CodeDeploy?
+  answer: 'AWS CodeDeploy automates application deployments to EC2 instances, on-premises servers, Lambda functions, and ECS services. It supports:
+
+    In-place deployment: Updates existing instances.
+
+    Blue/green deployment: Shifts traffic to new instances/tasks.
+
+    It handles rollback on failure and integrates with Auto Scaling Groups.'
+
+- question: What is AWS CodeCommit?
+  answer: AWS CodeCommit is a managed Git-based source control service that hosts private Git repositories. It provides encryption at rest and in transit, integrates with IAM for access control, and works with standard Git tools and CI/CD pipelines.
+
+# ──────────────────────────────────────────────
+# AWS ML & AI Services
+# ──────────────────────────────────────────────
+- question: What is Amazon SageMaker?
+  answer: Amazon SageMaker is a fully managed machine learning service that provides tools to build, train, and deploy ML models. It includes Jupyter notebooks, built-in algorithms, distributed training, model hosting, and MLOps features like model monitoring and pipelines.
+
+- question: What are AWS AI services for common use cases?
+  answer: 'AWS provides pre-trained AI services:
+
+    Rekognition: Image and video analysis (object detection, facial recognition).
+
+    Comprehend: Natural language processing (sentiment, entities, key phrases).
+
+    Transcribe: Speech to text.
+
+    Polly: Text to speech.
+
+    Translate: Language translation.
+
+    Textract: Extract text and data from documents.
+
+    Lex: Build conversational interfaces (chatbots).'
+
+- question: What is Amazon Bedrock?
+  answer: Amazon Bedrock is a fully managed service for building generative AI applications using foundation models from Amazon (Titan), Anthropic (Claude), Meta (Llama), and others. It provides API access to models, fine-tuning, RAG support, and Agents for orchestrating complex tasks.
+
+# ──────────────────────────────────────────────
+# AWS Architecture Patterns
+# ──────────────────────────────────────────────
+- question: How do you design a highly available architecture on AWS?
+  answer: 'Key principles include:
+
+    Deploy across multiple Availability Zones.
+
+    Use Auto Scaling Groups and Elastic Load Balancers.
+
+    Use managed services (RDS Multi-AZ, S3, DynamoDB) with built-in redundancy.
+
+    Implement health checks and automated failover.
+
+    Use Route 53 with failover routing.
+
+    Design for stateless application tiers.
+
+    Store session data externally (ElastiCache, DynamoDB).'
+
+- question: How do you design for disaster recovery on AWS?
+  answer: 'AWS disaster recovery strategies (in order of cost and recovery speed):
+
+    Backup and Restore: Cheapest, longest recovery. Periodic backups to S3/Glacier.
+
+    Pilot Light: Core components always running, scale up on disaster.
+
+    Warm Standby: Scaled-down version of production always running.
+
+    Multi-Site Active/Active: Full production in multiple Regions, instant failover. RPO and RTO decrease as you move from backup/restore to multi-site.'
+
+- question: What is a serverless architecture on AWS?
+  answer: 'A typical serverless architecture uses:
+
+    API Gateway for HTTP endpoints.
+
+    Lambda for compute.
+
+    DynamoDB or Aurora Serverless for data.
+
+    S3 for static assets.
+
+    Cognito for authentication.
+
+    Step Functions for orchestration.
+
+    SNS/SQS for messaging.
+
+    CloudFront for content delivery.
+
+    Benefits include no server management, automatic scaling, and pay-per-use pricing.'
+
+- question: How do you implement a microservices architecture on AWS?
+  answer: 'AWS microservices patterns include:
+
+    Compute: ECS, EKS, or Lambda for individual services.
+
+    API Management: API Gateway or ALB for routing.
+
+    Service Discovery: Cloud Map or ECS Service Discovery.
+
+    Messaging: SQS/SNS for asynchronous communication.
+
+    Data: Each service owns its database (database per service pattern).
+
+    Observability: X-Ray for tracing, CloudWatch for metrics and logs.
+
+    CI/CD: CodePipeline with per-service pipelines.'
+
+- question: What is the AWS three-tier architecture?
+  answer: 'The classic three-tier architecture on AWS:
+
+    Presentation Tier: CloudFront + S3 for static assets, ALB for routing.
+
+    Application Tier: EC2 instances or containers in private subnets, behind an ALB, in an Auto Scaling Group.
+
+    Data Tier: RDS or DynamoDB in private subnets, with Read Replicas for scaling reads.
+
+    Each tier is isolated with security groups and network ACLs, and can scale independently.'
+
+- question: How do you secure data at rest and in transit on AWS?
+  answer: 'At Rest: Enable encryption on S3 (SSE-S3, SSE-KMS, SSE-C), EBS volumes, RDS instances, DynamoDB tables, and other storage services using KMS keys.
+
+    In Transit: Use TLS/SSL for all network communication. Enable HTTPS on ALB/CloudFront with ACM certificates. Use VPN or Direct Connect for private connectivity. Enable SSL on RDS connections.'
+
+- question: What is infrastructure as code best practice on AWS?
+  answer: 'Best practices include:
+
+    Use CloudFormation or Terraform for all resource provisioning.
+
+    Store templates in version control (Git).
+
+    Use parameters and mappings for environment-specific values.
+
+    Implement nested stacks or modules for reusability.
+
+    Use change sets or plan to preview changes.
+
+    Enable drift detection.
+
+    Integrate IaC into CI/CD pipelines.
+
+    Follow naming conventions and use tags consistently.'
+
+# ──────────────────────────────────────────────
+# Additional AWS Services
+# ──────────────────────────────────────────────
+- question: What is Amazon CloudWatch Synthetics?
+  answer: CloudWatch Synthetics creates canaries — configurable scripts that run on a schedule to monitor endpoints and APIs. Canaries simulate user interactions and detect issues before real users are affected. They support screenshots, HTTP checks, and custom scripts.
+
+- question: What is AWS X-Ray?
+  answer: AWS X-Ray is a distributed tracing service that helps analyze and debug microservices applications. It traces requests as they flow through services, creates service maps, identifies performance bottlenecks, and pinpoints error root causes.
+
+- question: What is AWS Cloud Map?
+  answer: AWS Cloud Map is a service discovery service that maps custom names to resources like EC2 instances, ECS tasks, S3 buckets, or DynamoDB tables. It enables applications to discover resources via API calls or DNS queries, simplifying microservices communication.
+
+- question: What is Amazon MQ?
+  answer: Amazon MQ is a managed message broker service for Apache ActiveMQ and RabbitMQ. It is designed for migrating existing applications that use standard messaging protocols (AMQP, MQTT, STOMP, OpenWire) to the cloud without rewriting code.
+
+- question: What is the difference between Amazon MQ, SQS, and SNS?
+  answer: 'Amazon MQ: Managed message broker for existing applications using standard protocols. Choose when migrating from on-premises brokers.
+
+    SQS: Fully managed queue service, unlimited throughput, simpler API. Choose for new cloud-native applications.
+
+    SNS: Pub/sub messaging for fan-out to multiple subscribers. Choose when multiple consumers need the same message.'
+
+- question: What is AWS Backup?
+  answer: AWS Backup is a centralized service that automates backup across AWS services including EC2, EBS, RDS, DynamoDB, EFS, FSx, and S3. It provides backup plans, retention policies, cross-Region and cross-account backup, and compliance reporting.
+
+- question: What is Amazon SES?
+  answer: Amazon Simple Email Service (SES) is a scalable email sending and receiving service for transactional, marketing, and notification emails. It supports SMTP and API interfaces, provides email authentication (DKIM, SPF, DMARC), and includes deliverability tools.
+
+- question: What is AWS CloudHSM?
+  answer: AWS CloudHSM provides dedicated Hardware Security Modules in the AWS Cloud for generating and managing cryptographic keys. It gives full control over keys and cryptographic operations, meeting regulatory requirements like FIPS 140-2 Level 3 compliance.
+
+- question: What is the difference between KMS and CloudHSM?
+  answer: 'KMS: Shared multi-tenant HSM, fully managed, simpler API, integrates with most AWS services, FIPS 140-2 Level 2.
+
+    CloudHSM: Dedicated single-tenant HSM, you manage keys and access, supports custom key stores, FIPS 140-2 Level 3. Choose CloudHSM for strict compliance requirements or custom cryptographic operations.'
+
+- question: What is AWS Trusted Advisor?
+  answer: AWS Trusted Advisor inspects your AWS environment and provides recommendations in five categories — cost optimization, performance, security, fault tolerance, and service limits. Basic checks are free for all accounts. Full checks require Business or Enterprise Support.
+
+- question: What is AWS Personal Health Dashboard?
+  answer: AWS Personal Health Dashboard (now AWS Health) provides personalized alerts and remediation guidance when AWS events may affect your resources. Unlike the Service Health Dashboard, it shows events specific to your account and resources.
+
+- question: What is AWS Outposts?
+  answer: AWS Outposts extends AWS infrastructure, services, and tools to on-premises locations. It provides the same hardware and APIs as the AWS cloud, enabling a consistent hybrid experience. It supports EC2, EBS, ECS, EKS, RDS, S3, and more.
+
+- question: What is AWS Wavelength?
+  answer: AWS Wavelength embeds AWS compute and storage at the edge of 5G networks, enabling applications that require ultra-low latency for mobile devices. Wavelength Zones are extensions of AWS Regions deployed within telecommunications provider data centers.
+
+- question: What is AWS Local Zones?
+  answer: AWS Local Zones place AWS compute, storage, and database services closer to large population centers. They are extensions of AWS Regions that provide single-digit millisecond latency for latency-sensitive applications like media, gaming, and real-time analytics.
+
+- question: What is Amazon WorkSpaces?
+  answer: Amazon WorkSpaces is a managed Desktop-as-a-Service (DaaS) solution that provides Windows or Linux virtual desktops. It eliminates the complexity of managing VDI infrastructure, integrates with Active Directory, and provides secure remote access from any device.
+
+- question: What is Amazon Connect?
+  answer: Amazon Connect is a cloud-based contact center service that provides voice and chat capabilities. It uses AI/ML for real-time sentiment analysis, call transcription, and intelligent routing. It scales from a few to tens of thousands of agents with pay-per-use pricing.
+
+- question: What is AWS Amplify?
+  answer: AWS Amplify is a development platform for building full-stack web and mobile applications. It provides hosting, authentication, APIs (GraphQL and REST), storage, analytics, and CI/CD. It simplifies connecting frontend applications to AWS backend services.
+
+- question: What is AWS CDK?
+  answer: AWS Cloud Development Kit (CDK) is an open-source framework for defining cloud infrastructure using programming languages like TypeScript, Python, Java, and C#. CDK code is synthesized into CloudFormation templates. It provides higher-level constructs that reduce boilerplate.
+
+- question: What is the difference between CloudFormation, CDK, and Terraform?
+  answer: 'CloudFormation: AWS-native IaC using YAML/JSON templates. Deep AWS integration, no external state management.
+
+    CDK: Uses programming languages that synthesize to CloudFormation. Better for complex logic and reusable constructs.
+
+    Terraform: Multi-cloud IaC using HCL. Manages state externally. Better for multi-cloud or hybrid deployments.'
+
+- question: What is Amazon DocumentDB?
+  answer: Amazon DocumentDB is a managed document database service compatible with MongoDB. It provides scalable, durable, and fully managed storage with up to 15 read replicas, continuous backup to S3, and encryption at rest.
+
+- question: What is Amazon Neptune?
+  answer: Amazon Neptune is a fully managed graph database service that supports Apache TinkerPop Gremlin and SPARQL query languages. It is used for knowledge graphs, fraud detection, social networking, and recommendation engines.
+
+- question: What is Amazon Keyspaces?
+  answer: Amazon Keyspaces is a managed Apache Cassandra-compatible database service. It provides serverless Cassandra with automatic scaling, continuous backups, and encryption. Applications can use existing Cassandra drivers and tools without modification.
+
+- question: What is Amazon Timestream?
+  answer: Amazon Timestream is a serverless time-series database for IoT and operational monitoring. It automatically scales, provides built-in time-series analytics functions, and stores recent data in memory while moving historical data to cost-optimized storage.
+
+- question: What is AWS Transfer Family?
+  answer: AWS Transfer Family provides fully managed SFTP, FTPS, FTP, and AS2 protocol support for transferring files into and out of S3 and EFS. It enables migration of file transfer workflows to AWS without modifying client applications.
+
+- question: What is AWS App Runner?
+  answer: AWS App Runner is a fully managed service for running containerized web applications and APIs. You provide source code or a container image, and App Runner handles building, deploying, scaling, and load balancing. It is ideal for simple web services that need quick deployment.
+
+- question: What is Amazon MemoryDB for Redis?
+  answer: Amazon MemoryDB is a durable, Redis-compatible, in-memory database service. Unlike ElastiCache, it provides data durability with a Multi-AZ transactional log. It can serve as both a primary database and cache, eliminating the need for a separate caching layer.
+
+- question: What is AWS Proton?
+  answer: AWS Proton is a managed service for platform teams to define, provision, and manage infrastructure templates for developer self-service. It provides standardized templates for containerized and serverless applications, integrating with IaC tools and CI/CD pipelines.
+
+- question: What is Amazon EventBridge Pipes?
+  answer: EventBridge Pipes connects event producers to consumers with optional filtering, enrichment, and transformation. It simplifies point-to-point integrations between services like SQS, Kinesis, DynamoDB Streams, and Lambda without writing custom glue code.
+
+- question: How do you troubleshoot connectivity issues in AWS?
+  answer: 'Systematic troubleshooting steps:
+
+    Check Security Groups for required inbound/outbound rules.
+
+    Verify Network ACLs allow traffic in both directions.
+
+    Confirm Route Tables have correct routes to the target.
+
+    Ensure Internet Gateway or NAT Gateway is properly configured.
+
+    Use VPC Flow Logs to identify denied traffic.
+
+    Check DNS resolution with nslookup or dig.
+
+    Use VPC Reachability Analyzer for path analysis.
+
+    Verify IAM permissions for service endpoints.'
+
+- question: What is AWS Compute Optimizer?
+  answer: AWS Compute Optimizer analyzes resource utilization and recommends optimal AWS resources to reduce costs and improve performance. It provides recommendations for EC2 instances, Auto Scaling Groups, EBS volumes, and Lambda functions based on historical CloudWatch metrics.
+
+- question: What is AWS Service Quotas?
+  answer: AWS Service Quotas is a centralized service for viewing and managing quotas (formerly called limits) for AWS services. You can request quota increases, set CloudWatch alarms when approaching limits, and use the Service Quotas API for programmatic access.
