@@ -139,17 +139,20 @@ export function preprocessForTTS(text: string): string {
   }
 
   // 1b. Fallback: spell out unmapped uppercase acronyms (e.g., ABC -> Ay B C, HTTP2 -> H T T P 2)
-  result = result.replace(/\b((?=[A-Z0-9]*[A-Z])[A-Z0-9]{2,})(s?)\b/g, (_, acronym: string, pluralS: string) => {
-    const spoken = acronym
-      .split('')
-      .map((char) => {
-        if (char === 'A') return 'Ay';
-        if (char === 'I') return 'Eye';
-        return char;
-      })
-      .join(' ');
-    return pluralS ? `${spoken}${pluralS}` : spoken;
-  });
+  result = result.replace(
+    /\b((?=[A-Z0-9]*[A-Z])[A-Z0-9]{2,})(s?)\b/g,
+    (_, acronym: string, pluralS: string) => {
+      const spoken = acronym
+        .split('')
+        .map((char) => {
+          if (char === 'A') return 'Ay';
+          if (char === 'I') return 'Eye';
+          return char;
+        })
+        .join(' ');
+      return pluralS ? `${spoken}${pluralS}` : spoken;
+    },
+  );
 
   // 2. Replace arrow characters with a spoken pause
   result = result.replace(/\s*→\s*/g, '... ');
