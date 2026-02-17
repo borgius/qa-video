@@ -119,6 +119,20 @@ export async function getAuthenticatedClient(credentialsPath?: string): Promise<
   }
 
   const tokens = JSON.parse(await readFile(TOKENS_PATH, 'utf-8'));
+
+  // Check if saved tokens have the required scopes
+  const tokenScope = tokens.scope as string | undefined;
+  if (tokenScope) {
+    const granted = tokenScope.split(' ');
+    const missing = SCOPES.filter(s => !granted.includes(s));
+    if (missing.length > 0) {
+      throw new Error(
+        `YouTube token is missing required scopes.\n` +
+        `  Run "qa-video auth" to re-authenticate with updated permissions.`
+      );
+    }
+  }
+
   oauth2.setCredentials(tokens);
 
   // Persist refreshed tokens

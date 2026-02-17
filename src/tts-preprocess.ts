@@ -56,7 +56,7 @@ const ACRONYMS: [RegExp, string][] = [
   [/\bGKE\b/g, 'G K E'],
 
   // Plurals before singulars
-  [/\bAPIs\b/g, 'A P Is'],
+  [/\bAPIs\b/g, 'Ay P Eyes'],
   [/\bVMs\b/g, 'V Ms'],
   [/\bURLs\b/g, 'U R Ls'],
   [/\bCRDs\b/g, 'C R Ds'],
@@ -65,7 +65,7 @@ const ACRONYMS: [RegExp, string][] = [
   [/\bSLAs\b/g, 'S L As'],
 
   // Standard spelled-out acronyms (alphabetical)
-  [/\bAPI\b/g, 'A P I'],
+  [/\bAPI\b/g, 'Ay P I'],
   [/\bAPM\b/g, 'A P M'],
   [/\bAWS\b/g, 'A W S'],
   [/\bCDN\b/g, 'C D N'],
@@ -137,6 +137,19 @@ export function preprocessForTTS(text: string): string {
   for (const [pattern, replacement] of ACRONYMS) {
     result = result.replace(pattern, replacement);
   }
+
+  // 1b. Fallback: spell out unmapped uppercase acronyms (e.g., ABC -> Ay B C, HTTP2 -> H T T P 2)
+  result = result.replace(/\b((?=[A-Z0-9]*[A-Z])[A-Z0-9]{2,})(s?)\b/g, (_, acronym: string, pluralS: string) => {
+    const spoken = acronym
+      .split('')
+      .map((char) => {
+        if (char === 'A') return 'Ay';
+        if (char === 'I') return 'Eye';
+        return char;
+      })
+      .join(' ');
+    return pluralS ? `${spoken}${pluralS}` : spoken;
+  });
 
   // 2. Replace arrow characters with a spoken pause
   result = result.replace(/\s*→\s*/g, '... ');
