@@ -46,7 +46,7 @@ function buildConfig(inputPath: string, opts: any): PipelineConfig {
     outputPath,
     tempDir,
     voice: opts.voice,
-    codeVoice: opts.codeVoice ?? opts.voice ?? DEFAULT_CONFIG.codeVoice,
+    codeVoice: opts.codeVoice ?? DEFAULT_CONFIG.codeVoice,
     questionDelay: parseFloat(opts.questionDelay),
     answerDelay: parseFloat(opts.answerDelay),
     cardGap: parseFloat(opts.cardGap),
