@@ -133,6 +133,9 @@ const ACRONYMS: [RegExp, string][] = [
 export function preprocessForTTS(text: string): string {
   let result = text;
 
+  // 0. Replace newlines with a small pause (treated as end of sentence)
+  result = result.replace(/\r?\n+/g, ',, ');
+
   // 1. Replace acronyms with TTS-friendly forms
   for (const [pattern, replacement] of ACRONYMS) {
     result = result.replace(pattern, replacement);
@@ -159,6 +162,10 @@ export function preprocessForTTS(text: string): string {
 
   // 3. Add a brief pause after colons (if not already followed by punctuation)
   result = result.replace(/:(?=[^\s,.])/g, ':, ');
+
+  // 4. Add small pause before opening parenthesis and double pause after closing parenthesis
+  result = result.replace(/(\S)\s*\(/g, '$1, (');
+  result = result.replace(/\)\s*/g, ')... ');
 
   return result;
 }

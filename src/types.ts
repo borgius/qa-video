@@ -58,6 +58,7 @@ export interface PipelineConfig {
   width: number;
   height: number;
   force: boolean;
+  skipTTS?: boolean;  // skip TTS synthesis; use existing cached audio only
 }
 
 export const DEFAULT_CONFIG: Omit<PipelineConfig, 'inputPath' | 'outputPath' | 'tempDir'> = {

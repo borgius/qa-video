@@ -101,6 +101,37 @@ sharedOptions(
   }
 });
 
+// Update: re-render slides & reassemble, skip TTS
+sharedOptions(
+  program
+    .command('update')
+    .description('Re-render changed slides and reassemble video without re-synthesizing TTS audio')
+    .requiredOption('-i, --input <path>', 'Path to YAML file')
+    .option('-o, --output <path>', 'Output video file path')
+).action(async (opts) => {
+  try {
+    const inputPath = resolve(opts.input);
+    if (!existsSync(inputPath)) {
+      console.error(`Error: Input file not found: ${inputPath}`);
+      process.exit(1);
+    }
+
+    const config = buildConfig(inputPath, opts);
+
+    console.log(`\n╔══════════════════════════════════╗`);
+    console.log(`║      QA Video — Update           ║`);
+    console.log(`╚══════════════════════════════════╝`);
+    console.log(`Input:  ${config.inputPath}`);
+    console.log(`Output: ${config.outputPath}`);
+
+    await runPipeline(config);
+  } catch (err: any) {
+    console.error(`\nError: ${err.message}`);
+    if (process.env.DEBUG) console.error(err.stack);
+    process.exit(1);
+  }
+});
+
 // Batch: all files in a directory
 sharedOptions(
   program
@@ -647,7 +678,7 @@ program
 
 // Only require ffmpeg for generate/batch commands
 const cmd = process.argv[2];
-if (cmd === 'generate' || cmd === 'batch') {
+if (cmd === 'generate' || cmd === 'update' || cmd === 'batch') {
   await ensureDeps();
 }
 program.parse();

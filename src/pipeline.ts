@@ -1,11 +1,27 @@
 import { mkdirSync, existsSync } from 'fs';
+import { cpus } from 'os';
 import { parseYamlFile } from './parser.js';
-import { initTTS, synthesize, getAudioDuration } from './tts.js';
+import { getAudioDuration } from './tts.js';
+import { TTSPool } from './tts-pool.js';
 import { renderSlide } from './renderer.js';
 import { createSegmentClip, createSilentClip, concatenateClips } from './assembler.js';
 import { Segment, PipelineConfig, DEFAULT_CONFIG } from './types.js';
-import { sha, cachedPath, isCached } from './cache.js';
+import { sha, cachedPath, isCached, removeStale } from './cache.js';
 import { preprocessForTTS } from './tts-preprocess.js';
+
+/** Run tasks in parallel, at most `limit` concurrent at a time. */
+async function runConcurrent<T>(tasks: (() => Promise<T>)[], limit: number): Promise<T[]> {
+  const results: T[] = new Array(tasks.length);
+  let next = 0;
+  const worker = async () => {
+    while (next < tasks.length) {
+      const i = next++;
+      results[i] = await tasks[i]();
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, tasks.length) }, worker));
+  return results;
+}
 
 function elapsed(start: number): string {
   return ((Date.now() - start) / 1000).toFixed(1);
@@ -19,7 +35,7 @@ function formatDuration(seconds: number): string {
 
 export async function runPipeline(config: PipelineConfig): Promise<void> {
   const pipelineStart = Date.now();
-  const { force } = config;
+  const { force, skipTTS } = config;
 
   if (!existsSync(config.tempDir)) {
     mkdirSync(config.tempDir, { recursive: true });
@@ -48,168 +64,210 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
   if (force) console.log(`  Force: regenerating all artifacts`);
   console.log(`  Stage 1 done (${elapsed(stage1Start)}s)`);
 
-  // ── Stage 2: Synthesize speech ──
+  // ── Stage 2: Synthesize speech (parallel) ──
   const stage2Start = Date.now();
   console.log('\n── Stage 2/4: Synthesizing speech ──');
 
-  let ttsInitialized = false;
+  type AudioItem = {
+    i: number;
+    isQuestion: boolean;
+    text: string;
+    ttsText: string;
+    audioPath: string;
+    delay: number;
+  };
+
+  const audioItems: AudioItem[] = cards.flatMap((card, i) => {
+    const qTTSText = preprocessForTTS(card.question);
+    const aTTSText = preprocessForTTS(card.answer);
+    return [
+      {
+        i, isQuestion: true, text: card.question, ttsText: qTTSText,
+        audioPath: cachedPath(config.tempDir, `q_${i}`, `audio:${qTTSText}:${config.voice}`, 'wav'),
+        delay: config.questionDelay,
+      },
+      {
+        i, isQuestion: false, text: card.answer, ttsText: aTTSText,
+        audioPath: cachedPath(config.tempDir, `a_${i}`, `audio:${aTTSText}:${config.voice}`, 'wav'),
+        delay: config.answerDelay,
+      },
+    ];
+  });
+
+  const uncachedItems = audioItems.filter(t => !isCached(t.audioPath, force));
+
+  if (skipTTS) {
+    const missing = uncachedItems.map(t => t.audioPath);
+    if (missing.length > 0) {
+      throw new Error(
+        `update requires pre-existing audio for all cards. Missing ${missing.length} file(s).\n` +
+        `  Run "qa-video generate" first to synthesize audio.`,
+      );
+    }
+    console.log(`  Skipping TTS synthesis (${audioItems.length} cached)`);
+  }
+
+  let pool: TTSPool | null = null;
+
+  if (!skipTTS && uncachedItems.length > 0) {
+    pool = new TTSPool();
+    const cpuCount = cpus().length;
+    console.log(`  Workers: ${pool.size} / ${cpuCount} CPUs (${Math.round(pool.size / cpuCount * 100)}%)`);
+    process.stdout.write(`  Loading TTS models in ${pool.size} workers...`);
+    const loadStart = Date.now();
+    await pool.init(config.voice);
+    console.log(` done (${elapsed(loadStart)}s)`);
+  }
+
+  let synthesizedCount = 0;
+  const durations = await Promise.all(
+    audioItems.map(async (item) => {
+      if (isCached(item.audioPath, force)) {
+        return { duration: await getAudioDuration(item.audioPath), cached: true };
+      }
+      if (!pool) throw new Error('TTS pool not initialized');
+      const duration = await pool.synthesize(item.ttsText, item.audioPath);
+      synthesizedCount++;
+      process.stdout.write(`\r  Synthesizing: ${synthesizedCount}/${uncachedItems.length}`);
+      return { duration, cached: false };
+    })
+  );
+
+  if (pool) {
+    await pool.terminate();
+    console.log(); // newline after \r progress
+  }
+
   const segments: Segment[] = [];
   let totalAudioDuration = 0;
   let cachedAudioCount = 0;
 
-  for (let i = 0; i < cards.length; i++) {
-    const card = cards[i];
-    const progress = `[${i + 1}/${cards.length}]`;
-
-    // Question audio — SHA keyed on preprocessed text + voice
-    const qTTSText = preprocessForTTS(card.question);
-    const qAudioHash = `audio:${qTTSText}:${config.voice}`;
-    const qAudioPath = cachedPath(config.tempDir, `q_${i}`, qAudioHash, 'wav');
-
-    if (isCached(qAudioPath, force)) {
-      const qDuration = await getAudioDuration(qAudioPath);
-      totalAudioDuration += qDuration;
-      console.log(`  ${progress} Q: "${card.question.substring(0, 50)}..." (cached, ${qDuration.toFixed(1)}s)`);
-      cachedAudioCount++;
-      segments.push({
-        type: 'question', text: card.question, cardIndex: i, totalCards: cards.length,
-        audioPath: qAudioPath, imagePath: '', audioDuration: qDuration,
-        totalDuration: qDuration + config.questionDelay,
-      });
-    } else {
-      if (!ttsInitialized) { await initTTS(config.voice); ttsInitialized = true; }
-      const qStart = Date.now();
-      process.stdout.write(`  ${progress} Q: "${card.question.substring(0, 50)}..." `);
-      await synthesize(qTTSText, qAudioPath, config.voice);
-      const qDuration = await getAudioDuration(qAudioPath);
-      totalAudioDuration += qDuration;
-      console.log(`(${qDuration.toFixed(1)}s audio, ${elapsed(qStart)}s)`);
-      segments.push({
-        type: 'question', text: card.question, cardIndex: i, totalCards: cards.length,
-        audioPath: qAudioPath, imagePath: '', audioDuration: qDuration,
-        totalDuration: qDuration + config.questionDelay,
-      });
-    }
-
-    // Answer audio — SHA keyed on preprocessed text + voice
-    const aTTSText = preprocessForTTS(card.answer);
-    const aAudioHash = `audio:${aTTSText}:${config.voice}`;
-    const aAudioPath = cachedPath(config.tempDir, `a_${i}`, aAudioHash, 'wav');
-
-    if (isCached(aAudioPath, force)) {
-      const aDuration = await getAudioDuration(aAudioPath);
-      totalAudioDuration += aDuration;
-      console.log(`  ${progress} A: "${card.answer.substring(0, 50)}..." (cached, ${aDuration.toFixed(1)}s)`);
-      cachedAudioCount++;
-      segments.push({
-        type: 'answer', text: card.answer, cardIndex: i, totalCards: cards.length,
-        audioPath: aAudioPath, imagePath: '', audioDuration: aDuration,
-        totalDuration: aDuration + config.answerDelay,
-      });
-    } else {
-      if (!ttsInitialized) { await initTTS(config.voice); ttsInitialized = true; }
-      const aStart = Date.now();
-      process.stdout.write(`  ${progress} A: "${card.answer.substring(0, 50)}..." `);
-      await synthesize(aTTSText, aAudioPath, config.voice);
-      const aDuration = await getAudioDuration(aAudioPath);
-      totalAudioDuration += aDuration;
-      console.log(`(${aDuration.toFixed(1)}s audio, ${elapsed(aStart)}s)`);
-      segments.push({
-        type: 'answer', text: card.answer, cardIndex: i, totalCards: cards.length,
-        audioPath: aAudioPath, imagePath: '', audioDuration: aDuration,
-        totalDuration: aDuration + config.answerDelay,
-      });
-    }
+  for (let idx = 0; idx < audioItems.length; idx++) {
+    const item = audioItems[idx];
+    const { duration, cached } = durations[idx];
+    totalAudioDuration += duration;
+    if (cached) cachedAudioCount++;
+    segments.push({
+      type: item.isQuestion ? 'question' : 'answer',
+      text: item.text,
+      cardIndex: item.i,
+      totalCards: cards.length,
+      audioPath: item.audioPath,
+      imagePath: '',
+      audioDuration: duration,
+      totalDuration: duration + item.delay,
+    });
   }
+
+  // Remove stale audio files for any card whose TTS text changed (old hash-named .wav left behind)
+  await Promise.all(
+    audioItems.map(async (item, idx) => {
+      if (!durations[idx].cached) {
+        const prefix = item.isQuestion ? `q_${item.i}` : `a_${item.i}`;
+        await removeStale(config.tempDir, prefix, 'wav', item.audioPath);
+      }
+    })
+  );
 
   console.log(`  Total audio: ${formatDuration(totalAudioDuration)} (${cachedAudioCount}/${segments.length} cached)`);
   console.log(`  Stage 2 done (${elapsed(stage2Start)}s)`);
 
-  // ── Stage 3: Render slides ──
+  // ── Stage 3: Render slides (parallel) ──
   const stage3Start = Date.now();
   console.log('\n── Stage 3/4: Rendering slides ──');
-  let cachedSlideCount = 0;
+
+  // Assign image paths upfront so Stage 4 can reference them
+  const gapSlideHash = `slide:gap:${config.backgroundColor}:${config.fontSize}:${cards.length}`;
+  const gapSlidePath = cachedPath(config.tempDir, 'slide_gap', gapSlideHash, 'png');
 
   for (let i = 0; i < segments.length; i++) {
     const seg = segments[i];
     const slideHash = `slide:${seg.text}:${seg.type}:${seg.cardIndex}:${seg.totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}`;
-    const imagePath = cachedPath(config.tempDir, `slide_${i}`, slideHash, 'png');
-    seg.imagePath = imagePath;
-
-    if (isCached(imagePath, force)) {
-      cachedSlideCount++;
-    } else {
-      await renderSlide(imagePath, {
-        text: seg.text, type: seg.type, cardIndex: seg.cardIndex,
-        totalCards: seg.totalCards, config,
-      });
-    }
+    seg.imagePath = cachedPath(config.tempDir, `slide_${i}`, slideHash, 'png');
   }
 
-  // Gap slide
-  const gapSlideHash = `slide:gap:${config.backgroundColor}:${config.fontSize}:${cards.length}`;
-  const gapSlidePath = cachedPath(config.tempDir, 'slide_gap', gapSlideHash, 'png');
-  if (!isCached(gapSlidePath, force)) {
-    await renderSlide(gapSlidePath, {
-      text: '', type: 'question', cardIndex: 0, totalCards: cards.length,
-      config: { ...config, questionColor: config.backgroundColor },
-    });
-  } else {
-    cachedSlideCount++;
-  }
+  let cachedSlideCount = 0;
+  await Promise.all([
+    ...segments.map(async (seg) => {
+      if (isCached(seg.imagePath, force)) {
+        cachedSlideCount++;
+      } else {
+        await renderSlide(seg.imagePath, {
+          text: seg.text, type: seg.type, cardIndex: seg.cardIndex,
+          totalCards: seg.totalCards, config,
+        });
+      }
+    }),
+    (async () => {
+      if (isCached(gapSlidePath, force)) {
+        cachedSlideCount++;
+      } else {
+        await renderSlide(gapSlidePath, {
+          text: '', type: 'question', cardIndex: 0, totalCards: cards.length,
+          config: { ...config, questionColor: config.backgroundColor },
+        });
+      }
+    })(),
+  ]);
 
   console.log(`  Rendered ${segments.length + 1} slides (${cachedSlideCount} cached)`);
   console.log(`  Stage 3 done (${elapsed(stage3Start)}s)`);
 
-  // ── Stage 4: Assemble video ──
+  // ── Stage 4: Assemble video (parallel clip encoding) ──
   const stage4Start = Date.now();
   console.log('\n── Stage 4/4: Assembling video ──');
-  const clipPaths: string[] = [];
-  const totalClips = segments.length + (cards.length - 1);
-  let cachedClipCount = 0;
 
+  // Build ordered clip descriptors (order must be preserved for concatenation)
+  type ClipDesc =
+    | { kind: 'segment'; path: string; seg: Segment }
+    | { kind: 'gap'; path: string };
+
+  const clipDescs: ClipDesc[] = [];
   for (let i = 0; i < segments.length; i++) {
     const seg = segments[i];
-    // Clip hash: based on audio hash (preprocessed text) + slide hash + timing
     const segTTSText = preprocessForTTS(seg.text);
     const clipHash = `clip:${sha(`audio:${segTTSText}:${config.voice}`)}:${sha(`slide:${seg.text}:${seg.type}:${seg.cardIndex}:${seg.totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}`)}:${seg.totalDuration}`;
-    const clipPath = cachedPath(config.tempDir, `clip_${i}`, clipHash, 'mp4');
-    const clipNum = clipPaths.length + 1;
-
-    if (isCached(clipPath, force)) {
-      console.log(`  [${clipNum}/${totalClips}] ${seg.type} card ${seg.cardIndex + 1} (${seg.totalDuration.toFixed(1)}s) (cached)`);
-      cachedClipCount++;
-    } else {
-      process.stdout.write(`  [${clipNum}/${totalClips}] ${seg.type} card ${seg.cardIndex + 1} (${seg.totalDuration.toFixed(1)}s)... `);
-      const clipStart = Date.now();
-      await createSegmentClip(seg, clipPath);
-      console.log(`done (${elapsed(clipStart)}s)`);
-    }
-    clipPaths.push(clipPath);
+    clipDescs.push({ kind: 'segment', seg, path: cachedPath(config.tempDir, `clip_${i}`, clipHash, 'mp4') });
 
     if (seg.type === 'answer' && seg.cardIndex < seg.totalCards - 1 && config.cardGap > 0) {
       const gapHash = `gap:${sha(gapSlideHash)}:${config.cardGap}`;
-      const gapClipPath = cachedPath(config.tempDir, `gap_${i}`, gapHash, 'mp4');
-      const gapNum = clipPaths.length + 1;
-
-      if (isCached(gapClipPath, force)) {
-        console.log(`  [${gapNum}/${totalClips}] gap (${config.cardGap}s) (cached)`);
-        cachedClipCount++;
-      } else {
-        process.stdout.write(`  [${gapNum}/${totalClips}] gap (${config.cardGap}s)... `);
-        const gapStart = Date.now();
-        await createSilentClip(gapSlidePath, config.cardGap, gapClipPath);
-        console.log(`done (${elapsed(gapStart)}s)`);
-      }
-      clipPaths.push(gapClipPath);
+      clipDescs.push({ kind: 'gap', path: cachedPath(config.tempDir, `gap_${i}`, gapHash, 'mp4') });
     }
   }
 
-  process.stdout.write(`  Concatenating ${clipPaths.length} clips... `);
+  const uncachedClips = clipDescs.filter(d => !isCached(d.path, force));
+  const cachedClipCount = clipDescs.length - uncachedClips.length;
+  let encodedCount = 0;
+
+  // ffmpeg already uses multiple threads internally; cap concurrent processes at ~50% of CPUs
+  const clipConcurrency = Math.max(2, Math.floor(cpus().length * 0.5));
+  console.log(`  Clips: ${clipDescs.length} total, ${uncachedClips.length} to encode (${clipConcurrency} concurrent)`);
+
+  await runConcurrent(
+    clipDescs.map(desc => async () => {
+      if (isCached(desc.path, force)) return;
+      if (desc.kind === 'segment') {
+        await createSegmentClip(desc.seg, desc.path);
+      } else {
+        await createSilentClip(gapSlidePath, config.cardGap, desc.path);
+      }
+      encodedCount++;
+      process.stdout.write(`\r  Encoding: ${encodedCount}/${uncachedClips.length}`);
+    }),
+    clipConcurrency,
+  );
+  if (uncachedClips.length > 0) console.log(); // newline after \r progress
+
+  const clipPaths = clipDescs.map(d => d.path);
+  const clipDurations = clipDescs.map(d => d.kind === 'segment' ? d.seg.totalDuration : config.cardGap);
+
+  process.stdout.write(`  Concatenating: 0/${clipPaths.length}`);
   const concatStart = Date.now();
-  await concatenateClips(clipPaths, config.outputPath, config.tempDir);
-  console.log(`done (${elapsed(concatStart)}s)`);
-  console.log(`  Clips: ${cachedClipCount}/${totalClips} cached`);
+  await concatenateClips(clipPaths, config.outputPath, config.tempDir, clipDurations, (current, total) => {
+    process.stdout.write(`\r  Concatenating: ${current}/${total}`);
+  });
+  console.log(`\r  Concatenating: ${clipPaths.length}/${clipPaths.length} done (${elapsed(concatStart)}s)`);
+  console.log(`  Clips: ${cachedClipCount}/${clipDescs.length} cached`);
   console.log(`  Stage 4 done (${elapsed(stage4Start)}s)`);
 
   // ── Summary ──

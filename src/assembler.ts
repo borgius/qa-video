@@ -60,10 +60,17 @@ export async function createSilentClip(
   ]);
 }
 
+function timemarkToSeconds(timemark: string): number {
+  const parts = timemark.split(':');
+  return parseFloat(parts[0]) * 3600 + parseFloat(parts[1]) * 60 + parseFloat(parts[2]);
+}
+
 export async function concatenateClips(
   clipPaths: string[],
   outputPath: string,
-  tempDir: string
+  tempDir: string,
+  clipDurations?: number[],
+  onProgress?: (current: number, total: number) => void,
 ): Promise<void> {
   const FfmpegCommand = await getFfmpeg();
 
@@ -72,7 +79,18 @@ export async function concatenateClips(
   const concatContent = clipPaths.map(p => `file '${p}'`).join('\n');
   await writeFile(concatListPath, concatContent, 'utf-8');
 
+  // Build cumulative time boundaries so we can map timemark → clip index
+  const cumulative: number[] = [];
+  if (clipDurations) {
+    let sum = 0;
+    for (const d of clipDurations) {
+      sum += d;
+      cumulative.push(sum);
+    }
+  }
+
   return new Promise((resolve, reject) => {
+    let lastClip = 0;
     FfmpegCommand()
       .input(concatListPath)
       .inputOptions(['-f', 'concat', '-safe', '0'])
@@ -92,7 +110,21 @@ export async function concatenateClips(
         '-r', '30',
       ])
       .output(outputPath)
-      .on('end', () => resolve())
+      .on('progress', (progress: { timemark: string }) => {
+        if (cumulative.length > 0 && onProgress) {
+          const sec = timemarkToSeconds(progress.timemark);
+          let idx = cumulative.findIndex(c => c > sec);
+          if (idx === -1) idx = cumulative.length - 1;
+          if (idx !== lastClip) {
+            lastClip = idx;
+            onProgress(idx, clipPaths.length);
+          }
+        }
+      })
+      .on('end', () => {
+        if (onProgress) onProgress(clipPaths.length, clipPaths.length);
+        resolve();
+      })
       .on('error', (err: Error) => reject(err))
       .run();
   });
