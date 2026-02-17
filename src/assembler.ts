@@ -1,9 +1,9 @@
-import { join } from 'path';
-import { writeFile } from 'fs/promises';
-import { execFile } from 'child_process';
-import { promisify } from 'util';
-import { Segment } from './types.js';
+import { execFile } from 'node:child_process';
+import { unlink, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { promisify } from 'node:util';
 import { getFfmpegPath } from './ffmpeg-paths.js';
+import type { Segment } from './types.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -14,32 +14,25 @@ async function getFfmpeg() {
 
 export async function createSegmentClip(
   segment: Segment,
-  outputPath: string
+  outputPath: string,
 ): Promise<void> {
-  const FfmpegCommand = await getFfmpeg();
-
-  return new Promise((resolve, reject) => {
-    FfmpegCommand()
-      .input(segment.imagePath)
-      .inputOptions(['-loop', '1'])
-      .input(segment.audioPath)
-      .outputOptions([
-        '-c:v', 'libx264',
-        '-tune', 'stillimage',
-        '-c:a', 'aac',
-        '-b:a', '384k',
-        '-ar', '48000',
-        '-ac', '2',
-        '-pix_fmt', 'yuv420p',
-        '-shortest',
-        '-t', String(segment.totalDuration),
-        '-r', '30',
-      ])
-      .output(outputPath)
-      .on('end', () => resolve())
-      .on('error', (err: Error) => reject(err))
-      .run();
-  });
+  // apad extends the audio stream with silence to exactly totalDuration seconds,
+  // matching the looped video track length so the audio track is never shorter
+  // than the video track — required for correct audio sync during concat.
+  await execFileAsync(getFfmpegPath(), [
+    '-y',
+    '-loop', '1', '-i', segment.imagePath,
+    '-i', segment.audioPath,
+    '-filter_complex', `[1:a]apad=whole_dur=${segment.totalDuration}[a]`,
+    '-map', '0:v',
+    '-map', '[a]',
+    '-c:v', 'libx264', '-tune', 'stillimage',
+    '-c:a', 'aac', '-b:a', '384k', '-ar', '48000', '-ac', '2',
+    '-pix_fmt', 'yuv420p',
+    '-t', String(segment.totalDuration),
+    '-r', '30',
+    outputPath,
+  ]);
 }
 
 export async function createSilentClip(
@@ -58,6 +51,29 @@ export async function createSilentClip(
     '-r', '30',
     outputPath,
   ]);
+}
+
+/**
+ * Concatenate multiple WAV/audio files into one using the ffmpeg concat
+ * demuxer.  A single-input shortcut avoids spawning ffmpeg unnecessarily.
+ */
+export async function concatenateAudioFiles(
+  inputPaths: string[],
+  outputPath: string,
+): Promise<void> {
+  if (inputPaths.length === 1) {
+    await execFileAsync(getFfmpegPath(), ['-y', '-i', inputPaths[0], '-c', 'copy', outputPath]);
+    return;
+  }
+
+  const listPath = `${outputPath}.parts.txt`;
+  await writeFile(listPath, inputPaths.map(p => `file '${p}'`).join('\n'), 'utf-8');
+
+  await execFileAsync(getFfmpegPath(), [
+    '-y', '-f', 'concat', '-safe', '0', '-i', listPath, '-c', 'copy', outputPath,
+  ]);
+
+  await unlink(listPath).catch(() => {});
 }
 
 function timemarkToSeconds(timemark: string): number {

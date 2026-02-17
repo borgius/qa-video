@@ -46,10 +46,11 @@ function buildConfig(inputPath: string, opts: any): PipelineConfig {
     outputPath,
     tempDir,
     voice: opts.voice,
+    codeVoice: opts.codeVoice ?? opts.voice ?? DEFAULT_CONFIG.codeVoice,
     questionDelay: parseFloat(opts.questionDelay),
     answerDelay: parseFloat(opts.answerDelay),
     cardGap: parseFloat(opts.cardGap),
-    fontSize: parseInt(opts.fontSize),
+    fontSize: parseInt(opts.fontSize, 10),
     backgroundColor: DEFAULT_CONFIG.backgroundColor,
     questionColor: DEFAULT_CONFIG.questionColor,
     answerColor: DEFAULT_CONFIG.answerColor,
@@ -62,7 +63,8 @@ function buildConfig(inputPath: string, opts: any): PipelineConfig {
 
 const sharedOptions = (cmd: Command) =>
   cmd
-    .option('--voice <name>', `TTS voice name`, DEFAULT_CONFIG.voice)
+    .option('--voice <name>', `TTS voice name for prose text`, DEFAULT_CONFIG.voice)
+    .option('--code-voice <name>', `TTS voice name for code blocks (default: ${DEFAULT_CONFIG.codeVoice})`)
     .option('--question-delay <seconds>', 'Pause after question speech', String(DEFAULT_CONFIG.questionDelay))
     .option('--answer-delay <seconds>', 'Pause after answer speech', String(DEFAULT_CONFIG.answerDelay))
     .option('--card-gap <seconds>', 'Gap between cards', String(DEFAULT_CONFIG.cardGap))
@@ -101,30 +103,110 @@ sharedOptions(
   }
 });
 
-// Update: re-render slides & reassemble, skip TTS
+// Update: re-render changed slides & reassemble (single file or whole directory)
 sharedOptions(
   program
     .command('update')
-    .description('Re-render changed slides and reassemble video without re-synthesizing TTS audio')
-    .requiredOption('-i, --input <path>', 'Path to YAML file')
-    .option('-o, --output <path>', 'Output video file path')
+    .description('Re-render changed slides and reassemble video(s), regenerating only what changed')
+    .option('-i, --input <path>', 'Path to a single YAML file')
+    .option('-d, --dir <path>', 'Directory of YAML files (updates all)')
+    .option('-o, --output <path>', 'Output video path (single-file mode only)')
+    .option('--output-dir <path>', 'Output directory (directory mode only)')
 ).action(async (opts) => {
   try {
-    const inputPath = resolve(opts.input);
-    if (!existsSync(inputPath)) {
-      console.error(`Error: Input file not found: ${inputPath}`);
+    if (!opts.input && !opts.dir) {
+      console.error('Error: Provide -i <file> or -d <dir>');
       process.exit(1);
     }
 
-    const config = buildConfig(inputPath, opts);
+    // ── Single file ──
+    if (opts.input) {
+      const inputPath = resolve(opts.input);
+      if (!existsSync(inputPath)) {
+        console.error(`Error: Input file not found: ${inputPath}`);
+        process.exit(1);
+      }
+
+      const config = buildConfig(inputPath, opts);
+
+      console.log(`\n╔══════════════════════════════════╗`);
+      console.log(`║      QA Video — Update           ║`);
+      console.log(`╚══════════════════════════════════╝`);
+      console.log(`Input:  ${config.inputPath}`);
+      console.log(`Output: ${config.outputPath}`);
+
+      await runPipeline(config);
+      return;
+    }
+
+    // ── Directory ──
+    const dirPath = resolve(opts.dir);
+    if (!existsSync(dirPath)) {
+      console.error(`Error: Directory not found: ${dirPath}`);
+      process.exit(1);
+    }
+
+    const yamlFiles = readdirSync(dirPath)
+      .filter(f => f.endsWith('.yaml') || f.endsWith('.yml'))
+      .sort();
+
+    if (yamlFiles.length === 0) {
+      console.error(`Error: No YAML files found in: ${dirPath}`);
+      process.exit(1);
+    }
 
     console.log(`\n╔══════════════════════════════════╗`);
-    console.log(`║      QA Video — Update           ║`);
+    console.log(`║   QA Video — Update (Batch)      ║`);
     console.log(`╚══════════════════════════════════╝`);
-    console.log(`Input:  ${config.inputPath}`);
-    console.log(`Output: ${config.outputPath}`);
+    console.log(`Directory: ${dirPath}`);
+    console.log(`Files:     ${yamlFiles.length}`);
 
-    await runPipeline(config);
+    const batchStart = Date.now();
+    const results: { file: string; status: string; time: string }[] = [];
+
+    for (let fi = 0; fi < yamlFiles.length; fi++) {
+      const file = yamlFiles[fi];
+      const inputPath = join(dirPath, file);
+
+      console.log(`\n${'═'.repeat(60)}`);
+      console.log(`  FILE ${fi + 1}/${yamlFiles.length}: ${file}`);
+      console.log(`${'═'.repeat(60)}`);
+
+      const fileStart = Date.now();
+      try {
+        const fileOpts = {
+          ...opts,
+          output: opts.outputDir
+            ? join(resolve(opts.outputDir), basename(file, '.yaml').replace(/\.yml$/, '') + '.mp4')
+            : undefined,
+        };
+        const config = buildConfig(inputPath, fileOpts);
+        console.log(`Output: ${config.outputPath}`);
+
+        await runPipeline(config);
+
+        const timeStr = ((Date.now() - fileStart) / 1000).toFixed(1) + 's';
+        results.push({ file, status: 'OK', time: timeStr });
+      } catch (err: any) {
+        const timeStr = ((Date.now() - fileStart) / 1000).toFixed(1) + 's';
+        results.push({ file, status: `FAILED: ${err.message}`, time: timeStr });
+        console.error(`  Error processing ${file}: ${err.message}`);
+      }
+    }
+
+    const totalTime = ((Date.now() - batchStart) / 1000).toFixed(1);
+    const ok = results.filter(r => r.status === 'OK').length;
+    const failed = results.length - ok;
+
+    console.log(`\n${'═'.repeat(60)}`);
+    console.log(`  UPDATE SUMMARY`);
+    console.log(`${'═'.repeat(60)}`);
+    for (const r of results) {
+      console.log(`  [${r.status === 'OK' ? 'OK  ' : 'FAIL'}] ${r.file} (${r.time})`);
+    }
+    console.log(`\n  Total: ${ok} updated, ${failed} failed, ${totalTime}s elapsed`);
+
+    if (failed > 0) process.exit(1);
   } catch (err: any) {
     console.error(`\nError: ${err.message}`);
     if (process.env.DEBUG) console.error(err.stack);

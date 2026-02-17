@@ -236,6 +236,7 @@ app.get('/api/slides/:name/:cardIndex/:type', async (req, res, next) => {
       outputPath: '',
       tempDir: '',
       voice: data.config.voice || DEFAULT_CONFIG.voice,
+      codeVoice: data.config.codeVoice || DEFAULT_CONFIG.codeVoice,
       questionDelay: data.config.questionDelay ?? DEFAULT_CONFIG.questionDelay,
       answerDelay: data.config.answerDelay ?? DEFAULT_CONFIG.answerDelay,
       cardGap: data.config.cardGap ?? DEFAULT_CONFIG.cardGap,

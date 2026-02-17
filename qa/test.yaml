@@ -1,10 +1,27 @@
 config:
   name: "DevOps-Interview-Questions: Test"
   description: A quick test configuration with sample DevOps interview questions for validating the video generation pipeline.
-  questionDelay: 2
-  answerDelay: 2
+  questionDelay: 1
+  answerDelay: 1
 questions:
-- question: What is DevOps?
-  answer: DevOps is a set of practices that combine software development and IT operations.
-- question: What is Docker?
-  answer: Docker is a platform for containerizing applications.
+- question: What are DevOps best practices?
+  answer: |
+    Some code example:
+    ```yaml
+    devops_best_practices:
+      - infrastructure_as_code: "Version-control all infrastructure definitions for repeatability and auditability."
+      - ci_cd: "Automate build, test, and release pipelines to deliver changes safely and frequently."
+      - monitoring_and_logging: "Collect metrics, traces, and logs so issues are
+    ```
+    Key DevOps best practices include:
+    - Infrastructure as Code (IaC) — version-control all infrastructure definitions for repeatability and auditability.
+
+- question: What is the purpose of Infrastructure as Code (IaC)?
+  answer: |
+    IaC means defining servers, networks, and other infrastructure in machine-readable files (e.g., Terraform HCL, CloudFormation YAML, Ansible playbooks) rather than clicking through consoles.
+
+    Key benefits:
+    - Repeatability: the same code produces identical environments every time, eliminating "works on my machine" drift.
+    - Version control: infrastructure changes are reviewed in pull requests and fully auditable via Git history.
+    - Faster provisioning: spin up or tear down entire environments in minutes instead of hours.
+    - Disaster recovery: re-create a lost environment from code rather than from memory or runbooks.

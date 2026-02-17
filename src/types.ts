@@ -12,7 +12,8 @@ export interface YamlConfig {
   questionDelay?: number;   // seconds of silence after question TTS
   answerDelay?: number;     // seconds of silence after answer TTS
   cardGap?: number;         // seconds between cards
-  voice?: string;           // kokoro voice name
+  voice?: string;           // kokoro voice name for prose text
+  codeVoice?: string;       // kokoro voice name for code blocks (defaults to voice)
   fontSize?: number;
   backgroundColor?: string;
   questionColor?: string;
@@ -46,6 +47,7 @@ export interface PipelineConfig {
   inputPath: string;
   outputPath: string;
   voice: string;
+  codeVoice: string;        // voice for code blocks; defaults to voice
   tempDir: string;
   questionDelay: number;
   answerDelay: number;
@@ -63,6 +65,7 @@ export interface PipelineConfig {
 
 export const DEFAULT_CONFIG: Omit<PipelineConfig, 'inputPath' | 'outputPath' | 'tempDir'> = {
   voice: 'af_heart',
+  codeVoice: 'am_echo',
   questionDelay: 2,
   answerDelay: 3,
   cardGap: 1,

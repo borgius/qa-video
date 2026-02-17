@@ -1,13 +1,14 @@
-import { mkdirSync, existsSync } from 'fs';
-import { cpus } from 'os';
+import { existsSync, mkdirSync } from 'node:fs';
+import { cpus } from 'node:os';
+import { concatenateAudioFiles, concatenateClips, createSegmentClip, createSilentClip } from './assembler.js';
+import { cachedPath, isCached, removeStale, sha } from './cache.js';
+import { codeToTTS, parseMarkdown } from './markdown.js';
 import { parseYamlFile } from './parser.js';
-import { getAudioDuration } from './tts.js';
-import { TTSPool } from './tts-pool.js';
 import { renderSlide } from './renderer.js';
-import { createSegmentClip, createSilentClip, concatenateClips } from './assembler.js';
-import { Segment, PipelineConfig, DEFAULT_CONFIG } from './types.js';
-import { sha, cachedPath, isCached, removeStale } from './cache.js';
+import { TTSPool } from './tts-pool.js';
 import { preprocessForTTS } from './tts-preprocess.js';
+import { getAudioDuration, MAX_CHUNK_CHARS } from './tts.js';
+import { DEFAULT_CONFIG, type PipelineConfig, type Segment } from './types.js';
 
 /** Run tasks in parallel, at most `limit` concurrent at a time. */
 async function runConcurrent<T>(tasks: (() => Promise<T>)[], limit: number): Promise<T[]> {
@@ -33,6 +34,32 @@ function formatDuration(seconds: number): string {
   return m > 0 ? `${m}m ${s}s` : `${s}s`;
 }
 
+// ── Audio plan types ──────────────────────────────────────────────────────────
+
+/** A single TTS synthesis unit (one voice, one WAV output). */
+interface SynthPart {
+  audioPath: string;
+  ttsText: string;
+  voice: string;
+}
+
+/**
+ * Audio plan for one question or answer slot.
+ * Single-part plans map directly to an existing WAV; multi-part plans require
+ * the segment WAVs to be concatenated into `finalAudioPath`.
+ */
+interface AudioPlan {
+  cardIndex: number;
+  isQuestion: boolean;
+  rawText: string;
+  delay: number;
+  finalAudioPath: string;  // the WAV consumed by the video assembler
+  parts: SynthPart[];
+  isMultiPart: boolean;
+}
+
+// ── Pipeline ──────────────────────────────────────────────────────────────────
+
 export async function runPipeline(config: PipelineConfig): Promise<void> {
   const pipelineStart = Date.now();
   const { force, skipTTS } = config;
@@ -57,132 +84,201 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
   if (yamlConfig.voice && config.voice === DEFAULT_CONFIG.voice) {
     config.voice = yamlConfig.voice;
   }
+  if (yamlConfig.codeVoice && config.codeVoice === DEFAULT_CONFIG.codeVoice) {
+    config.codeVoice = yamlConfig.codeVoice;
+  }
+
+  // If YAML doesn't set codeVoice and it still matches the default, keep it;
+  // but if voice was overridden and codeVoice wasn't explicitly set, leave codeVoice as-is.
 
   console.log(`  Cards: ${cards.length}`);
-  console.log(`  Voice: ${config.voice}`);
+  console.log(`  Voice: ${config.voice}  Code voice: ${config.codeVoice}`);
   console.log(`  Delays: question=${config.questionDelay}s, answer=${config.answerDelay}s, gap=${config.cardGap}s`);
   if (force) console.log(`  Force: regenerating all artifacts`);
   console.log(`  Stage 1 done (${elapsed(stage1Start)}s)`);
 
-  // ── Stage 2: Synthesize speech (parallel) ──
+  // ── Stage 2: Synthesize speech ──
   const stage2Start = Date.now();
   console.log('\n── Stage 2/4: Synthesizing speech ──');
 
-  type AudioItem = {
-    i: number;
-    isQuestion: boolean;
-    text: string;
-    ttsText: string;
-    audioPath: string;
-    delay: number;
-  };
+  /**
+   * Build an audio cache key.  Short texts (≤ MAX_CHUNK_CHARS) use the original
+   * `audio:` prefix so existing valid WAVs are reused.  Long texts that require
+   * chunking use `audio-chunked:` so old truncated WAVs are discarded and
+   * re-synthesised at full length.
+   */
+  const audioCacheKey = (ttsText: string, voice: string) =>
+    ttsText.length > MAX_CHUNK_CHARS
+      ? `audio-chunked:${ttsText}:${voice}`
+      : `audio:${ttsText}:${voice}`;
 
-  const audioItems: AudioItem[] = cards.flatMap((card, i) => {
+  // Build one AudioPlan per question/answer slot.
+  const audioPlans: AudioPlan[] = cards.flatMap((card, i) => {
+
+    // ── Question (always single-part, main voice) ──
     const qTTSText = preprocessForTTS(card.question);
-    const aTTSText = preprocessForTTS(card.answer);
-    return [
-      {
-        i, isQuestion: true, text: card.question, ttsText: qTTSText,
-        audioPath: cachedPath(config.tempDir, `q_${i}`, `audio:${qTTSText}:${config.voice}`, 'wav'),
-        delay: config.questionDelay,
-      },
-      {
-        i, isQuestion: false, text: card.answer, ttsText: aTTSText,
-        audioPath: cachedPath(config.tempDir, `a_${i}`, `audio:${aTTSText}:${config.voice}`, 'wav'),
+    const qAudioPath = cachedPath(config.tempDir, `q_${i}`, audioCacheKey(qTTSText, config.voice), 'wav');
+    const qPlan: AudioPlan = {
+      cardIndex: i, isQuestion: true, rawText: card.question,
+      delay: config.questionDelay,
+      finalAudioPath: qAudioPath,
+      parts: [{ audioPath: qAudioPath, ttsText: qTTSText, voice: config.voice }],
+      isMultiPart: false,
+    };
+
+    // ── Answer ──
+    const mdSegs = parseMarkdown(card.answer);
+    const hasCode = mdSegs.some(s => s.kind === 'code');
+
+    let aPlan: AudioPlan;
+
+    if (!hasCode) {
+      const aTTSText = preprocessForTTS(card.answer);
+      const aAudioPath = cachedPath(config.tempDir, `a_${i}`, audioCacheKey(aTTSText, config.voice), 'wav');
+      aPlan = {
+        cardIndex: i, isQuestion: false, rawText: card.answer,
         delay: config.answerDelay,
-      },
-    ];
+        finalAudioPath: aAudioPath,
+        parts: [{ audioPath: aAudioPath, ttsText: aTTSText, voice: config.voice }],
+        isMultiPart: false,
+      };
+    } else {
+      // Multi-part: each markdown segment gets its own WAV, then they're concatenated.
+      const parts: SynthPart[] = mdSegs.map((seg, j) => {
+        const rawTTS = seg.kind === 'code'
+          ? codeToTTS(seg)
+          : seg.content;
+        const ttsText = preprocessForTTS(rawTTS);
+        const voice = seg.kind === 'code' ? config.codeVoice : config.voice;
+        const prefix = `a_${i}_${seg.kind === 'code' ? 'c' : 't'}${j}`;
+        return { audioPath: cachedPath(config.tempDir, prefix, audioCacheKey(ttsText, voice), 'wav'), ttsText, voice };
+      });
+
+      // Final concatenated WAV keyed by all part hashes + both voices.
+      const partKey = parts.map(p => sha(`${p.ttsText}:${p.voice}`)).join('|');
+      const finalAudioPath = cachedPath(config.tempDir, `a_${i}`, `md-audio:${partKey}`, 'wav');
+
+      aPlan = {
+        cardIndex: i, isQuestion: false, rawText: card.answer,
+        delay: config.answerDelay,
+        finalAudioPath,
+        parts,
+        isMultiPart: true,
+      };
+    }
+
+    return [qPlan, aPlan];
   });
 
-  const uncachedItems = audioItems.filter(t => !isCached(t.audioPath, force));
+  // Partition parts by voice for pool scheduling.
+  const mainParts = audioPlans.flatMap(p => p.parts.filter(pt => pt.voice === config.voice));
+  const codeParts = audioPlans.flatMap(p => p.parts.filter(pt => pt.voice !== config.voice));
+
+  const uncachedMain = mainParts.filter(pt => !isCached(pt.audioPath, force));
+  const uncachedCode = codeParts.filter(pt => !isCached(pt.audioPath, force));
 
   if (skipTTS) {
-    const missing = uncachedItems.map(t => t.audioPath);
+    const missing = [...uncachedMain, ...uncachedCode].map(pt => pt.audioPath);
     if (missing.length > 0) {
       throw new Error(
-        `update requires pre-existing audio for all cards. Missing ${missing.length} file(s).\n` +
+        `update requires pre-existing audio for all segments. Missing ${missing.length} file(s).\n` +
         `  Run "qa-video generate" first to synthesize audio.`,
       );
     }
-    console.log(`  Skipping TTS synthesis (${audioItems.length} cached)`);
+    console.log(`  Skipping TTS synthesis (all segments cached)`);
   }
 
-  let pool: TTSPool | null = null;
-
-  if (!skipTTS && uncachedItems.length > 0) {
-    pool = new TTSPool();
+  // ── Phase 2A: Main voice pool ──
+  if (!skipTTS && uncachedMain.length > 0) {
+    const pool = new TTSPool();
     const cpuCount = cpus().length;
-    console.log(`  Workers: ${pool.size} / ${cpuCount} CPUs (${Math.round(pool.size / cpuCount * 100)}%)`);
-    process.stdout.write(`  Loading TTS models in ${pool.size} workers...`);
+    console.log(`  Workers: ${pool.size} / ${cpuCount} CPUs — voice: ${config.voice}`);
+    process.stdout.write(`  Loading TTS model...`);
     const loadStart = Date.now();
     await pool.init(config.voice);
     console.log(` done (${elapsed(loadStart)}s)`);
-  }
 
-  let synthesizedCount = 0;
-  const durations = await Promise.all(
-    audioItems.map(async (item) => {
-      if (isCached(item.audioPath, force)) {
-        return { duration: await getAudioDuration(item.audioPath), cached: true };
-      }
-      if (!pool) throw new Error('TTS pool not initialized');
-      const duration = await pool.synthesize(item.ttsText, item.audioPath);
-      synthesizedCount++;
-      process.stdout.write(`\r  Synthesizing: ${synthesizedCount}/${uncachedItems.length}`);
-      return { duration, cached: false };
-    })
-  );
-
-  if (pool) {
+    let done = 0;
+    await Promise.all(uncachedMain.map(async pt => {
+      await pool.synthesize(pt.ttsText, pt.audioPath);
+      process.stdout.write(`\r  Synthesizing (main): ${++done}/${uncachedMain.length}`);
+    }));
+    if (uncachedMain.length > 0) console.log();
     await pool.terminate();
-    console.log(); // newline after \r progress
   }
 
+  // ── Phase 2B: Code voice pool (only if a different voice is configured) ──
+  if (!skipTTS && uncachedCode.length > 0) {
+    const pool = new TTSPool(1); // single worker — code blocks are short
+    console.log(`  Code voice: ${config.codeVoice} (${uncachedCode.length} segment(s))`);
+    process.stdout.write(`  Loading code TTS model...`);
+    const loadStart = Date.now();
+    await pool.init(config.codeVoice);
+    console.log(` done (${elapsed(loadStart)}s)`);
+
+    let done = 0;
+    await Promise.all(uncachedCode.map(async pt => {
+      await pool.synthesize(pt.ttsText, pt.audioPath);
+      process.stdout.write(`\r  Synthesizing (code): ${++done}/${uncachedCode.length}`);
+    }));
+    if (uncachedCode.length > 0) console.log();
+    await pool.terminate();
+  }
+
+  // ── Phase 2C: Concatenate multi-part answer WAVs ──
+  for (const plan of audioPlans) {
+    if (plan.isMultiPart && !isCached(plan.finalAudioPath, force)) {
+      await concatenateAudioFiles(plan.parts.map(p => p.audioPath), plan.finalAudioPath);
+    }
+  }
+
+  // ── Phase 2D: Build Segment list with durations ──
   const segments: Segment[] = [];
   let totalAudioDuration = 0;
   let cachedAudioCount = 0;
 
-  for (let idx = 0; idx < audioItems.length; idx++) {
-    const item = audioItems[idx];
-    const { duration, cached } = durations[idx];
+  for (const plan of audioPlans) {
+    // Count as "cached" if no part required synthesis
+    const wasCached = plan.parts.every(pt => isCached(pt.audioPath, false));
+    if (wasCached) cachedAudioCount++;
+    const duration = await getAudioDuration(plan.finalAudioPath);
     totalAudioDuration += duration;
-    if (cached) cachedAudioCount++;
     segments.push({
-      type: item.isQuestion ? 'question' : 'answer',
-      text: item.text,
-      cardIndex: item.i,
+      type: plan.isQuestion ? 'question' : 'answer',
+      text: plan.rawText,
+      cardIndex: plan.cardIndex,
       totalCards: cards.length,
-      audioPath: item.audioPath,
+      audioPath: plan.finalAudioPath,
       imagePath: '',
       audioDuration: duration,
-      totalDuration: duration + item.delay,
+      totalDuration: duration + plan.delay,
     });
   }
 
-  // Remove stale audio files for any card whose TTS text changed (old hash-named .wav left behind)
+  // Clean up stale single-part audio files for changed cards.
   await Promise.all(
-    audioItems.map(async (item, idx) => {
-      if (!durations[idx].cached) {
-        const prefix = item.isQuestion ? `q_${item.i}` : `a_${item.i}`;
-        await removeStale(config.tempDir, prefix, 'wav', item.audioPath);
+    audioPlans.map(async plan => {
+      if (!plan.isMultiPart) {
+        const prefix = plan.isQuestion ? `q_${plan.cardIndex}` : `a_${plan.cardIndex}`;
+        await removeStale(config.tempDir, prefix, 'wav', plan.finalAudioPath);
       }
-    })
+    }),
   );
 
-  console.log(`  Total audio: ${formatDuration(totalAudioDuration)} (${cachedAudioCount}/${segments.length} cached)`);
+  console.log(`  Total audio: ${formatDuration(totalAudioDuration)} (${cachedAudioCount}/${audioPlans.length} cached)`);
   console.log(`  Stage 2 done (${elapsed(stage2Start)}s)`);
 
   // ── Stage 3: Render slides (parallel) ──
   const stage3Start = Date.now();
   console.log('\n── Stage 3/4: Rendering slides ──');
 
-  // Assign image paths upfront so Stage 4 can reference them
   const gapSlideHash = `slide:gap:${config.backgroundColor}:${config.fontSize}:${cards.length}`;
   const gapSlidePath = cachedPath(config.tempDir, 'slide_gap', gapSlideHash, 'png');
 
+  // Slide cache keys include :v2 to invalidate pre-markdown cached slides.
   for (let i = 0; i < segments.length; i++) {
     const seg = segments[i];
-    const slideHash = `slide:${seg.text}:${seg.type}:${seg.cardIndex}:${seg.totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}`;
+    const slideHash = `slide:v3:${seg.text}:${seg.type}:${seg.cardIndex}:${seg.totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}`;
     seg.imagePath = cachedPath(config.tempDir, `slide_${i}`, slideHash, 'png');
   }
 
@@ -217,7 +313,6 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
   const stage4Start = Date.now();
   console.log('\n── Stage 4/4: Assembling video ──');
 
-  // Build ordered clip descriptors (order must be preserved for concatenation)
   type ClipDesc =
     | { kind: 'segment'; path: string; seg: Segment }
     | { kind: 'gap'; path: string };
@@ -225,8 +320,9 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
   const clipDescs: ClipDesc[] = [];
   for (let i = 0; i < segments.length; i++) {
     const seg = segments[i];
-    const segTTSText = preprocessForTTS(seg.text);
-    const clipHash = `clip:${sha(`audio:${segTTSText}:${config.voice}`)}:${sha(`slide:${seg.text}:${seg.type}:${seg.cardIndex}:${seg.totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}`)}:${seg.totalDuration}`;
+    // Use the actual audio path in the clip hash so changes in TTS or code voice
+    // correctly invalidate the clip cache.
+    const clipHash = `clip:v2:${sha(seg.audioPath)}:${sha(seg.imagePath)}:${seg.totalDuration}`;
     clipDescs.push({ kind: 'segment', seg, path: cachedPath(config.tempDir, `clip_${i}`, clipHash, 'mp4') });
 
     if (seg.type === 'answer' && seg.cardIndex < seg.totalCards - 1 && config.cardGap > 0) {
@@ -239,7 +335,6 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
   const cachedClipCount = clipDescs.length - uncachedClips.length;
   let encodedCount = 0;
 
-  // ffmpeg already uses multiple threads internally; cap concurrent processes at ~50% of CPUs
   const clipConcurrency = Math.max(2, Math.floor(cpus().length * 0.5));
   console.log(`  Clips: ${clipDescs.length} total, ${uncachedClips.length} to encode (${clipConcurrency} concurrent)`);
 
@@ -256,7 +351,7 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
     }),
     clipConcurrency,
   );
-  if (uncachedClips.length > 0) console.log(); // newline after \r progress
+  if (uncachedClips.length > 0) console.log();
 
   const clipPaths = clipDescs.map(d => d.path);
   const clipDurations = clipDescs.map(d => d.kind === 'segment' ? d.seg.totalDuration : config.cardGap);
