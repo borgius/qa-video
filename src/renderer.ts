@@ -207,6 +207,7 @@ function wrapCodeLine(ctx: SKRSContext2D, line: string, maxWidth: number): strin
 type TextLine =
   | { kind: 'prose'; runs: InlineRun[] }
   | { kind: 'bullet'; runs: InlineRun[] }
+  | { kind: 'numbered'; runs: InlineRun[] }
   | { kind: 'continuation'; runs: InlineRun[] };
 
 interface BlockLayout {
@@ -238,6 +239,10 @@ function buildTextLines(
     if (!trimmed) { result.push({ kind: 'prose', runs: [] }); continue; }
 
     const listMatch = trimmed.match(/^[-*•]\s+(.*)/s);
+    // Detect numbered lists: "1. text", "**1. text**", "1) text", etc.
+    // Strip leading bold/italic markers for matching, but keep full text for rendering.
+    const stripped = trimmed.replace(/^(\*{1,3}|_{1,3})/, '');
+    const numberedMatch = !listMatch && stripped.match(/^(\d+)[.)]\s+/);
     if (listMatch) {
       hasList = true;
       ctx.font = fontForStyle(PLAIN_STYLE, fontSize);
@@ -260,6 +265,13 @@ function buildTextLines(
             result.push({ kind: 'continuation', runs: lineRuns });
           }
         });
+      }
+    } else if (numberedMatch) {
+      hasList = true;
+      const inlineRuns = parseInlineMarkdown(trimmed);
+      const wrappedLines = wrapRuns(ctx, inlineRuns, maxWidth, fontSize);
+      for (const lineRuns of wrappedLines) {
+        result.push({ kind: 'numbered', runs: lineRuns });
       }
     } else {
       const inlineRuns = parseInlineMarkdown(trimmed);
@@ -418,9 +430,16 @@ export async function renderSlide(
         if (isEmpty) { lineY += block.lineHeight; continue; }
 
         if (tl.kind === 'prose') {
-          const lineW = measureLineWidth(ctx, tl.runs, currentFontSize);
-          const startX = (width - lineW) / 2;
-          drawRuns(ctx, tl.runs, startX, lineY, currentFontSize, textColor);
+          if (block.hasList) {
+            // Left-align prose within list blocks so descriptions stay aligned
+            drawRuns(ctx, tl.runs, contentMargin, lineY, currentFontSize, textColor);
+          } else {
+            const lineW = measureLineWidth(ctx, tl.runs, currentFontSize);
+            const startX = (width - lineW) / 2;
+            drawRuns(ctx, tl.runs, startX, lineY, currentFontSize, textColor);
+          }
+        } else if (tl.kind === 'numbered') {
+          drawRuns(ctx, tl.runs, contentMargin, lineY, currentFontSize, textColor);
         } else if (tl.kind === 'bullet') {
           drawRuns(ctx, tl.runs, contentMargin, lineY, currentFontSize, textColor);
         } else {

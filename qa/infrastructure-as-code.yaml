@@ -5,842 +5,1983 @@ config:
   answerDelay: 1
 questions:
 - question: What is Infrastructure as Code (IaC) and why is it important?
-  answer: 'Infrastructure as Code (IaC) is a method of managing and provisioning infrastructure using code instead of manual
-    processes. It allows:
+  answer: |
+    Infrastructure as Code (IaC) is a method of managing and provisioning infrastructure through machine-readable configuration files instead of manual processes.
 
-    ✅ Automation of infrastructure deployment
+    **Key Benefits:**
 
-    ✅ Consistency by reducing human errors
+    - **Automation** — eliminates manual provisioning, reducing deployment time
+    - **Consistency** — identical environments every time, eliminating configuration drift
+    - **Version Control** — infrastructure changes are tracked in Git with full audit trail
+    - **Scalability** — replicate environments effortlessly (dev → staging → prod)
+    - **Disaster Recovery** — rebuild entire infrastructure quickly from code
+    - **Collaboration** — teams review infrastructure changes through pull requests
+    - **Cost Control** — easily tear down unused environments
 
-    ✅ Scalability through repeatable scripts'
+    **Two main approaches:**
+
+    - **Declarative** (Terraform, CloudFormation) — define *what* the desired end state should be
+    - **Imperative** (Bash scripts, Pulumi) — define *how* to reach the desired state step by step
+
 - question: What is Terraform and how does it work?
-  answer: 'Terraform is an open-source IaC tool by HashiCorp that helps define and provision infrastructure using a declarative
-    configuration language. It follows three steps:
+  answer: |
+    Terraform is an open-source IaC tool by HashiCorp that defines and provisions infrastructure using **HCL** (HashiCorp Configuration Language). It is cloud-agnostic and supports AWS, Azure, GCP, Kubernetes, and hundreds of other providers.
 
-    Write: Define infrastructure in .tf files
+    **Core workflow (three steps):**
 
-    Plan: Preview changes before applying
+    1. **Write** — define infrastructure in `.tf` files
+    2. **Plan** — preview changes before applying (`terraform plan`)
+    3. **Apply** — deploy and manage resources (`terraform apply`)
 
-    Apply: Deploy and manage resources
+    **Example:**
 
-    Example:
-
+    ```hcl
     provider "aws" {
-
-    region = "us-east-1"
-
+      region = "us-east-1"
     }
 
     resource "aws_instance" "my_instance" {
+      ami           = "ami-12345678"
+      instance_type = "t2.micro"
+    }
+    ```
 
-    ami           = "ami-12345678"
+    Terraform tracks resource state in a **state file** and uses a **dependency graph** (DAG) to determine the correct creation order.
 
-    instance_type = "t2.micro"
-
-    }'
 - question: What is the difference between Terraform and Ansible?
-  answer: 'Feature
+  answer: |
+    **Terraform:**
 
-    Terraform
+    - **Approach:** Declarative — you define the desired end state
+    - **Primary purpose:** Infrastructure provisioning (VMs, networks, databases)
+    - **State management:** Maintains a state file to track resources
+    - **Language:** HCL (HashiCorp Configuration Language)
+    - **Execution:** API-driven, communicates directly with cloud provider APIs
 
-    Ansible
+    **Ansible:**
 
-    Type
+    - **Approach:** Declarative for configuration (desired state modules), procedural for orchestration
+    - **Primary purpose:** Configuration management and application deployment
+    - **State management:** Stateless — checks current state on each run
+    - **Language:** YAML playbooks
+    - **Execution:** Agentless, connects via SSH/WinRM
 
-    Declarative
+    **When to use both together:** Terraform provisions the infrastructure (VMs, networks), then Ansible configures it (installs software, manages settings). This is a very common pattern in production.
 
-    Imperative
-
-    Purpose
-
-    Infrastructure provisioning
-
-    Configuration management
-
-    State Management
-
-    Uses state file
-
-    Stateless
-
-    Example Use
-
-    Creating VMs, Networks
-
-    Installing software, configuring OS'
 - question: What are Terraform Providers?
-  answer: 'Providers are plugins that allow Terraform to manage resources on different platforms (AWS, Azure, GCP, Kubernetes,
-    etc.).
+  answer: |
+    Providers are plugins that allow Terraform to interact with cloud platforms, SaaS APIs, and other services. Each provider adds a set of resource types and data sources.
 
-    Example:
+    **Key points:**
+
+    - Providers are downloaded during `terraform init`
+    - The [Terraform Registry](https://registry.terraform.io) hosts thousands of providers
+    - You can pin provider versions for reproducibility
+
+    **Example:**
+
+    ```hcl
+    terraform {
+      required_providers {
+        aws = {
+          source  = "hashicorp/aws"
+          version = "~> 5.0"
+        }
+      }
+    }
 
     provider "aws" {
+      region = "us-west-2"
+    }
+    ```
 
-    region = "us-west-2"
+    The `~> 5.0` constraint allows any `5.x` version but not `6.0+`, ensuring compatibility.
 
-    }'
 - question: What is a Terraform State File?
-  answer: 'Terraform maintains infrastructure details in a state file (terraform.tfstate), which:
+  answer: |
+    Terraform maintains a record of all managed infrastructure in a **state file** (`terraform.tfstate`). This is the source of truth Terraform uses to map real-world resources to your configuration.
 
-    ✅ Tracks existing resources
+    **The state file:**
 
-    ✅ Enables incremental changes
+    - Tracks resource IDs, attributes, and metadata
+    - Enables incremental changes (only modify what changed)
+    - Supports **remote storage** for team collaboration (S3, Azure Blob, GCS)
+    - Contains **sensitive data** — never commit it to Git
 
-    ✅ Supports remote storage (e.g., S3, Azure Blob)
+    **Remote state example (S3 backend):**
 
-    To store state remotely:
+    ```hcl
+    terraform {
+      backend "s3" {
+        bucket         = "my-terraform-state"
+        key            = "prod/terraform.tfstate"
+        region         = "us-east-1"
+        encrypt        = true
+        dynamodb_table = "terraform-lock"
+      }
+    }
+    ```
 
-    backend "s3" {
+    Always enable **encryption** and **state locking** (via DynamoDB) for remote backends to prevent concurrent modifications and protect sensitive data.
 
-    bucket = "my-terraform-state"
-
-    key    = "terraform.tfstate"
-
-    region = "us-east-1"
-
-    }'
 - question: What is the purpose of terraform init?
-  answer: 'It initializes the working directory by:
+  answer: |
+    `terraform init` initializes a Terraform working directory. It is the **first command** you run in any Terraform project.
 
-    ✅ Downloading providers
+    **What it does:**
 
-    ✅ Setting up backend storage
+    - Downloads and installs **provider plugins**
+    - Initializes the **backend** for state storage
+    - Downloads **modules** referenced in the configuration
+    - Validates the backend configuration
 
-    ✅ Validating configuration
+    **Command:**
 
-    Command:
+    ```bash
+    terraform init
+    ```
 
-    terraform init'
+    **Useful flags:**
+
+    - `-upgrade` — upgrade providers and modules to the latest allowed versions
+    - `-reconfigure` — reconfigure the backend, ignoring any saved configuration
+    - `-migrate-state` — migrate state to a new backend
+
 - question: How does Terraform manage dependencies between resources?
-  answer: 'Terraform uses implicit and explicit dependencies:
+  answer: |
+    Terraform builds a **Directed Acyclic Graph (DAG)** to determine resource creation order. It supports two types of dependencies:
 
-    Implicit: Recognized automatically
+    **Implicit dependencies** — Terraform detects these automatically when one resource references another:
 
-    Explicit: Defined using depends_on
-
-    Example:
-
+    ```hcl
     resource "aws_instance" "web" {
+      ami           = "ami-12345678"
+      instance_type = "t2.micro"
+      subnet_id     = aws_subnet.main.id  # implicit dependency
+    }
+    ```
 
-    ami           = "ami-12345678"
+    **Explicit dependencies** — use `depends_on` when there's a dependency Terraform can't infer:
 
-    instance_type = "t2.micro"
+    ```hcl
+    resource "aws_ebs_volume" "data" {
+      size              = 10
+      availability_zone = "us-east-1a"
+      depends_on        = [aws_instance.web]
+    }
+    ```
 
+    **Best practice:** Prefer implicit dependencies over `depends_on` whenever possible — they're clearer and less error-prone.
+
+- question: What is the difference between Terraform apply and plan?
+  answer: |
+    **`terraform plan`:**
+
+    - Creates an execution plan showing what Terraform *will* do
+    - Does **not** modify any infrastructure
+    - Useful for code review and CI pipelines
+    - Can be saved: `terraform plan -out=tfplan`
+
+    **`terraform apply`:**
+
+    - Executes changes to create, update, or destroy resources
+    - Prompts for confirmation by default
+    - Can consume a saved plan: `terraform apply tfplan`
+
+    **Typical workflow:**
+
+    ```bash
+    terraform plan -out=tfplan   # review changes
+    terraform apply tfplan       # apply the exact reviewed plan
+    ```
+
+    **Important:** Always review the plan output before applying, especially the number of resources to **add**, **change**, and **destroy**.
+
+- question: What is a Terraform Module?
+  answer: |
+    A module is a **reusable, self-contained package** of Terraform configurations. Every Terraform configuration is technically a module (the "root module"), but modules are most powerful when used for reuse.
+
+    **Benefits:**
+
+    - Encapsulate and reuse common patterns (e.g., VPC, EKS cluster)
+    - Accept **input variables** and expose **output values**
+    - Can be sourced from local paths, Git repos, or the Terraform Registry
+
+    **Example module usage:**
+
+    ```hcl
+    module "network" {
+      source   = "./modules/vpc"
+      vpc_cidr = "10.0.0.0/16"
+      env      = "production"
     }
 
-    resource "aws_ebs_volume" "data" {
+    output "vpc_id" {
+      value = module.network.vpc_id
+    }
+    ```
 
-    size          = 10
+    **Module structure:**
 
-    availability_zone = "us-east-1a"
+    ```
+    modules/vpc/
+    ├── main.tf        # resources
+    ├── variables.tf   # input variables
+    └── outputs.tf     # output values
+    ```
 
-    depends_on    = [aws_instance.web]
-
-    }'
-- question: What is the difference between Terraform apply and plan?
-  answer: 'Command
-
-    Purpose
-
-    terraform plan
-
-    Shows proposed changes before applying
-
-    terraform apply
-
-    Executes changes to create/update resources'
-- question: What is a Terraform Module?
-  answer: 'A module is a reusable collection of Terraform configurations that helps organize code.
-
-    Example of a module (main.tf):
-
-    module "network" {
-
-    source = "./modules/vpc"
-
-    }'
 - question: How do you destroy resources in Terraform?
-  answer: 'Use:
+  answer: |
+    The `terraform destroy` command removes all resources defined in the configuration.
 
+    ```bash
     terraform destroy
+    ```
 
-    This removes all resources defined in the configuration.'
+    **Useful options:**
+
+    - **Target a specific resource:** `terraform destroy -target=aws_instance.web`
+    - **Auto-approve (CI/CD):** `terraform destroy -auto-approve`
+    - **Preview first:** `terraform plan -destroy` to see what would be removed
+
+    **Caution:**
+
+    - Terraform will prompt for confirmation before destroying
+    - Some resources have **deletion protection** (e.g., RDS, S3 with objects) — disable it first or Terraform will error
+    - Use `lifecycle { prevent_destroy = true }` in critical resources to guard against accidental deletion
+
 - question: What is Ansible and how does it work?
-  answer: Ansible is an open-source configuration management tool that automates tasks like software installation, updates,
-    and deployments. It works agentless, using SSH or WinRM.
+  answer: |
+    Ansible is an open-source automation tool for configuration management, application deployment, and orchestration. It is maintained by Red Hat.
+
+    **Key characteristics:**
+
+    - **Agentless** — no software needed on managed nodes; connects via SSH (Linux) or WinRM (Windows)
+    - **Push-based** — the control node pushes configurations to managed nodes
+    - **YAML-based** — playbooks are written in human-readable YAML
+    - **Idempotent** — running the same playbook multiple times produces the same result
+
+    **Architecture:**
+
+    - **Control Node** — where Ansible is installed and playbooks are executed
+    - **Managed Nodes** — target servers being configured
+    - **Inventory** — list of managed nodes
+    - **Modules** — units of work (e.g., `apt`, `yum`, `copy`, `service`)
+    - **Playbooks** — YAML files defining automation workflows
+
 - question: What are Ansible Playbooks?
-  answer: 'A playbook is a YAML-based automation script that defines tasks to be executed.
+  answer: |
+    A playbook is a YAML-based automation script that defines a set of **plays**, each targeting a group of hosts with a list of **tasks**.
 
-    Example (playbook.yml):
+    **Example (`playbook.yml`):**
 
-    - name: Install Nginx
+    ```yaml
+    - name: Configure web servers
+      hosts: web
+      become: yes
+      tasks:
+        - name: Install Nginx
+          apt:
+            name: nginx
+            state: present
 
-    hosts: web
+        - name: Start Nginx service
+          service:
+            name: nginx
+            state: started
+            enabled: yes
+    ```
 
-    tasks:
+    **Key concepts:**
 
-    - name: Install Nginx
+    - `hosts` — target group from inventory
+    - `become: yes` — run tasks with elevated privileges (sudo)
+    - `tasks` — ordered list of actions using Ansible modules
+    - Each task should have a descriptive `name` for readability
 
-    apt:
-
-    name: nginx
-
-    state: present'
 - question: What is an Ansible Inventory file?
-  answer: 'The inventory file lists managed servers and their details.
+  answer: |
+    The inventory file defines the **managed hosts** and organizes them into groups.
 
-    Example (inventory.ini):
+    **INI format example (`inventory.ini`):**
 
+    ```ini
     [web]
-
     server1 ansible_host=192.168.1.10
+    server2 ansible_host=192.168.1.11
 
-    server2 ansible_host=192.168.1.11'
+    [db]
+    db1 ansible_host=192.168.1.20
+
+    [production:children]
+    web
+    db
+    ```
+
+    **YAML format example:**
+
+    ```yaml
+    all:
+      children:
+        web:
+          hosts:
+            server1:
+              ansible_host: 192.168.1.10
+            server2:
+              ansible_host: 192.168.1.11
+    ```
+
+    **Key features:**
+
+    - **Groups** organize hosts by role or environment
+    - **Children groups** create hierarchies (`production:children`)
+    - **Host variables** can be set inline or in `host_vars/` directory
+    - **Dynamic inventory** can fetch hosts from cloud APIs at runtime
+
 - question: What is the difference between Ansible Roles and Playbooks?
-  answer: 'Feature
+  answer: |
+    **Playbooks:**
 
-    Playbook
+    - A single YAML file containing plays and tasks
+    - Best for **simple, task-oriented** automation
+    - Everything in one file — quick to write but hard to reuse
 
-    Role
+    **Roles:**
 
-    Scope
+    - A **structured directory** with predefined subdirectories
+    - Best for **large-scale, reusable** automation components
+    - Separate concerns: tasks, handlers, templates, variables, defaults, files
 
-    Task-oriented
+    **Role directory structure:**
 
-    Component-oriented
+    ```
+    roles/nginx/
+    ├── tasks/main.yml       # core logic
+    ├── handlers/main.yml    # triggered actions
+    ├── templates/            # Jinja2 templates
+    ├── files/                # static files
+    ├── vars/main.yml        # role variables
+    ├── defaults/main.yml    # default values
+    └── meta/main.yml        # dependencies
+    ```
 
-    Organization
+    **Using a role in a playbook:**
 
-    Single YAML file
+    ```yaml
+    - hosts: web
+      roles:
+        - nginx
+        - certbot
+    ```
 
-    Structured directory
-
-    Usage
-
-    Small-scale automation
-
-    Large-scale projects'
 - question: How do you run an Ansible Playbook?
-  answer: 'Command:
+  answer: |
+    **Basic command:**
 
-    ansible-playbook playbook.yml -i inventory.ini'
+    ```bash
+    ansible-playbook playbook.yml -i inventory.ini
+    ```
+
+    **Useful flags:**
+
+    - `--check` — dry run, show what *would* change without making changes
+    - `--diff` — show file differences when templates or files change
+    - `--limit web` — run only against the `web` group
+    - `--tags deploy` — run only tasks tagged with `deploy`
+    - `-v` / `-vvv` — increase verbosity for debugging
+    - `-e "env=prod"` — pass extra variables at runtime
+
+    **Example with multiple flags:**
+
+    ```bash
+    ansible-playbook deploy.yml -i inventory.ini --check --diff --limit staging
+    ```
+
 - question: What is an Ansible Galaxy?
-  answer: 'Ansible Galaxy is a repository for pre-built Ansible roles.
+  answer: |
+    Ansible Galaxy is a **community hub** for finding, sharing, and downloading pre-built Ansible roles and collections.
 
-    Example:
+    **Install a role:**
 
-    ansible-galaxy install geerlingguy.nginx'
+    ```bash
+    ansible-galaxy install geerlingguy.nginx
+    ```
+
+    **Install from a requirements file (`requirements.yml`):**
+
+    ```yaml
+    roles:
+      - name: geerlingguy.nginx
+        version: "3.1.0"
+
+    collections:
+      - name: community.general
+    ```
+
+    ```bash
+    ansible-galaxy install -r requirements.yml
+    ```
+
+    **Initialize a new role scaffold:**
+
+    ```bash
+    ansible-galaxy init my_custom_role
+    ```
+
+    This creates the standard role directory structure with all subdirectories.
+
 - question: How does Ansible handle idempotency?
-  answer: 'Ansible ensures repeated executions produce the same result by only applying changes when needed.
+  answer: |
+    Ansible ensures that **repeated executions produce the same result** by only applying changes when the current state differs from the desired state.
 
-    Example:
+    **Example:**
 
+    ```yaml
     - name: Ensure Nginx is installed
+      apt:
+        name: nginx
+        state: present
+    ```
 
-    apt:
+    - **First run:** Nginx is not installed → Ansible installs it (status: **changed**)
+    - **Second run:** Nginx is already installed → task is skipped (status: **ok**)
 
-    name: nginx
+    **How it works:**
 
-    state: present
+    - Most built-in modules check current state before making changes
+    - Modules like `apt`, `yum`, `service`, `file` are inherently idempotent
+    - The `command` and `shell` modules are **not** idempotent by default — use `creates` or `when` conditions to make them safe
 
-    If Nginx is already installed, the task is skipped.'
+    ```yaml
+    - name: Run setup script only once
+      command: /opt/setup.sh
+      args:
+        creates: /opt/.setup_done
+    ```
+
 - question: What is Ansible Vault?
-  answer: 'Ansible Vault encrypts sensitive data like passwords.
+  answer: |
+    Ansible Vault **encrypts sensitive data** (passwords, API keys, certificates) so it can be safely stored in version control.
 
-    To create an encrypted file:
+    **Key commands:**
 
-    ansible-vault encrypt secrets.yml'
+    ```bash
+    # Encrypt a file
+    ansible-vault encrypt secrets.yml
+
+    # Decrypt a file
+    ansible-vault decrypt secrets.yml
+
+    # Edit an encrypted file in-place
+    ansible-vault edit secrets.yml
+
+    # View encrypted file contents
+    ansible-vault view secrets.yml
+
+    # Encrypt a single string
+    ansible-vault encrypt_string 'my_secret' --name 'db_password'
+    ```
+
+    **Running a playbook with vault:**
+
+    ```bash
+    ansible-playbook deploy.yml --ask-vault-pass
+    # or
+    ansible-playbook deploy.yml --vault-password-file ~/.vault_pass
+    ```
+
+    **Best practice:** Use `--vault-password-file` pointing to a file excluded from Git, or integrate with a secrets manager for CI/CD.
+
 - question: What is AWS CloudFormation?
-  answer: 'AWS CloudFormation is an IaC service that provisions AWS infrastructure using YAML/JSON templates.
+  answer: |
+    AWS CloudFormation is a **native AWS IaC service** that provisions and manages AWS resources using declarative YAML or JSON templates.
 
-    Example:
+    **Key concepts:**
+
+    - **Templates** — YAML/JSON files defining resources and their configuration
+    - **Stacks** — a collection of AWS resources managed as a single unit
+    - **Change Sets** — preview changes before updating a stack
+    - **Drift Detection** — identify manual changes made outside CloudFormation
+
+    **Example template:**
+
+    ```yaml
+    AWSTemplateFormatVersion: "2010-09-09"
+    Description: Simple S3 bucket
 
     Resources:
+      MyBucket:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: my-app-bucket
+          VersioningConfiguration:
+            Status: Enabled
+    ```
 
-    MyBucket:
+    **Advantages over Terraform for AWS-only shops:** Native integration, no state file management, automatic rollback on failure, and free to use (you pay only for the resources created).
 
-    Type: "AWS::S3::Bucket"'
 - question: How do you create a CloudFormation stack?
-  answer: 'Command:
+  answer: |
+    **Using the AWS CLI:**
 
-    aws cloudformation create-stack --stack-name my-stack --template-body file://template.yml'
+    ```bash
+    aws cloudformation create-stack \
+      --stack-name my-stack \
+      --template-body file://template.yml \
+      --capabilities CAPABILITY_IAM
+    ```
+
+    **Key flags:**
+
+    - `--template-body` — local template file
+    - `--template-url` — template hosted in S3
+    - `--capabilities CAPABILITY_IAM` — required when the template creates IAM resources
+    - `--parameters` — pass parameter values
+
+    **With parameters:**
+
+    ```bash
+    aws cloudformation create-stack \
+      --stack-name my-stack \
+      --template-body file://template.yml \
+      --parameters ParameterKey=EnvType,ParameterValue=prod
+    ```
+
+    **Best practice:** Use **Change Sets** for updates to preview changes before applying:
+
+    ```bash
+    aws cloudformation create-change-set \
+      --stack-name my-stack \
+      --change-set-name my-changes \
+      --template-body file://template.yml
+    ```
+
 - question: What is the difference between Terraform local and remote state?
-  answer: 'Terraform state can be stored locally (on disk) or remotely (in S3, Consul, etc.).
+  answer: |
+    **Local state (`terraform.tfstate` on disk):**
 
-    Storage
+    - Fast and simple setup
+    - No external dependencies
+    - **Not suitable for teams** — no locking, no sharing
+    - Risk of data loss if disk fails
 
-    Pros
+    **Remote state (S3, GCS, Azure Blob, Terraform Cloud):**
 
-    Cons
+    - **Shared access** for team collaboration
+    - **State locking** prevents concurrent modifications
+    - **Encryption at rest** for security
+    - Slightly slower due to network calls
 
-    Local State (terraform.tfstate)
+    **Remote state example (S3 + DynamoDB locking):**
 
-    Fast, simple
-
-    Not suitable for teams
-
-    Remote State (S3, etc.)
-
-    Shared, secure
-
-    Slightly slower
-
-    Example remote state (S3 backend):
-
+    ```hcl
     terraform {
-
-    backend "s3" {
-
-    bucket = "my-terraform-state"
-
-    key    = "prod/terraform.tfstate"
-
-    region = "us-east-1"
-
+      backend "s3" {
+        bucket         = "my-terraform-state"
+        key            = "prod/terraform.tfstate"
+        region         = "us-east-1"
+        encrypt        = true
+        dynamodb_table = "terraform-lock"
+      }
     }
+    ```
 
-    }'
+    **Rule of thumb:** Always use remote state for any project with more than one contributor.
+
 - question: How do you handle secrets in Terraform?
-  answer: 'Avoid hardcoding secrets in .tf files:
+  answer: |
+    **Never hardcode secrets** in `.tf` files or commit them to version control.
 
-    ✅ Use environment variables
+    **Recommended approaches:**
 
-    ✅ Use Terraform Vault Provider
+    1. **Environment variables:**
+       ```bash
+       export TF_VAR_db_password="mypassword"
+       ```
 
-    ✅ Store secrets in AWS Secrets Manager
+    2. **Mark variables as sensitive:**
+       ```hcl
+       variable "db_password" {
+         type      = string
+         sensitive = true
+       }
+       ```
 
-    Example using environment variables:
+    3. **External secrets managers:**
+       ```hcl
+       data "aws_secretsmanager_secret_version" "db_pass" {
+         secret_id = "prod/db_password"
+       }
+       ```
 
-    export TF_VAR_db_password="mypassword"'
+    4. **Terraform Vault provider** for HashiCorp Vault integration
+
+    5. **`.tfvars` files excluded from Git:**
+       ```
+       # .gitignore
+       *.tfvars
+       ```
+
+    **Important:** Even with `sensitive = true`, secrets still appear in the state file — always encrypt your state backend.
+
 - question: What is Terraform Locking, and why is it important?
-  answer: 'Terraform uses state locking to prevent simultaneous updates by multiple users.
+  answer: |
+    State locking prevents **concurrent operations** from corrupting the state file. Without locking, two users running `terraform apply` simultaneously could create conflicting infrastructure.
 
-    Enabled automatically for remote state backends (e.g., S3 + DynamoDB).
+    **How it works:**
 
-    Example (DynamoDB locking):
+    - Automatically enabled for most remote backends
+    - A lock is acquired before any state-modifying operation
+    - Released after the operation completes (or fails)
 
-    backend "s3" {
+    **Example (S3 + DynamoDB locking):**
 
-    bucket         = "my-terraform-bucket"
+    ```hcl
+    terraform {
+      backend "s3" {
+        bucket         = "my-terraform-bucket"
+        key            = "terraform.tfstate"
+        region         = "us-east-1"
+        dynamodb_table = "terraform-lock"
+      }
+    }
+    ```
 
-    dynamodb_table = "terraform-lock"
+    The DynamoDB table needs a partition key named `LockID` (type String).
 
-    }'
+    **If a lock gets stuck** (e.g., a CI job crashes mid-apply):
+
+    ```bash
+    terraform force-unlock LOCK_ID
+    ```
+
+    Use with caution — only when you're sure no other operation is running.
+
 - question: What is Terraform Workspaces?
-  answer: 'Terraform Workspaces allow managing multiple environments within a single configuration.
+  answer: |
+    Workspaces allow managing **multiple environments** (dev, staging, prod) from a single Terraform configuration, each with its own state file.
 
-    terraform workspace new dev
+    **Commands:**
 
-    terraform workspace select dev'
+    ```bash
+    terraform workspace new dev        # create new workspace
+    terraform workspace select dev     # switch to workspace
+    terraform workspace list           # list all workspaces
+    terraform workspace show           # show current workspace
+    terraform workspace delete dev     # delete a workspace
+    ```
+
+    **Using workspace name in configuration:**
+
+    ```hcl
+    resource "aws_instance" "web" {
+      instance_type = terraform.workspace == "prod" ? "t3.large" : "t3.micro"
+
+      tags = {
+        Environment = terraform.workspace
+      }
+    }
+    ```
+
+    **Caveats:**
+
+    - All workspaces share the same backend and code — only state differs
+    - For significantly different environments, **separate configurations** or **separate state files per environment** may be better
+    - The default workspace is called `default` and cannot be deleted
+
 - question: How do you create reusable Terraform modules?
-  answer: 'Modules help organize and reuse code.
+  answer: |
+    Modules encapsulate infrastructure patterns for reuse across projects and environments.
 
-    Example (modules/network/main.tf):
+    **Module definition (`modules/network/main.tf`):**
 
-    variable "vpc_cidr" {}
+    ```hcl
+    variable "vpc_cidr" {
+      description = "CIDR block for the VPC"
+      type        = string
+    }
 
     resource "aws_vpc" "main" {
+      cidr_block = var.vpc_cidr
 
-    cidr_block = var.vpc_cidr
-
+      tags = {
+        Name = "main-vpc"
+      }
     }
 
-    Usage:
+    output "vpc_id" {
+      value = aws_vpc.main.id
+    }
+    ```
 
+    **Module usage (root `main.tf`):**
+
+    ```hcl
     module "vpc" {
-
-    source   = "./modules/network"
-
-    vpc_cidr = "10.0.0.0/16"
-
-    }'
-- question: What is Terraform Cloud and Terraform Enterprise?
-  answer: 'Feature
-
-    Terraform Cloud
-
-    Terraform Enterprise
-
-    Type
-
-    SaaS
-
-    Self-hosted
-
-    Use Case
-
-    Collaboration, remote state
-
-    Large enterprises
-
-    Extras
-
-    Remote execution, VCS integration
-
-    Advanced security & governance'
-- question: How does Terraform handle drift detection?
-  answer: 'Terraform detects drift by running:
-
-    terraform plan
-
-    Drift occurs when actual infrastructure changes outside Terraform’s control.'
-- question: How do you use count and for_each in Terraform?
-  answer: 'count is used for simple lists.
-
-    for_each is used for maps or sets.
-
-    Example (count):
-
-    resource "aws_instance" "web" {
-
-    count = 3
-
-    ami   = "ami-12345678"
-
+      source   = "./modules/network"
+      vpc_cidr = "10.0.0.0/16"
     }
 
-    Example (for_each):
+    # Reference module outputs
+    resource "aws_subnet" "public" {
+      vpc_id = module.vpc.vpc_id
+      # ...
+    }
+    ```
 
+    **Best practices:**
+
+    - Always define `description` for variables and outputs
+    - Use `validation` blocks for input constraints
+    - Pin module versions when sourcing from a registry
+
+- question: What is Terraform Cloud and Terraform Enterprise?
+  answer: |
+    Both are HashiCorp platforms for team-based Terraform workflows, but they differ in hosting and features.
+
+    **Terraform Cloud (SaaS):**
+
+    - Hosted by HashiCorp — no infrastructure to manage
+    - Remote state storage and locking built-in
+    - Remote execution of `plan` and `apply`
+    - VCS integration (GitHub, GitLab, Bitbucket)
+    - Free tier available for small teams
+
+    **Terraform Enterprise (self-hosted):**
+
+    - Runs on your own infrastructure (air-gapped support)
+    - Everything in Cloud, plus:
+    - **Audit logging** and advanced security controls
+    - **SSO/SAML** integration
+    - **Custom agents** for private network access
+    - **Sentinel** policy-as-code enforcement
+
+    **Choose Cloud** for most teams. **Choose Enterprise** when you need on-premises hosting, strict compliance requirements, or air-gapped environments.
+
+- question: How does Terraform handle drift detection?
+  answer: |
+    **Drift** occurs when real infrastructure is modified outside of Terraform (e.g., manual AWS Console changes). Terraform detects this by comparing the state file against actual infrastructure.
+
+    **Detect drift:**
+
+    ```bash
+    terraform plan
+    ```
+
+    If drift exists, the plan output will show changes needed to bring infrastructure back to the defined state.
+
+    **How to handle drift:**
+
+    - **Accept Terraform's config** — run `terraform apply` to overwrite manual changes
+    - **Update your config** — modify `.tf` files to match the desired manual changes, then apply
+    - **Refresh state only** — update the state file without changing infrastructure:
+      ```bash
+      terraform apply -refresh-only
+      ```
+
+    **Best practice:** Run `terraform plan` in CI on a schedule (e.g., daily) to catch drift early and alert the team.
+
+- question: How do you use count and for_each in Terraform?
+  answer: |
+    Both create **multiple instances** of a resource, but they work differently.
+
+    **`count`** — best for creating N identical (or index-based) resources:
+
+    ```hcl
+    resource "aws_instance" "web" {
+      count         = 3
+      ami           = "ami-12345678"
+      instance_type = "t2.micro"
+
+      tags = {
+        Name = "web-${count.index}"
+      }
+    }
+    ```
+
+    **`for_each`** — best for maps or sets where each resource has a unique key:
+
+    ```hcl
     resource "aws_s3_bucket" "buckets" {
+      for_each = toset(["dev", "staging", "prod"])
+      bucket   = "my-app-${each.value}"
+    }
+    ```
 
-    for_each = toset(["dev", "prod"])
+    **Key difference:**
 
-    bucket   = "my-app-${each.value}"
+    - `count` resources are identified by **index** (0, 1, 2) — removing an item shifts all indexes, causing recreation
+    - `for_each` resources are identified by **key** — removing an item only affects that specific resource
 
-    }'
+    **Prefer `for_each`** when resources have meaningful identifiers to avoid destructive index shifting.
+
 - question: How do you use Ansible variables?
-  answer: 'Variables can be defined in:
+  answer: |
+    Variables can be defined at multiple levels with a well-defined **precedence order** (higher overrides lower):
 
-    ✅ Playbooks (vars:)
+    1. **Extra vars** (command-line `-e`): highest priority
+    2. **Task vars** (set in a task)
+    3. **Play vars** (`vars:` in a play)
+    4. **Host/group vars** (`host_vars/`, `group_vars/` directories)
+    5. **Role defaults** (`defaults/main.yml`): lowest priority
 
-    ✅ Inventory (host_vars, group_vars)
+    **Example (play vars):**
 
-    ✅ Command-line (-e flag)
-
-    Example:
-
+    ```yaml
     - hosts: web
+      vars:
+        app_port: 8080
+      tasks:
+        - debug:
+            msg: "App runs on port {{ app_port }}"
+    ```
 
-    vars:
+    **Example (command-line override):**
 
+    ```bash
+    ansible-playbook deploy.yml -e "app_port=9090"
+    ```
+
+    **Example (`group_vars/web.yml`):**
+
+    ```yaml
     app_port: 8080
+    app_env: production
+    ```
 
-    tasks:
+    This automatically applies to all hosts in the `web` group.
 
-    - debug: msg="App runs on port {{ app_port }}"'
 - question: What are Ansible Facts?
-  answer: 'Facts are system information collected automatically.
+  answer: |
+    Facts are **system information** automatically gathered from managed nodes at the start of each playbook run using the `setup` module.
 
-    Example:
+    **Gather all facts manually:**
 
-    ansible all -m setup'
+    ```bash
+    ansible all -m setup
+    ```
+
+    **Common facts:**
+
+    - `ansible_os_family` — "Debian", "RedHat", etc.
+    - `ansible_distribution` — "Ubuntu", "CentOS", etc.
+    - `ansible_hostname` — the node's hostname
+    - `ansible_default_ipv4.address` — primary IP address
+    - `ansible_memtotal_mb` — total RAM in MB
+
+    **Using facts in playbooks:**
+
+    ```yaml
+    - name: Install package based on OS
+      apt:
+        name: nginx
+      when: ansible_os_family == "Debian"
+    ```
+
+    **Filter facts** to reduce gathering time:
+
+    ```yaml
+    - hosts: all
+      gather_facts: yes
+      tasks:
+        - setup:
+            filter: "ansible_distribution*"
+    ```
+
+    **Disable fact gathering** with `gather_facts: no` if not needed — speeds up execution.
+
 - question: What is the purpose of Ansible Handlers?
-  answer: 'Handlers run only when notified.
+  answer: |
+    Handlers are special tasks that **run only when notified** by another task, and they execute **once at the end of the play**, regardless of how many times they are notified.
 
-    Example:
+    **Example:**
 
-    - name: Install Nginx
+    ```yaml
+    tasks:
+      - name: Update Nginx config
+        template:
+          src: nginx.conf.j2
+          dest: /etc/nginx/nginx.conf
+        notify: Restart Nginx
 
-    apt:
+      - name: Update SSL certificate
+        copy:
+          src: cert.pem
+          dest: /etc/nginx/cert.pem
+        notify: Restart Nginx
 
-    name: nginx
+    handlers:
+      - name: Restart Nginx
+        service:
+          name: nginx
+          state: restarted
+    ```
 
-    notify: Restart Nginx
+    **Key behaviors:**
 
-    - name: Restart Nginx
+    - Handlers only fire if the notifying task reports **changed** status
+    - Even if multiple tasks notify the same handler, it runs **only once** at end of play
+    - Use `meta: flush_handlers` to trigger handlers mid-play if needed
+    - Handler names must match the `notify` value exactly
 
-    service:
-
-    name: nginx
-
-    state: restarted
-
-    listen: Restart Nginx'
 - question: How does Ansible manage dependencies?
-  answer: 'Ansible Roles handle dependencies using meta/main.yml.
+  answer: |
+    Ansible manages role dependencies through the `meta/main.yml` file within a role, and project-level dependencies via `requirements.yml`.
 
-    Example:
+    **Role dependencies (`roles/webserver/meta/main.yml`):**
 
+    ```yaml
     dependencies:
+      - role: common
+      - role: firewall
+        vars:
+          allowed_ports:
+            - 80
+            - 443
+    ```
 
-    - role: common'
+    Dependencies are executed **before** the role itself.
+
+    **Project dependencies (`requirements.yml`):**
+
+    ```yaml
+    roles:
+      - name: geerlingguy.nginx
+        version: "3.1.0"
+
+    collections:
+      - name: community.general
+        version: ">=5.0.0"
+    ```
+
+    ```bash
+    ansible-galaxy install -r requirements.yml
+    ```
+
+    **Task ordering** within a playbook is sequential — tasks execute top to bottom, ensuring natural dependency ordering.
+
 - question: What is the difference between command and shell modules in Ansible?
-  answer: 'Module
+  answer: |
+    **`command` module:**
 
-    When to Use
+    - Executes commands **without** a shell (`/bin/sh`)
+    - No access to shell features: pipes (`|`), redirects (`>`), env vars, globs (`*`)
+    - **More secure** — not vulnerable to shell injection
+    - Use for simple commands
 
-    Example
+    ```yaml
+    - command: /usr/bin/ls /tmp
+    ```
 
-    command
+    **`shell` module:**
 
-    Runs a command without shell features
+    - Executes commands **through** a shell (`/bin/sh`)
+    - Full access to shell features: pipes, redirects, env vars, globs
+    - **Less secure** — be careful with user-supplied input
 
-    ansible all -m command -a "ls"
+    ```yaml
+    - shell: echo "hello" | tee /tmp/output.txt
+    ```
 
-    shell
+    **Best practice:** Use `command` by default. Only use `shell` when you specifically need shell features (pipes, redirects, wildcards). Neither is idempotent — use `creates`/`removes` parameters to add idempotency guards.
 
-    Runs commands with shell features (|,&&)
-
-    ansible all -m shell -a "echo hello | tee file.txt"'
 - question: What is Ansible Dynamic Inventory?
-  answer: 'Dynamic Inventory fetches live host lists from AWS, Azure, GCP.
+  answer: |
+    Dynamic inventory fetches **live host lists** from cloud providers or external sources at runtime, instead of maintaining a static file.
 
-    Example for AWS:
+    **Why use it:**
 
-    ansible-inventory --list -i aws_ec2.yml'
+    - Cloud instances are ephemeral — IPs and hostnames change frequently
+    - Auto-scaling groups add/remove hosts dynamically
+    - Single source of truth — the cloud API
+
+    **AWS EC2 example (`aws_ec2.yml`):**
+
+    ```yaml
+    plugin: amazon.aws.aws_ec2
+    regions:
+      - us-east-1
+    keyed_groups:
+      - key: tags.Environment
+        prefix: env
+    filters:
+      instance-state-name: running
+    ```
+
+    ```bash
+    ansible-inventory -i aws_ec2.yml --list
+    ansible-playbook -i aws_ec2.yml playbook.yml
+    ```
+
+    **Supported sources:** AWS, Azure, GCP, VMware, OpenStack, Docker, Kubernetes, and many more through inventory plugins.
+
 - question: What are the main components of AWS CloudFormation?
-  answer: 'Component
+  answer: |
+    **Core components:**
 
-    Description
+    - **Templates** — YAML/JSON files that declare AWS resources, parameters, outputs, and conditions
+    - **Stacks** — a single unit of related resources created from a template
+    - **StackSets** — deploy stacks across **multiple AWS accounts and regions** simultaneously
+    - **Change Sets** — preview proposed modifications before updating a stack
 
-    Templates
+    **Template sections:**
 
-    Defines resources in YAML/JSON
+    - `AWSTemplateFormatVersion` — template version (always "2010-09-09")
+    - `Parameters` — input values passed at stack creation
+    - `Mappings` — static lookup tables (e.g., AMI IDs per region)
+    - `Conditions` — conditional resource creation
+    - `Resources` — **(required)** the AWS resources to create
+    - `Outputs` — values to export (e.g., endpoint URLs, resource IDs)
 
-    Stacks
+    Only the `Resources` section is required; all others are optional.
 
-    Collection of AWS resources
-
-    StackSets
-
-    Deploy stacks across multiple accounts'
 - question: How do you update a CloudFormation stack?
-  answer: 'Use:
+  answer: |
+    **Direct update:**
 
-    aws cloudformation update-stack --stack-name my-stack --template-body file://template.yml'
+    ```bash
+    aws cloudformation update-stack \
+      --stack-name my-stack \
+      --template-body file://template.yml
+    ```
+
+    **Safer approach — use Change Sets:**
+
+    ```bash
+    # Create a change set
+    aws cloudformation create-change-set \
+      --stack-name my-stack \
+      --change-set-name my-update \
+      --template-body file://template.yml
+
+    # Review the changes
+    aws cloudformation describe-change-set \
+      --stack-name my-stack \
+      --change-set-name my-update
+
+    # Execute after review
+    aws cloudformation execute-change-set \
+      --stack-name my-stack \
+      --change-set-name my-update
+    ```
+
+    **Key behaviors:**
+
+    - CloudFormation performs **rolling updates** and automatically **rolls back** on failure
+    - Some property changes cause **resource replacement** (e.g., changing an EC2 instance type) — check the documentation for "Update requires: Replacement"
+    - Use `--use-previous-template` to update only parameters without changing the template
+
 - question: What is the difference between DependsOn and CreationPolicy in CloudFormation?
-  answer: 'Feature
+  answer: |
+    **`DependsOn`:**
 
-    Purpose
+    - Ensures one resource is created **before** another
+    - Controls **ordering**, not success validation
+    - Use when CloudFormation can't infer the dependency automatically
 
-    DependsOn
-
-    Ensures a resource is created before another
-
-    CreationPolicy
-
-    Waits for a signal before marking as successful
-
-    Example (DependsOn):
-
+    ```yaml
     Resources:
+      WebServer:
+        Type: AWS::EC2::Instance
+        DependsOn: MyDB
 
-    WebServer:
+      MyDB:
+        Type: AWS::RDS::DBInstance
+    ```
 
-    Type: AWS::EC2::Instance
+    **`CreationPolicy`:**
 
-    DependsOn: MyDB'
+    - Waits for a **success signal** before marking a resource as complete
+    - Used with EC2 instances and Auto Scaling groups
+    - The resource must send a signal (via `cfn-signal`) within a timeout
+
+    ```yaml
+    Resources:
+      WebServer:
+        Type: AWS::EC2::Instance
+        CreationPolicy:
+          ResourceSignal:
+            Count: 1
+            Timeout: PT15M
+    ```
+
+    **In short:** `DependsOn` controls *order*, `CreationPolicy` controls *readiness confirmation*.
+
 - question: How do you use Conditions in CloudFormation?
-  answer: 'Conditions allow resources to be created based on parameters.
+  answer: |
+    Conditions allow resources to be **created or configured** based on input parameter values.
 
-    Example:
+    **Example — create an S3 bucket only in production:**
+
+    ```yaml
+    Parameters:
+      EnvType:
+        Type: String
+        AllowedValues:
+          - Prod
+          - Dev
 
     Conditions:
-
-    IsProd: !Equals [!Ref EnvType, "Prod"]
+      IsProd: !Equals [!Ref EnvType, "Prod"]
 
     Resources:
+      LogsBucket:
+        Type: AWS::S3::Bucket
+        Condition: IsProd
 
-    MyBucket:
+      WebServer:
+        Type: AWS::EC2::Instance
+        Properties:
+          InstanceType: !If [IsProd, "t3.large", "t3.micro"]
+    ```
 
-    Type: AWS::S3::Bucket
+    **Available condition functions:**
 
-    Condition: IsProd'
+    - `Fn::Equals` — compare two values
+    - `Fn::If` — select value based on condition
+    - `Fn::Not` — negate a condition
+    - `Fn::And` / `Fn::Or` — combine conditions
+
 - question: What is AWS CloudFormation Drift Detection?
-  answer: 'Detects manual changes to resources outside CloudFormation.
+  answer: |
+    Drift detection identifies **manual changes** made to stack resources outside of CloudFormation (e.g., someone modified a security group in the AWS Console).
 
-    Run drift check:
+    **Run drift detection:**
 
-    aws cloudformation detect-stack-drift --stack-name my-stack'
+    ```bash
+    # Initiate detection
+    aws cloudformation detect-stack-drift --stack-name my-stack
+
+    # Check results
+    aws cloudformation describe-stack-resource-drifts \
+      --stack-name my-stack \
+      --stack-resource-drift-status-filters MODIFIED DELETED
+    ```
+
+    **Drift statuses:**
+
+    - **IN_SYNC** — resource matches the template
+    - **MODIFIED** — resource properties differ from the template
+    - **DELETED** — resource was deleted outside CloudFormation
+    - **NOT_CHECKED** — drift detection not supported for this resource type
+
+    **Remediation:** Update the stack template to match the desired state and run `update-stack`, or manually revert the out-of-band changes.
+
 - question: What are Intrinsic Functions in CloudFormation?
-  answer: 'Intrinsic functions dynamically reference values.
+  answer: |
+    Intrinsic functions dynamically compute values within CloudFormation templates at deploy time.
 
-    Example (!Sub for string interpolation):
+    **Most commonly used:**
 
+    - **`!Ref`** — reference a parameter or resource ID
+    - **`!Sub`** — string interpolation with variables
+    - **`!GetAtt`** — get an attribute of a resource
+    - **`!Join`** — concatenate strings with a delimiter
+    - **`!Select`** — pick an item from a list by index
+    - **`!Split`** — split a string into a list
+    - **`!ImportValue`** — import an exported value from another stack
+
+    **Examples:**
+
+    ```yaml
     Resources:
+      MyBucket:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: !Sub "${AWS::AccountId}-${AWS::Region}-my-bucket"
 
-    MyBucket:
+    Outputs:
+      BucketArn:
+        Value: !GetAtt MyBucket.Arn
+        Export:
+          Name: MyBucketArn
 
-    Type: AWS::S3::Bucket
+      Endpoint:
+        Value: !Join
+          - ""
+          - - "https://"
+            - !GetAtt MyBucket.DomainName
+    ```
 
-    Properties:
+    `AWS::AccountId` and `AWS::Region` are **pseudo parameters** — always available without declaration.
 
-    BucketName: !Sub "${AWS::AccountId}-my-bucket"'
 - question: How do you implement CI/CD pipelines with Terraform?
-  answer: 'Terraform can be integrated into CI/CD pipelines using GitHub Actions, GitLab CI, or Jenkins.
+  answer: |
+    Terraform integrates into CI/CD pipelines using GitHub Actions, GitLab CI, Jenkins, or similar tools.
 
-    ✅ Linting & Validation: terraform fmt, terraform validate
+    **Typical pipeline stages:**
 
-    ✅ Planning: terraform plan -out=tfplan
+    1. **Validate:** `terraform fmt -check` and `terraform validate`
+    2. **Plan:** `terraform plan -out=tfplan`
+    3. **Review:** manual approval gate (for production)
+    4. **Apply:** `terraform apply tfplan`
 
-    ✅ Apply Changes: terraform apply tfplan
+    **Example GitHub Actions workflow:**
 
-    Example GitHub Actions workflow:
-
+    ```yaml
     jobs:
+      terraform:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
 
-    terraform:
+          - uses: hashicorp/setup-terraform@v3
 
-    runs-on: ubuntu-latest
+          - name: Terraform Init
+            run: terraform init
 
-    steps:
+          - name: Terraform Format Check
+            run: terraform fmt -check
 
-    - name: Checkout code
+          - name: Terraform Plan
+            run: terraform plan -out=tfplan
 
-    uses: actions/checkout@v2
+          - name: Terraform Apply
+            run: terraform apply tfplan
+            if: github.ref == 'refs/heads/main'
+    ```
 
-    - name: Setup Terraform
+    **Best practices:**
 
-    uses: hashicorp/setup-terraform@v1
+    - Save the plan file and apply the *exact* plan that was reviewed
+    - Add a **manual approval step** before applying to production
+    - Use **OIDC authentication** instead of static AWS credentials
+    - Run **security scanning** (tfsec, Checkov) in the pipeline
 
-    - name: Terraform Init
-
-    run: terraform init
-
-    - name: Terraform Plan
-
-    run: terraform plan -out=tfplan
-
-    - name: Terraform Apply
-
-    run: terraform apply tfplan'
 - question: What are Terraform Data Sources?
-  answer: 'Data sources allow Terraform to query external resources without managing them.
+  answer: |
+    Data sources allow Terraform to **read information** from existing infrastructure without managing it. They are read-only.
 
-    Example:
+    **Common use cases:**
 
-    data "aws_vpc" "existing_vpc" {
+    - Look up an existing VPC, subnet, or AMI
+    - Fetch the latest AMI ID dynamically
+    - Read secrets from AWS Secrets Manager
+    - Query Route53 zones
 
-    filter {
+    **Example — find latest Amazon Linux AMI:**
 
-    name   = "tag:Name"
+    ```hcl
+    data "aws_ami" "amazon_linux" {
+      most_recent = true
+      owners      = ["amazon"]
 
-    values = ["my-vpc"]
-
+      filter {
+        name   = "name"
+        values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+      }
     }
-
-    }'
-- question: How do you manage Terraform module versions?
-  answer: 'Use version constraints in source.
-
-    Example (versions.tf):
-
-    module "vpc" {
-
-    source  = "terraform-aws-modules/vpc/aws"
-
-    version = "3.5.0"
-
-    }'
-- question: How does Terraform handle circular dependencies?
-  answer: 'Terraform detects and prevents circular dependencies by analyzing the DAG (Directed Acyclic Graph).
-
-    Solution:
-
-    ✅ Use depends_on explicitly
-
-    ✅ Refactor resources
-
-    Example:
 
     resource "aws_instance" "web" {
+      ami           = data.aws_ami.amazon_linux.id
+      instance_type = "t3.micro"
+    }
+    ```
 
-    depends_on = [aws_s3_bucket.logs]
+    **Example — reference an existing VPC:**
 
-    }'
-- question: What are Terraform locals and output variables?
-  answer: 'locals: Store temporary values
+    ```hcl
+    data "aws_vpc" "existing" {
+      filter {
+        name   = "tag:Name"
+        values = ["my-vpc"]
+      }
+    }
+    ```
 
-    output: Expose values after deployment
+- question: How do you manage Terraform module versions?
+  answer: |
+    Pin module versions to ensure reproducible deployments and avoid breaking changes.
 
-    Example:
+    **Version constraint operators:**
 
-    locals {
+    - `= 3.5.0` — exact version
+    - `>= 3.5.0` — minimum version
+    - `~> 3.5.0` — allows `3.5.x` but not `3.6.0` (pessimistic constraint)
+    - `>= 3.5.0, < 4.0.0` — range
 
-    env_name = "dev"
+    **Example (Terraform Registry module):**
 
+    ```hcl
+    module "vpc" {
+      source  = "terraform-aws-modules/vpc/aws"
+      version = "~> 5.0"
+    }
+    ```
+
+    **Example (Git source with tag):**
+
+    ```hcl
+    module "vpc" {
+      source = "git::https://github.com/org/modules.git//vpc?ref=v3.5.0"
+    }
+    ```
+
+    **Best practices:**
+
+    - Always pin versions in production
+    - Use `~>` for automatic patch updates
+    - Run `terraform init -upgrade` to update modules within constraints
+    - Document version bumps in your commit messages
+
+- question: How does Terraform handle circular dependencies?
+  answer: |
+    Terraform builds a **Directed Acyclic Graph (DAG)** and will error if it detects a cycle. Circular dependencies mean resource A depends on B, and B depends on A.
+
+    **Example of a circular dependency:**
+
+    ```hcl
+    # Resource A references B
+    resource "aws_security_group" "a" {
+      ingress {
+        security_groups = [aws_security_group.b.id]
+      }
     }
 
+    # Resource B references A — circular!
+    resource "aws_security_group" "b" {
+      ingress {
+        security_groups = [aws_security_group.a.id]
+      }
+    }
+    ```
+
+    **Solutions:**
+
+    1. **Use separate rules** — create security groups without rules, then add rules as separate resources:
+       ```hcl
+       resource "aws_security_group" "a" {}
+       resource "aws_security_group" "b" {}
+
+       resource "aws_security_group_rule" "a_to_b" {
+         security_group_id        = aws_security_group.a.id
+         source_security_group_id = aws_security_group.b.id
+         type                     = "ingress"
+         # ...
+       }
+       ```
+
+    2. **Refactor** to remove the bidirectional dependency
+    3. **Use `depends_on`** to make the ordering explicit where possible
+
+- question: What are Terraform locals and output variables?
+  answer: |
+    **Locals** — computed values used within the configuration to avoid repetition:
+
+    ```hcl
+    locals {
+      env_name    = "dev"
+      common_tags = {
+        Environment = local.env_name
+        ManagedBy   = "terraform"
+        Project     = "my-app"
+      }
+    }
+
+    resource "aws_instance" "web" {
+      # ...
+      tags = local.common_tags
+    }
+    ```
+
+    **Outputs** — expose values after deployment, useful for module consumers and cross-stack references:
+
+    ```hcl
     output "instance_ip" {
+      description = "Public IP of the web server"
+      value       = aws_instance.web.public_ip
+    }
 
-    value = aws_instance.web.public_ip
+    output "db_password" {
+      value     = random_password.db.result
+      sensitive = true
+    }
+    ```
 
-    }'
+    **Key differences:**
+
+    - **Locals** are internal to the configuration — not visible outside
+    - **Outputs** are exposed to the caller (CLI output, module consumers, remote state)
+    - Use `sensitive = true` on outputs containing secrets to redact them from CLI output
+
 - question: What is a Terraform Sentinel Policy?
-  answer: 'Sentinel is a policy-as-code framework that enforces compliance.
+  answer: |
+    Sentinel is HashiCorp's **policy-as-code** framework used in Terraform Cloud/Enterprise to enforce compliance and governance rules before infrastructure changes are applied.
 
-    Example policy (enforce_cost.sentinel):
+    **Use cases:**
 
-    import "tfplan"
+    - Restrict allowed instance types
+    - Enforce mandatory tags
+    - Limit cost estimates
+    - Require encryption on all storage resources
 
-    main = rule { tfplan.cost_estimate.total_monthly_cost'
+    **Example policy (`enforce_tags.sentinel`):**
+
+    ```python
+    import "tfplan/v2" as tfplan
+
+    mandatory_tags = ["Environment", "Owner"]
+
+    main = rule {
+      all tfplan.resource_changes as _, rc {
+        all mandatory_tags as tag {
+          rc.change.after.tags contains tag
+        }
+      }
+    }
+    ```
+
+    **Enforcement levels:**
+
+    - **advisory** — warn but allow
+    - **soft-mandatory** — block unless overridden by an admin
+    - **hard-mandatory** — block with no override possible
+
+    Sentinel runs between `plan` and `apply`, acting as a gate in the deployment pipeline.
+
 - question: How do you roll back changes in Terraform?
-  answer: 'Option 1: Use version control (git revert)
+  answer: |
+    Terraform does **not** have a built-in rollback command. Instead, you revert to a previous known-good state.
 
-    Option 2: Manually restore the previous state
+    **Recommended approaches:**
 
-    Option 3: Import last known working state:
+    1. **Version control (best option):**
+       ```bash
+       git revert HEAD        # revert the last commit
+       terraform plan          # review the rollback changes
+       terraform apply         # apply the reverted config
+       ```
 
-    sh
+    2. **Re-apply a previous state version** (if using versioned remote state, e.g., S3 versioning):
+       - Retrieve the previous state version from S3
+       - Use `terraform state push` to restore it
+       - Run `terraform apply` to reconcile
 
-    terraform apply "tfstate-previous.json"'
+    3. **Target specific resources:**
+       ```bash
+       terraform apply -target=aws_instance.web -replace=aws_instance.web
+       ```
+
+    **Best practices:**
+
+    - Always commit Terraform changes to Git **before** applying
+    - Enable **S3 versioning** on your state bucket for state recovery
+    - Use **Change Sets** (CloudFormation) or saved `terraform plan` output to review before applying
+
 - question: What is Terraform Refresh?
-  answer: 'terraform refresh updates the state file without modifying resources.
+  answer: |
+    `terraform refresh` updates the state file to match the **real-world infrastructure** without modifying any resources.
 
-    terraform refresh'
+    **Use case:** When resources were changed outside Terraform (manual changes, other tools), refresh syncs the state.
+
+    **Important:** The standalone `terraform refresh` command is **deprecated** as of Terraform v1.5+. Use the safer alternative:
+
+    ```bash
+    terraform apply -refresh-only
+    ```
+
+    This shows you what state changes will be made and asks for confirmation before updating.
+
+    **Why `-refresh-only` is better:**
+
+    - Produces a plan you can review before accepting
+    - Won't silently overwrite important state data
+    - Supports the same approval workflow as regular `apply`
+
+    **Note:** A normal `terraform plan` already performs a refresh as its first step — you rarely need to refresh separately.
+
 - question: How do you enforce security best practices in Terraform?
-  answer: '✅ Use IAM least privilege for Terraform executions
+  answer: |
+    **Code-level security:**
 
-    ✅ Store state files securely (S3 + DynamoDB)
+    - Mark sensitive variables with `sensitive = true`
+    - Never hardcode credentials — use IAM roles, OIDC, or secrets managers
+    - Store state files in encrypted remote backends (S3 + SSE, GCS + CMEK)
+    - Enable state locking to prevent corruption
 
-    ✅ Run security scans with tools like tfsec
+    **Scanning tools:**
 
-    Example:
+    - **tfsec** — static analysis for security misconfigurations
+    - **Checkov** — policy-based scanning (also supports CloudFormation, Kubernetes)
+    - **OPA/Conftest** — custom policy enforcement
 
-    tfsec .'
+    ```bash
+    tfsec .
+    checkov -d .
+    ```
+
+    **Runtime security:**
+
+    - Use **IAM least privilege** for Terraform execution roles
+    - Enable **OIDC authentication** in CI/CD instead of static keys
+    - Require **MFA** for production applies
+    - Restrict who can run `terraform apply` in CI/CD
+
+    **Governance:**
+
+    - Use Sentinel or OPA policies to enforce compliance at plan time
+    - Require peer review of `.tf` changes via pull requests
+    - Audit state file access through bucket logging
+
 - question: How does Terraform manage multi-cloud environments?
-  answer: 'By using multiple providers in a single configuration.
+  answer: |
+    Terraform supports multiple cloud providers in a single configuration by declaring multiple providers.
 
-    Example (AWS + Azure):
+    **Example (AWS + Azure):**
 
+    ```hcl
     provider "aws" {
-
-    region = "us-east-1"
-
+      region = "us-east-1"
     }
 
     provider "azurerm" {
-
-    features {}
-
-    }'
-- question: How do you test Ansible Playbooks before applying them?
-  answer: '✅ Use ansible-lint for syntax validation
-
-    ✅ Use Molecule for testing
-
-    Example:
-
-    molecule test'
-- question: How do you handle error handling in Ansible?
-  answer: 'Use ignore_errors: yes or rescue blocks.
-
-    Example:
-
-    tasks:
-
-    - name: Try to restart service
-
-    service:
-
-    name: nginx
-
-    state: restarted
-
-    ignore_errors: yes'
-- question: How do you implement Ansible Vault in CI/CD?
-  answer: 'Use environment variables to decrypt secrets.
-
-    Example:
-
-    ANSIBLE_VAULT_PASSWORD="myvaultpassword" ansible-playbook deploy.yml'
-- question: How does Ansible integrate with Kubernetes?
-  answer: '✅ Use the k8s module
-
-    ✅ Define Kubernetes manifests in YAML
-
-    Example:
-
-    - name: Deploy to Kubernetes
-
-    k8s:
-
-    state: present
-
-    definition: "{{ lookup(''file'', ''deployment.yml'') }}"'
-- question: How do you ensure Ansible Playbooks are idempotent?
-  answer: '✅ Always use state: present
-
-    ✅ Run playbooks multiple times to check consistency
-
-    Example:
-
-    - name: Ensure Nginx is installed
-
-    apt:
-
-    name: nginx
-
-    state: present'
-- question: How do you modularize CloudFormation templates?
-  answer: '✅ Use Nested Stacks
-
-    ✅ Use AWS::CloudFormation::Stack
-
-    Example:
-
-    Resources:
-
-    MyNetworkStack:
-
-    Type: AWS::CloudFormation::Stack
-
-    Properties:
-
-    TemplateURL: "https://s3.amazonaws.com/my-bucket/network.yml"'
-- question: How do you manage parameter changes in CloudFormation?
-  answer: 'Use the --parameters flag during updates.
-
-    Example:
-
-    aws cloudformation update-stack --stack-name my-stack \
-
-    --parameters ParameterKey=InstanceType,ParameterValue=t2.large'
-- question: How do you handle stateful resources in CloudFormation?
-  answer: '✅ Use Stack Policies to prevent deletions
-
-    ✅ Enable RetainPolicy for S3, RDS
-
-    Example:
-
-    Resources:
-
-    MyBucket:
-
-    Type: AWS::S3::Bucket
-
-    DeletionPolicy: Retain'
-- question: What is AWS CloudFormation Stack Policy?
-  answer: 'A Stack Policy prevents accidental updates or deletions.
-
-    Example:
-
-    {
-
-    "Statement": [
-
-    {
-
-    "Effect": "Deny",
-
-    "Action": "Update:Delete",
-
-    "Principal": "*",
-
-    "Resource": "*"
-
+      features {}
     }
 
-    ]
+    resource "aws_s3_bucket" "data" {
+      bucket = "my-data-bucket"
+    }
 
-    }'
+    resource "azurerm_storage_account" "backup" {
+      name                     = "mybackupstorage"
+      resource_group_name      = "my-rg"
+      location                 = "East US"
+      account_tier             = "Standard"
+      account_replication_type = "GRS"
+    }
+    ```
+
+    **Provider aliases** for multiple regions or accounts:
+
+    ```hcl
+    provider "aws" {
+      alias  = "eu"
+      region = "eu-west-1"
+    }
+
+    resource "aws_instance" "eu_web" {
+      provider      = aws.eu
+      ami           = "ami-eu-12345"
+      instance_type = "t3.micro"
+    }
+    ```
+
+    **Considerations:**
+
+    - Each provider manages its own authentication independently
+    - State file will contain resources from all providers
+    - Consider splitting into separate root modules per cloud for large deployments
+
+- question: How do you test Ansible Playbooks before applying them?
+  answer: |
+    **Dry run (check mode):**
+
+    ```bash
+    ansible-playbook playbook.yml --check --diff
+    ```
+
+    `--check` simulates the run without making changes. `--diff` shows what files would change.
+
+    **Linting:**
+
+    ```bash
+    ansible-lint playbook.yml
+    ```
+
+    Checks for best practices, deprecated syntax, and common mistakes.
+
+    **Testing with Molecule:**
+
+    ```bash
+    pip install molecule molecule-docker
+    molecule init scenario -r my_role
+    molecule test
+    ```
+
+    Molecule provides a full testing framework: creates a container/VM, applies the role, runs verifiers, then destroys the environment.
+
+    **Syntax check only:**
+
+    ```bash
+    ansible-playbook playbook.yml --syntax-check
+    ```
+
+    **Best practice:** Combine all of these in CI/CD — lint first, syntax check, then run Molecule tests on every pull request.
+
+- question: How do you handle error handling in Ansible?
+  answer: |
+    **`ignore_errors`** — continue execution even if a task fails:
+
+    ```yaml
+    - name: Try to restart a service
+      service:
+        name: myapp
+        state: restarted
+      ignore_errors: yes
+    ```
+
+    **`block/rescue/always`** — structured error handling (try/catch/finally):
+
+    ```yaml
+    - block:
+        - name: Deploy application
+          command: /opt/deploy.sh
+
+        - name: Run smoke tests
+          command: /opt/smoke_test.sh
+
+      rescue:
+        - name: Rollback on failure
+          command: /opt/rollback.sh
+
+        - name: Send failure notification
+          debug:
+            msg: "Deployment failed, rolled back"
+
+      always:
+        - name: Clean up temp files
+          file:
+            path: /tmp/deploy_artifacts
+            state: absent
+    ```
+
+    **`failed_when`** — custom failure conditions:
+
+    ```yaml
+    - name: Check disk space
+      command: df -h /
+      register: disk_result
+      failed_when: "'100%' in disk_result.stdout"
+    ```
+
+    **Best practice:** Use `block/rescue/always` for critical workflows (deployments, migrations) where you need rollback capability.
+
+- question: How do you implement Ansible Vault in CI/CD?
+  answer: |
+    **Never pass vault passwords directly in command-line arguments or environment variables in plain text.** Use a vault password file instead.
+
+    **Approach 1 — Vault password file (recommended):**
+
+    ```bash
+    # In CI/CD, write the secret to a temp file from a CI secret variable
+    echo "$VAULT_PASSWORD" > /tmp/.vault_pass
+    chmod 600 /tmp/.vault_pass
+
+    ansible-playbook deploy.yml --vault-password-file /tmp/.vault_pass
+
+    # Clean up
+    rm -f /tmp/.vault_pass
+    ```
+
+    **Approach 2 — Vault password script:**
+
+    ```bash
+    #!/bin/bash
+    # vault_pass.sh — fetches password from a secrets manager
+    aws secretsmanager get-secret-value \
+      --secret-id ansible-vault-password \
+      --query SecretString --output text
+    ```
+
+    ```bash
+    ansible-playbook deploy.yml --vault-password-file vault_pass.sh
+    ```
+
+    **Approach 3 — Avoid Vault entirely in CI/CD:**
+
+    Use your CI/CD platform's native secrets (GitHub Secrets, GitLab CI Variables) and inject them as extra vars:
+
+    ```bash
+    ansible-playbook deploy.yml -e "db_password=$DB_PASSWORD"
+    ```
+
+    This avoids vault complexity altogether.
+
+- question: How does Ansible integrate with Kubernetes?
+  answer: |
+    Ansible manages Kubernetes resources through the **`kubernetes.core` collection**.
+
+    **Install the collection:**
+
+    ```bash
+    ansible-galaxy collection install kubernetes.core
+    ```
+
+    **Deploy a manifest:**
+
+    ```yaml
+    - name: Deploy to Kubernetes
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ lookup('file', 'deployment.yml') }}"
+    ```
+
+    **Inline resource definition:**
+
+    ```yaml
+    - name: Create a namespace
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: my-app
+    ```
+
+    **Manage Helm charts:**
+
+    ```yaml
+    - name: Deploy Nginx Ingress via Helm
+      kubernetes.core.helm:
+        name: nginx-ingress
+        chart_ref: ingress-nginx/ingress-nginx
+        release_namespace: ingress
+        create_namespace: true
+    ```
+
+    **Use cases:** Ansible is useful for Kubernetes when you need to combine cluster management with non-Kubernetes tasks (configure DNS, update load balancers, run database migrations) in a single workflow.
+
+- question: How do you ensure Ansible Playbooks are idempotent?
+  answer: |
+    **Use declarative modules** that define desired state rather than actions:
+
+    ```yaml
+    # Good — idempotent
+    - apt:
+        name: nginx
+        state: present
+
+    # Bad — runs every time
+    - command: apt-get install nginx
+    ```
+
+    **Key practices:**
+
+    - Use `state: present/absent/latest` instead of raw commands
+    - For `command`/`shell` tasks, add **guards:**
+      ```yaml
+      - command: /opt/setup.sh
+        args:
+          creates: /opt/.setup_complete
+      ```
+    - Use `when` conditions to skip unnecessary tasks:
+      ```yaml
+      - service:
+          name: nginx
+          state: restarted
+        when: nginx_config.changed
+      ```
+    - Use **`lineinfile`** or **`template`** instead of `echo >>` for file modifications
+    - Register results and use `changed_when` to control change reporting:
+      ```yaml
+      - command: /opt/check_status.sh
+        register: status
+        changed_when: false  # this task never reports "changed"
+      ```
+
+    **Verification:** Run the playbook twice — the second run should report **0 changed** tasks.
+
+- question: How do you modularize CloudFormation templates?
+  answer: |
+    **Nested Stacks** — break large templates into smaller, reusable child stacks:
+
+    ```yaml
+    Resources:
+      NetworkStack:
+        Type: AWS::CloudFormation::Stack
+        Properties:
+          TemplateURL: https://s3.amazonaws.com/my-bucket/network.yml
+          Parameters:
+            VpcCidr: "10.0.0.0/16"
+
+      AppStack:
+        Type: AWS::CloudFormation::Stack
+        Properties:
+          TemplateURL: https://s3.amazonaws.com/my-bucket/app.yml
+          Parameters:
+            VpcId: !GetAtt NetworkStack.Outputs.VpcId
+    ```
+
+    **Cross-Stack References** — share values between independent stacks using exports:
+
+    ```yaml
+    # In network stack
+    Outputs:
+      VpcId:
+        Value: !Ref MyVPC
+        Export:
+          Name: shared-vpc-id
+
+    # In app stack
+    Resources:
+      MyInstance:
+        Type: AWS::EC2::Instance
+        Properties:
+          SubnetId: !ImportValue shared-vpc-id
+    ```
+
+    **When to use which:**
+
+    - **Nested Stacks** — tightly coupled components deployed together
+    - **Cross-Stack References** — loosely coupled components with independent lifecycles
+
+- question: How do you manage parameter changes in CloudFormation?
+  answer: |
+    **Pass parameters during stack updates:**
+
+    ```bash
+    aws cloudformation update-stack \
+      --stack-name my-stack \
+      --template-body file://template.yml \
+      --parameters ParameterKey=InstanceType,ParameterValue=t2.large
+    ```
+
+    **Keep previous parameter values:**
+
+    ```bash
+    aws cloudformation update-stack \
+      --stack-name my-stack \
+      --template-body file://template.yml \
+      --parameters \
+        ParameterKey=InstanceType,UsePreviousValue=true \
+        ParameterKey=EnvType,ParameterValue=prod
+    ```
+
+    `UsePreviousValue=true` avoids re-specifying parameters that haven't changed.
+
+    **Defining parameters in templates:**
+
+    ```yaml
+    Parameters:
+      InstanceType:
+        Type: String
+        Default: t3.micro
+        AllowedValues:
+          - t3.micro
+          - t3.small
+          - t3.large
+        Description: EC2 instance type
+    ```
+
+    **Best practice:** Always define `Default` values and `AllowedValues` constraints to prevent invalid configurations.
+
+- question: How do you handle stateful resources in CloudFormation?
+  answer: |
+    Stateful resources (databases, S3 buckets, EFS) require extra protection against accidental deletion.
+
+    **`DeletionPolicy`** — controls what happens when a resource is removed from the template:
+
+    - `Retain` — keep the resource (don't delete it)
+    - `Snapshot` — create a final snapshot before deletion (RDS, EBS)
+    - `Delete` — delete the resource (default)
+
+    ```yaml
+    Resources:
+      MyDatabase:
+        Type: AWS::RDS::DBInstance
+        DeletionPolicy: Snapshot
+        Properties:
+          DBInstanceClass: db.t3.micro
+          Engine: mysql
+
+      MyBucket:
+        Type: AWS::S3::Bucket
+        DeletionPolicy: Retain
+    ```
+
+    **`UpdateReplacePolicy`** — controls behavior when a resource must be replaced during an update:
+
+    ```yaml
+    Resources:
+      MyDB:
+        Type: AWS::RDS::DBInstance
+        DeletionPolicy: Snapshot
+        UpdateReplacePolicy: Snapshot
+    ```
+
+    **Stack Policies** can also prevent updates to specific critical resources (see the Stack Policy question).
+
+- question: What is AWS CloudFormation Stack Policy?
+  answer: |
+    A Stack Policy is a JSON document that **prevents accidental updates or deletions** of specific stack resources.
+
+    **Example — deny all updates by default, allow only specific resources:**
+
+    ```json
+    {
+      "Statement": [
+        {
+          "Effect": "Deny",
+          "Action": "Update:*",
+          "Principal": "*",
+          "Resource": "*"
+        },
+        {
+          "Effect": "Allow",
+          "Action": "Update:*",
+          "Principal": "*",
+          "Resource": "LogicalResourceId/WebServerASG"
+        }
+      ]
+    }
+    ```
+
+    **Apply a stack policy:**
+
+    ```bash
+    aws cloudformation set-stack-policy \
+      --stack-name my-stack \
+      --stack-policy-body file://policy.json
+    ```
+
+    **Temporary override** for a one-time update:
+
+    ```bash
+    aws cloudformation update-stack \
+      --stack-name my-stack \
+      --template-body file://template.yml \
+      --stack-policy-during-update-body file://temp-policy.json
+    ```
+
+    The temporary policy applies only during that specific update operation.
+
 - question: How do you debug CloudFormation failures?
-  answer: '✅ Check the CloudFormation console
+  answer: |
+    **Step 1 — Check stack events:**
 
-    ✅ Use aws cloudformation describe-stack-events
+    ```bash
+    aws cloudformation describe-stack-events \
+      --stack-name my-stack \
+      --query "StackEvents[?ResourceStatus=='CREATE_FAILED']"
+    ```
 
-    ✅ Enable rollback debugging
+    **Step 2 — View the failure reason** in the `ResourceStatusReason` field of the failed event.
 
-    Example:
+    **Step 3 — Disable automatic rollback** to inspect the failed state:
 
-    aws cloudformation describe-stack-events --stack-name my-stack'
+    ```bash
+    aws cloudformation create-stack \
+      --stack-name my-stack \
+      --template-body file://template.yml \
+      --disable-rollback
+    ```
+
+    **Step 4 — Check CloudTrail** for API-level errors (permission denied, quota exceeded).
+
+    **Common failure causes:**
+
+    - **Insufficient IAM permissions** — the role creating the stack lacks required permissions
+    - **Resource limits** — AWS account quotas exceeded
+    - **Invalid parameter values** — wrong AMI ID, non-existent subnet, etc.
+    - **Dependency failures** — a required resource failed to create
+
+    **Useful commands:**
+
+    ```bash
+    # Get current stack status
+    aws cloudformation describe-stacks --stack-name my-stack
+
+    # Continue rolling back a stuck UPDATE_ROLLBACK_FAILED stack
+    aws cloudformation continue-update-rollback --stack-name my-stack
+    ```

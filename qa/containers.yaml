@@ -5,857 +5,1568 @@ config:
   answerDelay: 1
 questions:
 - question: What is Docker, and why is it used?
-  answer: 'Docker is a containerization platform that allows developers to package applications along with their dependencies
-    into a single unit called a container.
+  answer: |-
+    Docker is a **containerization platform** that packages applications and all their dependencies into lightweight, portable units called **containers**.
 
-    Why use Docker?
+    **Why use Docker?**
 
-    ✅ Ensures consistent environments across different machines.
+    - **Environment consistency** — "works on my machine" is eliminated; containers behave identically in dev, staging, and production
+    - **Lightweight** — containers share the host OS kernel, so they start in milliseconds and use far less RAM/disk than VMs
+    - **Microservices-friendly** — each service runs in its own container with isolated dependencies
+    - **CI/CD integration** — images are immutable artifacts that flow through build → test → deploy pipelines
+    - **Ecosystem** — Docker Hub provides thousands of ready-to-use images (databases, web servers, language runtimes)
 
-    ✅ Lightweight & faster than virtual machines.
-
-    ✅ Easy scaling of applications in microservices architectures.'
 - question: What is the difference between Docker and a Virtual Machine (VM)?
-  answer: 'Feature
+  answer: |-
+    **Docker containers** and **VMs** both provide isolation, but they work at different levels:
 
-    Docker
+    **Architecture:**
+    - **Docker** — runs on the host OS kernel; the Docker engine manages containers. No guest OS needed.
+    - **VM** — runs a full guest OS on top of a hypervisor (e.g., VMware, KVM, Hyper-V). Each VM includes its own kernel.
 
-    Virtual Machine
+    **Performance:**
+    - **Docker** — near-native speed, starts in milliseconds, uses MBs of disk/RAM
+    - **VM** — slower due to full OS overhead, starts in minutes, uses GBs of disk/RAM
 
-    Isolation
+    **Isolation:**
+    - **Docker** — process-level isolation via Linux namespaces and cgroups. Lighter but shares the kernel.
+    - **VM** — hardware-level isolation via hypervisor. Stronger isolation, suitable for running untrusted workloads or different OSes.
 
-    Uses containers to isolate apps
+    **Use cases:**
+    - **Docker** — microservices, CI/CD, rapid scaling, dev environments
+    - **VM** — running different OS types, legacy apps, strong security boundaries
 
-    Uses hypervisor to run separate OS instances
-
-    Performance
-
-    Faster, lightweight
-
-    Slower, resource-intensive
-
-    Startup Time
-
-    Milliseconds
-
-    Minutes
-
-    Use Case
-
-    Ideal for microservices
-
-    Best for full OS emulation'
 - question: What is a Docker image?
-  answer: 'A Docker image is a read-only template containing everything needed to run an application, including:
-
-    Source code
-
-    Libraries & dependencies
-
-    Configuration files
-
-    A container is created from a Docker image using the docker run command.'
-- question: What is a Docker container?
-  answer: 'A Docker container is a running instance of a Docker image. It is:
-
-    ✅ Lightweight (shares OS kernel)
-
-    ✅ Isolated (has its own filesystem, network, and process space)
-
-    ✅ Portable (can run on any system with Docker installed)'
-- question: How do you create and run a Docker container?
-  answer: 'To run a container from an image:
-
-    docker run -d --name myapp nginx
-
-    -d: Run in detached mode (background).
-
-    --name myapp: Name the container myapp.
-
-    nginx: Use the nginx image.'
-- question: What is the purpose of the Dockerfile?
-  answer: 'A Dockerfile is a script that contains instructions to build a Docker image.
-
-    Example Dockerfile:
-
-    FROM node:16
-
-    WORKDIR /app
-
-    COPY . .
-
-    RUN npm install
-
-    CMD ["node", "app.js"]
-
-    FROM: Base image.
-
-    WORKDIR: Set working directory.
-
-    COPY: Copy files.
-
-    RUN: Execute commands (install dependencies).
-
-    CMD: Define the default command to run.'
-- question: What are Docker volumes?
-  answer: 'Docker volumes store persistent data outside a container''s filesystem.
-
-    Types:
-
-    Anonymous Volumes: docker run -v /data nginx
-
-    Named Volumes: docker volume create mydata
-
-    Bind Mounts: docker run -v /host/path:/container/path nginx'
-- question: How do you list running Docker containers?
-  answer: 'Use the command:
-
-    docker ps
-
-    To list all containers (including stopped ones):
-
-    docker ps -a'
-- question: What is Docker Compose?
-  answer: 'Docker Compose is a tool for defining and running multi-container applications.
-
-    Example docker-compose.yml:
-
-    yaml
-
-    version: "3"
-
-    services:
-
-    web:
-
-    image: nginx
-
-    ports:
-
-    - "80:80"
-
-    db:
-
-    image: mysql
-
-    environment:
-
-    MYSQL_ROOT_PASSWORD: root
-
-    Start with: docker-compose up -d
-
-    Stop with: docker-compose down'
-- question: What is the difference between CMD and ENTRYPOINT in Docker?
-  answer: 'Feature
-
-    CMD
-
-    ENTRYPOINT
-
-    Purpose
-
-    Default command
-
-    Fixed executable command
-
-    Overridable?
-
-    Yes
-
-    No (unless --entrypoint is used)
-
-    Example
-
-    CMD ["python", "app.py"]
-
-    ENTRYPOINT ["nginx", "-g", "daemon off;"]'
-- question: What is Kubernetes?
-  answer: 'Kubernetes (K8s) is an orchestration platform for managing containerized applications.
-
-    Features:
-
-    ✅ Automated scaling
-
-    ✅ Self-healing (restarts failed containers)
-
-    ✅ Load balancing
-
-    ✅ Rolling updates'
-- question: What is a Kubernetes Pod?
-  answer: A Pod is the smallest unit in Kubernetes. It groups one or more containers that share the same network and storage.
-- question: What is a Kubernetes Deployment?
-  answer: 'A Deployment manages Pod creation and updates.
-
-    Example YAML:
-
-    apiVersion: apps/v1
-
-    kind: Deployment
-
-    metadata:
-
-    name: my-app
-
-    spec:
-
-    replicas: 3
-
-    selector:
-
-    matchLabels:
-
-    app: my-app
-
-    template:
-
-    metadata:
-
-    labels:
-
-    app: my-app
-
-    spec:
-
-    containers:
-
-    - name: app
-
-    image: nginx
-
-    replicas: 3 → Runs 3 instances.
-
-    matchLabels → Ensures the correct Pods are managed.'
-- question: What is a Kubernetes Service?
-  answer: 'A Service exposes a set of Pods over a network.
-
-    Types:
-
-    ClusterIP (default)
-
-    NodePort (exposes on a fixed port)
-
-    LoadBalancer (uses cloud provider''s load balancer)
-
-    Example YAML:
-
-    apiVersion: v1
-
-    kind: Service
-
-    metadata:
-
-    name: my-service
-
-    spec:
-
-    type: NodePort
-
-    selector:
-
-    app: my-app
-
-    ports:
-
-    - port: 80
-
-    targetPort: 8080
-
-    nodePort: 30007'
-- question: What is the purpose of Kubernetes ConfigMaps and Secrets?
-  answer: 'ConfigMaps store non-sensitive configuration data.
-
-    Secrets store sensitive data (passwords, API keys).
-
-    Example Secret:
-
-    apiVersion: v1
-
-    kind: Secret
-
-    metadata:
-
-    name: my-secret
-
-    data:
-
-    password: bXlwYXNzd29yZA=='
-- question: What is a Kubernetes Namespace?
-  answer: 'Namespaces logically separate resources within a cluster.
-
-    kubectl create namespace dev
-
-    kubectl get namespaces'
-- question: What is a StatefulSet in Kubernetes?
-  answer: 'A StatefulSet is used for stateful applications like databases. Unlike Deployments, it maintains:
-
-    ✅ Stable pod identity
-
-    ✅ Persistent storage'
-- question: How do you scale a Deployment in Kubernetes?
-  answer: 'Manually scale using:
-
-    kubectl scale deployment my-app --replicas=5'
-- question: What is a DaemonSet?
-  answer: A DaemonSet ensures that one Pod runs on every node (e.g., logging agents, monitoring).
-- question: How do you update a Kubernetes Deployment?
-  answer: 'Update the image and apply changes:
-
-    kubectl set image deployment/my-app my-container=nginx:latest'
-- question: What is the difference between Docker ADD and COPY?
-  answer: 'Feature
-
-    ADD
-
-    COPY
-
-    Function
-
-    Copies files & extracts compressed files
-
-    Copies files only
-
-    Supports URLs?
-
-    Yes
-
-    No
-
-    Best Practice
-
-    Use for archives (.tar.gz)
-
-    Use for simple file copies
-
-    Example:
-
-    COPY config.json /app/config.json
-
-    ADD myapp.tar.gz /app/'
-- question: How do you optimize Docker images?
-  answer: 'Use smaller base images (e.g., alpine instead of ubuntu).
-
-    Multi-stage builds to reduce image size:
-
-    ```Dockerfile
-
-    FROM node:16 AS build
-
-    WORKDIR /app
-
-    COPY . .
-
-    RUN npm install && npm run build
-
-    FROM nginx:alpine
-
-    COPY --from=build /app/dist /usr/share/nginx/html
+  answer: |-
+    A Docker image is a **read-only, layered template** that contains everything needed to run an application:
+
+    - Application source code
+    - Runtime (e.g., Node.js, Python, JVM)
+    - System libraries and dependencies
+    - Environment variables and configuration files
+
+    **Key concepts:**
+    - Images are built from a **Dockerfile** using `docker build`
+    - Each Dockerfile instruction creates a **layer**; layers are cached for fast rebuilds
+    - Images are stored in **registries** (Docker Hub, ECR, GCR, etc.)
+    - A **container** is a running instance of an image, created with `docker run`
 
     ```
+    docker build -t myapp:1.0 .
+    docker run myapp:1.0
+    ```
 
-    Use .dockerignore to avoid unnecessary files.'
-- question: What is the difference between Docker ENTRYPOINT and CMD?
-  answer: 'ENTRYPOINT is not overridden by command-line arguments, while CMD can be.
+- question: What is a Docker container?
+  answer: |-
+    A Docker container is a **running instance** of a Docker image. It is an isolated process (or group of processes) that has:
 
-    Best practice: Use ENTRYPOINT for fixed commands.
+    - **Its own filesystem** — provided by the image layers + a writable top layer
+    - **Its own network stack** — gets a private IP on a Docker network
+    - **Its own process space** — PID 1 inside the container is the main application process
+    - **Resource limits** — CPU, memory, and I/O can be constrained via cgroups
 
-    Example:
+    Containers are **ephemeral** by default — when a container is removed, its writable layer is lost. Use **volumes** to persist data beyond the container lifecycle.
 
-    ENTRYPOINT ["nginx", "-g", "daemon off;"]
+- question: How do you create and run a Docker container?
+  answer: |-
+    Use the `docker run` command:
 
-    CMD ["-p", "80"]'
-- question: How do you debug a running Docker container?
-  answer: 'Get container logs: docker logs my-container
+    ```
+    docker run -d --name myapp -p 8080:80 nginx
+    ```
 
-    Attach to a running container: docker exec -it my-container /bin/sh
+    **Flag breakdown:**
+    - `-d` — detached mode (runs in the background)
+    - `--name myapp` — assigns a human-readable name
+    - `-p 8080:80` — maps host port 8080 to container port 80
+    - `nginx` — the image to use
 
-    Inspect container details: docker inspect my-container'
-- question: What is a Docker Multi-Stage Build?
-  answer: 'A multi-stage build reduces image size by using multiple FROM statements.
+    **Other useful flags:**
+    - `-e KEY=VALUE` — set environment variables
+    - `-v /host:/container` — mount a volume
+    - `--rm` — automatically remove the container when it exits
+    - `--restart unless-stopped` — auto-restart policy
 
-    FROM golang:1.17 AS builder
+- question: What is the purpose of the Dockerfile?
+  answer: |-
+    A Dockerfile is a **text file with instructions** that Docker uses to build an image layer by layer.
 
+    **Example:**
+    ```
+    FROM node:20-alpine
     WORKDIR /app
-
+    COPY package*.json ./
+    RUN npm ci --production
     COPY . .
-
-    RUN go build -o myapp
-
-    FROM alpine
-
-    COPY --from=builder /app/myapp /myapp
-
-    ENTRYPOINT ["/myapp"]
-
-    The final image only contains the built binary.'
-- question: How does Docker handle networking?
-  answer: 'Bridge network (default): Containers communicate via virtual network.
-
-    Host network: Container shares the host’s networking stack.
-
-    Overlay network: Used in Docker Swarm for multi-host networking.
-
-    Example:
-
-    docker network create mynetwork
-
-    docker run --network=mynetwork nginx'
-- question: What is the difference between Docker Swarm and Kubernetes?
-  answer: 'Feature
-
-    Docker Swarm
-
-    Kubernetes
-
-    Orchestration
-
-    Lightweight, built into Docker
-
-    Advanced, feature-rich
-
-    Scaling
-
-    Manual
-
-    Auto-scaling
-
-    Service Discovery
-
-    Built-in
-
-    Needs external setup (DNS, Ingress)'
-- question: How do you remove unused Docker images and containers?
-  answer: 'docker system prune -a
-
-    This removes stopped containers, unused networks, and dangling images.'
-- question: What is Docker BuildKit?
-  answer: 'Docker BuildKit improves build speed and caching.
-
-    Enable it with:
-
-    DOCKER_BUILDKIT=1 docker build .
-
-    Benefits:
-
-    ✅ Faster builds
-
-    ✅ Parallel execution
-
-    ✅ Improved caching'
-- question: How do you limit container resource usage?
-  answer: 'Use --memory and --cpus:
-
-    docker run --memory=512m --cpus=1 nginx
-
-    This limits memory to 512MB and CPU usage to 1 core.'
-- question: How does Kubernetes handle high availability?
-  answer: 'Uses multiple master nodes to avoid single points of failure.
-
-    Deployments use replica sets to keep applications running.
-
-    Load balancing & failover mechanisms ensure availability.'
-- question: What is the role of kubelet in Kubernetes?
-  answer: 'Kubelet runs on each node and:
-
-    ✅ Communicates with the master node
-
-    ✅ Ensures containers are running
-
-    ✅ Monitors container health'
-- question: How do you check logs of a running Pod in Kubernetes?
-  answer: 'kubectl logs my-pod
-
-    kubectl logs -f my-pod  # Stream logs in real-time'
-- question: What are Kubernetes Labels and Selectors?
-  answer: 'Labels identify resources, while selectors filter resources.
-
-    Example:
-
-    metadata:
-
-    labels:
-
-    app: my-app
-
-    To filter pods by label:
-
-    kubectl get pods -l app=my-app'
-- question: What is a Kubernetes Ingress?
-  answer: 'An Ingress manages external access to services.
-
-    Example:
-
-    apiVersion: networking.k8s.io/v1
-
-    kind: Ingress
-
-    metadata:
-
-    name: my-ingress
-
-    spec:
-
-    rules:
-
-    - host: myapp.com
-
-    http:
-
-    paths:
-
-    - path: /
-
-    backend:
-
-    service:
-
-    name: my-service
-
-    port:
-
-    number: 80
-
-    Use Ingress controllers (NGINX, Traefik) to manage Ingress resources.'
-- question: What is the difference between Horizontal Pod Autoscaler (HPA) and Vertical Pod Autoscaler (VPA)?
-  answer: 'Feature
-
-    HPA
-
-    VPA
-
-    Scaling Type
-
-    Adds/removes pods
-
-    Adjusts CPU/memory of existing pods
-
-    Use Case
-
-    High traffic apps
-
-    Resource optimization
-
-    Example of HPA:
-
-    kubectl autoscale deployment my-app --cpu-percent=50 --min=2 --max=10'
-- question: What is a Kubernetes Persistent Volume (PV) and Persistent Volume Claim (PVC)?
-  answer: 'A Persistent Volume (PV) is a storage resource, and a Persistent Volume Claim (PVC) requests storage.
-
-    Example:
-
-    apiVersion: v1
-
-    kind: PersistentVolumeClaim
-
-    metadata:
-
-    name: my-pvc
-
-    spec:
-
-    accessModes:
-
-    - ReadWriteOnce
-
-    resources:
-
-    requests:
-
-    storage: 1Gi'
-- question: How do you upgrade a running application in Kubernetes?
-  answer: 'Modify the image and apply the deployment:
-
-    kubectl set image deployment/my-app my-container=nginx:1.20
-
-    kubectl rollout status deployment my-app'
-- question: What is a Kubernetes Job and CronJob?
-  answer: 'Job: Runs once and exits.
-
-    CronJob: Runs on a schedule (like a Linux cron).
-
-    Example:
-
-    apiVersion: batch/v1
-
-    kind: CronJob
-
-    metadata:
-
-    name: my-cronjob
-
-    spec:
-
-    schedule: "0 * * * *"
-
-    jobTemplate:
-
-    spec:
-
-    template:
-
-    spec:
-
-    containers:
-
-    - name: hello
-
-    image: busybox
-
-    command: ["echo", "Hello from Kubernetes"]
-
-    restartPolicy: OnFailure'
-- question: How do you debug Kubernetes pods that are stuck in "CrashLoopBackOff"?
-  answer: 'Check pod logs:
-
-    sh
-
-    kubectl logs my-pod
-
-    Describe the pod for errors:
-
-    sh
-
-    kubectl describe pod my-pod
-
-    Exec into the container:
-
-    sh
-
-    kubectl exec -it my-pod -- /bin/sh'
-- question: What are Docker namespaces and cgroups? How do they contribute to containerization?
-  answer: 'Namespaces isolate resources (PID, network, mount points, etc.) for each container.
-
-    Cgroups (Control Groups) limit CPU, memory, and disk usage.
-
-    Together, they ensure process isolation and resource allocation.
-
-    Example:
-
-    cat /proc/self/cgroup'
-- question: What is the difference between Docker Volumes, Bind Mounts, and tmpfs?
-  answer: 'Type
-
-    Persistent?
-
-    Use Case
-
-    Volumes
-
-    Yes
-
-    Best for data persistence
-
-    Bind Mounts
-
-    Yes
-
-    Direct host file access
-
-    tmpfs
-
-    No
-
-    In-memory storage for performance
-
-    Example (Volume):
-
-    docker run -v myvolume:/data nginx'
-- question: What are Docker BuildKit advantages?
-  answer: 'Parallel execution speeds up builds.
-
-    Efficient caching reduces rebuild time.
-
-    Security improvements via secret mounts.
-
-    Enable BuildKit:
-
-    DOCKER_BUILDKIT=1 docker build .'
-- question: How do you secure a Docker container?
-  answer: 'Use minimal base images (e.g., alpine).
-
-    Run as non-root user.
-
-    Limit container capabilities (--cap-drop=ALL).
-
-    Use read-only filesystems (--read-only).
-
-    Example:
-
-    docker run --user 1001 --read-only nginx'
-- question: How do multi-stage builds improve security in Docker?
-  answer: 'Keeps sensitive files out of the final image.
-
-    Reduces attack surface by discarding unnecessary dependencies.
-
-    Example:
-
-    FROM golang AS build
-
-    COPY . .
-
-    RUN go build -o myapp
-
-    FROM alpine
-
-    COPY --from=build /myapp /myapp
-
-    ENTRYPOINT ["/myapp"]'
-- question: What are immutable infrastructure principles, and how do they apply to Docker?
-  answer: 'Containers should be replaced, not modified.
-
-    Use image versioning instead of patching live containers.
-
-    Example: Deploy new image versions instead of updating running containers.'
-- question: How does Docker Content Trust (DCT) improve security?
-  answer: 'Ensures image integrity with digital signatures.
-
-    Enable DCT:
-
-    sh
-
-    export DOCKER_CONTENT_TRUST=1'
-- question: How do you troubleshoot a Docker daemon issue?
-  answer: 'Check logs: journalctl -u docker.service
-
-    Restart service: systemctl restart docker
-
-    Debug mode: dockerd --debug'
-- question: What is the difference between Docker stack and Docker compose?
-  answer: 'Docker Compose is for single-host deployments.
-
-    Docker Stack is for multi-node Swarm clusters.'
-- question: How do you handle container networking in a multi-host Docker Swarm?
-  answer: 'Overlay networks span multiple hosts.
-
-    Example:
-
-    sh
-
-    docker network create -d overlay mynetwork'
-- question: How does Kubernetes handle stateful applications?
-  answer: 'Uses StatefulSets instead of Deployments.
-
-    Provides stable network identities and persistent storage.
-
-    Example:
-
+    EXPOSE 3000
+    CMD ["node", "app.js"]
+    ```
+
+    **Common instructions:**
+    - `FROM` — base image (always first)
+    - `WORKDIR` — set working directory inside the container
+    - `COPY` / `ADD` — copy files from build context into the image
+    - `RUN` — execute commands during build (install deps, compile, etc.)
+    - `ENV` — set environment variables
+    - `EXPOSE` — document which port the app listens on
+    - `CMD` — default command when the container starts
+    - `ENTRYPOINT` — fixed executable for the container
+
+    **Best practice:** order instructions from least-changing to most-changing so Docker can cache layers effectively.
+
+- question: What are Docker volumes?
+  answer: |-
+    Docker volumes provide **persistent storage** that lives outside the container's writable layer, so data survives container restarts and removal.
+
+    **Three storage options:**
+
+    **1. Named Volumes** (recommended for production)
+    ```
+    docker volume create mydata
+    docker run -v mydata:/app/data nginx
+    ```
+    Managed by Docker, stored under `/var/lib/docker/volumes/`.
+
+    **2. Bind Mounts** (useful for development)
+    ```
+    docker run -v /host/src:/app/src nginx
+    ```
+    Maps a specific host directory directly into the container. Changes are reflected in real time.
+
+    **3. Anonymous Volumes**
+    ```
+    docker run -v /data nginx
+    ```
+    Docker creates a volume with a random name. Harder to manage; avoid in production.
+
+    **Useful commands:**
+    - `docker volume ls` — list volumes
+    - `docker volume inspect mydata` — show volume details
+    - `docker volume prune` — remove unused volumes
+
+- question: How do you list running Docker containers?
+  answer: |-
+    **List running containers:**
+    ```
+    docker ps
+    ```
+
+    **List all containers (including stopped):**
+    ```
+    docker ps -a
+    ```
+
+    **Useful formatting options:**
+    - `docker ps --format "{{.ID}} {{.Names}} {{.Status}}"` — custom output columns
+    - `docker ps -q` — show only container IDs (useful for scripting, e.g., `docker stop $(docker ps -q)`)
+    - `docker ps --filter status=exited` — filter by status
+
+- question: What is Docker Compose?
+  answer: |-
+    Docker Compose is a tool for **defining and running multi-container applications** using a single YAML file.
+
+    **Example `compose.yaml`:**
+    ```
+    services:
+      web:
+        image: nginx
+        ports:
+          - "80:80"
+        depends_on:
+          - db
+      db:
+        image: mysql:8
+        environment:
+          MYSQL_ROOT_PASSWORD: root
+        volumes:
+          - db-data:/var/lib/mysql
+
+    volumes:
+      db-data:
+    ```
+
+    **Key commands:**
+    - `docker compose up -d` — start all services in the background
+    - `docker compose down` — stop and remove containers/networks
+    - `docker compose logs -f` — stream logs from all services
+    - `docker compose ps` — show running services
+    - `docker compose build` — rebuild images
+
+    **Note:** The standalone `docker-compose` binary is deprecated. Use the `docker compose` plugin (built into Docker Desktop and modern Docker Engine).
+
+- question: What is the difference between CMD and ENTRYPOINT in Docker?
+  answer: |-
+    Both define what runs when a container starts, but they behave differently:
+
+    **CMD** — provides **default arguments** that can be fully overridden from the command line.
+    ```
+    CMD ["python", "app.py"]
+    ```
+    Running `docker run myimage bash` replaces the entire CMD with `bash`.
+
+    **ENTRYPOINT** — sets a **fixed executable** that always runs. Command-line arguments are appended to it.
+    ```
+    ENTRYPOINT ["python", "app.py"]
+    ```
+    Running `docker run myimage --verbose` executes `python app.py --verbose`.
+
+    **Combined pattern (best practice):**
+    ```
+    ENTRYPOINT ["nginx"]
+    CMD ["-g", "daemon off;"]
+    ```
+    ENTRYPOINT is the fixed command; CMD provides default flags that the user can override.
+
+    To override ENTRYPOINT at runtime: `docker run --entrypoint /bin/sh myimage`.
+
+- question: What is Kubernetes?
+  answer: |-
+    Kubernetes (K8s) is an **open-source container orchestration platform** originally developed by Google, now maintained by the CNCF.
+
+    **Core capabilities:**
+    - **Automated scheduling** — places containers on nodes based on resource requirements and constraints
+    - **Self-healing** — restarts failed containers, replaces unresponsive pods, kills pods that fail health checks
+    - **Horizontal scaling** — scales applications up/down based on CPU, memory, or custom metrics
+    - **Service discovery & load balancing** — exposes containers via DNS names and distributes traffic
+    - **Rolling updates & rollbacks** — deploys new versions with zero downtime; rolls back on failure
+    - **Secret & config management** — injects sensitive data and configuration without rebuilding images
+
+    **Architecture:**
+    - **Control plane** — API server, scheduler, controller manager, etcd (cluster state store)
+    - **Worker nodes** — kubelet, kube-proxy, container runtime (containerd)
+
+- question: What is a Kubernetes Pod?
+  answer: |-
+    A Pod is the **smallest deployable unit** in Kubernetes. It represents one or more containers that:
+
+    - **Share the same network namespace** — containers in a Pod communicate via `localhost`
+    - **Share the same storage volumes** — they can read/write the same mounted volumes
+    - **Are co-scheduled** — always land on the same node and are started/stopped together
+
+    **When to use multi-container Pods:**
+    - **Sidecar pattern** — a helper container (e.g., log shipper, proxy like Envoy) runs alongside the main app
+    - **Init containers** — run setup tasks (DB migrations, config fetching) before the main container starts
+
+    **Important:** Pods are ephemeral. Don't deploy Pods directly — use a **Deployment**, **StatefulSet**, or **DaemonSet** to manage them.
+
+- question: What is a Kubernetes Deployment?
+  answer: |-
+    A Deployment is a controller that **manages the desired state of Pods** via ReplicaSets. It handles creation, scaling, updates, and rollbacks.
+
+    **Example:**
+    ```
     apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: my-app
+    spec:
+      replicas: 3
+      selector:
+        matchLabels:
+          app: my-app
+      template:
+        metadata:
+          labels:
+            app: my-app
+        spec:
+          containers:
+          - name: app
+            image: nginx:1.25
+            ports:
+            - containerPort: 80
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                cpu: 250m
+                memory: 256Mi
+    ```
 
+    **Key fields:**
+    - `replicas: 3` — maintains exactly 3 Pod instances
+    - `selector.matchLabels` — tells the Deployment which Pods it owns
+    - `resources` — always set requests/limits to enable proper scheduling
+
+    **Update strategies:**
+    - `RollingUpdate` (default) — gradually replaces old Pods with new ones
+    - `Recreate` — kills all old Pods before creating new ones (causes downtime)
+
+- question: What is a Kubernetes Service?
+  answer: |-
+    A Service provides a **stable network endpoint** for a set of Pods, enabling reliable communication even as Pods are created and destroyed.
+
+    **Service types:**
+
+    - **ClusterIP** (default) — internal-only IP, reachable only within the cluster. Used for inter-service communication.
+    - **NodePort** — exposes the service on a static port (30000–32767) on every node's IP. Good for development.
+    - **LoadBalancer** — provisions an external load balancer (on cloud providers like AWS, GCP, Azure). Standard way to expose services to the internet.
+    - **ExternalName** — maps a service to a DNS name (CNAME). Used for referencing external services.
+
+    **Example:**
+    ```
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: my-service
+    spec:
+      type: NodePort
+      selector:
+        app: my-app
+      ports:
+      - port: 80
+        targetPort: 8080
+        nodePort: 30007
+    ```
+
+    `port` is the Service port, `targetPort` is the container port, `nodePort` is the externally accessible port on each node.
+
+- question: What is the purpose of Kubernetes ConfigMaps and Secrets?
+  answer: |-
+    Both decouple **configuration from container images**, but they serve different sensitivity levels:
+
+    **ConfigMaps** — store non-sensitive key-value pairs (feature flags, config files, URLs).
+    ```
+    kubectl create configmap app-config \
+      --from-literal=LOG_LEVEL=info \
+      --from-file=config.yaml
+    ```
+
+    **Secrets** — store sensitive data (passwords, tokens, TLS certs). Values are base64-encoded (not encrypted by default!).
+    ```
+    kubectl create secret generic db-creds \
+      --from-literal=username=admin \
+      --from-literal=password=s3cure
+    ```
+
+    **Consuming them in Pods:**
+    - As **environment variables**: `envFrom` or individual `valueFrom` references
+    - As **mounted files**: projected into a volume at a specified path
+
+    **Security note:** Enable **encryption at rest** for Secrets in etcd, and consider external secret managers (Vault, AWS Secrets Manager, Sealed Secrets) for production.
+
+- question: What is a Kubernetes Namespace?
+  answer: |-
+    Namespaces provide **logical isolation** within a single cluster. They scope resource names, access policies, and resource quotas.
+
+    **Default namespaces:**
+    - `default` — where resources go if no namespace is specified
+    - `kube-system` — cluster components (DNS, metrics server, etc.)
+    - `kube-public` — publicly readable resources (rarely used)
+    - `kube-node-lease` — node heartbeat data
+
+    **Common commands:**
+    ```
+    kubectl create namespace dev
+    kubectl get pods -n dev
+    kubectl config set-context --current --namespace=dev
+    ```
+
+    **Best practices:**
+    - Use namespaces to separate environments (dev, staging, prod) or teams
+    - Apply **ResourceQuotas** to limit CPU/memory per namespace
+    - Apply **NetworkPolicies** to restrict traffic between namespaces
+    - Use **RBAC** to control who can access which namespace
+
+- question: What is a StatefulSet in Kubernetes?
+  answer: |-
+    A StatefulSet manages **stateful applications** (databases, message queues, distributed systems) that require stable identity and persistent storage.
+
+    **What StatefulSets guarantee (that Deployments don't):**
+    - **Stable Pod names** — Pods are named `<statefulset>-0`, `<statefulset>-1`, etc., and keep their identity across restarts
+    - **Ordered deployment/scaling** — Pods are created sequentially (0, then 1, then 2) and terminated in reverse order
+    - **Stable network identity** — each Pod gets a predictable DNS name via a Headless Service
+    - **Persistent storage** — each Pod gets its own PersistentVolumeClaim that follows it across rescheduling
+
+    **When to use:** databases (MySQL, PostgreSQL, MongoDB), message brokers (Kafka, RabbitMQ), distributed storage (Elasticsearch, Cassandra).
+
+    **When NOT to use:** stateless web apps, APIs, workers — use a Deployment instead.
+
+- question: How do you scale a Deployment in Kubernetes?
+  answer: |-
+    **Manual scaling:**
+    ```
+    kubectl scale deployment my-app --replicas=5
+    ```
+
+    **Declarative scaling** — update `spec.replicas` in the manifest and apply:
+    ```
+    kubectl apply -f deployment.yaml
+    ```
+
+    **Automatic scaling with HPA (Horizontal Pod Autoscaler):**
+    ```
+    kubectl autoscale deployment my-app \
+      --cpu-percent=50 --min=2 --max=10
+    ```
+    The HPA checks metrics every 15 seconds and adjusts the replica count to keep average CPU utilization around 50%.
+
+    **Check scaling status:**
+    ```
+    kubectl get hpa
+    kubectl get deployment my-app
+    ```
+
+- question: What is a DaemonSet?
+  answer: |-
+    A DaemonSet ensures that **exactly one Pod runs on every node** (or a subset of nodes) in the cluster.
+
+    **Common use cases:**
+    - **Log collectors** — Fluentd, Filebeat, Promtail
+    - **Monitoring agents** — Node Exporter, Datadog agent
+    - **Network plugins** — Calico, Cilium, kube-proxy
+    - **Storage daemons** — Ceph, GlusterFS agents
+
+    **Node targeting:**
+    - By default, a DaemonSet runs on every node
+    - Use `nodeSelector` or `affinity` rules to target specific nodes
+    - DaemonSet Pods tolerate taints that would normally prevent scheduling
+
+    **Key difference from Deployments:** Deployments run N replicas distributed across nodes; DaemonSets run exactly one Pod per node.
+
+- question: How do you update a running Deployment in Kubernetes?
+  answer: |-
+    **Option 1 — Update the image directly:**
+    ```
+    kubectl set image deployment/my-app app=nginx:1.25
+    ```
+
+    **Option 2 — Edit the manifest and apply:**
+    ```
+    kubectl apply -f deployment.yaml
+    ```
+
+    **Monitor the rollout:**
+    ```
+    kubectl rollout status deployment/my-app
+    ```
+
+    **Rollback if something goes wrong:**
+    ```
+    kubectl rollout undo deployment/my-app
+    kubectl rollout undo deployment/my-app --to-revision=2
+    ```
+
+    **View rollout history:**
+    ```
+    kubectl rollout history deployment/my-app
+    ```
+
+    Kubernetes performs a **RollingUpdate** by default, gradually replacing old Pods. Configure `maxSurge` and `maxUnavailable` to control the rollout pace.
+
+- question: What is the difference between Docker ADD and COPY?
+  answer: |-
+    Both copy files from the build context into the image, but they differ in behavior:
+
+    **COPY** — straightforward file copy. Does exactly what it says.
+    ```
+    COPY config.json /app/config.json
+    COPY src/ /app/src/
+    ```
+
+    **ADD** — does everything COPY does, plus:
+    - **Auto-extracts** compressed archives (`.tar`, `.tar.gz`, `.tar.bz2`) into the destination
+    - **Supports URLs** as a source (downloads the file during build)
+
+    ```
+    ADD myapp.tar.gz /app/
+    ADD https://example.com/config.json /app/
+    ```
+
+    **Best practice:** Always prefer `COPY` unless you specifically need tar extraction. `ADD` has implicit behavior that can cause surprises. For downloading files, use `RUN curl` or `RUN wget` instead of `ADD <url>` so you can verify checksums and control caching.
+
+- question: How do you optimize Docker images?
+  answer: |-
+    **1. Use small base images:**
+    - `alpine` (~5 MB) instead of `ubuntu` (~75 MB)
+    - Distroless images for production (no shell, no package manager)
+
+    **2. Multi-stage builds** — build in one stage, copy only artifacts to the final stage:
+    ```
+    FROM node:20-alpine AS build
+    WORKDIR /app
+    COPY package*.json ./
+    RUN npm ci
+    COPY . .
+    RUN npm run build
+
+    FROM nginx:alpine
+    COPY --from=build /app/dist /usr/share/nginx/html
+    ```
+
+    **3. Layer caching** — order instructions from least-changing to most-changing:
+    - Copy dependency files first (`package.json`), install, then copy source code
+    - This way, `npm install` is cached when only source code changes
+
+    **4. Use `.dockerignore`** — exclude `node_modules/`, `.git/`, test files, docs, etc.
+
+    **5. Minimize layers** — combine related `RUN` commands with `&&`:
+    ```
+    RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+    ```
+
+    **6. Pin versions** — use specific tags (`node:20.11-alpine`) instead of `latest` for reproducible builds.
+
+- question: How do you debug a running Docker container?
+  answer: |-
+    **View container logs:**
+    ```
+    docker logs my-container
+    docker logs -f my-container       # stream in real time
+    docker logs --tail 100 my-container  # last 100 lines
+    ```
+
+    **Get a shell inside a running container:**
+    ```
+    docker exec -it my-container /bin/sh
+    docker exec -it my-container /bin/bash
+    ```
+
+    **Inspect container metadata** (networking, mounts, config):
+    ```
+    docker inspect my-container
+    docker inspect --format '{{.State.Status}}' my-container
+    ```
+
+    **View resource usage:**
+    ```
+    docker stats my-container
+    ```
+
+    **View running processes inside the container:**
+    ```
+    docker top my-container
+    ```
+
+    **Copy files out for inspection:**
+    ```
+    docker cp my-container:/app/logs/error.log ./error.log
+    ```
+
+- question: What is a Docker Multi-Stage Build?
+  answer: |-
+    A multi-stage build uses **multiple `FROM` statements** in a single Dockerfile. Each stage can use a different base image, and you selectively copy artifacts from one stage to another.
+
+    **Why?** The final image contains **only the runtime and the built artifact** — no compilers, build tools, source code, or dev dependencies.
+
+    **Example (Go app):**
+    ```
+    FROM golang:1.22 AS builder
+    WORKDIR /app
+    COPY go.mod go.sum ./
+    RUN go mod download
+    COPY . .
+    RUN CGO_ENABLED=0 go build -o myapp
+
+    FROM alpine:3.19
+    RUN apk --no-cache add ca-certificates
+    COPY --from=builder /app/myapp /myapp
+    ENTRYPOINT ["/myapp"]
+    ```
+
+    **Result:**
+    - Build stage: ~1 GB (full Go SDK)
+    - Final image: ~15 MB (just Alpine + the binary)
+
+    **Benefits:** smaller images, faster pulls, reduced attack surface, cleaner separation of build and runtime concerns.
+
+- question: How does Docker handle networking?
+  answer: |-
+    Docker provides several network drivers:
+
+    **Bridge** (default) — creates an isolated virtual network on the host. Containers on the same bridge can communicate by container name (DNS). Best for single-host setups.
+    ```
+    docker network create mynetwork
+    docker run --network=mynetwork --name app1 nginx
+    docker run --network=mynetwork --name app2 alpine ping app1
+    ```
+
+    **Host** — the container shares the host's network stack directly. No port mapping needed, but no network isolation. Used for performance-critical workloads.
+    ```
+    docker run --network=host nginx
+    ```
+
+    **Overlay** — spans multiple Docker hosts. Used in Docker Swarm or with other orchestrators for multi-host container communication.
+
+    **None** — completely disables networking. Used for batch jobs or security-sensitive containers.
+
+    **Macvlan** — assigns a MAC address to the container, making it appear as a physical device on the network. Used for legacy apps that expect to be on the LAN.
+
+- question: What is the difference between Docker Swarm and Kubernetes?
+  answer: |-
+    Both are container orchestration platforms, but they differ significantly:
+
+    **Docker Swarm:**
+    - Built into the Docker Engine — no extra installation
+    - Simpler to set up and learn
+    - Uses the same Docker Compose YAML format
+    - Manual scaling; basic scheduling
+    - Smaller community and ecosystem
+    - Good for small-to-medium deployments
+
+    **Kubernetes:**
+    - Separate platform with a steeper learning curve
+    - Much richer feature set (HPA, RBAC, CRDs, Operators, Ingress, etc.)
+    - Auto-scaling, advanced scheduling, affinity/anti-affinity rules
+    - Massive ecosystem (Helm, Istio, ArgoCD, Prometheus, etc.)
+    - Industry standard for production container orchestration
+    - Supported by all major cloud providers (EKS, GKE, AKS)
+
+    **Bottom line:** Kubernetes is the industry standard for production workloads. Docker Swarm is suitable for simpler setups where ease of use is prioritized over features.
+
+- question: How do you remove unused Docker resources?
+  answer: |-
+    **Remove everything unused (containers, images, networks, build cache):**
+    ```
+    docker system prune -a
+    ```
+
+    **More targeted cleanup:**
+    ```
+    docker container prune     # stopped containers
+    docker image prune -a      # unused images
+    docker volume prune        # unused volumes
+    docker network prune       # unused networks
+    docker builder prune       # build cache
+    ```
+
+    **Check disk usage:**
+    ```
+    docker system df
+    ```
+
+    **Caution:** `docker volume prune` deletes data volumes not attached to any container. Make sure you don't have stopped containers whose data you still need.
+
+- question: What is Docker BuildKit?
+  answer: |-
+    BuildKit is Docker's **next-generation build engine**, enabled by default since Docker 23.0.
+
+    **Key improvements over the legacy builder:**
+
+    - **Parallel execution** — independent build stages run concurrently
+    - **Better caching** — smarter layer caching and cache import/export
+    - **Secret mounts** — pass secrets during build without baking them into image layers:
+      ```
+      RUN --mount=type=secret,id=mysecret cat /run/secrets/mysecret
+      ```
+    - **SSH forwarding** — use host SSH keys during build for private repo access
+    - **Build output** — colored, structured progress output
+    - **Cache backends** — export/import cache to registries or local directories for CI speedups
+
+    **Enable BuildKit (if not default):**
+    ```
+    export DOCKER_BUILDKIT=1
+    docker build .
+    ```
+
+- question: How do you limit container resource usage?
+  answer: |-
+    Use `--memory` and `--cpus` flags to constrain resources:
+
+    ```
+    docker run --memory=512m --cpus=1.5 nginx
+    ```
+
+    **Memory options:**
+    - `--memory=512m` — hard memory limit (container is OOM-killed if exceeded)
+    - `--memory-reservation=256m` — soft limit (guaranteed minimum)
+    - `--memory-swap=1g` — total memory + swap limit
+
+    **CPU options:**
+    - `--cpus=1.5` — use up to 1.5 CPU cores
+    - `--cpu-shares=512` — relative weight when CPU is contended (default is 1024)
+    - `--cpuset-cpus="0,1"` — pin to specific CPU cores
+
+    **In Docker Compose:**
+    ```
+    services:
+      app:
+        image: nginx
+        deploy:
+          resources:
+            limits:
+              cpus: "1.0"
+              memory: 512M
+            reservations:
+              cpus: "0.25"
+              memory: 128M
+    ```
+
+- question: How does Kubernetes handle high availability?
+  answer: |-
+    Kubernetes achieves HA at multiple levels:
+
+    **Control Plane HA:**
+    - Run **multiple API server instances** behind a load balancer
+    - **etcd** uses Raft consensus across 3+ members for data replication
+    - Multiple scheduler and controller-manager instances with leader election
+
+    **Application HA:**
+    - **ReplicaSets** ensure the desired number of Pod replicas are always running
+    - **Pod anti-affinity** spreads replicas across different nodes/zones
+    - **PodDisruptionBudgets** guarantee a minimum number of Pods stay available during maintenance
+    - **Health checks** (liveness + readiness probes) detect and restart unhealthy Pods
+
+    **Node-level HA:**
+    - If a node fails, its Pods are automatically rescheduled to healthy nodes (after a configurable timeout)
+    - **Cluster Autoscaler** adds new nodes when Pods can't be scheduled due to resource constraints
+    - Cloud-managed clusters (EKS, GKE, AKS) offer managed, multi-zone control planes
+
+- question: What is the role of kubelet in Kubernetes?
+  answer: |-
+    The **kubelet** is the primary agent that runs on **every worker node**. It is responsible for:
+
+    - **Pod lifecycle management** — receives Pod specs from the API server and ensures the described containers are running and healthy
+    - **Health monitoring** — executes liveness, readiness, and startup probes; restarts failed containers
+    - **Resource reporting** — reports node status, capacity, and resource usage back to the control plane
+    - **Volume management** — mounts ConfigMaps, Secrets, PVCs, and other volumes into Pods
+    - **Container runtime interface** — communicates with the container runtime (containerd, CRI-O) via the CRI standard
+    - **Static Pods** — can run Pods defined in local manifest files (used for control plane components)
+
+    The kubelet does NOT manage containers that were not created by Kubernetes.
+
+- question: How do you check logs of a running Pod in Kubernetes?
+  answer: |-
+    **Basic log retrieval:**
+    ```
+    kubectl logs my-pod
+    ```
+
+    **Stream logs in real-time:**
+    ```
+    kubectl logs -f my-pod
+    ```
+
+    **Multi-container Pods** — specify the container name:
+    ```
+    kubectl logs my-pod -c sidecar
+    ```
+
+    **Previous container instance** (useful after a crash):
+    ```
+    kubectl logs my-pod --previous
+    ```
+
+    **Show recent logs only:**
+    ```
+    kubectl logs my-pod --since=5m
+    kubectl logs my-pod --tail=100
+    ```
+
+    **Logs from all Pods matching a label:**
+    ```
+    kubectl logs -l app=my-app --all-containers
+    ```
+
+    **For production log aggregation**, use a centralized logging stack (EFK: Elasticsearch + Fluentd + Kibana, or Loki + Promtail + Grafana).
+
+- question: What are Kubernetes Labels and Selectors?
+  answer: |-
+    **Labels** are key-value pairs attached to Kubernetes objects for identification and organization:
+    ```
+    metadata:
+      labels:
+        app: my-app
+        env: production
+        tier: frontend
+    ```
+
+    **Selectors** filter objects based on their labels:
+
+    **Equality-based:**
+    ```
+    kubectl get pods -l app=my-app
+    kubectl get pods -l env!=staging
+    ```
+
+    **Set-based:**
+    ```
+    kubectl get pods -l 'env in (production, staging)'
+    kubectl get pods -l 'tier notin (backend)'
+    ```
+
+    **Where selectors are used:**
+    - **Services** — route traffic to Pods matching `selector`
+    - **Deployments** — manage Pods matching `spec.selector.matchLabels`
+    - **Network Policies** — apply rules to Pods matching label selectors
+    - **Node selectors** — schedule Pods on specific nodes
+
+    Labels are the primary mechanism for **loose coupling** between Kubernetes resources.
+
+- question: What is a Kubernetes Ingress?
+  answer: |-
+    An Ingress manages **external HTTP/HTTPS access** to services within the cluster. It provides host-based and path-based routing, TLS termination, and name-based virtual hosting.
+
+    **Example:**
+    ```
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      name: my-ingress
+      annotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /
+    spec:
+      tls:
+      - hosts:
+        - myapp.com
+        secretName: tls-secret
+      rules:
+      - host: myapp.com
+        http:
+          paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: api-service
+                port:
+                  number: 8080
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 80
+    ```
+
+    **Important:** An Ingress resource requires an **Ingress Controller** to function (NGINX Ingress Controller, Traefik, HAProxy, AWS ALB Ingress Controller, etc.). The Ingress resource is just the routing configuration; the controller does the actual traffic routing.
+
+- question: What is the difference between Horizontal Pod Autoscaler (HPA) and Vertical Pod Autoscaler (VPA)?
+  answer: |-
+    Both automate scaling, but in different directions:
+
+    **HPA (Horizontal Pod Autoscaler):**
+    - Scales **the number of Pods** up or down
+    - Based on CPU, memory, or custom/external metrics
+    - Best for stateless, horizontally-scalable workloads (web servers, APIs)
+    ```
+    kubectl autoscale deployment my-app \
+      --cpu-percent=50 --min=2 --max=10
+    ```
+
+    **VPA (Vertical Pod Autoscaler):**
+    - Adjusts **CPU and memory requests/limits** of existing Pods
+    - Requires Pod restart to apply new resource values
+    - Best for workloads that can't scale horizontally (single-instance databases, batch jobs)
+    - Operates in three modes: `Off` (recommendations only), `Auto` (applies changes), `Initial` (set at Pod creation)
+
+    **Key considerations:**
+    - HPA and VPA should generally **not be used together** on the same metric (e.g., both scaling on CPU) — they can conflict
+    - HPA is far more commonly used in production
+    - Both require the **Metrics Server** to be installed in the cluster
+
+- question: What is a Kubernetes Persistent Volume (PV) and Persistent Volume Claim (PVC)?
+  answer: |-
+    Kubernetes separates **storage provisioning** from **storage consumption**:
+
+    **Persistent Volume (PV)** — a cluster-level storage resource provisioned by an admin or dynamically via a StorageClass. Represents actual storage (AWS EBS, GCE PD, NFS, etc.).
+
+    **Persistent Volume Claim (PVC)** — a user's request for storage. Pods reference PVCs, not PVs directly.
+
+    **Example PVC:**
+    ```
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: my-pvc
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: gp3
+      resources:
+        requests:
+          storage: 10Gi
+    ```
+
+    **Access modes:**
+    - `ReadWriteOnce (RWO)` — mounted read-write by a single node
+    - `ReadOnlyMany (ROX)` — mounted read-only by multiple nodes
+    - `ReadWriteMany (RWX)` — mounted read-write by multiple nodes (requires NFS or similar)
+
+    **Reclaim policies:**
+    - `Retain` — keep the volume after PVC deletion (manual cleanup)
+    - `Delete` — delete the underlying storage when the PVC is deleted
+
+    **Dynamic provisioning** via StorageClass eliminates the need to pre-create PVs.
+
+- question: How do you upgrade a running application in Kubernetes?
+  answer: |-
+    **Step 1 — Update the image:**
+    ```
+    kubectl set image deployment/my-app app=nginx:1.25
+    ```
+    Or edit the manifest and apply:
+    ```
+    kubectl apply -f deployment.yaml
+    ```
+
+    **Step 2 — Monitor the rollout:**
+    ```
+    kubectl rollout status deployment/my-app
+    ```
+
+    **Step 3 — Verify the new Pods are healthy:**
+    ```
+    kubectl get pods -l app=my-app
+    kubectl logs -l app=my-app
+    ```
+
+    **If something goes wrong — rollback:**
+    ```
+    kubectl rollout undo deployment/my-app
+    ```
+
+    **Best practices for safe upgrades:**
+    - Configure **readiness probes** so traffic is only sent to healthy Pods
+    - Set `maxUnavailable: 0` and `maxSurge: 1` for zero-downtime rolling updates
+    - Use `PodDisruptionBudgets` to maintain minimum availability
+    - Tag images with specific versions (`nginx:1.25.3`) — never use `latest` in production
+
+- question: What is a Kubernetes Job and CronJob?
+  answer: |-
+    **Job** — runs a Pod to **completion** (one-time tasks). Kubernetes ensures the task finishes successfully, retrying if the Pod fails.
+    ```
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: db-migration
+    spec:
+      backoffLimit: 3
+      template:
+        spec:
+          containers:
+          - name: migrate
+            image: myapp:latest
+            command: ["python", "manage.py", "migrate"]
+          restartPolicy: Never
+    ```
+
+    **CronJob** — runs Jobs on a **schedule** (like Linux cron).
+    ```
+    apiVersion: batch/v1
+    kind: CronJob
+    metadata:
+      name: nightly-backup
+    spec:
+      schedule: "0 2 * * *"
+      concurrencyPolicy: Forbid
+      jobTemplate:
+        spec:
+          template:
+            spec:
+              containers:
+              - name: backup
+                image: backup-tool:1.0
+                command: ["./backup.sh"]
+              restartPolicy: OnFailure
+    ```
+
+    **Key fields:**
+    - `backoffLimit` — max retries before marking Job as failed
+    - `concurrencyPolicy` — `Allow`, `Forbid`, or `Replace` overlapping runs
+    - `successfulJobsHistoryLimit` / `failedJobsHistoryLimit` — how many completed/failed Jobs to keep
+
+- question: How do you debug Kubernetes Pods stuck in "CrashLoopBackOff"?
+  answer: |-
+    CrashLoopBackOff means the container starts, crashes, and Kubernetes keeps restarting it with increasing backoff delays.
+
+    **Step 1 — Check the logs:**
+    ```
+    kubectl logs my-pod
+    kubectl logs my-pod --previous
+    ```
+    The `--previous` flag shows logs from the last crashed instance.
+
+    **Step 2 — Describe the Pod for events and error details:**
+    ```
+    kubectl describe pod my-pod
+    ```
+    Look at the **Events** section and **Last State** for exit codes and reasons.
+
+    **Step 3 — Common causes and fixes:**
+    - **Exit code 1** — application error. Check logs for stack traces, missing config, bad env vars.
+    - **Exit code 137 (OOMKilled)** — out of memory. Increase `resources.limits.memory`.
+    - **Exit code 127** — command not found. Check the `command`/`args` in the Pod spec.
+    - **Exit code 0 with restart** — the process exits successfully but the `restartPolicy` is `Always`. Use a Job instead, or make the process long-running.
+    - **Missing ConfigMap/Secret** — Pod can't start because a referenced config doesn't exist.
+
+    **Step 4 — Debug interactively:**
+    ```
+    kubectl run debug --image=myapp --command -- sleep 3600
+    kubectl exec -it debug -- /bin/sh
+    ```
+
+- question: What are Docker namespaces and cgroups? How do they contribute to containerization?
+  answer: |-
+    Namespaces and cgroups are **Linux kernel features** that provide the foundation for container isolation.
+
+    **Namespaces** — isolate what a process can **see**:
+    - **PID** — each container has its own process tree (PID 1 is the main process)
+    - **NET** — each container gets its own network stack (interfaces, IP, routing)
+    - **MNT** — each container has its own filesystem mount points
+    - **UTS** — each container can have its own hostname
+    - **IPC** — isolates inter-process communication (shared memory, semaphores)
+    - **USER** — maps container UIDs to different host UIDs (rootless containers)
+
+    **Cgroups (Control Groups)** — limit what a process can **use**:
+    - CPU time and core pinning
+    - Memory limits (with OOM killer enforcement)
+    - Disk I/O bandwidth
+    - Network bandwidth (via tc)
+    - Number of processes (PIDs)
+
+    **Together:** Namespaces provide isolation (the container thinks it's the only thing running), and cgroups enforce resource limits (the container can't consume more than its share). This combination is what makes containers lightweight compared to VMs — no hypervisor or guest OS needed.
+
+- question: What is the difference between Docker Volumes, Bind Mounts, and tmpfs?
+  answer: |-
+    Docker offers three storage options, each suited for different scenarios:
+
+    **Volumes** (managed by Docker):
+    - Stored in Docker's storage directory (`/var/lib/docker/volumes/`)
+    - Best for **persistent data** in production
+    - Can be shared between containers and backed up easily
+    ```
+    docker run -v myvolume:/app/data nginx
+    ```
+
+    **Bind Mounts** (host filesystem):
+    - Maps a **specific host path** directly into the container
+    - Best for **development** (live code reloading)
+    - The container can modify host files — be careful with permissions
+    ```
+    docker run -v /home/user/project:/app nginx
+    ```
+
+    **tmpfs** (in-memory):
+    - Stored in the host's RAM only — **never written to disk**
+    - Data is lost when the container stops
+    - Best for **sensitive data** (secrets, session data) or temporary caches
+    ```
+    docker run --tmpfs /app/tmp nginx
+    ```
+
+    **Decision guide:**
+    - Need persistence? Use **volumes**
+    - Need to share host files with the container? Use **bind mounts**
+    - Need fast, ephemeral, non-persistent storage? Use **tmpfs**
+
+- question: How do you secure a Docker container?
+  answer: |-
+    **1. Use minimal base images:**
+    - Alpine, distroless, or scratch — fewer packages = fewer vulnerabilities
+
+    **2. Run as non-root:**
+    ```
+    RUN adduser -D appuser
+    USER appuser
+    ```
+
+    **3. Drop all capabilities and add only what's needed:**
+    ```
+    docker run --cap-drop=ALL --cap-add=NET_BIND_SERVICE nginx
+    ```
+
+    **4. Use read-only filesystem:**
+    ```
+    docker run --read-only --tmpfs /tmp nginx
+    ```
+
+    **5. Scan images for vulnerabilities:**
+    ```
+    docker scout cves myimage:latest
+    ```
+    Or use tools like Trivy, Grype, Snyk.
+
+    **6. Don't store secrets in images** — use runtime injection via environment variables, Docker secrets, or mounted files.
+
+    **7. Pin image versions** — use digest-based references for maximum reproducibility:
+    ```
+    FROM nginx@sha256:abc123...
+    ```
+
+    **8. Enable Docker Content Trust** for image signing:
+    ```
+    export DOCKER_CONTENT_TRUST=1
+    ```
+
+    **9. Limit resources** to prevent DoS:
+    ```
+    docker run --memory=256m --cpus=0.5 --pids-limit=100 nginx
+    ```
+
+- question: How do multi-stage builds improve security in Docker?
+  answer: |-
+    Multi-stage builds improve security by **minimizing what ends up in the final image:**
+
+    **1. No build tools in production** — compilers, package managers, and dev dependencies stay in the build stage and are discarded.
+
+    **2. No source code in production** — only compiled artifacts are copied to the final image.
+
+    **3. Smaller attack surface** — fewer binaries and libraries means fewer potential vulnerabilities.
+
+    **4. Secret isolation** — build-time secrets (npm tokens, SSH keys) used in early stages don't leak into the final image.
+
+    **Example:**
+    ```
+    FROM golang:1.22 AS builder
+    COPY . .
+    RUN go build -o myapp
+
+    FROM gcr.io/distroless/static
+    COPY --from=builder /go/myapp /myapp
+    ENTRYPOINT ["/myapp"]
+    ```
+
+    The final image uses **distroless** — no shell, no package manager, no unnecessary system utilities. An attacker who gains access to the container has almost nothing to work with.
+
+- question: What are immutable infrastructure principles, and how do they apply to Docker?
+  answer: |-
+    **Immutable infrastructure** means servers (or containers) are **never modified after deployment**. Instead of patching or updating a running instance, you build a new image and replace the old one.
+
+    **Core principles:**
+    - **Build once, deploy everywhere** — the same image runs in dev, staging, and production
+    - **No SSH into production containers** — if something is wrong, fix the image and redeploy
+    - **Version everything** — each deployment is a tagged image (`v1.2.3`), making rollbacks trivial
+    - **Infrastructure as code** — Dockerfiles, Compose files, and Kubernetes manifests are version-controlled
+
+    **How Docker enables this:**
+    - Images are **read-only layers** — you can't accidentally modify the base
+    - Container filesystems are ephemeral — changes are lost on restart (enforced immutability)
+    - `--read-only` flag prevents any filesystem writes at runtime
+    - Registry-based workflow: `build → push → pull → deploy` with no manual steps
+
+    **Benefits:** reproducibility, easier rollbacks, elimination of configuration drift, simplified debugging ("it's the same image everywhere").
+
+- question: How does Docker Content Trust (DCT) improve security?
+  answer: |-
+    Docker Content Trust provides **cryptographic verification** of image integrity and publisher identity using The Update Framework (TUF).
+
+    **What it does:**
+    - **Signs images** on push — the publisher's private key creates a digital signature
+    - **Verifies signatures** on pull — Docker checks that the image hasn't been tampered with and comes from a trusted publisher
+    - **Prevents tag mutation** — once a tag is signed, it can't be silently overwritten
+
+    **Enable DCT:**
+    ```
+    export DOCKER_CONTENT_TRUST=1
+    ```
+
+    With DCT enabled:
+    - `docker push` signs the image automatically
+    - `docker pull` refuses to download unsigned or tampered images
+    - `docker run` won't start unsigned images
+
+    **Key management:**
+    - **Root key** — offline master key (keep this extremely secure)
+    - **Repository key** — per-image signing key
+    - **Delegation keys** — allow team members to sign images without sharing the root key
+
+    **Limitation:** DCT verifies the publisher but does not scan for vulnerabilities inside the image. Combine with vulnerability scanning for full security.
+
+- question: How do you troubleshoot a Docker daemon issue?
+  answer: |-
+    **Check daemon status:**
+    ```
+    systemctl status docker
+    ```
+
+    **View daemon logs:**
+    ```
+    journalctl -u docker.service --no-pager -n 100
+    ```
+    On macOS (Docker Desktop), check logs in `~/Library/Containers/com.docker.docker/Data/log/`.
+
+    **Restart the daemon:**
+    ```
+    sudo systemctl restart docker
+    ```
+
+    **Run in debug mode for verbose output:**
+    ```
+    sudo dockerd --debug
+    ```
+    Or add `"debug": true` to `/etc/docker/daemon.json` and restart.
+
+    **Common issues and fixes:**
+    - **"Cannot connect to Docker daemon"** — daemon isn't running, or the user isn't in the `docker` group
+    - **Disk space full** — run `docker system prune -a` and `docker volume prune`
+    - **DNS issues** — configure DNS in `/etc/docker/daemon.json`: `{"dns": ["8.8.8.8"]}`
+    - **Storage driver errors** — check `docker info` for the storage driver and review its logs
+
+- question: What is the difference between Docker Stack and Docker Compose?
+  answer: |-
+    Both use YAML to define multi-container applications, but they target different environments:
+
+    **Docker Compose:**
+    - Runs on a **single host**
+    - Used for **local development** and testing
+    - Supports build context (`build: .`) for building images locally
+    - Started with `docker compose up`
+    - Can use environment variable interpolation, profiles, and overrides
+
+    **Docker Stack:**
+    - Runs on a **Docker Swarm cluster** (multi-node)
+    - Used for **production deployments** in Swarm mode
+    - Does NOT support `build` — only pre-built images
+    - Started with `docker stack deploy -c compose.yaml mystack`
+    - Supports Swarm-specific features: placement constraints, rolling updates, replicas across nodes
+
+    **In practice:** Most teams use Docker Compose for local development and **Kubernetes** (not Docker Stack) for production orchestration, since Kubernetes has become the industry standard.
+
+- question: How do you handle container networking in a multi-host Docker Swarm?
+  answer: |-
+    Docker Swarm uses **overlay networks** to enable container-to-container communication across multiple hosts.
+
+    **Create an overlay network:**
+    ```
+    docker network create -d overlay --attachable mynetwork
+    ```
+    The `--attachable` flag allows standalone containers (not just Swarm services) to join.
+
+    **How overlay networking works:**
+    - Uses **VXLAN** to encapsulate container traffic and tunnel it between hosts
+    - Each service gets a **virtual IP (VIP)** for built-in load balancing
+    - Swarm's built-in DNS resolves service names to VIPs
+    - **Routing mesh** allows any node in the Swarm to accept traffic for any service, even if the service isn't running on that node
+
+    **Encrypted overlay networks:**
+    ```
+    docker network create -d overlay --opt encrypted mynetwork
+    ```
+    Encrypts data in transit between nodes using IPsec.
+
+    **Ingress network:** Swarm automatically creates an `ingress` overlay network for publishing ports externally.
+
+- question: How does Kubernetes handle stateful applications?
+  answer: |-
+    Kubernetes uses **StatefulSets** to manage stateful workloads with guarantees that Deployments don't provide:
+
+    **1. Stable Pod identity:**
+    Pods are named `<name>-0`, `<name>-1`, etc. and keep their identity across restarts.
+
+    **2. Ordered operations:**
+    Pods are created in order (0→1→2) and terminated in reverse order (2→1→0).
+
+    **3. Persistent storage per Pod:**
+    Each Pod gets its own PVC via `volumeClaimTemplates`:
+    ```
+    apiVersion: apps/v1
     kind: StatefulSet
-
     metadata:
-
-    name: mysql
-
+      name: mysql
     spec:
+      serviceName: "mysql"
+      replicas: 3
+      selector:
+        matchLabels:
+          app: mysql
+      template:
+        metadata:
+          labels:
+            app: mysql
+        spec:
+          containers:
+          - name: mysql
+            image: mysql:8
+            volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
+      volumeClaimTemplates:
+      - metadata:
+          name: data
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+    ```
 
-    serviceName: "mysql"
+    **4. Headless Service** (required):
+    A Service with `clusterIP: None` gives each Pod a stable DNS name: `mysql-0.mysql.default.svc.cluster.local`.
 
-    replicas: 3'
+    **Additionally**, consider using **Kubernetes Operators** (e.g., MySQL Operator, PostgreSQL Operator) that automate backup, failover, and scaling for specific databases.
+
 - question: What are PodDisruptionBudgets (PDBs)?
-  answer: 'Ensures minimum availability during voluntary disruptions.
+  answer: |-
+    A PodDisruptionBudget defines the **minimum availability** that must be maintained during voluntary disruptions (node drains, cluster upgrades, maintenance).
 
-    Example:
-
-    yaml
-
+    **Example:**
+    ```
     apiVersion: policy/v1
-
     kind: PodDisruptionBudget
-
     metadata:
-
-    name: my-pdb
-
+      name: my-pdb
     spec:
+      minAvailable: 2
+      selector:
+        matchLabels:
+          app: my-app
+    ```
 
-    minAvailable: 2
+    **Configuration options:**
+    - `minAvailable: 2` — at least 2 Pods must remain running at all times
+    - `maxUnavailable: 1` — at most 1 Pod can be down at a time
+    - Use one or the other, not both
 
-    selector:
+    **What PDBs protect against (voluntary disruptions):**
+    - `kubectl drain` during node maintenance
+    - Cluster autoscaler removing nodes
+    - Rolling updates
+    - Voluntary Pod evictions
 
-    matchLabels:
+    **What PDBs do NOT protect against (involuntary disruptions):**
+    - Node crashes or hardware failures
+    - OOM kills
+    - Kernel panics
 
-    app: my-app'
+    **Best practice:** Always create PDBs for production workloads running multiple replicas.
+
 - question: How do you secure Kubernetes Secrets?
-  answer: 'Use encryption at rest.
+  answer: |-
+    By default, Kubernetes Secrets are only **base64-encoded** (not encrypted). Here's how to properly secure them:
 
-    Store secrets in external vaults (e.g., HashiCorp Vault).
+    **1. Enable encryption at rest** — configure the API server to encrypt Secrets in etcd:
+    ```
+    apiVersion: apiserver.config.k8s.io/v1
+    kind: EncryptionConfiguration
+    resources:
+    - resources: ["secrets"]
+      providers:
+      - aescbc:
+          keys:
+          - name: key1
+            secret: <base64-encoded-key>
+    ```
 
-    Example:
+    **2. Use external secret managers:**
+    - **HashiCorp Vault** with the Vault Agent Injector or CSI driver
+    - **AWS Secrets Manager** with External Secrets Operator
+    - **Sealed Secrets** — encrypt secrets client-side so they can be stored safely in Git
 
-    sh
+    **3. RBAC restrictions:**
+    - Limit who can `get`, `list`, or `watch` Secrets to only the service accounts and users that need them
 
-    kubectl create secret generic db-secret --from-literal=password=mysecurepassword'
+    **4. Avoid environment variables for sensitive data** — mounted files are safer because env vars can leak through logs, error messages, and `/proc`
+
+    **5. Rotate secrets regularly** and audit access with Kubernetes audit logging.
+
+    **6. Never commit plain Secrets to Git** — use Sealed Secrets, SOPS, or external secret references instead.
+
 - question: What are Kubernetes Admission Controllers?
-  answer: 'They intercept API requests before they reach the cluster.
+  answer: |-
+    Admission controllers are **plugins that intercept API requests** after authentication and authorization, but before the object is persisted to etcd. They can **validate** or **mutate** requests.
 
-    Example: PodSecurityPolicies, ValidatingWebhookConfiguration.'
+    **Two types:**
+    - **Validating** — accept or reject requests (e.g., "reject Pods running as root")
+    - **Mutating** — modify requests before they're stored (e.g., "inject a sidecar container into every Pod")
+
+    **Built-in admission controllers (examples):**
+    - `NamespaceLifecycle` — prevents operations in non-existent namespaces
+    - `LimitRanger` — enforces default resource limits
+    - `ResourceQuota` — enforces namespace-level resource quotas
+    - `PodSecurity` — enforces Pod security standards (replaced PodSecurityPolicy)
+    - `DefaultStorageClass` — assigns a default StorageClass to PVCs
+
+    **Custom admission controllers:**
+    - **ValidatingWebhookConfiguration** — call an external HTTP endpoint to validate requests
+    - **MutatingWebhookConfiguration** — call an external HTTP endpoint to modify requests
+
+    **Use cases:** enforcing security policies, injecting sidecars (Istio), setting default labels, validating image registries.
+
 - question: How does Kubernetes handle node failures?
-  answer: 'Kubelet marks node as NotReady.
+  answer: |-
+    Kubernetes detects and recovers from node failures automatically:
 
-    Pods are rescheduled onto healthy nodes.
+    **Detection:**
+    1. The **kubelet** sends heartbeats to the API server (via node leases in `kube-node-lease` namespace)
+    2. If heartbeats stop, the **node controller** marks the node as `NotReady` after `node-monitor-grace-period` (default: 40 seconds)
+    3. After `pod-eviction-timeout` (default: 5 minutes), Pods on the failed node are marked for eviction
 
-    Node auto-repair triggers in cloud-managed clusters.'
+    **Recovery:**
+    - Pods managed by **Deployments/ReplicaSets** are rescheduled onto healthy nodes automatically
+    - **StatefulSet** Pods wait longer before rescheduling (to avoid split-brain scenarios with stateful workloads)
+    - **DaemonSet** Pods are recreated when the node comes back online
+
+    **Cloud-managed clusters:**
+    - **Node auto-repair** — the cloud provider detects unhealthy nodes and replaces them
+    - **Cluster Autoscaler** — provisions new nodes if evicted Pods can't be scheduled due to insufficient resources
+
+    **Best practices:**
+    - Use **Pod anti-affinity** to spread replicas across nodes
+    - Set **PodDisruptionBudgets** to maintain availability during node drains
+    - Configure **topology spread constraints** for zone-aware scheduling
+
 - question: What is a Kubernetes Mutating Webhook?
-  answer: 'Modifies requests dynamically before they reach the cluster.
+  answer: |-
+    A Mutating Webhook is an **admission controller** that dynamically **modifies API requests** before they are persisted to etcd.
 
-    Example: Injecting sidecars into Pods.'
-- question: How do you debug networking issues in Kubernetes?
-  answer: 'Check Pod-to-Pod connectivity:
+    **How it works:**
+    1. A user submits a resource (e.g., a Pod) to the API server
+    2. The API server forwards the request to the configured webhook endpoint
+    3. The webhook returns a JSON patch with modifications
+    4. The API server applies the patch and continues processing
 
-    sh
+    **Common use cases:**
+    - **Sidecar injection** — Istio's webhook automatically adds the Envoy proxy sidecar to every Pod
+    - **Default values** — inject standard labels, annotations, or resource limits
+    - **Image registry rewriting** — redirect image pulls to an internal registry mirror
+    - **Security enforcement** — add security contexts, mount secrets, or inject init containers
 
-    kubectl exec -it pod1 -- ping pod2
-
-    Inspect network policies:
-
-    sh
-
-    kubectl get networkpolicy
-
-    Validate DNS resolution:
-
-    sh
-
-    kubectl exec -it pod -- nslookup my-service'
-- question: How does Kubernetes Horizontal Pod Autoscaler (HPA) work internally?
-  answer: 'Uses metrics API (CPU/memory usage).
-
-    Adjusts replica count dynamically.
-
-    Example:
-
-    sh
-
-    kubectl autoscale deployment my-app --cpu-percent=50 --min=2 --max=10'
-- question: How do you implement multi-tenancy in Kubernetes?
-  answer: 'Use Namespaces to isolate workloads.
-
-    Apply RBAC (Role-Based Access Control).
-
-    Example:
-
-    yaml
-
-    apiVersion: rbac.authorization.k8s.io/v1
-
-    kind: Role
-
+    **Example configuration:**
+    ```
+    apiVersion: admissionregistration.k8s.io/v1
+    kind: MutatingWebhookConfiguration
     metadata:
+      name: sidecar-injector
+    webhooks:
+    - name: sidecar.example.com
+      rules:
+      - operations: ["CREATE"]
+        resources: ["pods"]
+      clientConfig:
+        service:
+          name: sidecar-injector
+          namespace: kube-system
+          path: "/inject"
+    ```
 
-    namespace: team-a
+    **Ordering:** Mutating webhooks run before validating webhooks, so mutations are validated after being applied.
 
-    name: team-a-role
+- question: How do you debug networking issues in Kubernetes?
+  answer: |-
+    **Step 1 — Verify Pod connectivity:**
+    ```
+    kubectl exec -it pod1 -- ping <pod2-ip>
+    kubectl exec -it pod1 -- curl http://my-service:8080
+    ```
 
+    **Step 2 — Check DNS resolution:**
+    ```
+    kubectl exec -it pod1 -- nslookup my-service
+    kubectl exec -it pod1 -- nslookup my-service.default.svc.cluster.local
+    ```
+    If DNS fails, check the CoreDNS pods: `kubectl get pods -n kube-system -l k8s-app=kube-dns`
+
+    **Step 3 — Inspect Services and Endpoints:**
+    ```
+    kubectl get svc my-service
+    kubectl get endpoints my-service
+    ```
+    If endpoints are empty, the Service selector doesn't match any running Pods.
+
+    **Step 4 — Check Network Policies:**
+    ```
+    kubectl get networkpolicy -A
+    kubectl describe networkpolicy <name>
+    ```
+    Network Policies may be blocking traffic. Try removing them temporarily to isolate the issue.
+
+    **Step 5 — Debug with a temporary Pod:**
+    ```
+    kubectl run netdebug --image=nicolaka/netshoot -it --rm -- /bin/bash
+    ```
+    The `netshoot` image includes tools like `curl`, `dig`, `tcpdump`, `nmap`, and `iperf`.
+
+    **Step 6 — Check kube-proxy and CNI plugin logs** for node-level networking issues.
+
+- question: How does Kubernetes Horizontal Pod Autoscaler (HPA) work internally?
+  answer: |-
+    The HPA controller runs a **control loop** that continuously adjusts the number of Pod replicas based on observed metrics.
+
+    **How the loop works (every 15 seconds by default):**
+    1. Queries the **Metrics API** for current metric values (CPU, memory, or custom metrics)
+    2. Calculates the **desired replica count** using: `desired = ceil(current_replicas * (current_metric / target_metric))`
+    3. Scales the Deployment/ReplicaSet up or down toward the desired count
+
+    **Example:**
+    ```
+    kubectl autoscale deployment my-app \
+      --cpu-percent=50 --min=2 --max=10
+    ```
+    If average CPU is 80% with target 50% and 4 replicas: `ceil(4 * 80/50) = 7` replicas.
+
+    **Stabilization:**
+    - **Scale-up delay** — by default, HPA can scale up immediately
+    - **Scale-down delay** — waits 5 minutes (configurable) before scaling down, to avoid flapping
+
+    **Metric sources:**
+    - **Resource metrics** — CPU and memory from Metrics Server
+    - **Custom metrics** — application-specific (requests/sec, queue depth) via Prometheus Adapter
+    - **External metrics** — metrics from outside the cluster (cloud monitoring, SQS queue length)
+
+    **Check HPA status:**
+    ```
+    kubectl get hpa
+    kubectl describe hpa my-app
+    ```
+
+- question: How do you implement multi-tenancy in Kubernetes?
+  answer: |-
+    Multi-tenancy isolates workloads from different teams, customers, or environments within a shared cluster.
+
+    **1. Namespace isolation:**
+    Each tenant gets their own namespace:
+    ```
+    kubectl create namespace team-a
+    kubectl create namespace team-b
+    ```
+
+    **2. RBAC (Role-Based Access Control):**
+    Restrict each tenant to their namespace:
+    ```
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: Role
+    metadata:
+      namespace: team-a
+      name: team-a-role
     rules:
+    - apiGroups: ["", "apps"]
+      resources: ["pods", "deployments", "services"]
+      verbs: ["get", "list", "watch", "create", "update", "delete"]
+    ```
+    Bind the role to a user or service account with a `RoleBinding`.
 
-    - apiGroups: [""]
+    **3. Resource Quotas:**
+    Prevent any tenant from consuming all cluster resources:
+    ```
+    apiVersion: v1
+    kind: ResourceQuota
+    metadata:
+      namespace: team-a
+    spec:
+      hard:
+        requests.cpu: "4"
+        requests.memory: 8Gi
+        pods: "20"
+    ```
 
-    resources: ["pods"]
+    **4. Network Policies:**
+    Isolate network traffic between namespaces — deny all ingress by default, then allow specific flows.
 
-    verbs: ["get", "list", "watch"]'
+    **5. Pod Security Standards:**
+    Enforce security baselines per namespace using `PodSecurity` admission controller (Restricted, Baseline, Privileged levels).
+
+    **For stronger isolation** (e.g., untrusted tenants), consider **virtual clusters** (vCluster) or dedicated clusters per tenant.
+
 - question: What is Kubernetes Cluster Federation?
-  answer: 'Manages multiple clusters as a single entity.
+  answer: |-
+    Cluster Federation manages **multiple Kubernetes clusters as a single logical unit**, enabling workloads to span regions, clouds, or environments.
 
-    Benefits: Cross-region high availability, policy consistency.
+    **Key capabilities:**
+    - **Cross-cluster deployment** — deploy the same workload across multiple clusters from a single control plane
+    - **Geographic distribution** — run applications closer to users for lower latency
+    - **High availability** — survive the failure of an entire cluster or region
+    - **Policy consistency** — enforce uniform RBAC, network policies, and quotas across all clusters
+    - **Hybrid/multi-cloud** — manage clusters on AWS, GCP, Azure, and on-premises from one place
 
-    Example tool: kubefed'
+    **Tools:**
+    - **KubeFed (Kubernetes Federation v2)** — the official CNCF project for federation
+    - **Admiralty** — multi-cluster scheduling
+    - **Liqo** — peer-to-peer multi-cluster resource sharing
+    - **ArgoCD / Flux** — GitOps-based multi-cluster deployment (more commonly used in practice)
+
+    **Trade-offs:**
+    - Adds significant operational complexity
+    - Networking across clusters requires solutions like Submariner or Cilium ClusterMesh
+    - Most teams start with a simpler multi-cluster approach using GitOps before adopting full federation

@@ -813,13 +813,13 @@ program
       const webDir = join(dirname(new URL(import.meta.url).pathname), '..', 'web');
 
       const { startServer } = await import('./server.js');
-      startServer(apiPort, { qaDir: serveDir, filterFile });
+      const actualApiPort = await startServer(apiPort, { qaDir: serveDir, filterFile });
 
       const { spawn } = await import('node:child_process');
       const vite = spawn(
         'npx',
         ['vite', '--port', String(webPort)],
-        { cwd: webDir, stdio: 'inherit', shell: true, env: { ...process.env, PORT: String(apiPort) } },
+        { cwd: webDir, stdio: 'inherit', shell: true, env: { ...process.env, PORT: String(actualApiPort) } },
       );
 
       vite.on('error', (err) => {
@@ -827,7 +827,7 @@ program
       });
 
       console.log(`\nWeb UI:  http://localhost:${webPort}`);
-      console.log(`API:     http://localhost:${apiPort}\n`);
+      console.log(`API:     http://localhost:${actualApiPort}\n`);
 
       process.on('SIGINT', () => {
         vite.kill();
@@ -841,6 +841,11 @@ program
       process.exit(1);
     }
   });
+
+// Support "qa-video <cmd> help" → "qa-video <cmd> --help"
+if (process.argv.length === 4 && process.argv[3] === 'help' && process.argv[2] !== 'help') {
+  process.argv[3] = '--help';
+}
 
 // Only require ffmpeg for generate/batch commands
 const cmd = process.argv[2];

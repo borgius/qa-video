@@ -2,12 +2,11 @@ import { existsSync, mkdirSync } from 'node:fs';
 import { cpus } from 'node:os';
 import { concatenateAudioFiles, concatenateClips, createSegmentClip, createSilentClip } from './assembler.js';
 import { cachedPath, isCached, removeStale, sha, slug } from './cache.js';
-import { codeToTTS, parseMarkdown } from './markdown.js';
 import { parseYamlFile } from './parser.js';
 import { renderSlide } from './renderer.js';
 import { TTSPool } from './tts-pool.js';
-import { preprocessForTTS } from './tts-preprocess.js';
-import { getAudioDuration, MAX_CHUNK_CHARS } from './tts.js';
+import { type AudioPlan, buildAudioPlan } from './tts-preprocess.js';
+import { getAudioDuration } from './tts.js';
 import { DEFAULT_CONFIG, type PipelineConfig, type Segment } from './types.js';
 
 /** Run tasks in parallel, at most `limit` concurrent at a time. */
@@ -36,26 +35,12 @@ function formatDuration(seconds: number): string {
 
 // ── Audio plan types ──────────────────────────────────────────────────────────
 
-/** A single TTS synthesis unit (one voice, one WAV output). */
-interface SynthPart {
-  audioPath: string;
-  ttsText: string;
-  voice: string;
-}
-
-/**
- * Audio plan for one question or answer slot.
- * Single-part plans map directly to an existing WAV; multi-part plans require
- * the segment WAVs to be concatenated into `finalAudioPath`.
- */
-interface AudioPlan {
+/** Pipeline-specific wrapper around the shared AudioPlan. */
+interface PipelineAudioPlan extends AudioPlan {
   cardIndex: number;
   isQuestion: boolean;
   rawText: string;
   delay: number;
-  finalAudioPath: string;  // the WAV consumed by the video assembler
-  parts: SynthPart[];
-  isMultiPart: boolean;
 }
 
 // ── Pipeline ──────────────────────────────────────────────────────────────────
@@ -101,72 +86,21 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
   const stage2Start = Date.now();
   console.log('\n── Stage 2/4: Synthesizing speech ──');
 
-  /**
-   * Build an audio cache key.  Short texts (≤ MAX_CHUNK_CHARS) use the original
-   * `audio:` prefix so existing valid WAVs are reused.  Long texts that require
-   * chunking use `audio-chunked:` so old truncated WAVs are discarded and
-   * re-synthesised at full length.
-   */
-  const audioCacheKey = (ttsText: string, voice: string) =>
-    ttsText.length > MAX_CHUNK_CHARS
-      ? `audio-chunked:${ttsText}:${voice}`
-      : `audio:${ttsText}:${voice}`;
-
-  // Build one AudioPlan per question/answer slot.
-  const audioPlans: AudioPlan[] = cards.flatMap((card, i) => {
+  // Build one PipelineAudioPlan per question/answer slot using the shared builder.
+  const audioPlans: PipelineAudioPlan[] = cards.flatMap((card, i) => {
     const qSlug = slug(card.question);
 
-    // ── Question (always single-part, main voice) ──
-    const qTTSText = preprocessForTTS(card.question);
-    const qAudioPath = cachedPath(config.tempDir, `q_${i}_${qSlug}`, audioCacheKey(qTTSText, config.voice), 'wav');
-    const qPlan: AudioPlan = {
+    const qPlan: PipelineAudioPlan = {
+      ...buildAudioPlan(card.question, config.tempDir, `q_${i}_${qSlug}`, config.voice, config.codeVoice),
       cardIndex: i, isQuestion: true, rawText: card.question,
       delay: config.questionDelay,
-      finalAudioPath: qAudioPath,
-      parts: [{ audioPath: qAudioPath, ttsText: qTTSText, voice: config.voice }],
-      isMultiPart: false,
     };
 
-    // ── Answer ──
-    const mdSegs = parseMarkdown(card.answer);
-    const hasCode = mdSegs.some(s => s.kind === 'code');
-
-    let aPlan: AudioPlan;
-
-    if (!hasCode) {
-      const aTTSText = preprocessForTTS(card.answer);
-      const aAudioPath = cachedPath(config.tempDir, `a_${i}_${qSlug}`, audioCacheKey(aTTSText, config.voice), 'wav');
-      aPlan = {
-        cardIndex: i, isQuestion: false, rawText: card.answer,
-        delay: config.answerDelay,
-        finalAudioPath: aAudioPath,
-        parts: [{ audioPath: aAudioPath, ttsText: aTTSText, voice: config.voice }],
-        isMultiPart: false,
-      };
-    } else {
-      // Multi-part: each markdown segment gets its own WAV, then they're concatenated.
-      const parts: SynthPart[] = mdSegs.map((seg, j) => {
-        const rawTTS = seg.kind === 'code'
-          ? codeToTTS(seg)
-          : seg.content;
-        const ttsText = preprocessForTTS(rawTTS);
-        const voice = seg.kind === 'code' ? config.codeVoice : config.voice;
-        const prefix = `a_${i}_${qSlug}_${seg.kind === 'code' ? 'c' : 't'}${j}`;
-        return { audioPath: cachedPath(config.tempDir, prefix, audioCacheKey(ttsText, voice), 'wav'), ttsText, voice };
-      });
-
-      // Final concatenated WAV keyed by all part hashes + both voices.
-      const partKey = parts.map(p => sha(`${p.ttsText}:${p.voice}`)).join('|');
-      const finalAudioPath = cachedPath(config.tempDir, `a_${i}_${qSlug}`, `md-audio:${partKey}`, 'wav');
-
-      aPlan = {
-        cardIndex: i, isQuestion: false, rawText: card.answer,
-        delay: config.answerDelay,
-        finalAudioPath,
-        parts,
-        isMultiPart: true,
-      };
-    }
+    const aPlan: PipelineAudioPlan = {
+      ...buildAudioPlan(card.answer, config.tempDir, `a_${i}_${qSlug}`, config.voice, config.codeVoice),
+      cardIndex: i, isQuestion: false, rawText: card.answer,
+      delay: config.answerDelay,
+    };
 
     return [qPlan, aPlan];
   });

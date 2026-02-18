@@ -3,6 +3,156 @@
  * Kokoro doesn't support SSML, so we manipulate plain text to improve pronunciation.
  */
 
+import { cachedPath, sha } from './cache.js';
+import { codeToTTS, parseMarkdown } from './markdown.js';
+import { MAX_CHUNK_CHARS } from './tts.js';
+
+// ── Audio plan types (shared by pipeline & server) ───────────────────────────
+
+/** A single TTS synthesis unit (one voice, one WAV output). */
+export interface AudioPartPlan {
+  audioPath: string;
+  ttsText: string;
+  voice: string;
+}
+
+/** Audio plan for one question or answer slot. */
+export interface AudioPlan {
+  finalAudioPath: string;
+  parts: AudioPartPlan[];
+  isMultiPart: boolean;
+}
+
+/** A voice-tagged TTS fragment: text to synthesize and whether it uses the code voice. */
+export interface TTSPart {
+  text: string;
+  isCode: boolean;
+}
+
+// ── Audio cache key ──────────────────────────────────────────────────────────
+
+/**
+ * Build an audio cache key. Short texts (≤ MAX_CHUNK_CHARS) use the original
+ * `audio:` prefix so existing valid WAVs are reused. Long texts that require
+ * chunking use `audio-chunked:` so old truncated WAVs are discarded and
+ * re-synthesised at full length.
+ */
+function audioCacheKey(ttsText: string, voice: string): string {
+  return ttsText.length > MAX_CHUNK_CHARS
+    ? `audio-chunked:${ttsText}:${voice}`
+    : `audio:${ttsText}:${voice}`;
+}
+
+// ── Audio plan builder ───────────────────────────────────────────────────────
+
+/**
+ * Build an audio plan for a card slot. Splits text by code blocks (fenced and
+ * inline), assigning the code voice to code parts. Single-voice texts produce a
+ * single-part plan; mixed texts produce a multi-part plan that requires
+ * concatenation.
+ *
+ * Used by both the video pipeline and the web server so that audio generation
+ * is identical regardless of the entry point.
+ */
+export function buildAudioPlan(
+  text: string,
+  tempDir: string,
+  prefix: string,
+  voice: string,
+  codeVoice: string,
+): AudioPlan {
+  const ttsParts = splitIntoTTSParts(text);
+  const hasCode = ttsParts.some(p => p.isCode);
+
+  if (!hasCode) {
+    // Single voice — one WAV
+    const ttsText = ttsParts.map(p => p.text).join(' ');
+    const audioPath = cachedPath(tempDir, prefix, audioCacheKey(ttsText, voice), 'wav');
+    return {
+      finalAudioPath: audioPath,
+      parts: [{ audioPath, ttsText, voice }],
+      isMultiPart: false,
+    };
+  }
+
+  // Multi-part: each TTS part gets its own WAV, then concatenated
+  const parts: AudioPartPlan[] = ttsParts.map((p, j) => {
+    const v = p.isCode ? codeVoice : voice;
+    const partPrefix = `${prefix}_${p.isCode ? 'c' : 't'}${j}`;
+    return {
+      audioPath: cachedPath(tempDir, partPrefix, audioCacheKey(p.text, v), 'wav'),
+      ttsText: p.text,
+      voice: v,
+    };
+  });
+
+  // Final concatenated WAV keyed by all part hashes + voices
+  const partKey = parts.map(p => sha(`${p.ttsText}:${p.voice}`)).join('|');
+  const finalAudioPath = cachedPath(tempDir, prefix, `md-audio:${partKey}`, 'wav');
+
+  return { finalAudioPath, parts, isMultiPart: true };
+}
+
+// ── TTS text splitting ───────────────────────────────────────────────────────
+
+/**
+ * Split raw Q/A text into voice-tagged TTS parts.
+ * 1. Fenced code blocks (```) → isCode: true
+ * 2. Inside text segments, inline code (`...`) → isCode: true
+ * 3. Everything else → isCode: false
+ *
+ * Each part's text is already preprocessed for TTS.
+ * Parts with empty text after preprocessing are omitted.
+ */
+export function splitIntoTTSParts(text: string): TTSPart[] {
+  const mdSegments = parseMarkdown(text);
+  const parts: TTSPart[] = [];
+
+  for (const seg of mdSegments) {
+    if (seg.kind === 'code') {
+      const ttsText = preprocessForTTS(codeToTTS(seg));
+      if (ttsText.trim()) parts.push({ text: ttsText, isCode: true });
+    } else {
+      // Split text segment by inline code spans
+      const inlineParts = splitByInlineCode(seg.content);
+      for (const ip of inlineParts) {
+        const ttsText = preprocessForTTS(ip.raw);
+        if (ttsText.trim()) parts.push({ text: ttsText, isCode: ip.isCode });
+      }
+    }
+  }
+
+  // Fallback: if everything was stripped, return the whole text as prose
+  if (parts.length === 0) {
+    return [{ text: preprocessForTTS(text), isCode: false }];
+  }
+
+  return parts;
+}
+
+/**
+ * Split a text fragment by inline backtick code spans.
+ * Returns alternating prose / inline-code chunks with their raw text.
+ */
+function splitByInlineCode(text: string): { raw: string; isCode: boolean }[] {
+  const result: { raw: string; isCode: boolean }[] = [];
+  const regex = /`([^`]+)`/g;
+  let lastIndex = 0;
+  for (const match of text.matchAll(regex)) {
+    if (match.index > lastIndex) {
+      result.push({ raw: text.slice(lastIndex, match.index), isCode: false });
+    }
+    result.push({ raw: match[1], isCode: true });
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < text.length) {
+    result.push({ raw: text.slice(lastIndex), isCode: false });
+  }
+
+  return result.length > 0 ? result : [{ raw: text, isCode: false }];
+}
+
 // Acronyms mapped to TTS-friendly spoken forms.
 // Order matters: longer/more-specific patterns first to avoid partial matches.
 const ACRONYMS: [RegExp, string][] = [
@@ -136,6 +286,15 @@ const ignoreCaseAcronyms = new Map([
   ['salsa', 'salsa'],
   ['sops', 'sops'],
   ['yaml', 'YAML'],
+  ['post', 'POST'],
+  ['get', 'GET'],
+  ['put', 'PUT'],
+  ['delete', 'DELETE'],
+  ['patch', 'PATCH'],
+  ['head', 'HEAD'],
+  ['options', 'OPTIONS'],
+  ['trace', 'TRACE'],
+  ['connect', 'CONNECT'],
 ]);
 
 export function preprocessForTTS(text: string): string {

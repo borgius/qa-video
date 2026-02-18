@@ -1,14 +1,16 @@
 import express from 'express';
 import cors from 'cors';
 import { readdirSync, mkdirSync } from 'fs';
+import { createServer } from 'node:net';
 import { join, resolve } from 'path';
-import { parseYamlFile } from './parser.js';
-import { topicFromFilename, generateTitle } from './metadata.js';
-import { preprocessForTTS } from './tts-preprocess.js';
+import { concatenateAudioFiles } from './assembler.js';
 import { cachedPath, isCached, slug } from './cache.js';
-import { initTTS, synthesize } from './tts.js';
+import { generateTitle, topicFromFilename } from './metadata.js';
+import { parseYamlFile } from './parser.js';
 import { renderSlide } from './renderer.js';
-import { DEFAULT_CONFIG, PipelineConfig } from './types.js';
+import { buildAudioPlan } from './tts-preprocess.js';
+import { initTTS, synthesize } from './tts.js';
+import { DEFAULT_CONFIG, type PipelineConfig } from './types.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -150,24 +152,42 @@ app.get('/api/audio/:name/:cardIndex/:type', async (req, res, next) => {
     const card = data.questions[cardIndex];
     const text = type === 'question' ? card.question : card.answer;
     const voice = data.config.voice || DEFAULT_CONFIG.voice;
+    const codeVoice = data.config.codeVoice || DEFAULT_CONFIG.codeVoice;
 
-    // Build cache path using exact same hash format as pipeline
     const qSlug = slug(card.question);
-    const ttsText = preprocessForTTS(text);
-    const audioHash = `audio:${ttsText}:${voice}`;
     const prefix = type === 'question' ? `q_${cardIndex}_${qSlug}` : `a_${cardIndex}_${qSlug}`;
     const tempDir = join(outputDir, '.tmp', name);
     mkdirSync(tempDir, { recursive: true });
-    const audioPath = cachedPath(tempDir, prefix, audioHash, 'wav');
 
-    if (isCached(audioPath, false)) {
-      res.sendFile(audioPath, { dotfiles: 'allow' });
+    const plan = buildAudioPlan(text, tempDir, prefix, voice, codeVoice);
+    const label = `[${name}] ${type} ${cardIndex + 1}/${data.questions.length}`;
+
+    if (isCached(plan.finalAudioPath, false)) {
+      console.log(`${label} — cached`);
+      res.sendFile(plan.finalAudioPath, { dotfiles: 'allow' });
       return;
     }
 
-    // Generate TTS on the fly
-    await enqueue(ttsText, audioPath, voice);
-    res.sendFile(audioPath, { dotfiles: 'allow' });
+    const parts = plan.isMultiPart ? ` (${plan.parts.length} parts)` : '';
+    console.log(`${label} — generating${parts}...`);
+    const start = Date.now();
+
+    // Synthesize each part
+    for (const part of plan.parts) {
+      await enqueue(part.ttsText, part.audioPath, part.voice);
+    }
+
+    // Concatenate multi-part WAVs
+    if (plan.isMultiPart && !isCached(plan.finalAudioPath, false)) {
+      await concatenateAudioFiles(
+        plan.parts.map(p => p.audioPath),
+        plan.finalAudioPath,
+      );
+    }
+
+    const elapsed = ((Date.now() - start) / 1000).toFixed(1);
+    console.log(`${label} — done (${elapsed}s)`);
+    res.sendFile(plan.finalAudioPath, { dotfiles: 'allow' });
   } catch (err) {
     next(err);
   }
@@ -194,17 +214,17 @@ app.get('/api/audio/:name/:cardIndex/:type/status', async (req, res, next) => {
     const card = data.questions[cardIndex];
     const text = type === 'question' ? card.question : card.answer;
     const voice = data.config.voice || DEFAULT_CONFIG.voice;
+    const codeVoice = data.config.codeVoice || DEFAULT_CONFIG.codeVoice;
 
     const qSlug = slug(card.question);
-    const ttsText = preprocessForTTS(text);
-    const audioHash = `audio:${ttsText}:${voice}`;
     const prefix = type === 'question' ? `q_${cardIndex}_${qSlug}` : `a_${cardIndex}_${qSlug}`;
     const tempDir = join(outputDir, '.tmp', name);
-    const audioPath = cachedPath(tempDir, prefix, audioHash, 'wav');
+
+    const plan = buildAudioPlan(text, tempDir, prefix, voice, codeVoice);
 
     res.json({
-      cached: isCached(audioPath, false),
-      generating: ttsQueue.some(j => j.path === audioPath),
+      cached: isCached(plan.finalAudioPath, false),
+      generating: ttsQueue.some(j => plan.parts.some(p => p.audioPath === j.path)),
     });
   } catch (err) {
     next(err);
@@ -291,12 +311,34 @@ app.use((err: any, _req: express.Request, res: express.Response, _next: express.
   res.status(status).json({ error: err.message || 'Internal server error' });
 });
 
-export function startServer(port?: number, opts?: { qaDir?: string; filterFile?: string }): void {
+function isPortAvailable(port: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    const server = createServer();
+    server.once('error', () => resolve(false));
+    server.once('listening', () => { server.close(); resolve(true); });
+    server.listen(port);
+  });
+}
+
+async function findAvailablePort(startPort: number, maxAttempts = 20): Promise<number> {
+  for (let i = 0; i < maxAttempts; i++) {
+    const port = startPort + i;
+    if (await isPortAvailable(port)) return port;
+    console.log(`Port ${port} is in use, trying another one...`);
+  }
+  throw new Error(`No available port found after trying ${startPort}–${startPort + maxAttempts - 1}`);
+}
+
+export async function startServer(port?: number, opts?: { qaDir?: string; filterFile?: string }): Promise<number> {
   if (opts?.qaDir) qaDir = opts.qaDir;
   if (opts?.filterFile) filterFile = opts.filterFile;
-  const listenPort = port ?? Number(PORT);
-  app.listen(listenPort, () => {
-    console.log(`QA Video API running on http://localhost:${listenPort}`);
+  const requestedPort = port ?? Number(PORT);
+  const listenPort = await findAvailablePort(requestedPort);
+  return new Promise((resolve) => {
+    app.listen(listenPort, () => {
+      console.log(`QA Video API running on http://localhost:${listenPort}`);
+      resolve(listenPort);
+    });
   });
 }
 

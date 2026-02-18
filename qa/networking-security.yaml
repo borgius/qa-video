@@ -5,194 +5,783 @@ config:
   answerDelay: 1
 questions:
 - question: What is a network?
-  answer: A network is a group of interconnected devices that communicate to share resources and information. It can be wired
-    or wireless.
+  answer: |
+    A network is a group of interconnected devices that communicate to share resources (files, printers, internet) and information.
+
+    Common types:
+    - **LAN** (Local Area Network) — a single building or campus
+    - **WAN** (Wide Area Network) — spans large geographic areas (the internet is the largest WAN)
+    - **VLAN** — a logically segmented LAN for traffic isolation
+
+    Networks can use **wired** (Ethernet) or **wireless** (Wi-Fi) connections.
+
 - question: What is an IP address?
-  answer: An IP (Internet Protocol) address is a unique numerical identifier assigned to each device on a network to facilitate
-    communication.
+  answer: |
+    An IP (Internet Protocol) address is a unique numerical identifier assigned to each device on a network so devices can locate and communicate with each other.
+
+    - **IPv4** format: `192.168.1.10` (dotted decimal, 32-bit)
+    - **IPv6** format: `2001:0db8::1` (hexadecimal, 128-bit)
+
+    IP addresses can be **static** (manually assigned) or **dynamic** (assigned via DHCP).
+
 - question: What is the difference between IPv4 and IPv6?
-  answer: 'IPv4: 32-bit addressing, supports 4.3 billion addresses.
+  answer: |
+    **IPv4:**
+    - 32-bit addressing — supports ~4.3 billion addresses
+    - Address format: `192.168.1.1`
+    - Requires NAT to work around address exhaustion
+    - Header: 20-60 bytes, variable-length
 
-    IPv6: 128-bit addressing, supports an enormous number of addresses, improving scalability and security.'
+    **IPv6:**
+    - 128-bit addressing — supports 3.4×10³⁸ addresses
+    - Address format: `2001:db8::1`
+    - Built-in IPsec support for end-to-end encryption
+    - Simplified fixed-length header (40 bytes) for faster routing
+    - No need for NAT — every device can have a globally unique address
+
 - question: What are private and public IP addresses?
-  answer: 'Private IPs: Used within local networks (e.g., 192.168.x.x).
+  answer: |
+    **Private IPs** are used within local networks and are not routable on the internet. Defined in RFC 1918:
+    - `10.0.0.0/8` (10.0.0.0 – 10.255.255.255)
+    - `172.16.0.0/12` (172.16.0.0 – 172.31.255.255)
+    - `192.168.0.0/16` (192.168.0.0 – 192.168.255.255)
 
-    Public IPs: Used on the internet and assigned by ISPs.'
+    **Public IPs** are globally routable on the internet and assigned by ISPs through regional registries (ARIN, RIPE, etc.).
+
+    Devices with private IPs reach the internet through **NAT** on the router/gateway.
+
 - question: What is a subnet mask?
-  answer: A subnet mask divides an IP address into network and host portions, determining which part identifies the network
-    and which part identifies the device.
+  answer: |
+    A subnet mask divides an IP address into a **network portion** and a **host portion**, determining which devices are on the same local network.
+
+    Example: IP `192.168.1.10` with mask `255.255.255.0` (`/24`)
+    - **Network:** `192.168.1.0` (first 24 bits)
+    - **Host range:** `192.168.1.1` – `192.168.1.254` (254 usable hosts)
+    - **Broadcast:** `192.168.1.255`
+
+    **CIDR notation** (e.g., `/24`, `/16`) is the modern shorthand for subnet masks. Subnetting allows efficient IP allocation and limits broadcast domains.
+
 - question: What is DHCP, and how does it work?
-  answer: The Dynamic Host Configuration Protocol (DHCP) automatically assigns IP addresses to devices in a network, reducing
-    manual configuration.
+  answer: |
+    DHCP (Dynamic Host Configuration Protocol) automatically assigns IP addresses and network configuration to devices, eliminating manual setup.
+
+    The **DORA** process:
+    1. **Discover** — Client broadcasts a request for an IP
+    2. **Offer** — DHCP server offers an available IP
+    3. **Request** — Client accepts the offer
+    4. **Acknowledge** — Server confirms and assigns the lease
+
+    DHCP also provides **subnet mask**, **default gateway**, and **DNS server** addresses. Leases expire and must be renewed periodically.
+
 - question: What is DNS, and why is it important?
-  answer: The Domain Name System (DNS) translates domain names (e.g., google.com) into IP addresses, making it easier to access
-    websites.
+  answer: |
+    DNS (Domain Name System) translates human-readable domain names (e.g., `google.com`) into IP addresses that machines use to route traffic.
+
+    **Resolution flow:**
+    1. Browser checks **local cache**
+    2. Queries the **recursive resolver** (usually ISP or `8.8.8.8`)
+    3. Resolver asks **root servers** → **TLD servers** (.com) → **authoritative nameserver**
+    4. The authoritative server returns the IP, which is cached with a **TTL**
+
+    Common record types: **A** (IPv4), **AAAA** (IPv6), **CNAME** (alias), **MX** (mail), **TXT** (verification/SPF), **NS** (nameserver).
+
 - question: What is NAT (Network Address Translation)?
-  answer: NAT allows multiple devices on a local network to share a single public IP address for internet access.
+  answer: |
+    NAT allows multiple devices on a private network to share a single public IP address for internet access by translating private IPs to the public IP at the router.
+
+    Types:
+    - **SNAT** (Source NAT) — translates the source IP of outgoing traffic (most common home/office scenario)
+    - **DNAT** (Destination NAT) — translates the destination IP of incoming traffic (used in port forwarding)
+    - **PAT** (Port Address Translation) — maps many private IPs to one public IP using unique port numbers (also called NAT overload)
+
 - question: What is a firewall?
-  answer: A firewall is a security system that monitors and controls incoming and outgoing network traffic based on security
-    rules.
+  answer: |
+    A firewall is a network security system that monitors and controls incoming and outgoing traffic based on predefined security rules.
+
+    Firewalls enforce a **default deny** or **default allow** policy, then apply rules to permit or block traffic by:
+    - Source/destination **IP addresses**
+    - **Port numbers** and **protocols** (TCP/UDP)
+    - Application-layer data (in advanced firewalls)
+
+    They can be **hardware appliances** (e.g., Palo Alto, Fortinet), **software-based** (iptables, nftables), or **cloud-native** (AWS Security Groups, Azure NSGs).
+
 - question: What are the types of firewalls?
-  answer: 'Packet Filtering Firewall
+  answer: |
+    - **Packet Filtering** — inspects individual packets against rules (IP, port, protocol). Fast but no context of connection state
+    - **Stateful Inspection** — tracks active connections and makes decisions based on connection state, not just individual packets
+    - **Proxy Firewall** — acts as an intermediary, inspecting full application-layer content. Adds latency but provides deep inspection
+    - **Next-Generation Firewall (NGFW)** — combines stateful inspection with deep packet inspection (DPI), IPS, application awareness, and threat intelligence feeds
 
-    Stateful Inspection Firewall
-
-    Proxy Firewall
-
-    Next-Generation Firewall (NGFW)'
 - question: What is a VPN?
-  answer: A Virtual Private Network (VPN) encrypts internet connections, providing secure remote access and anonymity.
+  answer: |
+    A VPN (Virtual Private Network) creates an encrypted tunnel between a device and a network over the public internet, providing:
+    - **Confidentiality** — traffic is encrypted (typically with AES-256)
+    - **Integrity** — data cannot be tampered with in transit
+    - **Remote access** — secure connection to private corporate resources
+
+    Common protocols: **IPsec**, **OpenVPN**, **WireGuard** (modern, fast, lightweight).
+
+    In DevOps, VPNs are used to securely access cloud VPCs, databases, and internal tools.
+
 - question: What is SSH, and why is it used?
-  answer: SSH (Secure Shell) is a protocol used for secure remote access to servers using encrypted communication.
+  answer: |
+    SSH (Secure Shell) is a cryptographic protocol for secure remote access to servers, running on **port 22** by default.
+
+    Key uses:
+    - **Remote shell access** — run commands on remote machines
+    - **Secure file transfer** — via SCP or SFTP
+    - **Port forwarding/tunneling** — securely expose or access services
+
+    Authentication methods:
+    - **Key-based** (recommended) — uses an RSA/Ed25519 key pair
+    - **Password-based** (less secure, should be disabled in production)
+
 - question: What is HTTP and HTTPS?
-  answer: 'HTTP (Hypertext Transfer Protocol): Unencrypted web communication.
+  answer: |
+    **HTTP** (Hypertext Transfer Protocol):
+    - Operates on **port 80**
+    - Transfers data in **plaintext** — vulnerable to eavesdropping and man-in-the-middle attacks
 
-    HTTPS (HTTP Secure): Secure, encrypted communication using SSL/TLS.'
+    **HTTPS** (HTTP Secure):
+    - Operates on **port 443**
+    - Wraps HTTP in a **TLS** encryption layer
+    - Requires an **SSL/TLS certificate** to establish a secure connection
+    - The TLS handshake negotiates cipher suites and exchanges keys before any application data is sent
+
+    HTTPS is now the baseline standard — browsers flag HTTP sites as "Not Secure."
+
 - question: What is an SSL/TLS certificate?
-  answer: An SSL/TLS certificate encrypts website traffic, ensuring secure communication and trustworthiness.
+  answer: |
+    An SSL/TLS certificate is a digital certificate that authenticates a server's identity and enables encrypted communication.
+
+    **How it works:**
+    - A **Certificate Authority (CA)** (e.g., Let's Encrypt, DigiCert) verifies domain ownership and issues the certificate
+    - The cert contains the **public key**, domain name, issuer, and expiration date
+    - During the TLS handshake, the client verifies the cert against trusted CAs in its **trust store**
+
+    Types: **DV** (domain validation), **OV** (organization validation), **EV** (extended validation), **Wildcard** (`*.example.com`), **SAN** (multiple domains).
+
 - question: What is a load balancer?
-  answer: A load balancer distributes incoming network traffic across multiple servers to optimize performance and availability.
+  answer: |
+    A load balancer distributes incoming network traffic across multiple backend servers to optimize performance, reliability, and availability.
+
+    **Common algorithms:**
+    - **Round Robin** — requests distributed sequentially
+    - **Least Connections** — sends to the server with fewest active connections
+    - **IP Hash** — routes based on client IP for session persistence
+    - **Weighted** — assigns more traffic to more capable servers
+
+    Load balancers also perform **health checks** to route traffic only to healthy backends. Examples: **NGINX**, **HAProxy**, **AWS ALB/NLB**, **Envoy**.
+
 - question: What are different types of load balancers?
-  answer: 'Layer 4 Load Balancer (Transport Layer)
+  answer: |
+    **Layer 4 (Transport Layer):**
+    - Operates on TCP/UDP level
+    - Routes based on IP address and port number
+    - Faster — does not inspect packet contents
+    - Example: AWS NLB
 
-    Layer 7 Load Balancer (Application Layer)'
+    **Layer 7 (Application Layer):**
+    - Operates on HTTP/HTTPS level
+    - Can route based on URL path, headers, cookies, or hostname
+    - Supports content-based routing, SSL termination, and WAF integration
+    - Example: AWS ALB, NGINX, HAProxy
+
+    Layer 4 is chosen for raw performance; Layer 7 for intelligent routing.
+
 - question: What is a DMZ in networking?
-  answer: A Demilitarized Zone (DMZ) is a security buffer between an internal network and the internet, hosting public-facing
-    services securely.
+  answer: |
+    A DMZ (Demilitarized Zone) is a perimeter network segment that sits between the **public internet** and the **internal/private network**.
+
+    It hosts public-facing services (web servers, mail servers, DNS) while isolating them from sensitive internal resources. Traffic flow:
+    - **Internet → DMZ:** Allowed (to reach public services)
+    - **DMZ → Internal:** Restricted (only specific, controlled connections)
+    - **Internal → DMZ:** Allowed (for management)
+
+    This layered approach limits the blast radius if a public-facing server is compromised.
+
 - question: What is port forwarding?
-  answer: Port forwarding redirects network traffic from one port to another, often used to expose internal services externally.
+  answer: |
+    Port forwarding redirects traffic arriving on a specific port of a gateway/router to a different internal IP and port.
+
+    Example: Forwarding external port `8080` to internal `192.168.1.50:80` makes an internal web server accessible from the internet.
+
+    Use cases:
+    - Exposing internal services for remote access
+    - Running multiple services on a single public IP
+    - SSH tunneling to reach hosts behind NAT
+
+    **Security note:** Exposing ports increases attack surface — always combine with firewalls, access controls, and encryption.
+
 - question: What is ARP (Address Resolution Protocol)?
-  answer: ARP translates IP addresses into MAC addresses to enable communication within a local network.
+  answer: |
+    ARP translates a known **IP address** into the corresponding **MAC address** so devices on the same local network (Layer 2) can communicate.
+
+    **Process:**
+    1. Device A broadcasts: "Who has IP 192.168.1.1?"
+    2. The device with that IP replies with its MAC address
+    3. Device A caches the mapping in its **ARP table**
+
+    **Security concern — ARP Spoofing:** An attacker sends fake ARP replies to associate their MAC with a legitimate IP, enabling man-in-the-middle attacks. Mitigations include **Dynamic ARP Inspection (DAI)** and static ARP entries.
+
 - question: What is an IDS and IPS?
-  answer: 'IDS (Intrusion Detection System): Monitors network traffic for threats.
+  answer: |
+    **IDS (Intrusion Detection System):**
+    - **Passively** monitors network traffic for suspicious activity
+    - Sends alerts but does **not block** traffic
+    - Useful for visibility and forensic analysis
 
-    IPS (Intrusion Prevention System): Blocks malicious traffic automatically.'
+    **IPS (Intrusion Prevention System):**
+    - Sits **inline** in the traffic path
+    - Detects and **automatically blocks** malicious traffic in real time
+    - Can drop packets, reset connections, or block source IPs
+
+    Both use **signature-based** (known patterns) and **anomaly-based** (behavioral deviations) detection. IPS adds enforcement but can introduce latency and false-positive blocking.
+
 - question: What is Zero Trust Security?
-  answer: Zero Trust is a security model that assumes no entity (inside or outside the network) is trusted by default.
+  answer: |
+    Zero Trust is a security model based on the principle **"never trust, always verify"** — no entity (user, device, or service) is trusted by default, regardless of its network location.
+
+    **Core principles:**
+    - **Verify explicitly** — authenticate and authorize every request using identity, device health, location, and behavior
+    - **Least-privilege access** — grant minimum permissions needed
+    - **Assume breach** — design as if the network is already compromised; segment access, encrypt everything, log everything
+
+    Implementation tools: **identity providers** (Okta, Azure AD), **micro-segmentation**, **mTLS**, **ZTNA** (Zero Trust Network Access) replacing traditional VPNs.
+
 - question: What is the difference between symmetric and asymmetric encryption?
-  answer: 'Symmetric Encryption: Uses one key for encryption and decryption.
+  answer: |
+    **Symmetric Encryption:**
+    - Uses a **single shared key** for both encryption and decryption
+    - **Fast** — ideal for bulk data encryption
+    - Challenge: securely distributing the shared key
+    - Examples: **AES-256**, ChaCha20
 
-    Asymmetric Encryption: Uses a public-private key pair (e.g., RSA).'
+    **Asymmetric Encryption:**
+    - Uses a **key pair**: public key (encrypts) and private key (decrypts)
+    - **Slower** — used for key exchange and digital signatures
+    - Examples: **RSA**, **ECDSA**, Ed25519
+
+    In practice, **TLS uses both**: asymmetric encryption for the initial key exchange, then symmetric encryption for the session data (this is called a hybrid approach).
+
 - question: What is a CDN (Content Delivery Network)?
-  answer: A CDN improves website speed and security by distributing content across multiple servers worldwide.
+  answer: |
+    A CDN is a geographically distributed network of edge servers that caches and delivers content closer to end users.
+
+    **Benefits:**
+    - **Reduced latency** — content served from the nearest edge location
+    - **Offloads origin servers** — handles static assets (images, CSS, JS)
+    - **DDoS protection** — absorbs traffic spikes across distributed infrastructure
+    - **TLS termination** at the edge for faster HTTPS
+
+    Examples: **CloudFlare**, **AWS CloudFront**, **Akamai**, **Fastly**.
+
+    CDNs can also run **edge functions** (e.g., CloudFlare Workers) for logic at the edge.
+
 - question: What is the difference between TCP and UDP?
-  answer: 'TCP: Reliable, connection-oriented, ensures data delivery.
+  answer: |
+    **TCP (Transmission Control Protocol):**
+    - **Connection-oriented** — establishes a session via 3-way handshake (SYN → SYN-ACK → ACK)
+    - **Reliable** — guarantees delivery, ordering, and error checking
+    - **Slower** due to overhead
+    - Use cases: HTTP/HTTPS, SSH, email, file transfers
 
-    UDP: Faster, connectionless, best for real-time applications.'
+    **UDP (User Datagram Protocol):**
+    - **Connectionless** — no handshake, no session
+    - **Unreliable** — no delivery guarantee or ordering
+    - **Faster** with minimal overhead
+    - Use cases: DNS lookups, video streaming, VoIP, gaming, QUIC (HTTP/3)
+
 - question: How does a reverse proxy improve security?
-  answer: A reverse proxy sits between users and backend servers, protecting them from direct exposure and filtering malicious
-    traffic.
+  answer: |
+    A reverse proxy sits in front of backend servers and handles all incoming client requests.
+
+    **Security benefits:**
+    - **Hides backend infrastructure** — clients never see real server IPs or architecture
+    - **SSL/TLS termination** — handles encryption, offloading backends
+    - **WAF integration** — filters malicious requests before they reach the application
+    - **Rate limiting** — prevents abuse and brute-force attacks
+    - **Request filtering** — blocks suspicious headers, payloads, or methods
+
+    Examples: **NGINX**, **HAProxy**, **Envoy**, **Traefik**, cloud-native options like **AWS ALB**.
+
 - question: What are the benefits of HTTPS over HTTP?
-  answer: 'Encryption
+  answer: |
+    - **Encryption** — all data between client and server is encrypted via TLS, preventing eavesdropping
+    - **Data integrity** — ensures data is not altered in transit (detects tampering via MAC)
+    - **Authentication** — the TLS certificate proves the server's identity, preventing impersonation
+    - **SEO and trust** — search engines rank HTTPS sites higher; browsers show a padlock icon
+    - **Required for modern features** — HTTP/2, service workers, geolocation APIs, and many browser features require HTTPS
 
-    Data integrity
-
-    Authentication'
 - question: How does multi-factor authentication (MFA) enhance security?
-  answer: MFA adds an extra security layer by requiring multiple verification methods (e.g., password + OTP).
+  answer: |
+    MFA requires users to verify their identity using **two or more independent factors**, so a compromised password alone is not enough.
+
+    **Factor categories:**
+    - **Something you know** — password, PIN
+    - **Something you have** — phone (OTP/push), hardware key (YubiKey)
+    - **Something you are** — biometrics (fingerprint, face)
+
+    Common implementations: **TOTP** apps (Google Authenticator), **SMS codes** (less secure — vulnerable to SIM swapping), **FIDO2/WebAuthn** hardware keys (most secure).
+
+    MFA should be enforced for all privileged access, cloud consoles, and CI/CD systems.
+
 - question: What is a bastion host?
-  answer: A bastion host is a highly secured jump server used to access internal networks securely.
+  answer: |
+    A bastion host (or jump box) is a hardened, purpose-built server that serves as the **single entry point** for accessing private network resources from external networks.
+
+    **Architecture:**
+    - Sits in a **public subnet** (or DMZ)
+    - Administrators SSH into the bastion, then hop to internal servers
+    - All other internal servers have **no direct public access**
+
+    **Hardening practices:** minimal installed software, strict firewall rules, key-based SSH only, session logging, and IP whitelisting.
+
+    Modern alternatives: **AWS SSM Session Manager**, **GCP IAP**, **Teleport** — these eliminate the need for a publicly exposed bastion.
+
 - question: What is OSI Model and its layers?
-  answer: 'The OSI model has 7 layers: Physical, Data Link, Network, Transport, Session, Presentation, Application.'
+  answer: |
+    The OSI (Open Systems Interconnection) model is a conceptual framework with **7 layers** describing how network communication works:
+
+    1. **Physical** — electrical signals, cables, fiber, Wi-Fi radio (bits)
+    2. **Data Link** — MAC addressing, Ethernet frames, switches (frames)
+    3. **Network** — IP addressing, routing between networks (packets)
+    4. **Transport** — TCP/UDP, port numbers, flow control (segments)
+    5. **Session** — manages connections/sessions between applications
+    6. **Presentation** — data encoding, encryption, compression
+    7. **Application** — HTTP, DNS, SMTP, SSH (user-facing protocols)
+
+    In practice, the **TCP/IP model** (4 layers) is more commonly referenced, but OSI remains essential for understanding where protocols and tools operate.
+
 - question: What is a WAF (Web Application Firewall)?
-  answer: A WAF protects web applications by filtering and blocking malicious HTTP traffic.
+  answer: |
+    A WAF operates at **Layer 7** (Application Layer) and protects web applications by inspecting and filtering HTTP/HTTPS traffic.
+
+    **What it defends against:**
+    - SQL injection, XSS, command injection
+    - OWASP Top 10 vulnerabilities
+    - Bot traffic and credential stuffing
+    - Malformed requests and protocol abuse
+
+    **How it works:** WAFs use **rule sets** (e.g., OWASP Core Rule Set), **rate limiting**, **IP reputation lists**, and increasingly **machine learning** to distinguish legitimate traffic from attacks.
+
+    Examples: **AWS WAF**, **Cloudflare WAF**, **ModSecurity** (open source), **Azure Front Door**.
+
 - question: What is a honeypot in cybersecurity?
-  answer: A honeypot is a security system designed to detect and study cyberattacks by mimicking real systems.
+  answer: |
+    A honeypot is a **decoy system** designed to look like a legitimate target to attract and trap attackers.
+
+    **Purpose:**
+    - Detect unauthorized access attempts early
+    - Study attacker behavior, tools, and techniques
+    - Divert attackers from real production systems
+    - Gather threat intelligence
+
+    **Types:**
+    - **Low-interaction** — simulates limited services (easy to deploy, less data)
+    - **High-interaction** — full OS/application (rich data, higher risk to maintain)
+
+    A network of honeypots is called a **honeynet**. Tools: **Cowrie** (SSH honeypot), **T-Pot**, **OpenCanary**.
+
 - question: What is BGP (Border Gateway Protocol)?
-  answer: BGP is a routing protocol used for exchanging routing information between networks on the internet.
+  answer: |
+    BGP is the **routing protocol of the internet** — it determines how traffic is routed between **Autonomous Systems** (AS), which are large networks operated by ISPs, cloud providers, or enterprises.
+
+    **Key concepts:**
+    - BGP peers (**neighbors**) exchange routing tables over TCP port **179**
+    - Path selection is based on **AS path length**, policies, and attributes
+    - **eBGP** — between different autonomous systems
+    - **iBGP** — within the same autonomous system
+
+    **Security concern:** BGP has no built-in authentication — **BGP hijacking** can reroute traffic through malicious networks. Mitigations: **RPKI** (Route Origin Validation) and prefix filtering.
+
 - question: What is DDoS, and how can it be mitigated?
-  answer: A Distributed Denial-of-Service (DDoS) attack overwhelms a system. It can be mitigated using rate limiting, firewalls,
-    and cloud-based protection.
+  answer: |
+    A DDoS (Distributed Denial-of-Service) attack floods a target with massive traffic from many sources to overwhelm its resources and make it unavailable.
+
+    **Common attack types:**
+    - **Volumetric** — saturates bandwidth (UDP floods, DNS amplification)
+    - **Protocol** — exploits protocol weaknesses (SYN floods, Ping of Death)
+    - **Application layer** — targets specific services (HTTP floods, Slowloris)
+
+    **Mitigation strategies:**
+    - **Rate limiting** and connection throttling
+    - **CDN/DDoS protection** services (CloudFlare, AWS Shield, Akamai)
+    - **Anycast routing** to distribute traffic across global PoPs
+    - **WAF rules** to filter malicious request patterns
+    - **Auto-scaling** infrastructure to absorb spikes
+
 - question: What is the CIA Triad in security?
-  answer: The CIA Triad stands for Confidentiality, Integrity, and Availability, which are fundamental security principles.
+  answer: |
+    The CIA Triad is the foundational model for information security:
+
+    - **Confidentiality** — ensuring data is only accessible to authorized parties. Achieved through encryption, access controls, and data classification
+    - **Integrity** — ensuring data is accurate and unaltered. Achieved through hashing (SHA-256), checksums, digital signatures, and version control
+    - **Availability** — ensuring systems and data are accessible when needed. Achieved through redundancy, backups, load balancing, and DDoS protection
+
+    Every security control or risk maps back to one or more of these three pillars.
+
 - question: What is SSO (Single Sign-On)?
-  answer: SSO allows users to log in to multiple applications using a single authentication process.
+  answer: |
+    SSO allows users to authenticate **once** and gain access to multiple applications without re-entering credentials.
+
+    **How it works:** A central **Identity Provider (IdP)** handles authentication and issues tokens/assertions that relying applications trust.
+
+    **Common protocols:**
+    - **SAML 2.0** — XML-based, common in enterprise (e.g., Okta → Jira)
+    - **OAuth 2.0 / OIDC** — token-based, common in web/mobile apps (e.g., "Sign in with Google")
+    - **Kerberos** — used in Active Directory environments
+
+    **Benefits:** improved user experience, centralized access management, easier MFA enforcement. **Risk:** the IdP becomes a single point of compromise — securing it is critical.
+
 - question: What is a security token?
-  answer: A security token is a physical or digital device used for authentication.
+  answer: |
+    A security token is a credential used to prove identity or authorization during authentication.
+
+    **Types:**
+    - **Hardware tokens** — physical devices generating one-time codes (e.g., YubiKey, RSA SecurID)
+    - **Software tokens** — TOTP apps like Google Authenticator or Authy
+    - **JWT (JSON Web Token)** — a digitally signed token carrying claims (user ID, roles, expiry), widely used in APIs and microservices
+    - **OAuth tokens** — access tokens and refresh tokens for delegated authorization
+
+    JWTs should be **short-lived**, signed (HMAC or RSA), and validated on every request. Never store sensitive data in JWT payloads since they are only base64-encoded, not encrypted.
+
 - question: What is an access control list (ACL)?
-  answer: An ACL defines rules that allow or deny traffic based on IP, ports, or protocols.
+  answer: |
+    An ACL is an ordered list of rules that **allow or deny** network traffic based on criteria like source/destination IP, port, and protocol.
+
+    **Characteristics:**
+    - Rules are evaluated **top-down** — first match wins
+    - Typically end with an implicit **deny all**
+    - Can be applied **inbound** or **outbound** on a network interface
+
+    **Example (AWS Network ACL):**
+    - Rule 100: Allow TCP port 443 from 0.0.0.0/0 (HTTPS in)
+    - Rule 200: Allow TCP port 22 from 10.0.0.0/8 (SSH from internal)
+    - Rule *: Deny all other traffic
+
+    ACLs are **stateless** — you must explicitly allow return traffic (unlike stateful Security Groups).
+
 - question: What is a container network security concern?
-  answer: Containers share OS kernels, so misconfigurations can expose services to security threats.
+  answer: |
+    Containers share the **host OS kernel**, which creates a smaller isolation boundary than VMs and introduces specific security risks:
+
+    - **Default flat networking** — all containers in a pod network can communicate freely without restrictions
+    - **Container escape** — kernel vulnerabilities can allow breakout to the host
+    - **Image vulnerabilities** — base images may contain known CVEs
+    - **Exposed services** — misconfigured port mappings or missing network policies can expose internal services
+    - **Secrets in environment variables** — credentials leaked through container inspection
+
+    **Mitigations:** Kubernetes **Network Policies**, **rootless containers**, **read-only file systems**, image scanning (Trivy, Grype), **Pod Security Standards**, and using minimal base images (distroless/Alpine).
+
 - question: What is network segmentation?
-  answer: It is dividing a network into smaller parts to improve security and performance.
+  answer: |
+    Network segmentation divides a network into smaller, isolated segments to **limit lateral movement** and reduce the blast radius of a breach.
+
+    **Methods:**
+    - **VLANs** — logical separation at Layer 2
+    - **Subnets** — separation at Layer 3 with routing controls
+    - **Firewall zones** — separate trust levels (DMZ, internal, management)
+    - **Micro-segmentation** — granular, identity-based policies (e.g., per-workload in Kubernetes)
+
+    **Example:** Separating a web tier, app tier, and database tier into distinct subnets so the web tier cannot directly access the database — traffic must pass through the app tier.
+
 - question: What is the difference between active and passive reconnaissance?
-  answer: 'Active reconnaissance: Direct interaction with the target.
+  answer: |
+    **Active Reconnaissance:**
+    - **Directly interacts** with the target system
+    - Higher risk of detection
+    - Examples: port scanning (Nmap), vulnerability scanning, sending crafted requests, DNS zone transfers
 
-    Passive reconnaissance: Collecting data without direct interaction.'
+    **Passive Reconnaissance:**
+    - Gathers information **without touching** the target
+    - Harder to detect
+    - Examples: WHOIS lookups, public DNS records, social media research, Shodan searches, Google dorking, certificate transparency logs
+
+    In penetration testing, passive recon is performed first to minimize detection, followed by targeted active recon.
+
 - question: What is mutual TLS (mTLS), and why is it used?
-  answer: Mutual TLS (mTLS) ensures both client and server authenticate each other before communication, enhancing security
-    in microservices and API interactions.
+  answer: |
+    In standard TLS, only the **server** presents a certificate. In mutual TLS (mTLS), **both** the client and server present certificates and verify each other's identity.
+
+    **How it works:**
+    1. Server sends its certificate → client verifies it
+    2. Client sends its certificate → server verifies it
+    3. Encrypted session is established only if both are trusted
+
+    **Use cases:**
+    - **Service-to-service communication** in microservices (zero trust between services)
+    - **Service meshes** (Istio, Linkerd) automate mTLS with auto-rotated certificates
+    - **API security** — ensuring only authorized clients can call an API
+
 - question: What is the difference between L3, L4, and L7 firewalls?
-  answer: 'L3 Firewall (Network Layer): Filters traffic based on IP addresses.
+  answer: |
+    **L3 Firewall (Network Layer):**
+    - Filters based on **source/destination IP addresses**
+    - Simple and fast, but no awareness of ports or application data
 
-    L4 Firewall (Transport Layer): Filters based on ports and TCP/UDP protocols.
+    **L4 Firewall (Transport Layer):**
+    - Filters based on **IP + port + protocol** (TCP/UDP)
+    - Can track connection state (stateful inspection)
+    - Example: iptables, AWS Security Groups
 
-    L7 Firewall (Application Layer): Filters based on application-specific data (e.g., HTTP, FTP).'
+    **L7 Firewall (Application Layer):**
+    - Inspects **application-level data** (HTTP headers, URLs, payloads)
+    - Can block SQL injection, XSS, and other application attacks
+    - Example: AWS WAF, Cloudflare, ModSecurity
+
+    Higher layers provide deeper inspection but add more latency.
+
 - question: How does AWS Security Groups differ from Network ACLs?
-  answer: 'Security Groups: Act as virtual firewalls at the instance level, stateful.
+  answer: |
+    **Security Groups:**
+    - Applied at the **instance/ENI level**
+    - **Stateful** — return traffic is automatically allowed
+    - Rules are **allow-only** (no explicit deny rules)
+    - All rules are evaluated before deciding
 
-    Network ACLs: Act at the subnet level, stateless.'
+    **Network ACLs:**
+    - Applied at the **subnet level**
+    - **Stateless** — return traffic must be explicitly allowed
+    - Support both **allow and deny** rules
+    - Rules are evaluated in **order by rule number** (first match wins)
+
+    **Best practice:** Use Security Groups as the primary control (per-instance), and Network ACLs as a secondary subnet-level defense layer.
+
 - question: What is a SIEM (Security Information and Event Management) system?
-  answer: SIEM aggregates security data from multiple sources to detect, analyze, and respond to threats.
+  answer: |
+    A SIEM aggregates, correlates, and analyzes security data from across an organization's infrastructure to detect, investigate, and respond to threats.
+
+    **Core capabilities:**
+    - **Log aggregation** — collects logs from servers, firewalls, applications, cloud services
+    - **Correlation** — links related events across sources to identify attack patterns
+    - **Alerting** — triggers notifications for suspicious activity
+    - **Dashboards and reporting** — compliance and audit visibility
+    - **Incident response** — integrates with SOAR for automated response
+
+    Examples: **Splunk**, **Elastic Security (ELK)**, **Azure Sentinel**, **Datadog Security**, **Sumo Logic**, **QRadar**.
+
 - question: What is a threat model in security?
-  answer: Threat modeling identifies potential threats and vulnerabilities in a system to proactively mitigate risks.
+  answer: |
+    Threat modeling is a structured process to **identify potential threats, attack vectors, and vulnerabilities** in a system, then prioritize mitigations.
+
+    **Common frameworks:**
+    - **STRIDE** (Microsoft) — categorizes threats as Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege
+    - **DREAD** — rates threats by Damage, Reproducibility, Exploitability, Affected Users, Discoverability
+    - **PASTA** — a risk-centric, 7-stage threat modeling process
+
+    **When to perform it:** during system design (shift-left security), before major architecture changes, and during security reviews. Output: a prioritized list of risks with mitigation plans.
+
 - question: What is an ephemeral port, and how is it used?
-  answer: Ephemeral ports (e.g., 49152-65535) are temporary ports used by client applications for outbound connections.
+  answer: |
+    Ephemeral ports are **temporary, short-lived ports** assigned by the OS to client-side connections for outbound communication.
+
+    - **Range:** typically `49152–65535` (IANA), though Linux uses `32768–60999`
+    - The OS automatically assigns one when a client opens a connection
+    - The port is released when the connection closes
+
+    **Example:** When your browser connects to a web server on port 443, the OS assigns an ephemeral port (e.g., `52345`) as the source port for that session.
+
+    **DevOps relevance:** Firewall and Network ACL rules must allow ephemeral port ranges for return traffic, especially in **stateless** configurations like AWS NACLs.
+
 - question: How does DNSSEC enhance DNS security?
-  answer: DNSSEC (DNS Security Extensions) prevents DNS spoofing by adding cryptographic signatures to DNS records.
+  answer: |
+    DNSSEC (DNS Security Extensions) adds **cryptographic authentication** to DNS responses, preventing DNS spoofing and cache poisoning.
+
+    **How it works:**
+    - Each DNS zone signs its records with a **private key**
+    - Resolvers verify responses using the corresponding **public key**
+    - A **chain of trust** extends from the root zone down through TLD to authoritative servers
+    - New record types: **RRSIG** (signature), **DNSKEY** (public key), **DS** (delegation signer)
+
+    **What DNSSEC does not do:** it does not encrypt DNS queries (that's **DNS over HTTPS/TLS** — DoH/DoT). It only ensures the response is authentic and untampered.
+
 - question: What are the different types of VPNs?
-  answer: 'Remote Access VPN (for individuals connecting to a network remotely).
+  answer: |
+    **Remote Access VPN:**
+    - Individual users connect to a corporate network from anywhere
+    - Client software creates an encrypted tunnel
+    - Examples: OpenVPN, WireGuard, Cisco AnyConnect
 
-    Site-to-Site VPN (connects entire networks).'
+    **Site-to-Site VPN:**
+    - Connects entire networks (e.g., office to cloud VPC)
+    - Configured on routers/gateways — transparent to end users
+    - Often uses IPsec tunnels
+
+    **Cloud VPN / VPC Peering:**
+    - Cloud-native connectivity between VPCs or to on-premises (AWS VPN, GCP Cloud VPN)
+
+    **Modern alternative — ZTNA:** Zero Trust Network Access (e.g., Cloudflare Access, Zscaler) replaces traditional VPNs by granting per-application access based on identity, not network location.
+
 - question: How does a service mesh improve security in Kubernetes?
-  answer: A service mesh (e.g., Istio, Linkerd) provides mTLS, authentication, and observability for secure communication
-    between microservices.
+  answer: |
+    A service mesh provides a dedicated infrastructure layer for secure, observable service-to-service communication within a Kubernetes cluster.
+
+    **Security features:**
+    - **Automatic mTLS** — encrypts all inter-service traffic with auto-rotated certificates
+    - **Fine-grained authorization policies** — control which services can communicate (e.g., service A can call service B but not C)
+    - **Identity-based access** — uses service identity (SPIFFE) rather than IP addresses
+    - **Traffic observability** — logs, metrics, and distributed traces for all requests
+
+    Examples: **Istio**, **Linkerd** (lightweight, CNCF graduated), **Consul Connect**.
+
+    The mesh runs as **sidecar proxies** (e.g., Envoy) injected alongside each pod, so applications need no code changes.
+
 - question: What are some common OWASP Top 10 security risks?
-  answer: 'Injection (e.g., SQL injection)
+  answer: |
+    The **OWASP Top 10 (2021)** lists the most critical web application security risks:
 
-    Broken Authentication
+    1. **Broken Access Control** — users acting beyond their permissions
+    2. **Cryptographic Failures** — weak encryption, exposed sensitive data
+    3. **Injection** — SQL, NoSQL, OS command, LDAP injection
+    4. **Insecure Design** — flawed architecture lacking security controls
+    5. **Security Misconfiguration** — default credentials, open cloud storage, verbose errors
+    6. **Vulnerable and Outdated Components** — unpatched libraries and frameworks
+    7. **Identification and Authentication Failures** — weak passwords, missing MFA
+    8. **Software and Data Integrity Failures** — untrusted CI/CD pipelines, unsigned updates
+    9. **Security Logging and Monitoring Failures** — insufficient audit trails
+    10. **Server-Side Request Forgery (SSRF)** — tricking servers into making internal requests
 
-    Sensitive Data Exposure
+    Note: This is the **2021 edition**, which significantly reorganized the earlier 2017 list.
 
-    XML External Entities (XXE)
-
-    Broken Access Control
-
-    Security Misconfiguration
-
-    Cross-Site Scripting (XSS)
-
-    Insecure Deserialization
-
-    Using Components with Known Vulnerabilities
-
-    Insufficient Logging & Monitoring'
 - question: How do WebSockets handle security concerns?
-  answer: WebSockets require authentication, encryption (WSS), and proper origin checks to prevent attacks.
-- question: What is an SSRF (Server-Side Request Forgery) attack?
-  answer: An SSRF attack tricks a server into making requests to internal services, leading to data leaks or system compromise.
-- question: How does an AWS WAF protect applications?
-  answer: AWS WAF filters web traffic based on rules, rate limiting, and bot mitigation to prevent common attacks like SQL
-    injection and XSS.
-- question: How does Kubernetes RBAC (Role-Based Access Control) work?
-  answer: Kubernetes RBAC grants permissions based on Roles, RoleBindings, ClusterRoles, and ClusterRoleBindings, restricting
-    access to resources.
-- question: What is a MAC address, and how does MAC filtering enhance security?
-  answer: A MAC address is a unique identifier for network interfaces. MAC filtering allows or denies network access based
-    on these addresses.
-- question: How does DNS poisoning work, and how can it be prevented?
-  answer: DNS poisoning tricks users into visiting malicious sites by altering DNS records. Prevention includes DNSSEC, monitoring,
-    and secure DNS resolvers.
-- question: What is a federated identity in security?
-  answer: Federated identity allows users to authenticate across multiple applications using a single set of credentials (e.g.,
-    Google or Microsoft sign-in).
-- question: How does Kubernetes Network Policy improve security?
-  answer: Kubernetes Network Policies define rules for pod communication, restricting traffic based on namespaces, labels,
-    and IP ranges.
-- question: What is the principle of least privilege (PoLP)?
-  answer: PoLP ensures users and applications only have the minimum access needed to perform their tasks, reducing security
-    risks.
-- question: How do HSTS (HTTP Strict Transport Security) and CSP (Content Security Policy) improve web security?
-  answer: 'HSTS: Forces HTTPS connections to prevent downgrade attacks.
+  answer: |
+    WebSockets provide persistent, full-duplex communication but introduce specific security risks that must be addressed:
 
-    CSP: Restricts allowed content sources to prevent XSS attacks.'
+    - **Use WSS (WebSocket Secure)** — always encrypt WebSocket connections over TLS (wss://), never use unencrypted ws:// in production
+    - **Authentication** — authenticate during the initial HTTP upgrade handshake (e.g., via JWT token or session cookie)
+    - **Origin validation** — check the `Origin` header to prevent cross-site WebSocket hijacking (CSWSH)
+    - **Input validation** — sanitize all incoming messages to prevent injection attacks
+    - **Rate limiting** — prevent message flooding and abuse
+    - **Connection timeouts** — close idle connections to free resources
+
+- question: What is an SSRF (Server-Side Request Forgery) attack?
+  answer: |
+    SSRF tricks a server into making HTTP requests to **unintended internal resources** that the attacker cannot reach directly.
+
+    **Attack scenario:**
+    1. Application accepts a URL as user input (e.g., "fetch this image URL")
+    2. Attacker submits `http://169.254.169.254/latest/meta-data/` (AWS metadata endpoint)
+    3. Server fetches the URL internally and returns sensitive data (IAM credentials, tokens)
+
+    **Prevention:**
+    - **Allowlist** permitted domains/IPs for outbound requests
+    - **Block access** to cloud metadata endpoints (or use IMDSv2 which requires a token)
+    - **Disable HTTP redirects** or validate redirect targets
+    - **Network segmentation** — restrict what the application server can reach
+    - **Input validation** — reject private IP ranges and localhost
+
+- question: How does an AWS WAF protect applications?
+  answer: |
+    AWS WAF filters HTTP/HTTPS traffic to AWS resources (ALB, CloudFront, API Gateway) using configurable rules.
+
+    **Protection mechanisms:**
+    - **Managed rule groups** — pre-built rules for OWASP Top 10, SQL injection, XSS, known bad inputs
+    - **Custom rules** — match on IP, headers, URI, query strings, body content using regex or exact match
+    - **Rate-based rules** — automatically block IPs exceeding request thresholds (brute-force protection)
+    - **IP reputation lists** — block known malicious IPs
+    - **Bot Control** — detect and manage bot traffic
+    - **Geo-blocking** — restrict access by country
+
+    AWS WAF integrates with **AWS Firewall Manager** for centralized policy management across accounts.
+
+- question: How does Kubernetes RBAC (Role-Based Access Control) work?
+  answer: |
+    Kubernetes RBAC restricts access to cluster resources based on **roles** and **bindings**.
+
+    **Key objects:**
+    - **Role** — defines permissions (verbs like get, list, create, delete) on resources within a **single namespace**
+    - **ClusterRole** — same as Role but **cluster-wide** (across all namespaces)
+    - **RoleBinding** — grants a Role to a user/group/service account in a namespace
+    - **ClusterRoleBinding** — grants a ClusterRole cluster-wide
+
+    **Example:** A CI/CD service account might get a Role that allows `get, list, create` on Deployments in the `staging` namespace, but no access to `production`.
+
+    **Best practice:** Follow least-privilege — avoid granting `cluster-admin`. Use separate service accounts per workload.
+
+- question: What is a MAC address, and how does MAC filtering enhance security?
+  answer: |
+    A **MAC (Media Access Control) address** is a unique 48-bit hardware identifier assigned to every network interface (e.g., `00:1A:2B:3C:4D:5E`). It operates at **Layer 2** (Data Link).
+
+    **MAC filtering** allows or denies network access based on a device's MAC address — only pre-approved MACs are permitted.
+
+    **Limitations:**
+    - **Easily spoofed** — attackers can clone a legitimate MAC address in seconds
+    - **Not scalable** — impractical for large or dynamic environments
+    - **Not a strong security control** — should never be the sole defense
+
+    MAC filtering provides a minor deterrent but should be combined with **802.1X authentication**, encryption, and proper network segmentation.
+
+- question: How does DNS poisoning work, and how can it be prevented?
+  answer: |
+    DNS poisoning (cache poisoning) injects **forged DNS records** into a resolver's cache, redirecting users to malicious sites.
+
+    **How it works:**
+    1. Attacker sends spoofed DNS responses to a resolver
+    2. If the spoofed response arrives before the legitimate one, the resolver caches the fake record
+    3. All subsequent queries for that domain resolve to the attacker's IP
+
+    **Prevention:**
+    - **DNSSEC** — cryptographically signed DNS records verify authenticity
+    - **DNS over HTTPS (DoH) / DNS over TLS (DoT)** — encrypts DNS queries
+    - Use **trusted, security-focused resolvers** (e.g., 1.1.1.1, 8.8.8.8)
+    - **Randomize source ports and query IDs** (makes spoofing harder)
+    - Monitor for unexpected DNS record changes
+
+- question: What is a federated identity in security?
+  answer: |
+    Federated identity allows users to **authenticate across multiple independent systems** using credentials managed by a trusted external Identity Provider (IdP).
+
+    **How it works:**
+    - A user authenticates with the **IdP** (e.g., Google, Okta, Azure AD)
+    - The IdP issues a **token or assertion** (SAML assertion, OIDC token)
+    - The relying application trusts the IdP and grants access based on the token
+
+    **Protocols:**
+    - **SAML 2.0** — enterprise SSO (XML-based)
+    - **OpenID Connect (OIDC)** — modern, built on OAuth 2.0 (JSON/JWT-based)
+    - **WS-Federation** — older, used in Microsoft ecosystems
+
+    **Example:** Using "Sign in with Google" to access third-party apps without creating separate accounts.
+
+- question: How does Kubernetes Network Policy improve security?
+  answer: |
+    Kubernetes Network Policies are resources that control **pod-to-pod traffic** at the network level, implementing micro-segmentation within a cluster.
+
+    **Key capabilities:**
+    - Define **ingress** (incoming) and **egress** (outgoing) rules per pod
+    - Select pods using **label selectors**
+    - Restrict traffic by **namespace**, **pod labels**, or **CIDR blocks**
+    - **Default deny** — once any policy selects a pod, all non-matching traffic is denied
+
+    **Example:** Allow only the `frontend` pods to reach `backend` pods on port 8080, and allow `backend` to reach `postgres` on port 5432 — all other traffic is denied.
+
+    **Requirement:** The cluster's CNI plugin must support Network Policies (Calico, Cilium, Weave — note that AWS VPC CNI alone does not).
+
+- question: What is the principle of least privilege (PoLP)?
+  answer: |
+    The Principle of Least Privilege states that every user, process, and application should have **only the minimum permissions** necessary to perform its function — nothing more.
+
+    **Implementation examples:**
+    - **IAM policies** — grant specific actions on specific resources, not `*:*`
+    - **Database users** — read-only access for reporting, write access only for the app
+    - **Container security** — run as non-root, drop unnecessary Linux capabilities
+    - **CI/CD** — scoped tokens that only deploy to specific environments
+    - **Kubernetes** — dedicated service accounts per workload with minimal RBAC
+
+    **Why it matters:** Limits the blast radius of compromised credentials, insider threats, and misconfigured services. It's a cornerstone of Zero Trust architecture.
+
+- question: How do HSTS (HTTP Strict Transport Security) and CSP (Content Security Policy) improve web security?
+  answer: |
+    **HSTS (HTTP Strict Transport Security):**
+    - Instructs browsers to **only connect via HTTPS** — prevents protocol downgrade attacks and SSL stripping
+    - Set via response header: `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload`
+    - **Preload list** — domains can be hardcoded into browsers so even the first request uses HTTPS
+
+    **CSP (Content Security Policy):**
+    - Defines **which sources of content** (scripts, styles, images, fonts) the browser is allowed to load
+    - Prevents **XSS** by blocking inline scripts and unauthorized external sources
+    - Example: `Content-Security-Policy: default-src 'self'; script-src 'self' cdn.example.com`
+    - Can also enforce **report-only mode** to monitor violations without blocking
+
+    Both are HTTP response headers and should be used together as part of defense-in-depth.
