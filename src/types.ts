@@ -37,6 +37,7 @@ export interface Segment {
   text: string;
   cardIndex: number;
   totalCards: number;
+  questionSlug: string;  // filename-friendly slug of the question text
   audioPath: string;
   imagePath: string;
   audioDuration: number; // seconds

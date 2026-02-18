@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync } from 'node:fs';
 import { cpus } from 'node:os';
 import { concatenateAudioFiles, concatenateClips, createSegmentClip, createSilentClip } from './assembler.js';
-import { cachedPath, isCached, removeStale, sha } from './cache.js';
+import { cachedPath, isCached, removeStale, sha, slug } from './cache.js';
 import { codeToTTS, parseMarkdown } from './markdown.js';
 import { parseYamlFile } from './parser.js';
 import { renderSlide } from './renderer.js';
@@ -114,10 +114,11 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
 
   // Build one AudioPlan per question/answer slot.
   const audioPlans: AudioPlan[] = cards.flatMap((card, i) => {
+    const qSlug = slug(card.question);
 
     // ── Question (always single-part, main voice) ──
     const qTTSText = preprocessForTTS(card.question);
-    const qAudioPath = cachedPath(config.tempDir, `q_${i}`, audioCacheKey(qTTSText, config.voice), 'wav');
+    const qAudioPath = cachedPath(config.tempDir, `q_${i}_${qSlug}`, audioCacheKey(qTTSText, config.voice), 'wav');
     const qPlan: AudioPlan = {
       cardIndex: i, isQuestion: true, rawText: card.question,
       delay: config.questionDelay,
@@ -134,7 +135,7 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
 
     if (!hasCode) {
       const aTTSText = preprocessForTTS(card.answer);
-      const aAudioPath = cachedPath(config.tempDir, `a_${i}`, audioCacheKey(aTTSText, config.voice), 'wav');
+      const aAudioPath = cachedPath(config.tempDir, `a_${i}_${qSlug}`, audioCacheKey(aTTSText, config.voice), 'wav');
       aPlan = {
         cardIndex: i, isQuestion: false, rawText: card.answer,
         delay: config.answerDelay,
@@ -150,13 +151,13 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
           : seg.content;
         const ttsText = preprocessForTTS(rawTTS);
         const voice = seg.kind === 'code' ? config.codeVoice : config.voice;
-        const prefix = `a_${i}_${seg.kind === 'code' ? 'c' : 't'}${j}`;
+        const prefix = `a_${i}_${qSlug}_${seg.kind === 'code' ? 'c' : 't'}${j}`;
         return { audioPath: cachedPath(config.tempDir, prefix, audioCacheKey(ttsText, voice), 'wav'), ttsText, voice };
       });
 
       // Final concatenated WAV keyed by all part hashes + both voices.
       const partKey = parts.map(p => sha(`${p.ttsText}:${p.voice}`)).join('|');
-      const finalAudioPath = cachedPath(config.tempDir, `a_${i}`, `md-audio:${partKey}`, 'wav');
+      const finalAudioPath = cachedPath(config.tempDir, `a_${i}_${qSlug}`, `md-audio:${partKey}`, 'wav');
 
       aPlan = {
         cardIndex: i, isQuestion: false, rawText: card.answer,
@@ -248,6 +249,7 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
       text: plan.rawText,
       cardIndex: plan.cardIndex,
       totalCards: cards.length,
+      questionSlug: slug(cards[plan.cardIndex].question),
       audioPath: plan.finalAudioPath,
       imagePath: '',
       audioDuration: duration,
@@ -279,7 +281,8 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
   for (let i = 0; i < segments.length; i++) {
     const seg = segments[i];
     const slideHash = `slide:v3:${seg.text}:${seg.type}:${seg.cardIndex}:${seg.totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}`;
-    seg.imagePath = cachedPath(config.tempDir, `slide_${i}`, slideHash, 'png');
+    const slideTypeTag = seg.type === 'question' ? 'q' : 'a';
+    seg.imagePath = cachedPath(config.tempDir, `slide_${i}_${slideTypeTag}_${seg.questionSlug}`, slideHash, 'png');
   }
 
   let cachedSlideCount = 0;
@@ -322,12 +325,13 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
     const seg = segments[i];
     // Use the actual audio path in the clip hash so changes in TTS or code voice
     // correctly invalidate the clip cache.
+    const clipTypeTag = seg.type === 'question' ? 'q' : 'a';
     const clipHash = `clip:v2:${sha(seg.audioPath)}:${sha(seg.imagePath)}:${seg.totalDuration}`;
-    clipDescs.push({ kind: 'segment', seg, path: cachedPath(config.tempDir, `clip_${i}`, clipHash, 'mp4') });
+    clipDescs.push({ kind: 'segment', seg, path: cachedPath(config.tempDir, `clip_${i}_${clipTypeTag}_${seg.questionSlug}`, clipHash, 'mp4') });
 
     if (seg.type === 'answer' && seg.cardIndex < seg.totalCards - 1 && config.cardGap > 0) {
       const gapHash = `gap:${sha(gapSlideHash)}:${config.cardGap}`;
-      clipDescs.push({ kind: 'gap', path: cachedPath(config.tempDir, `gap_${i}`, gapHash, 'mp4') });
+      clipDescs.push({ kind: 'gap', path: cachedPath(config.tempDir, `gap_${i}_${seg.questionSlug}`, gapHash, 'mp4') });
     }
   }
 

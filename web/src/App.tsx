@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { FlashcardViewer } from './components/FlashcardViewer';
 import { useFiles } from './hooks/useFiles';
@@ -10,6 +10,8 @@ export default function App() {
   const { files, loading: loadingFiles } = useFiles();
   const playback = usePlayback();
   const { state, currentCard, currentRealIndex, displayType, isSpeaking } = playback;
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [zoomed, setZoomed] = useState(false);
 
   const handleSelectFile = useCallback((name: string) => {
     if (name === state.currentFile) return;
@@ -17,6 +19,9 @@ export default function App() {
       playback.loadFile(name, data);
     });
   }, [state.currentFile, playback.loadFile]);
+
+  const toggleSidebar = useCallback(() => setSidebarOpen(v => !v), []);
+  const toggleZoom = useCallback(() => setZoomed(v => !v), []);
 
   const keyboardActions = useMemo(() => ({
     onTogglePlay: () => {
@@ -27,11 +32,12 @@ export default function App() {
     onPrev: playback.prev,
     onShuffle: playback.toggleShuffle,
     onRestart: playback.restart,
-  }), [state.isPlaying, playback]);
+    onToggleSidebar: toggleSidebar,
+    onToggleZoom: toggleZoom,
+  }), [state.isPlaying, playback, toggleSidebar, toggleZoom]);
 
   useKeyboard(keyboardActions);
 
-  const config = state.fileData?.config ?? {};
   const title = state.fileData?.title ?? '';
   const totalCards = state.fileData?.questions.length ?? 0;
 
@@ -43,33 +49,39 @@ export default function App() {
       overflow: 'hidden',
       background: 'var(--bg-primary)',
     }}>
-      <Sidebar
-        files={files}
-        selectedFile={state.currentFile}
-        onSelectFile={handleSelectFile}
-        isPlaying={state.isPlaying}
-        phase={state.phase}
-        isShuffled={state.isShuffled}
-        currentCardIdx={state.currentCardIdx}
-        totalCards={totalCards}
-        onPlay={playback.play}
-        onPause={playback.pause}
-        onNext={playback.next}
-        onPrev={playback.prev}
-        onShuffle={playback.toggleShuffle}
-        onRestart={playback.restart}
-        loadingFiles={loadingFiles}
-      />
+      {sidebarOpen && (
+        <Sidebar
+          files={files}
+          selectedFile={state.currentFile}
+          onSelectFile={handleSelectFile}
+          isPlaying={state.isPlaying}
+          phase={state.phase}
+          isShuffled={state.isShuffled}
+          currentCardIdx={state.currentCardIdx}
+          totalCards={totalCards}
+          onPlay={playback.play}
+          onPause={playback.pause}
+          onNext={playback.next}
+          onPrev={playback.prev}
+          onShuffle={playback.toggleShuffle}
+          onRestart={playback.restart}
+          loadingFiles={loadingFiles}
+          onToggleSidebar={toggleSidebar}
+        />
+      )}
 
       <FlashcardViewer
         card={currentCard}
+        fileName={state.currentFile ?? ''}
         cardIndex={currentRealIndex}
-        totalCards={totalCards}
-        config={config}
         displayType={displayType}
         isSpeaking={isSpeaking}
         phase={state.phase}
         title={title}
+        sidebarOpen={sidebarOpen}
+        onToggleSidebar={toggleSidebar}
+        zoomed={zoomed}
+        onToggleZoom={toggleZoom}
       />
     </div>
   );

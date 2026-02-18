@@ -6,6 +6,8 @@ interface KeyboardActions {
   onPrev: () => void;
   onShuffle: () => void;
   onRestart: () => void;
+  onToggleSidebar: () => void;
+  onToggleZoom: () => void;
 }
 
 export function useKeyboard(actions: KeyboardActions) {
@@ -36,6 +38,14 @@ export function useKeyboard(actions: KeyboardActions) {
         case 'r':
           e.preventDefault();
           actions.onRestart();
+          break;
+        case 'b':
+          e.preventDefault();
+          actions.onToggleSidebar();
+          break;
+        case 'f':
+          e.preventDefault();
+          actions.onToggleZoom();
           break;
       }
     }

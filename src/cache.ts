@@ -8,6 +8,16 @@ export function sha(content: string): string {
   return createHash('sha256').update(content).digest('hex').substring(0, 8);
 }
 
+/** Convert a question string to a filename-friendly slug (max 40 chars). */
+export function slug(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40)
+    .replace(/-+$/, '');
+}
+
 /** Build a cache-keyed filename: <prefix>_<sha>.<ext> */
 export function cachedPath(tempDir: string, prefix: string, hashContent: string, ext: string): string {
   return join(tempDir, `${prefix}_${sha(hashContent)}.${ext}`);

@@ -5,7 +5,7 @@ import { join, resolve } from 'path';
 import { parseYamlFile } from './parser.js';
 import { topicFromFilename, generateTitle } from './metadata.js';
 import { preprocessForTTS } from './tts-preprocess.js';
-import { cachedPath, isCached } from './cache.js';
+import { cachedPath, isCached, slug } from './cache.js';
 import { initTTS, synthesize } from './tts.js';
 import { renderSlide } from './renderer.js';
 import { DEFAULT_CONFIG, PipelineConfig } from './types.js';
@@ -149,10 +149,11 @@ app.get('/api/audio/:name/:cardIndex/:type', async (req, res, next) => {
     const text = type === 'question' ? card.question : card.answer;
     const voice = data.config.voice || DEFAULT_CONFIG.voice;
 
-    // Build cache path using exact same hash format as pipeline.ts:66-67
+    // Build cache path using exact same hash format as pipeline
+    const qSlug = slug(card.question);
     const ttsText = preprocessForTTS(text);
     const audioHash = `audio:${ttsText}:${voice}`;
-    const prefix = type === 'question' ? `q_${cardIndex}` : `a_${cardIndex}`;
+    const prefix = type === 'question' ? `q_${cardIndex}_${qSlug}` : `a_${cardIndex}_${qSlug}`;
     const tempDir = join(outputDir, '.tmp', name);
     mkdirSync(tempDir, { recursive: true });
     const audioPath = cachedPath(tempDir, prefix, audioHash, 'wav');
@@ -192,9 +193,10 @@ app.get('/api/audio/:name/:cardIndex/:type/status', async (req, res, next) => {
     const text = type === 'question' ? card.question : card.answer;
     const voice = data.config.voice || DEFAULT_CONFIG.voice;
 
+    const qSlug = slug(card.question);
     const ttsText = preprocessForTTS(text);
     const audioHash = `audio:${ttsText}:${voice}`;
-    const prefix = type === 'question' ? `q_${cardIndex}` : `a_${cardIndex}`;
+    const prefix = type === 'question' ? `q_${cardIndex}_${qSlug}` : `a_${cardIndex}_${qSlug}`;
     const tempDir = join(outputDir, '.tmp', name);
     const audioPath = cachedPath(tempDir, prefix, audioHash, 'wav');
 
@@ -251,12 +253,14 @@ app.get('/api/slides/:name/:cardIndex/:type', async (req, res, next) => {
     };
 
     const segType = type as 'question' | 'answer';
-    const slideHash = `slide:${text}:${segType}:${cardIndex}:${totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}`;
+    const qSlug = slug(card.question);
+    const slideHash = `slide:v3:${text}:${segType}:${cardIndex}:${totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}`;
     const tempDir = join(outputDir, '.tmp', name);
     mkdirSync(tempDir, { recursive: true });
 
     const segIndex = type === 'question' ? cardIndex * 2 : cardIndex * 2 + 1;
-    const imagePath = cachedPath(tempDir, `slide_${segIndex}`, slideHash, 'png');
+    const slideTypeTag = type === 'question' ? 'q' : 'a';
+    const imagePath = cachedPath(tempDir, `slide_${segIndex}_${slideTypeTag}_${qSlug}`, slideHash, 'png');
 
     if (isCached(imagePath, false)) {
       res.sendFile(imagePath, { dotfiles: 'allow' });
@@ -285,6 +289,14 @@ app.use((err: any, _req: express.Request, res: express.Response, _next: express.
   res.status(status).json({ error: err.message || 'Internal server error' });
 });
 
-app.listen(PORT, () => {
-  console.log(`QA Video API running on http://localhost:${PORT}`);
-});
+export function startServer(port?: number): void {
+  const listenPort = port ?? Number(PORT);
+  app.listen(listenPort, () => {
+    console.log(`QA Video API running on http://localhost:${listenPort}`);
+  });
+}
+
+// Run directly (tsx src/server.ts)
+if (process.argv[1]?.endsWith('server.ts') || process.argv[1]?.endsWith('server.js')) {
+  startServer();
+}

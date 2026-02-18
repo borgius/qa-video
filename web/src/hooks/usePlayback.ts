@@ -1,6 +1,6 @@
 import { useReducer, useRef, useEffect, useCallback } from 'react';
 import { FileDetail } from '../types';
-import { audioUrl } from '../api';
+import { audioUrl, slideUrl } from '../api';
 
 export type Phase =
   | 'idle'
@@ -178,21 +178,25 @@ export function usePlayback() {
     }
   }, [state.phase, state.isPlaying, state.currentCardIdx]);
 
-  // Pre-fetch next card's audio
+  // Pre-fetch next card's audio and slides
   useEffect(() => {
     if (!state.currentFile || !state.fileData) return;
+
+    const file = state.currentFile;
+    const cardRealIdx = state.cardOrder[state.currentCardIdx];
 
     if (state.phase === 'q-speaking' || state.phase === 'a-speaking') {
       const nextIdx = state.currentCardIdx + 1;
       if (nextIdx < state.cardOrder.length) {
         const nextCard = state.cardOrder[nextIdx];
-        fetch(audioUrl(state.currentFile, nextCard, 'question')).catch(() => {});
+        fetch(audioUrl(file, nextCard, 'question')).catch(() => {});
+        fetch(slideUrl(file, nextCard, 'question')).catch(() => {});
       }
     }
 
     if (state.phase === 'q-speaking') {
-      const cardRealIdx = state.cardOrder[state.currentCardIdx];
-      fetch(audioUrl(state.currentFile, cardRealIdx, 'answer')).catch(() => {});
+      fetch(audioUrl(file, cardRealIdx, 'answer')).catch(() => {});
+      fetch(slideUrl(file, cardRealIdx, 'answer')).catch(() => {});
     }
   }, [state.phase]);
 

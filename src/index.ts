@@ -758,6 +758,48 @@ program
     }
   });
 
+// Serve web app
+program
+  .command('serve')
+  .description('Start the QA Video API and web UI')
+  .option('-p, --port <number>', 'API port', '3001')
+  .option('--web-port <number>', 'Web UI port', '5173')
+  .action(async (opts) => {
+    try {
+      const apiPort = parseInt(opts.port, 10);
+      const webPort = parseInt(opts.webPort, 10);
+      const webDir = join(dirname(new URL(import.meta.url).pathname), '..', 'web');
+
+      const { startServer } = await import('./server.js');
+      startServer(apiPort);
+
+      const { spawn } = await import('node:child_process');
+      const vite = spawn(
+        'npx',
+        ['vite', '--port', String(webPort)],
+        { cwd: webDir, stdio: 'inherit', shell: true },
+      );
+
+      vite.on('error', (err) => {
+        console.error(`Web server error: ${err.message}`);
+      });
+
+      console.log(`\nWeb UI:  http://localhost:${webPort}`);
+      console.log(`API:     http://localhost:${apiPort}\n`);
+
+      process.on('SIGINT', () => {
+        vite.kill();
+        process.exit(0);
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      const stack = err instanceof Error ? err.stack : undefined;
+      console.error(`\nError: ${msg}`);
+      if (process.env.DEBUG) console.error(stack);
+      process.exit(1);
+    }
+  });
+
 // Only require ffmpeg for generate/batch commands
 const cmd = process.argv[2];
 if (cmd === 'generate' || cmd === 'update' || cmd === 'batch') {

@@ -18,6 +18,7 @@ interface SidebarProps {
   onShuffle: () => void;
   onRestart: () => void;
   loadingFiles: boolean;
+  onToggleSidebar: () => void;
 }
 
 export function Sidebar({
@@ -36,6 +37,7 @@ export function Sidebar({
   onShuffle,
   onRestart,
   loadingFiles,
+  onToggleSidebar,
 }: SidebarProps) {
   return (
     <aside style={{
@@ -48,10 +50,13 @@ export function Sidebar({
       flexDirection: 'column',
       overflow: 'hidden',
     }}>
-      {/* Logo */}
+      {/* Logo + collapse */}
       <div style={{
         padding: '24px 20px 16px',
         borderBottom: '1px solid var(--sidebar-border)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
       }}>
         <h1 style={{
           fontSize: '20px',
@@ -60,6 +65,7 @@ export function Sidebar({
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
+          margin: 0,
         }}>
           <span style={{
             display: 'inline-flex',
@@ -74,6 +80,25 @@ export function Sidebar({
           }}>Q</span>
           QA Flashcards
         </h1>
+        <button
+          type="button"
+          onClick={onToggleSidebar}
+          title="Hide sidebar (B)"
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'var(--text-secondary)',
+            cursor: 'pointer',
+            padding: '4px',
+            borderRadius: '4px',
+            fontSize: '18px',
+            lineHeight: 1,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          &#x2039;
+        </button>
       </div>
 
       {/* File list */}

@@ -1,27 +1,47 @@
 import { SlideCard } from './SlideCard';
-import { YamlConfig, YamlCard } from '../types';
+import { YamlCard } from '../types';
 import { Phase } from '../hooks/usePlayback';
 
 interface FlashcardViewerProps {
   card: YamlCard | null;
+  fileName: string;
   cardIndex: number;
-  totalCards: number;
-  config: YamlConfig;
   displayType: 'question' | 'answer';
   isSpeaking: boolean;
   phase: Phase;
   title: string;
+  sidebarOpen: boolean;
+  onToggleSidebar: () => void;
+  zoomed: boolean;
+  onToggleZoom: () => void;
 }
+
+const toolbarBtnStyle: React.CSSProperties = {
+  background: 'rgba(255, 255, 255, 0.06)',
+  border: '1px solid rgba(255, 255, 255, 0.1)',
+  color: 'var(--text-secondary)',
+  cursor: 'pointer',
+  padding: '6px 10px',
+  borderRadius: '6px',
+  fontSize: '13px',
+  lineHeight: 1,
+  display: 'flex',
+  alignItems: 'center',
+  gap: '4px',
+};
 
 export function FlashcardViewer({
   card,
+  fileName,
   cardIndex,
-  totalCards,
-  config,
   displayType,
   isSpeaking,
   phase,
   title,
+  sidebarOpen,
+  onToggleSidebar,
+  zoomed,
+  onToggleZoom,
 }: FlashcardViewerProps) {
   if (!card) {
     return (
@@ -33,7 +53,16 @@ export function FlashcardViewer({
         justifyContent: 'center',
         gap: '16px',
         color: 'var(--text-secondary)',
+        position: 'relative',
       }}>
+        {/* Toolbar when sidebar hidden */}
+        {!sidebarOpen && (
+          <div style={{ position: 'absolute', top: '12px', left: '12px' }}>
+            <button type="button" onClick={onToggleSidebar} title="Show sidebar (B)" style={toolbarBtnStyle}>
+              &#x203a;
+            </button>
+          </div>
+        )}
         <div style={{
           width: '80px',
           height: '80px',
@@ -54,8 +83,6 @@ export function FlashcardViewer({
     );
   }
 
-  const text = displayType === 'question' ? card.question : card.answer;
-
   return (
     <div style={{
       flex: 1,
@@ -63,32 +90,53 @@ export function FlashcardViewer({
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '40px',
-      gap: '24px',
+      padding: zoomed ? '12px' : '40px',
+      gap: zoomed ? '8px' : '24px',
       overflow: 'auto',
+      position: 'relative',
     }}>
-      {/* Title */}
-      <h2 style={{
-        fontSize: '14px',
-        fontWeight: 500,
-        color: 'var(--text-secondary)',
-        letterSpacing: '0.5px',
+      {/* Toolbar */}
+      <div style={{
+        position: 'absolute',
+        top: '12px',
+        left: '12px',
+        display: 'flex',
+        gap: '6px',
+        zIndex: 10,
       }}>
-        {title}
-      </h2>
+        {!sidebarOpen && (
+          <button type="button" onClick={onToggleSidebar} title="Show sidebar (B)" style={toolbarBtnStyle}>
+            &#x203a;
+          </button>
+        )}
+        <button type="button" onClick={onToggleZoom} title="Zoom to fit (F)" style={toolbarBtnStyle}>
+          {zoomed ? 'Exit zoom' : 'Zoom'}
+        </button>
+      </div>
+
+      {/* Title */}
+      {!zoomed && (
+        <h2 style={{
+          fontSize: '14px',
+          fontWeight: 500,
+          color: 'var(--text-secondary)',
+          letterSpacing: '0.5px',
+        }}>
+          {title}
+        </h2>
+      )}
 
       {/* Slide card */}
       <SlideCard
-        text={text}
+        fileName={fileName}
         type={displayType}
         cardIndex={cardIndex}
-        totalCards={totalCards}
-        config={config}
         isSpeaking={isSpeaking}
+        zoomed={zoomed}
       />
 
       {/* Phase indicator */}
-      {phase !== 'idle' && phase !== 'done' && (
+      {!zoomed && phase !== 'idle' && phase !== 'done' && (
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -117,7 +165,7 @@ export function FlashcardViewer({
         </div>
       )}
 
-      {phase === 'done' && (
+      {!zoomed && phase === 'done' && (
         <div style={{
           fontSize: '16px',
           fontWeight: 600,
