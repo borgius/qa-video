@@ -1,6 +1,8 @@
-import { FileInfo } from '../types';
+import { useState } from 'react';
+import type { Phase } from '../hooks/usePlayback';
+import type { FileInfo, YamlCard } from '../types';
 import { PlaybackControls } from './PlaybackControls';
-import { Phase } from '../hooks/usePlayback';
+import { QuestionList } from './QuestionList';
 
 interface SidebarProps {
   files: FileInfo[];
@@ -19,6 +21,9 @@ interface SidebarProps {
   onRestart: () => void;
   loadingFiles: boolean;
   onToggleSidebar: () => void;
+  questions: YamlCard[];
+  cardOrder: number[];
+  onGoToCard: (index: number) => void;
 }
 
 export function Sidebar({
@@ -38,7 +43,14 @@ export function Sidebar({
   onRestart,
   loadingFiles,
   onToggleSidebar,
+  questions,
+  cardOrder,
+  onGoToCard,
 }: SidebarProps) {
+  const hasQuestions = questions.length > 0;
+  const [topicsExpanded, setTopicsExpanded] = useState(true);
+  const selectedFileInfo = files.find(f => f.name === selectedFile);
+
   return (
     <aside style={{
       width: '320px',
@@ -101,28 +113,44 @@ export function Sidebar({
         </button>
       </div>
 
-      {/* File list */}
+      {/* Scrollable content: topics + questions */}
       <div style={{
         flex: 1,
         overflowY: 'auto',
         padding: '8px',
       }}>
-        <div style={{
-          padding: '8px 12px',
-          fontSize: '11px',
-          fontWeight: 600,
-          textTransform: 'uppercase',
-          letterSpacing: '1px',
-          color: 'var(--text-muted)',
-        }}>
+        {/* Topics section header with expand/collapse toggle */}
+        <button
+          type="button"
+          onClick={() => setTopicsExpanded(v => !v)}
+          style={{
+            width: '100%',
+            padding: '8px 12px',
+            fontSize: '11px',
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            letterSpacing: '1px',
+            color: 'var(--text-muted)',
+            background: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+          }}
+        >
+          <span style={{
+            fontSize: '10px',
+            transition: 'transform 0.2s',
+            transform: topicsExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+            display: 'inline-block',
+          }}>&#9654;</span>
           Topics ({files.length})
-        </div>
+        </button>
 
         {loadingFiles ? (
           <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)' }}>
             Loading...
           </div>
-        ) : (
+        ) : topicsExpanded ? (
           files.map(file => (
             <button
               key={file.name}
@@ -160,6 +188,69 @@ export function Sidebar({
               </span>
             </button>
           ))
+        ) : selectedFileInfo ? (
+          /* Collapsed: show only the selected topic */
+          <div style={{
+            padding: '6px 12px',
+            fontSize: '12px',
+            color: 'var(--text-secondary)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+          }}>
+            <span style={{
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
+              background: 'var(--accent)',
+              flexShrink: 0,
+            }} />
+            <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>
+              {selectedFileInfo.title}
+            </span>
+          </div>
+        ) : null}
+
+        {/* Questions section - shown when a file is selected */}
+        {hasQuestions && (
+          <>
+            <div style={{
+              margin: '12px 0 4px',
+              borderTop: '1px solid var(--sidebar-border)',
+              paddingTop: '12px',
+            }}>
+              <div style={{
+                padding: '4px 12px 8px',
+                fontSize: '11px',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                color: 'var(--text-muted)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+                <span>Questions ({questions.length})</span>
+                {isShuffled && (
+                  <span style={{
+                    fontSize: '10px',
+                    fontWeight: 500,
+                    color: 'var(--accent)',
+                    textTransform: 'none',
+                    letterSpacing: 'normal',
+                  }}>
+                    Shuffled
+                  </span>
+                )}
+              </div>
+            </div>
+            <QuestionList
+              questions={questions}
+              cardOrder={cardOrder}
+              currentCardIdx={currentCardIdx}
+              onGoToCard={onGoToCard}
+            />
+          </>
         )}
       </div>
 

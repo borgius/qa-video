@@ -67,6 +67,9 @@ export default function App() {
           onRestart={playback.restart}
           loadingFiles={loadingFiles}
           onToggleSidebar={toggleSidebar}
+          questions={state.fileData?.questions ?? []}
+          cardOrder={state.cardOrder}
+          onGoToCard={playback.goToCard}
         />
       )}
 
