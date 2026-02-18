@@ -124,6 +124,23 @@ Before each upload you are prompted to edit the title and description inline (pr
 | `--force` | — | Force re-upload even if already uploaded |
 | `--dry-run` | `false` | Preview metadata without uploading |
 
+### Web Player — SRS Mode
+
+The web player includes an **SRS (Spaced Repetition System)** mode for active recall practice. When enabled, cards are queued and reshuffled based on your self-rating after each answer.
+
+**Toggle:** Click the **SRS** button in playback controls, or press **Q**.
+
+**Rate each card (keys 1–4):**
+
+| Key | Rating | Effect |
+|-----|--------|--------|
+| `1` | Again | Re-queue near the front (~10% into remaining) |
+| `2` | Hard | Re-queue early (~25% into remaining) |
+| `3` | Good | Re-queue later (~60% into remaining) |
+| `4` | Easy | Remove from queue (mastered) |
+
+The session ends when all cards are rated Easy or the queue is empty.
+
 ### Clear cached artifacts
 
 ```bash

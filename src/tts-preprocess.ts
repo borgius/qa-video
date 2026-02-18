@@ -130,6 +130,14 @@ const ACRONYMS: [RegExp, string][] = [
   [/\bxDS\b/g, 'X D S'],
 ];
 
+const ignoreCaseAcronyms = new Map([
+  ['dora', 'dora'],
+  ['wasm', 'wasm'],
+  ['salsa', 'salsa'],
+  ['sops', 'sops'],
+  ['yaml', 'YAML'],
+]);
+
 export function preprocessForTTS(text: string): string {
   let result = text;
 
@@ -164,6 +172,10 @@ export function preprocessForTTS(text: string): string {
   result = result.replace(
     /\b((?=[A-Z0-9]*[A-Z])[A-Z0-9]{2,})(s?)\b/g,
     (_, acronym: string, pluralS: string) => {
+      const casedValue = ignoreCaseAcronyms.get(acronym.toLowerCase());
+      if (casedValue) {
+        return casedValue;
+      }
       const spoken = acronym
         .split('')
         .map((char) => {
