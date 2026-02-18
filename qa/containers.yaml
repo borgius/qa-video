@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: Containers & Orchestration"
   description: In-depth coverage of Docker containerization and Kubernetes orchestration including images, volumes, networking, deployments, services, scaling, security, and cluster management.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 questions:
 - question: What is Docker, and why is it used?
   answer: 'Docker is a containerization platform that allows developers to package applications along with their dependencies

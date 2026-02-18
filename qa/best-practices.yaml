@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: Best Practices"
   description: Explores DevOps best practices including Infrastructure as Code, CI/CD pipelines, deployment strategies, monitoring, security, microservices architecture, and cloud cost optimization.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 questions:
 - question: What are DevOps best practices?
   answer: |

@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: GitOps & ArgoCD"
   description: Comprehensive coverage of GitOps methodology and tools including ArgoCD, Flux, declarative infrastructure management, sync strategies, application sets, multi-cluster deployments, and progressive delivery with GitOps workflows.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 
 questions:
 - question: What is GitOps?

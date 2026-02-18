@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: Observability & Distributed Tracing"
   description: Comprehensive coverage of observability practices including OpenTelemetry, distributed tracing with Jaeger and Zipkin, APM tools, the three pillars of observability, SLOs, SLIs, error budgets, and building observable systems in cloud-native environments.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 
 questions:
 - question: What is observability in DevOps?

@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: HashiCorp Tools"
   description: In-depth coverage of HashiCorp's DevOps toolchain including Vault for secrets management, Consul for service discovery, Packer for image building, Nomad for workload orchestration, and Vagrant for development environments.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 
 questions:
 - question: What is HashiCorp, and what tools do they provide?

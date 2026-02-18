@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: Git & Version Control"
   description: Comprehensive coverage of Git version control including core commands, branching strategies, GitFlow, trunk-based development, rebasing, cherry-picking, hooks, submodules, monorepo vs polyrepo, conflict resolution, and advanced Git workflows.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 
 questions:
 - question: What is Git, and why is it widely used in DevOps?

@@ -92,8 +92,8 @@ export const apkgDriver: ImportDriver = {
 
       return {
         config: {
-          questionDelay: 2,
-          answerDelay: 3,
+          questionDelay: 1,
+          answerDelay: 1,
         },
         questions,
       };

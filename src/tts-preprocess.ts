@@ -136,6 +136,20 @@ export function preprocessForTTS(text: string): string {
   // 0. Replace newlines with a small pause (treated as end of sentence)
   result = result.replace(/\r?\n+/g, ',, ');
 
+  // 0b. Replace abbreviations with spoken equivalents
+  result = result.replace(/\be\.g\.(,?)/gi, 'for example$1');
+  result = result.replace(/\bi\.e\.(,?)/gi, 'that is$1');
+  result = result.replace(/\betc\.(,?)/gi, 'et cetera$1');
+  result = result.replace(/\bet al\.(,?)/gi, 'and others$1');
+  result = result.replace(/\bviz\.(,?)/gi, 'namely$1');
+  result = result.replace(/\bcf\.(,?)/gi, 'compare$1');
+  result = result.replace(/\bvs\./gi, 'versus');
+  result = result.replace(/\bapprox\./gi, 'approximately');
+  result = result.replace(/\bavg\./gi, 'average');
+  result = result.replace(/\bfig\./gi, 'figure');
+  result = result.replace(/\bn\.b\.(,?)/gi, 'note$1');
+  result = result.replace(/\bp\.s\.(,?)/gi, 'post script$1');
+
   // 1. Replace acronyms with TTS-friendly forms
   for (const [pattern, replacement] of ACRONYMS) {
     result = result.replace(pattern, replacement);

@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: Helm"
   description: In-depth coverage of Helm package manager for Kubernetes including chart structure, templates, values, repositories, releases, hooks, dependencies, rollbacks, Helmfile, and best practices for managing Kubernetes applications.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 
 questions:
 - question: What is Helm, and why is it used in Kubernetes?

@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: Message Queues & Event Streaming"
   description: Comprehensive coverage of message queue and event streaming technologies including Apache Kafka, RabbitMQ, NATS, event-driven architecture, pub/sub patterns, message delivery guarantees, and operational best practices for distributed messaging systems.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 
 questions:
 - question: What is a message queue, and why is it important in DevOps?

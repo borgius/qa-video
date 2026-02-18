@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: Mock Interviews"
   description: Simulated DevOps interview questions and answers spanning core concepts, CI/CD, containers, Kubernetes, monitoring, security, cloud deployments, and real-world scenario-based problem solving.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 questions:
 - question: What is DevOps, and why is it important?
   answer: DevOps is a set of practices that combines software development (Dev) and IT operations (Ops) to shorten the software

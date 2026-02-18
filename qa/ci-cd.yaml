@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: CI/CD Pipelines"
   description: Comprehensive coverage of Continuous Integration and Continuous Deployment including pipeline design, deployment strategies, security, testing, and tools like Jenkins, GitHub Actions, and GitLab CI/CD.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 questions:
 - question: What is CI/CD in DevOps?
   answer: 'CI/CD stands for Continuous Integration (CI) and Continuous Deployment (CD).

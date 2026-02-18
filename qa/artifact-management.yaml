@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: Artifact Management"
   description: Comprehensive coverage of artifact management in DevOps including container registries, JFrog Artifactory, Nexus Repository, package versioning, artifact promotion, supply chain security, and best practices for managing build artifacts across CI/CD pipelines.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 
 questions:
 - question: What is artifact management in DevOps?

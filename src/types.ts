@@ -66,8 +66,8 @@ export interface PipelineConfig {
 export const DEFAULT_CONFIG: Omit<PipelineConfig, 'inputPath' | 'outputPath' | 'tempDir'> = {
   voice: 'af_heart',
   codeVoice: 'am_echo',
-  questionDelay: 2,
-  answerDelay: 3,
+  questionDelay: 1,
+  answerDelay: 1,
   cardGap: 1,
   fontSize: 52,
   backgroundColor: '#1a1a2e',

@@ -149,8 +149,8 @@ qa-video clear -d qa/                 # clear caches for all files in dir
 config:
   name: "Video Title"
   description: "Video description for YouTube"
-  questionDelay: 2
-  answerDelay: 3
+  questionDelay: 1
+  answerDelay: 1
 questions:
 - question: What is DevOps?
   answer: DevOps is a set of practices that combine software development and IT operations.

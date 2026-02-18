@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: Chaos Engineering"
   description: Comprehensive coverage of chaos engineering principles and tools including Chaos Monkey, Litmus, Gremlin, fault injection, game days, resilience testing, blast radius management, and building confidence in distributed systems through controlled experiments.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 
 questions:
 - question: What is chaos engineering?

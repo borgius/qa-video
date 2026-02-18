@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: Container Security"
   description: Comprehensive coverage of container security including image scanning with Trivy and Snyk, Kubernetes security, pod security standards, network policies, runtime security, supply chain security, secrets management, and security best practices for containerized environments.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 
 questions:
 - question: What is container security, and why is it important?

@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: Service Mesh"
   description: Comprehensive coverage of service mesh technology including Istio, Linkerd, Envoy proxy, sidecar patterns, traffic management, mutual TLS, observability, circuit breaking, canary deployments, and service-to-service communication in microservices.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 
 questions:
 - question: What is a service mesh?

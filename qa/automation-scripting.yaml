@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: Automation & Scripting"
   description: Covers automation fundamentals in DevOps including Bash scripting, Python scripting, Groovy, YAML configuration, and CI/CD pipeline automation with practical examples and best practices.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 questions:
 - question: What is automation in DevOps?
   answer: Automation in DevOps refers to scripting repetitive tasks like provisioning, configuration, deployment, and monitoring

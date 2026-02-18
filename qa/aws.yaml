@@ -2,8 +2,8 @@ config:
   name: "DevOps-Interview-Questions: Amazon Web Services (AWS)"
   description: A comprehensive collection of 200+ AWS interview questions covering core services, compute, storage,
     networking, databases, security, serverless, containers, monitoring, and architecture best practices.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
   youtube:
     videoId: fO1iFopLmI0
     url: https://youtu.be/fO1iFopLmI0

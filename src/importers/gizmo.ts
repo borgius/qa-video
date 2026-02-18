@@ -93,7 +93,7 @@ export const gizmoDriver: ImportDriver = {
     }
 
     return {
-      config: { questionDelay: 2, answerDelay: 3 },
+      config: { questionDelay: 1, answerDelay: 1 },
       questions,
     };
   },

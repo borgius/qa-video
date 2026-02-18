@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: Linux & System Administration"
   description: Deep dive into Linux system administration covering file permissions, process management, networking, security hardening, performance optimization, storage management, virtualization, and high availability clustering.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 questions:
 - question: What is Linux and why is it popular in DevOps?
   answer: 'Linux is an open-source operating system kernel initially created by Linus Torvalds in 1991. It has become the

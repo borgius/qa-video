@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: API Gateways & Load Balancing"
   description: Comprehensive coverage of API gateways and load balancing including Kong, Traefik, HAProxy, NGINX, AWS ALB, rate limiting, authentication, SSL termination, reverse proxying, and traffic management patterns for modern applications.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 
 questions:
 - question: What is an API gateway?

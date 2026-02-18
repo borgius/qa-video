@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: Networking & Security"
   description: Covers networking fundamentals and security practices including IP addressing, DNS, firewalls, VPNs, encryption, load balancing, zero trust security, Kubernetes RBAC, and OWASP Top 10 vulnerabilities.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 questions:
 - question: What is a network?
   answer: A network is a group of interconnected devices that communicate to share resources and information. It can be wired

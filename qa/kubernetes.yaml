@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: Kubernetes"
   description: Comprehensive coverage of Kubernetes including core concepts, workloads, networking, storage, security, scheduling, scaling, cluster administration, troubleshooting, CRDs, operators, and best practices for production-grade container orchestration.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 
 questions:
 # ─── Core Concepts ───────────────────────────────────────────────────────────
@@ -31,7 +31,7 @@ questions:
   answer: The kube-controller-manager runs a collection of controller loops that watch the cluster state and work to move the current state toward the desired state. Examples include the replication controller, which ensures the correct number of pod replicas exist; the node controller, which responds when nodes go offline; the endpoints controller, which manages Endpoints objects; and the service account controller.
 
 - question: What is a Kubernetes node?
-  answer: A node is a worker machine in Kubernetes, either a physical or virtual machine, that runs containerized workloads. Each node is managed by the control plane and runs three key components: the kubelet, which communicates with the API server and manages pods on the node; the kube-proxy, which maintains network rules for pod communication; and a container runtime like containerd to run the actual containers.
+  answer: "A node is a worker machine in Kubernetes, either a physical or virtual machine, that runs containerized workloads. Each node is managed by the control plane and runs three key components: the kubelet, which communicates with the API server and manages pods on the node; the kube-proxy, which maintains network rules for pod communication; and a container runtime like containerd to run the actual containers."
 
 - question: What is the kubelet?
   answer: The kubelet is an agent that runs on every worker node in the cluster. It receives PodSpec objects from the API server and ensures the containers described in those specs are running and healthy. It reports node and pod status back to the control plane, manages container lifecycle, handles liveness and readiness probes, and interacts with the container runtime through the Container Runtime Interface.
@@ -141,7 +141,7 @@ questions:
   answer: A NetworkPolicy is a Kubernetes resource that controls traffic flow at the IP and port level between pods or between pods and external endpoints. By default, pods accept traffic from any source. Applying a NetworkPolicy selects specific pods using label selectors and defines which ingress and egress traffic is allowed. NetworkPolicies are implemented by the network plugin (CNI), so the cluster must use a CNI that supports network policies, such as Calico, Cilium, or Weave.
 
 - question: What is a CNI plugin in Kubernetes?
-  answer: A Container Network Interface plugin is software that implements networking for Kubernetes pods according to the CNI specification. Kubernetes uses the CNI to assign IP addresses to pods, set up network interfaces, and configure routing. Different CNI plugins offer different features: Flannel provides basic overlay networking, Calico supports network policies and BGP routing, Cilium offers eBPF-based networking with advanced security and observability, and Weave provides encrypted overlay networking.
+  answer: "A Container Network Interface plugin is software that implements networking for Kubernetes pods according to the CNI specification. Kubernetes uses the CNI to assign IP addresses to pods, set up network interfaces, and configure routing. Different CNI plugins offer different features: Flannel provides basic overlay networking, Calico supports network policies and BGP routing, Cilium offers eBPF-based networking with advanced security and observability, and Weave provides encrypted overlay networking."
 
 - question: What is Kubernetes DNS?
   answer: Kubernetes runs a cluster DNS service, typically CoreDNS, that automatically creates DNS records for Services and Pods. Services get a DNS name in the format service-name.namespace.svc.cluster.local. Pods get records based on their IP. This allows services to discover each other by name instead of hard-coded IP addresses. CoreDNS is configurable and can be extended with plugins for custom DNS behavior.
@@ -246,7 +246,8 @@ questions:
   answer: The Kubernetes scheduler watches for unscheduled pods and selects a suitable node for each. It uses a two-phase process. In the filtering phase, it eliminates nodes that cannot run the pod based on resource availability, node selectors, affinity rules, taints, and topology constraints. In the scoring phase, it ranks the remaining nodes using scoring functions and assigns the pod to the highest-scoring node. You can extend the scheduler with custom plugins or run additional schedulers alongside the default one.
 
 - question: What are taints and tolerations?
-  answer: Taints are applied to nodes to repel pods. A node with a taint will not accept pods unless the pod has a matching toleration. Tolerations are applied to pods to allow them to be scheduled on tainted nodes. Taints have three effects: NoSchedule prevents new pods without a toleration from being scheduled there; PreferNoSchedule tries to avoid scheduling there but does not guarantee it; and NoExecute evicts existing pods that do not tolerate the taint. Taints and tolerations are used to dedicate nodes or handle node conditions.
+  answer: |
+    Taints are applied to nodes to repel pods. A node with a taint will not accept pods unless the pod has a matching toleration. Tolerations are applied to pods to allow them to be scheduled on tainted nodes. Taints have three effects: NoSchedule prevents new pods without a toleration from being scheduled there; PreferNoSchedule tries to avoid scheduling there but does not guarantee it; and NoExecute evicts existing pods that do not tolerate the taint. Taints and tolerations are used to dedicate nodes or handle node conditions.
 
 - question: What is node affinity in Kubernetes?
   answer: Node affinity is a set of rules used by the scheduler to determine which nodes a pod can be placed on, based on node labels. requiredDuringSchedulingIgnoredDuringExecution is a hard requirement—the pod will not be scheduled if no matching nodes exist. preferredDuringSchedulingIgnoredDuringExecution is a soft preference—the scheduler tries to find a matching node but still schedules the pod elsewhere if it cannot. Node affinity is more expressive than the older nodeSelector field.
@@ -763,16 +764,19 @@ questions:
   answer: By default, Kubernetes pods accept traffic from any source. A network policy default deny posture selects all pods with an empty podSelector and allows no ingress or egress traffic, then additional policies grant specific exceptions. Applying a default deny ingress policy means pods only receive traffic explicitly allowed by other NetworkPolicy rules. Similarly for egress. This zero-trust networking approach is a security best practice but requires careful planning to avoid accidentally blocking necessary traffic like DNS and Kubernetes API server communication.
 
 - question: What is container privilege escalation and how is it prevented?
-  answer: Privilege escalation occurs when a process inside a container gains higher privileges, for example by exploiting a setuid binary or Linux capabilities. In Kubernetes, privilege escalation is prevented by setting allowPrivilegeEscalation to false in the container's securityContext, which sets the no_new_privs flag on the container process. The Restricted Pod Security Standard requires this. You should also drop all Linux capabilities with capabilities.drop: [ALL] and only add back specific ones required by the application.
+  answer: |
+    Privilege escalation occurs when a process inside a container gains higher privileges, for example by exploiting a setuid binary or Linux capabilities. In Kubernetes, privilege escalation is prevented by setting allowPrivilegeEscalation to false in the container's securityContext, which sets the no_new_privs flag on the container process. The Restricted Pod Security Standard requires this. You should also drop all Linux capabilities with capabilities.drop: [ALL] and only add back specific ones required by the application.
 
 - question: What are Linux capabilities in the context of Kubernetes?
-  answer: Linux capabilities divide root privileges into smaller units that can be granted independently. Containers running as root have all capabilities by default, which is dangerous. In Kubernetes, you can add or drop specific capabilities in the container securityContext. The security best practice is to drop all capabilities with drop: [ALL] and add back only what the application needs—for example NET_BIND_SERVICE to bind to ports below 1024 without being root. Avoiding privileged containers and minimizing capabilities significantly reduces the container attack surface.
+  answer: |
+    Linux capabilities divide root privileges into smaller units that can be granted independently. Containers running as root have all capabilities by default, which is dangerous. In Kubernetes, you can add or drop specific capabilities in the container securityContext. The security best practice is to drop all capabilities with drop: [ALL] and add back only what the application needs—for example NET_BIND_SERVICE to bind to ports below 1024 without being root. Avoiding privileged containers and minimizing capabilities significantly reduces the container attack surface.
 
 - question: What is a seccomp profile in Kubernetes?
   answer: seccomp (secure computing mode) restricts the system calls a container can make to the Linux kernel. A seccomp profile defines an allow list or deny list of system calls. In Kubernetes, you apply a seccomp profile via the pod's securityContext with seccompProfile field. The RuntimeDefault profile uses the container runtime's default profile, which blocks many dangerous syscalls. Localhost profiles allow custom profiles. The Restricted Pod Security Standard requires RuntimeDefault seccomp. seccomp significantly reduces the kernel attack surface for containers.
 
 - question: What is AppArmor in Kubernetes?
-  answer: AppArmor is a Linux security module that implements mandatory access control, restricting what resources programs can access. AppArmor profiles define what files, capabilities, and network access a program is allowed. In Kubernetes, you apply AppArmor profiles to containers using pod annotations with the format container.apparmor.security.beta.kubernetes.io/container-name: profile. The profiles must be loaded on the node where the pod runs. AppArmor provides an additional layer of defense against container escapes and privilege escalation.
+  answer: |
+    AppArmor is a Linux security module that implements mandatory access control, restricting what resources programs can access. AppArmor profiles define what files, capabilities, and network access a program is allowed. In Kubernetes, you apply AppArmor profiles to containers using pod annotations with the format container.apparmor.security.beta.kubernetes.io/container-name: profile. The profiles must be loaded on the node where the pod runs. AppArmor provides an additional layer of defense against container escapes and privilege escalation.
 
 - question: What is Kubernetes RBAC aggregation?
   answer: ClusterRole aggregation allows you to combine multiple ClusterRoles into one aggregate role using label selectors. You define an aggregated ClusterRole with an aggregationRule and label selectors, and Kubernetes automatically merges the rules from all ClusterRoles matching those selectors. This is used by the built-in admin, edit, and view roles, which aggregate rules from ClusterRoles matching specific labels. When you install a CRD operator that creates ClusterRoles with matching labels, the aggregate roles automatically gain the new permissions.
@@ -893,7 +897,8 @@ questions:
   answer: The TTL controller for finished resources automatically cleans up finished Jobs and their Pods after a specified time-to-live duration. By setting the ttlSecondsAfterFinished field on a Job, the TTL controller deletes the Job and its pods a set number of seconds after the Job finishes, whether it succeeded or failed. Without this, finished Jobs accumulate indefinitely, consuming API server storage and cluttering list views. This replaces the need for external cleanup scripts for batch workloads.
 
 - question: What is the Kubernetes garbage collector?
-  answer: The garbage collector is a controller that deletes objects that are owned by objects that no longer exist. It watches for orphaned objects whose owner references point to deleted owners. It supports two deletion modes: background deletion, where the owner is deleted immediately and the garbage collector cleans up dependents asynchronously; and foreground deletion, where the owner enters a terminating state and dependents are deleted first before the owner is removed. The propagationPolicy in a delete request controls which mode is used.
+  answer: |
+    The garbage collector is a controller that deletes objects that are owned by objects that no longer exist. It watches for orphaned objects whose owner references point to deleted owners. It supports two deletion modes: background deletion, where the owner is deleted immediately and the garbage collector cleans up dependents asynchronously; and foreground deletion, where the owner enters a terminating state and dependents are deleted first before the owner is removed. The propagationPolicy in a delete request controls which mode is used.
 
 - question: What is kubectl debug?
   answer: kubectl debug is a command for troubleshooting pods and nodes using ephemeral debug containers or copies of pods. kubectl debug pod/name -it --image=busybox attaches an ephemeral container to a running pod for debugging. kubectl debug node/name -it --image=ubuntu mounts the node's filesystem and runs a privileged debug pod on that node. You can also create a copy of a failing pod with a different image using kubectl debug pod/name --copy-to=debug-pod, which is useful when the original pod's image lacks debugging tools.

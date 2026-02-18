@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: Monitoring & Logging"
   description: Comprehensive coverage of monitoring and logging tools including Prometheus, Grafana, ELK Stack, Loki, and Filebeat with alerting, dashboards, query optimization, and scalability strategies.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 questions:
 - question: What is Prometheus, and why is it used?
   answer: 'Prometheus is an open-source monitoring and alerting system used to collect metrics from applications and infrastructure.

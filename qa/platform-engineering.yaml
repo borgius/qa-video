@@ -1,8 +1,8 @@
 config:
   name: "DevOps-Interview-Questions: Platform Engineering"
   description: Comprehensive coverage of platform engineering including internal developer platforms, Backstage, developer experience, self-service infrastructure, golden paths, platform teams, developer portals, and the evolution from DevOps to platform engineering.
-  questionDelay: 20
-  answerDelay: 5
+  questionDelay: 1
+  answerDelay: 1
 
 questions:
 - question: What is platform engineering?
