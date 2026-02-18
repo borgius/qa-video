@@ -17,7 +17,9 @@
   "scripts": {
     "build": "vite build",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "vite build",
+    "release": "npm version patch && npm run build && npm publish",
+    "release:minor": "npm version minor && npm run build && npm publish",
+    "release:major": "npm version major && npm run build && npm publish",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
     "dev:server": "tsx src/server.ts",
