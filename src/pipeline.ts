@@ -69,15 +69,15 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
   if (yamlConfig.voice && config.voice === DEFAULT_CONFIG.voice) {
     config.voice = yamlConfig.voice;
   }
+  if (yamlConfig.questionVoice && config.questionVoice === DEFAULT_CONFIG.questionVoice) {
+    config.questionVoice = yamlConfig.questionVoice;
+  }
   if (yamlConfig.codeVoice && config.codeVoice === DEFAULT_CONFIG.codeVoice) {
     config.codeVoice = yamlConfig.codeVoice;
   }
 
-  // If YAML doesn't set codeVoice and it still matches the default, keep it;
-  // but if voice was overridden and codeVoice wasn't explicitly set, leave codeVoice as-is.
-
   console.log(`  Cards: ${cards.length}`);
-  console.log(`  Voice: ${config.voice}  Code voice: ${config.codeVoice}`);
+  console.log(`  Voices: answer=${config.voice}  question=${config.questionVoice}  code=${config.codeVoice}`);
   console.log(`  Delays: question=${config.questionDelay}s, answer=${config.answerDelay}s, gap=${config.cardGap}s`);
   if (force) console.log(`  Force: regenerating all artifacts`);
   console.log(`  Stage 1 done (${elapsed(stage1Start)}s)`);
@@ -91,7 +91,7 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
     const qSlug = slug(card.question);
 
     const qPlan: PipelineAudioPlan = {
-      ...buildAudioPlan(card.question, config.tempDir, `q_${i}_${qSlug}`, config.voice, config.codeVoice),
+      ...buildAudioPlan(card.question, config.tempDir, `q_${i}_${qSlug}`, config.questionVoice, config.codeVoice),
       cardIndex: i, isQuestion: true, rawText: card.question,
       delay: config.questionDelay,
     };
@@ -106,58 +106,47 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
   });
 
   // Partition parts by voice for pool scheduling.
-  const mainParts = audioPlans.flatMap(p => p.parts.filter(pt => pt.voice === config.voice));
-  const codeParts = audioPlans.flatMap(p => p.parts.filter(pt => pt.voice !== config.voice));
+  const allParts = audioPlans.flatMap(p => p.parts);
+  const voiceGroups = new Map<string, typeof allParts>();
+  for (const pt of allParts) {
+    const group = voiceGroups.get(pt.voice);
+    if (group) group.push(pt);
+    else voiceGroups.set(pt.voice, [pt]);
+  }
 
-  const uncachedMain = mainParts.filter(pt => !isCached(pt.audioPath, force));
-  const uncachedCode = codeParts.filter(pt => !isCached(pt.audioPath, force));
+  const allUncached = allParts.filter(pt => !isCached(pt.audioPath, force));
 
   if (skipTTS) {
-    const missing = [...uncachedMain, ...uncachedCode].map(pt => pt.audioPath);
-    if (missing.length > 0) {
+    if (allUncached.length > 0) {
       throw new Error(
-        `update requires pre-existing audio for all segments. Missing ${missing.length} file(s).\n` +
+        `update requires pre-existing audio for all segments. Missing ${allUncached.length} file(s).\n` +
         `  Run "qa-video generate" first to synthesize audio.`,
       );
     }
     console.log(`  Skipping TTS synthesis (all segments cached)`);
   }
 
-  // ── Phase 2A: Main voice pool ──
-  if (!skipTTS && uncachedMain.length > 0) {
-    const pool = new TTSPool();
-    const cpuCount = cpus().length;
-    console.log(`  Workers: ${pool.size} / ${cpuCount} CPUs — voice: ${config.voice}`);
-    process.stdout.write(`  Loading TTS model...`);
-    const loadStart = Date.now();
-    await pool.init(config.voice);
-    console.log(` done (${elapsed(loadStart)}s)`);
+  // Synthesize each voice group with its own worker pool.
+  if (!skipTTS) {
+    for (const [voice, parts] of voiceGroups) {
+      const uncached = parts.filter(pt => !isCached(pt.audioPath, force));
+      if (uncached.length === 0) continue;
 
-    let done = 0;
-    await Promise.all(uncachedMain.map(async pt => {
-      await pool.synthesize(pt.ttsText, pt.audioPath);
-      process.stdout.write(`\r  Synthesizing (main): ${++done}/${uncachedMain.length}`);
-    }));
-    if (uncachedMain.length > 0) console.log();
-    await pool.terminate();
-  }
+      const pool = new TTSPool();
+      console.log(`  Voice: ${voice} — workers: ${pool.size} (${uncached.length} segment(s))`);
+      process.stdout.write(`  Loading TTS model...`);
+      const loadStart = Date.now();
+      await pool.init(voice);
+      console.log(` done (${elapsed(loadStart)}s)`);
 
-  // ── Phase 2B: Code voice pool (only if a different voice is configured) ──
-  if (!skipTTS && uncachedCode.length > 0) {
-    const pool = new TTSPool(1); // single worker — code blocks are short
-    console.log(`  Code voice: ${config.codeVoice} (${uncachedCode.length} segment(s))`);
-    process.stdout.write(`  Loading code TTS model...`);
-    const loadStart = Date.now();
-    await pool.init(config.codeVoice);
-    console.log(` done (${elapsed(loadStart)}s)`);
-
-    let done = 0;
-    await Promise.all(uncachedCode.map(async pt => {
-      await pool.synthesize(pt.ttsText, pt.audioPath);
-      process.stdout.write(`\r  Synthesizing (code): ${++done}/${uncachedCode.length}`);
-    }));
-    if (uncachedCode.length > 0) console.log();
-    await pool.terminate();
+      let done = 0;
+      await Promise.all(uncached.map(async pt => {
+        await pool.synthesize(pt.ttsText, pt.audioPath);
+        process.stdout.write(`\r  Synthesizing (${voice}): ${++done}/${uncached.length}`);
+      }));
+      console.log();
+      await pool.terminate();
+    }
   }
 
   // ── Phase 2C: Concatenate multi-part answer WAVs ──

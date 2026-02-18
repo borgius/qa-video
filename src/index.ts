@@ -46,6 +46,7 @@ function buildConfig(inputPath: string, opts: any): PipelineConfig {
     outputPath,
     tempDir,
     voice: opts.voice,
+    questionVoice: opts.questionVoice ?? DEFAULT_CONFIG.questionVoice,
     codeVoice: opts.codeVoice ?? DEFAULT_CONFIG.codeVoice,
     questionDelay: parseFloat(opts.questionDelay),
     answerDelay: parseFloat(opts.answerDelay),
@@ -63,7 +64,8 @@ function buildConfig(inputPath: string, opts: any): PipelineConfig {
 
 const sharedOptions = (cmd: Command) =>
   cmd
-    .option('--voice <name>', `TTS voice name for prose text`, DEFAULT_CONFIG.voice)
+    .option('--voice <name>', `TTS voice name for answer prose text`, DEFAULT_CONFIG.voice)
+    .option('--question-voice <name>', `TTS voice name for questions (default: ${DEFAULT_CONFIG.questionVoice})`)
     .option('--code-voice <name>', `TTS voice name for code blocks (default: ${DEFAULT_CONFIG.codeVoice})`)
     .option('--question-delay <seconds>', 'Pause after question speech', String(DEFAULT_CONFIG.questionDelay))
     .option('--answer-delay <seconds>', 'Pause after answer speech', String(DEFAULT_CONFIG.answerDelay))

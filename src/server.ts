@@ -151,7 +151,9 @@ app.get('/api/audio/:name/:cardIndex/:type', async (req, res, next) => {
 
     const card = data.questions[cardIndex];
     const text = type === 'question' ? card.question : card.answer;
-    const voice = data.config.voice || DEFAULT_CONFIG.voice;
+    const voice = type === 'question'
+      ? (data.config.questionVoice || DEFAULT_CONFIG.questionVoice)
+      : (data.config.voice || DEFAULT_CONFIG.voice);
     const codeVoice = data.config.codeVoice || DEFAULT_CONFIG.codeVoice;
 
     const qSlug = slug(card.question);
@@ -213,7 +215,9 @@ app.get('/api/audio/:name/:cardIndex/:type/status', async (req, res, next) => {
 
     const card = data.questions[cardIndex];
     const text = type === 'question' ? card.question : card.answer;
-    const voice = data.config.voice || DEFAULT_CONFIG.voice;
+    const voice = type === 'question'
+      ? (data.config.questionVoice || DEFAULT_CONFIG.questionVoice)
+      : (data.config.voice || DEFAULT_CONFIG.voice);
     const codeVoice = data.config.codeVoice || DEFAULT_CONFIG.codeVoice;
 
     const qSlug = slug(card.question);
@@ -260,6 +264,7 @@ app.get('/api/slides/:name/:cardIndex/:type', async (req, res, next) => {
       outputPath: '',
       tempDir: '',
       voice: data.config.voice || DEFAULT_CONFIG.voice,
+      questionVoice: data.config.questionVoice || DEFAULT_CONFIG.questionVoice,
       codeVoice: data.config.codeVoice || DEFAULT_CONFIG.codeVoice,
       questionDelay: data.config.questionDelay ?? DEFAULT_CONFIG.questionDelay,
       answerDelay: data.config.answerDelay ?? DEFAULT_CONFIG.answerDelay,
