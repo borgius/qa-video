@@ -13,7 +13,8 @@ import { DEFAULT_CONFIG, PipelineConfig } from './types.js';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const qaDir = resolve(process.cwd(), 'qa');
+let qaDir = resolve(process.cwd(), 'qa');
+let filterFile: string | undefined;
 const outputDir = resolve(process.cwd(), 'output');
 
 app.use(cors());
@@ -29,9 +30,10 @@ app.get('/api/health', (_req, res) => {
 
 app.get('/api/files', async (_req, res, next) => {
   try {
-    const yamlFiles = readdirSync(qaDir)
+    let yamlFiles = readdirSync(qaDir)
       .filter(f => f.endsWith('.yaml') || f.endsWith('.yml'))
       .sort();
+    if (filterFile) yamlFiles = yamlFiles.filter(f => f === filterFile);
 
     const files = await Promise.all(
       yamlFiles.map(async (filename) => {
@@ -289,7 +291,9 @@ app.use((err: any, _req: express.Request, res: express.Response, _next: express.
   res.status(status).json({ error: err.message || 'Internal server error' });
 });
 
-export function startServer(port?: number): void {
+export function startServer(port?: number, opts?: { qaDir?: string; filterFile?: string }): void {
+  if (opts?.qaDir) qaDir = opts.qaDir;
+  if (opts?.filterFile) filterFile = opts.filterFile;
   const listenPort = port ?? Number(PORT);
   app.listen(listenPort, () => {
     console.log(`QA Video API running on http://localhost:${listenPort}`);

@@ -141,6 +141,23 @@ The web player includes an **SRS (Spaced Repetition System)** mode for active re
 
 The session ends when all cards are rated Easy or the queue is empty.
 
+### Start web player
+
+```bash
+qa-video serve                           # serve all files in qa/
+qa-video serve -d path/to/cards/         # serve all files in a custom directory
+qa-video serve -i qa/core-concepts.yaml  # serve a single file
+```
+
+#### Serve options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `-i, --input <path>` | — | Serve a single YAML file |
+| `-d, --dir <path>` | `qa/` | Directory containing YAML files |
+| `-p, --port <number>` | `3001` | API port |
+| `--web-port <number>` | `5173` | Web UI port |
+
 ### Clear cached artifacts
 
 ```bash

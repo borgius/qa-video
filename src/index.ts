@@ -762,16 +762,58 @@ program
 program
   .command('serve')
   .description('Start the QA Video API and web UI')
+  .option('-i, --input <path>', 'Serve a single YAML file')
+  .option('-d, --dir <path>', 'Directory containing YAML files (default: qa/)')
   .option('-p, --port <number>', 'API port', '3001')
   .option('--web-port <number>', 'Web UI port', '5173')
   .action(async (opts) => {
     try {
+      // ── Resolve qaDir and optional filterFile ──
+      let serveDir: string;
+      let filterFile: string | undefined;
+
+      if (opts.input && opts.dir) {
+        console.error('Error: Provide either -i <file> or -d <dir>, not both');
+        process.exit(1);
+      }
+
+      if (opts.input) {
+        const inputPath = resolve(opts.input);
+        if (!existsSync(inputPath)) {
+          console.error(`Error: Input file not found: ${inputPath}`);
+          process.exit(1);
+        }
+        if (!inputPath.endsWith('.yaml') && !inputPath.endsWith('.yml')) {
+          console.error(`Error: Input file must be a .yaml or .yml file: ${inputPath}`);
+          process.exit(1);
+        }
+        serveDir = dirname(inputPath);
+        filterFile = basename(inputPath);
+      } else {
+        serveDir = resolve(opts.dir || 'qa');
+      }
+
+      if (!existsSync(serveDir)) {
+        console.error(`Error: Directory not found: ${serveDir}`);
+        process.exit(1);
+      }
+
+      let yamlFiles = readdirSync(serveDir)
+        .filter(f => f.endsWith('.yaml') || f.endsWith('.yml'));
+      if (filterFile) yamlFiles = yamlFiles.filter(f => f === filterFile);
+
+      if (yamlFiles.length === 0) {
+        console.error(`Error: No YAML files found in: ${serveDir}`);
+        process.exit(1);
+      }
+
+      // ── Start servers ──
       const apiPort = parseInt(opts.port, 10);
       const webPort = parseInt(opts.webPort, 10);
       const webDir = join(dirname(new URL(import.meta.url).pathname), '..', 'web');
 
       const { startServer } = await import('./server.js');
-      startServer(apiPort);
+      startServer(apiPort, { qaDir: serveDir, filterFile });
 
       const { spawn } = await import('node:child_process');
       const vite = spawn(
@@ -802,7 +844,7 @@ program
 
 // Only require ffmpeg for generate/batch commands
 const cmd = process.argv[2];
-if (cmd === 'generate' || cmd === 'update' || cmd === 'batch') {
+if (cmd === 'generate' || cmd === 'update' || cmd === 'batch' || cmd === 'serve') {
   await ensureDeps();
 }
 program.parse();
