@@ -5,301 +5,1070 @@ config:
   answerDelay: 1
 questions:
 - question: What is automation in DevOps?
-  answer: Automation in DevOps refers to scripting repetitive tasks like provisioning, configuration, deployment, and monitoring
-    to improve efficiency and reduce errors.
+  answer: |
+    Automation in DevOps is the practice of using scripts, tools, and frameworks to perform repetitive tasks without manual intervention. It covers key areas such as:
+
+    - **Infrastructure provisioning** (Terraform, CloudFormation)
+    - **Configuration management** (Ansible, Puppet, Chef)
+    - **CI/CD pipelines** (Jenkins, GitHub Actions, GitLab CI)
+    - **Monitoring & alerting** (Prometheus, Grafana)
+
+    The goal is to increase speed, consistency, and reliability while reducing human error.
+
 - question: What are the benefits of scripting in DevOps?
-  answer: 'Reduces manual effort
+  answer: |
+    - **Reduces manual effort** — automates repetitive tasks like deployments and backups
+    - **Increases consistency** — scripts produce the same result every time
+    - **Improves speed** — tasks execute faster than manual processes
+    - **Reduces errors** — eliminates mistakes caused by manual steps
+    - **Enhances auditability** — scripts serve as documentation of processes
+    - **Enables scalability** — the same script can manage hundreds of servers
 
-    Increases consistency and repeatability
-
-    Improves efficiency and speed
-
-    Reduces errors and enhances security'
 - question: What is Bash scripting?
-  answer: Bash scripting is writing command-line instructions in a script file (.sh) to automate tasks in Unix/Linux environments.
+  answer: |
+    Bash (Bourne Again SHell) scripting is writing a series of commands in a `.sh` file that the Bash interpreter executes sequentially. It is the default shell on most Linux distributions and macOS, making it the go-to language for system administration, file manipulation, and task automation in Unix/Linux environments.
+
 - question: How do you write a basic Bash script?
-  answer: '#!/bin/bash
+  answer: |
+    Create a file called `script.sh`:
 
+    ```bash
+    #!/bin/bash
     echo "Hello, DevOps!"
+    ```
 
-    Save the file (script.sh), make it executable (chmod +x script.sh), and run it (./script.sh).'
+    Then make it executable and run it:
+
+    ```bash
+    chmod +x script.sh
+    ./script.sh
+    ```
+
 - question: What is the difference between Bash and Shell scripting?
-  answer: Bash is a type of shell, but shell scripting can also be done in other shells like sh, csh, and zsh. Bash provides
-    more advanced scripting features.
+  answer: |
+    **Shell scripting** is a general term for writing scripts in any Unix shell (`sh`, `csh`, `zsh`, `ksh`, etc.).
+
+    **Bash scripting** specifically targets the Bash shell, which extends POSIX `sh` with features like:
+
+    - Arrays and associative arrays
+    - `[[ ]]` extended test syntax
+    - String manipulation (`${var//old/new}`)
+    - Process substitution (`<(command)`)
+
+    Scripts beginning with `#!/bin/sh` run in the default POSIX shell, while `#!/bin/bash` explicitly invokes Bash.
+
 - question: What are variables in Bash?
-  answer: 'Variables store values and are defined without a $ sign but accessed using $.
+  answer: |
+    Variables store values. They are defined **without** `$` but accessed **with** `$`:
+
+    ```bash
+    name="DevOps"
+    echo "Hello, $name"
+    ```
+
+    Key rules:
+    - No spaces around `=` during assignment
+    - Use `readonly` to make a variable constant
+    - Use `local` inside functions for scoped variables
+    - Use `"$var"` (double quotes) to prevent word splitting
+
+- question: What is Python scripting used for in DevOps?
+  answer: |
+    Python is widely used in DevOps for:
+
+    - **Infrastructure as Code** — Pulumi, CDK, custom provisioning scripts
+    - **CI/CD automation** — build scripts, deployment orchestration
+    - **Cloud automation** — AWS Boto3, Azure SDK, GCP client libraries
+    - **Log analysis & monitoring** — parsing logs, generating reports
+    - **API integrations** — connecting tools via REST/GraphQL APIs
+    - **Configuration management** — templating, secret rotation
+
+- question: How do you define a function in Python?
+  answer: |
+    Use the `def` keyword:
+
+    ```python
+    def greet(name="DevOps"):
+        print(f"Hello, {name}!")
+
+    greet()        # Hello, DevOps!
+    greet("World") # Hello, World!
+    ```
+
+- question: What is YAML, and where is it used?
+  answer: |
+    YAML (YAML Ain't Markup Language) is a human-readable data serialization format. It uses indentation to represent structure (no braces or brackets needed).
+
+    Common uses in DevOps:
+
+    - **Kubernetes** — manifests and Helm charts
+    - **Ansible** — playbooks and inventories
+    - **CI/CD** — GitHub Actions, GitLab CI, Azure Pipelines
+    - **Docker Compose** — multi-container definitions
+    - **Configuration files** — application settings
+
+- question: What is a YAML file example?
+  answer: |
+    A Docker Compose example:
+
+    ```yaml
+    version: "3"
+    services:
+      web:
+        image: nginx
+        ports:
+          - "80:80"
+        volumes:
+          - ./html:/usr/share/nginx/html
+    ```
+
+    Key YAML rules: use spaces (not tabs), maintain consistent indentation, and use `:` for key-value pairs.
+
+- question: How do you write a simple Groovy script?
+  answer: |
+    ```groovy
+    println "Hello, DevOps!"
+    ```
+
+    Groovy runs on the JVM and is the scripting language behind Jenkins pipelines. It supports both dynamic and static typing:
+
+    ```groovy
+    def name = "DevOps"
+    println "Hello, ${name}!"
+    ```
+
+- question: What is the shebang (#!) in a script?
+  answer: |
+    The shebang is the first line of a script that tells the OS which interpreter to use:
+
+    ```bash
+    #!/bin/bash          # Use Bash
+    #!/usr/bin/python3   # Use Python 3
+    #!/usr/bin/env node  # Use Node.js (portable)
+    ```
+
+    Using `#!/usr/bin/env <interpreter>` is preferred for portability, as it searches `$PATH` for the interpreter.
+
+- question: What are loops in Bash?
+  answer: |
+    Bash supports `for`, `while`, and `until` loops:
+
+    ```bash
+    # For loop
+    for i in {1..5}; do
+      echo "Iteration $i"
+    done
+
+    # While loop
+    count=0
+    while [ $count -lt 5 ]; do
+      echo "Count: $count"
+      ((count++))
+    done
+
+    # C-style for loop
+    for ((i=0; i<5; i++)); do
+      echo "$i"
+    done
+    ```
+
+- question: What are conditional statements in Bash?
+  answer: |
+    `if-else` statements execute different code based on conditions:
+
+    ```bash
+    if [ "$USER" == "root" ]; then
+      echo "Admin access"
+    elif [ "$USER" == "deploy" ]; then
+      echo "Deploy access"
+    else
+      echo "User access"
+    fi
+    ```
+
+    Use `[[ ]]` for extended tests (pattern matching, regex):
+
+    ```bash
+    if [[ "$filename" == *.log ]]; then
+      echo "Log file detected"
+    fi
+    ```
+
+- question: How do you read input in Bash?
+  answer: |
+    Use the `read` builtin:
+
+    ```bash
+    read -p "Enter your name: " name
+    echo "Hello, $name"
+    ```
+
+    Useful flags:
+    - `-p` — display a prompt
+    - `-s` — silent mode (for passwords)
+    - `-t 10` — timeout after 10 seconds
+    - `-r` — prevent backslash interpretation
+
+- question: How do you create a Python virtual environment?
+  answer: |
+    ```bash
+    python3 -m venv myenv
+    source myenv/bin/activate   # Linux/macOS
+    # myenv\Scripts\activate    # Windows
+
+    pip install requests        # Install packages inside the venv
+    deactivate                  # Exit the virtual environment
+    ```
+
+    Virtual environments isolate project dependencies, preventing conflicts between projects.
+
+- question: How do you parse JSON in Python?
+  answer: |
+    Use the built-in `json` module:
+
+    ```python
+    import json
+
+    # Parse a JSON string
+    data = json.loads('{"name": "DevOps", "version": 2}')
+    print(data["name"])  # DevOps
+
+    # Read from a file
+    with open("config.json") as f:
+        config = json.load(f)
+
+    # Write to a file
+    with open("output.json", "w") as f:
+        json.dump(data, f, indent=2)
+    ```
+
+- question: What is the awk command in Bash?
+  answer: |
+    `awk` is a text-processing tool that operates on columns and patterns:
+
+    ```bash
+    # Print the first column
+    awk '{print $1}' file.txt
+
+    # Print lines where column 3 > 100
+    awk '$3 > 100' file.txt
+
+    # Use a custom delimiter
+    awk -F',' '{print $2}' data.csv
+
+    # Sum values in column 1
+    awk '{sum += $1} END {print sum}' numbers.txt
+    ```
+
+- question: How do you comment in YAML?
+  answer: |
+    Use `#` for comments. YAML only supports single-line comments:
+
+    ```yaml
+    # This is a comment
+    name: DevOps  # Inline comment
+    # version: 1  <-- commented-out key
+    ```
+
+    There is no native multi-line comment syntax in YAML.
+
+- question: How do you declare variables in Groovy?
+  answer: |
+    ```groovy
+    // Dynamic typing with def
+    def name = "DevOps"
+    println name
+
+    // Explicit typing
+    String env = "production"
+    int count = 42
+
+    // Constants
+    final String VERSION = "1.0"
+    ```
+
+- question: How do you pass arguments to a Bash script?
+  answer: |
+    Arguments are accessed via positional parameters:
+
+    ```bash
+    #!/bin/bash
+    echo "Script name: $0"
+    echo "First arg: $1"
+    echo "All args: $@"
+    echo "Arg count: $#"
+    ```
+
+    ```bash
+    ./script.sh DevOps Production
+    # Script name: ./script.sh
+    # First arg: DevOps
+    # All args: DevOps Production
+    # Arg count: 2
+    ```
+
+- question: How do you handle errors in Bash scripts?
+  answer: |
+    Use `set` options at the top of your script:
+
+    ```bash
+    set -euo pipefail
+    ```
+
+    - `set -e` — exit immediately on any command failure
+    - `set -u` — treat unset variables as errors
+    - `set -o pipefail` — catch errors in piped commands
+
+    For custom error handling, use `trap`:
+
+    ```bash
+    trap 'echo "Error on line $LINENO"; exit 1' ERR
+    ```
+
+- question: What is an Ansible playbook?
+  answer: |
+    An Ansible playbook is a YAML file that defines automation tasks to be executed on remote hosts:
+
+    ```yaml
+    - name: Install and start Nginx
+      hosts: webservers
+      become: true
+      tasks:
+        - name: Install Nginx
+          apt:
+            name: nginx
+            state: present
+
+        - name: Start Nginx
+          service:
+            name: nginx
+            state: started
+            enabled: true
+    ```
+
+    Run it with `ansible-playbook playbook.yaml`.
+
+- question: How do you handle exceptions in Python?
+  answer: |
+    Use `try`/`except`/`finally`:
+
+    ```python
+    try:
+        result = 1 / 0
+    except ZeroDivisionError as e:
+        print(f"Error: {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+    finally:
+        print("Cleanup runs always")
+    ```
+
+    In DevOps scripts, always handle network and file I/O exceptions to make automation robust.
+
+- question: How do you schedule a script with Cron?
+  answer: |
+    Edit the crontab with `crontab -e` and add an entry:
+
+    ```
+    # min  hour  day  month  weekday  command
+      0    5     *    *      *        /path/to/script.sh >> /var/log/myjob.log 2>&1
+    ```
+
+    This runs the script daily at 5:00 AM and logs output. Use `crontab -l` to list scheduled jobs.
+
+- question: How do you execute a Groovy script in Jenkins?
+  answer: |
+    Use the `script` block inside a Jenkins declarative pipeline:
+
+    ```groovy
+    pipeline {
+      agent any
+      stages {
+        stage('Example') {
+          steps {
+            script {
+              def version = "1.0.${env.BUILD_NUMBER}"
+              echo "Building version: ${version}"
+            }
+          }
+        }
+      }
+    }
+    ```
+
+- question: How do you create a list in Python?
+  answer: |
+    ```python
+    # Create a list
+    servers = ["web01", "web02", "db01"]
+
+    # Access elements
+    print(servers[0])  # web01
+
+    # Add / remove
+    servers.append("cache01")
+    servers.remove("db01")
+
+    # List comprehension
+    upper = [s.upper() for s in servers]
+    ```
+
+- question: What is sed in Bash?
+  answer: |
+    `sed` (Stream Editor) performs text transformations on files or streams:
+
+    ```bash
+    # Replace first occurrence per line
+    sed 's/old/new/' file.txt
+
+    # Replace all occurrences (global)
+    sed 's/old/new/g' file.txt
+
+    # Edit file in-place
+    sed -i 's/old/new/g' file.txt
+
+    # Delete lines matching a pattern
+    sed '/DEBUG/d' logfile.txt
+    ```
+
+- question: How do you define a dictionary in Python?
+  answer: |
+    ```python
+    config = {
+        "name": "DevOps",
+        "env": "production",
+        "replicas": 3
+    }
+
+    # Access values
+    print(config["name"])            # DevOps
+    print(config.get("missing", 0))  # 0 (default)
+
+    # Add / update
+    config["region"] = "us-east-1"
+    ```
+
+- question: How do you validate a YAML file?
+  answer: |
+    Several approaches:
+
+    ```bash
+    # Using yamllint
+    yamllint config.yaml
+
+    # Using Python
+    python3 -c "import yaml; yaml.safe_load(open('config.yaml'))"
+
+    # Kubernetes dry-run validation
+    kubectl apply -f manifest.yaml --dry-run=client
+
+    # Using yq
+    yq eval config.yaml
+    ```
+
+- question: How do you install Python modules?
+  answer: |
+    ```bash
+    # Install a single package
+    pip install requests
+
+    # Install from requirements file
+    pip install -r requirements.txt
+
+    # Install a specific version
+    pip install requests==2.31.0
+
+    # Upgrade a package
+    pip install --upgrade requests
+    ```
+
+    Always use a virtual environment to avoid polluting the system Python.
+
+- question: What is Jenkins pipeline syntax for automation?
+  answer: |
+    Jenkins uses a Groovy-based DSL for declarative pipelines:
+
+    ```groovy
+    pipeline {
+      agent any
+      environment {
+        APP_ENV = "production"
+      }
+      stages {
+        stage('Build') {
+          steps {
+            echo "Building..."
+            sh 'make build'
+          }
+        }
+        stage('Test') {
+          steps {
+            sh 'make test'
+          }
+        }
+        stage('Deploy') {
+          steps {
+            sh 'make deploy'
+          }
+        }
+      }
+      post {
+        failure {
+          echo "Pipeline failed!"
+        }
+      }
+    }
+    ```
+
+- question: How do you iterate over a dictionary in Python?
+  answer: |
+    ```python
+    config = {"name": "DevOps", "env": "prod", "replicas": 3}
+
+    # Iterate keys and values
+    for key, value in config.items():
+        print(f"{key}: {value}")
+
+    # Keys only
+    for key in config:
+        print(key)
+
+    # Values only
+    for value in config.values():
+        print(value)
+    ```
+
+- question: How do you set environment variables in Bash?
+  answer: |
+    ```bash
+    # Set for the current session
+    export APP_ENV="production"
+
+    # Set for a single command only
+    APP_ENV="staging" ./deploy.sh
+
+    # Persist across sessions (add to ~/.bashrc)
+    echo 'export APP_ENV="production"' >> ~/.bashrc
+
+    # Read an env var
+    echo "$APP_ENV"
+    ```
+
+- question: What is an Ansible role?
+  answer: |
+    An Ansible role is a reusable, self-contained unit of automation with a standardized directory structure:
+
+    ```
+    roles/nginx/
+      tasks/main.yaml      # Core logic
+      handlers/main.yaml   # Event handlers
+      templates/nginx.conf.j2
+      files/               # Static files
+      vars/main.yaml       # Variables
+      defaults/main.yaml   # Default variables
+    ```
+
+    Use it in a playbook:
+
+    ```yaml
+    - hosts: webservers
+      roles:
+        - nginx
+    ```
+
+- question: What is a multiline string in YAML?
+  answer: |
+    YAML supports two multiline styles:
+
+    ```yaml
+    # Literal block (|) — preserves newlines
+    message: |
+      Line 1
+      Line 2
+      Line 3
+
+    # Folded block (>) — joins lines with spaces
+    message: >
+      This is all
+      one long
+      paragraph.
+    ```
+
+    Append `-` to strip the trailing newline: `|-` or `>-`.
+
+- question: What is an associative array in Bash?
+  answer: |
+    Associative arrays (Bash 4+) use string keys instead of numeric indices:
+
+    ```bash
+    declare -A config
+    config[env]="production"
+    config[region]="us-east-1"
+    config[replicas]="3"
+
+    echo "${config[env]}"        # production
+    echo "${!config[@]}"         # All keys
+    echo "${config[@]}"          # All values
+    echo "${#config[@]}"         # Number of elements
+    ```
+
+- question: How do you run a shell command in Python?
+  answer: |
+    Use the `subprocess` module (preferred over `os.system`):
+
+    ```python
+    import subprocess
+
+    # Run and capture output
+    result = subprocess.run(
+        ["ls", "-la"],
+        capture_output=True,
+        text=True
+    )
+    print(result.stdout)
+
+    # Check return code
+    if result.returncode != 0:
+        print(f"Error: {result.stderr}")
+    ```
+
+    Avoid `os.system()` — it doesn't capture output and is less secure.
+
+- question: What is jq in Linux?
+  answer: |
+    `jq` is a command-line JSON processor:
+
+    ```bash
+    # Extract a field
+    cat data.json | jq '.name'
+
+    # Pretty-print
+    curl -s https://api.example.com | jq '.'
+
+    # Filter arrays
+    jq '.users[] | select(.active == true)' data.json
+
+    # Extract multiple fields
+    jq '{name: .name, email: .email}' data.json
+    ```
+
+- question: How do you exit a script with a status code?
+  answer: |
+    ```bash
+    exit 0   # Success
+    exit 1   # General error
+    exit 2   # Misuse of shell command
+    ```
+
+    Convention: `0` means success, any non-zero value indicates failure. Check the exit code of the last command with `$?`:
+
+    ```bash
+    some_command
+    if [ $? -ne 0 ]; then
+      echo "Command failed"
+      exit 1
+    fi
+    ```
+
+- question: How do you debug a Bash script?
+  answer: |
+    Use `set -x` to trace command execution:
+
+    ```bash
+    #!/bin/bash
+    set -x  # Enable debug output
 
     name="DevOps"
+    echo "Hello, $name"
 
-    echo "Hello, $name"'
-- question: What is Python scripting used for in DevOps?
-  answer: 'Infrastructure as Code (IaC)
+    set +x  # Disable debug output
+    ```
 
-    CI/CD automation
+    Other debugging techniques:
+    - Run with `bash -x script.sh` to trace without modifying the file
+    - Use `set -v` to print lines as they are read
+    - Use `trap 'echo "Line $LINENO"' DEBUG` to trace line-by-line
 
-    Log analysis
+- question: How do you trap signals in a Bash script?
+  answer: |
+    `trap` catches signals and runs cleanup code:
 
-    Cloud automation (AWS, Azure, GCP SDKs)'
-- question: How do you define a function in Python?
-  answer: 'def greet():
-
-    print("Hello, DevOps!")
-
-    greet()'
-- question: What is YAML, and where is it used?
-  answer: YAML (Yet Another Markup Language) is a human-readable format used for Kubernetes configurations, Ansible playbooks,
-    CI/CD pipelines, etc.
-- question: What is a YAML file example?
-  answer: 'version: ''3''
-
-    services:
-
-    web:
-
-    image: nginx
-
-    ports:
-
-    - "80:80"'
-- question: How do you write a simple Groovy script?
-  answer: 'println "Hello, DevOps!"
-
-    Groovy is used in Jenkins pipelines and automation tasks.'
-- question: What is the shebang (#!) in a script?
-  answer: 'The shebang (#!/bin/bash or #!/usr/bin/python3) specifies the interpreter for executing the script.'
-- question: What are loops in Bash?
-  answer: 'Bash supports for, while, and until loops. Example:
-
-    for i in {1..5}; do echo "Iteration $i"; done'
-- question: What are conditional statements in Bash?
-  answer: 'if-else statements execute different code based on conditions.
-
-    if [ $USER == "root" ]; then echo "Admin access"; else echo "User access"; fi'
-- question: How do you read input in Bash?
-  answer: 'echo "Enter name: "
-
-    read name
-
-    echo "Hello, $name"'
-- question: How do you create a Python virtual environment?
-  answer: 'python3 -m venv myenv
-
-    source myenv/bin/activate'
-- question: How do you parse JSON in Python?
-  answer: 'import json
-
-    data = ''{"name": "DevOps"}''
-
-    parsed = json.loads(data)
-
-    print(parsed["name"])'
-- question: What is the awk command in Bash?
-  answer: 'awk is used for text processing. Example:
-
-    awk ''{print $1}'' file.txt
-
-    Extracts the first column from file.txt.'
-- question: How do you comment in YAML?
-  answer: 'Use # for comments.
-
-    # This is a comment
-
-    name: DevOps'
-- question: How do you declare variables in Groovy?
-  answer: 'def name = "DevOps"
-
-    println name'
-- question: How do you pass arguments to a Bash script?
-  answer: '#!/bin/bash
-
-    echo "Hello, $1!"
-
-    Run: ./script.sh DevOps → Output: Hello, DevOps!'
-- question: How do you handle errors in Bash scripts?
-  answer: Use set -e to stop execution on errors.
-- question: What is an Ansible playbook?
-  answer: A YAML file that defines automation tasks for servers.
-- question: How do you handle exceptions in Python?
-  answer: 'try:
-
-    print(1 / 0)
-
-    except ZeroDivisionError:
-
-    print("Cannot divide by zero")'
-- question: How do you schedule a script with Cron?
-  answer: 'Edit crontab -e and add:
-
-    0 5 * * * /path/to/script.sh
-
-    Runs the script daily at 5 AM.'
-- question: How do you execute a Groovy script in Jenkins?
-  answer: Use script {} inside a Jenkins pipeline.
-- question: How do you create a list in Python?
-  answer: 'mylist = [1, 2, 3]
-
-    print(mylist[0])'
-- question: What is sed in Bash?
-  answer: 'Used for text replacement. Example:
-
-    sed -i ''s/old/new/g'' file.txt'
-- question: How do you define a dictionary in Python?
-  answer: 'mydict = {"name": "DevOps"}
-
-    print(mydict["name"])'
-- question: How do you validate a YAML file?
-  answer: Use yamllint or kubectl apply -f --dry-run=client.
-- question: How do you install Python modules?
-  answer: pip install requests
-- question: What is Jenkins pipeline syntax for automation?
-  answer: 'pipeline {
-
-    agent any
-
-    stages {
-
-    stage(''Build'') {
-
-    steps {
-
-    echo "Building..."
-
+    ```bash
+    #!/bin/bash
+    cleanup() {
+      echo "Cleaning up temp files..."
+      rm -f /tmp/myapp_*
+      exit
     }
 
-    }
+    trap cleanup SIGINT SIGTERM EXIT
 
-    }
+    echo "Running... Press Ctrl+C to stop"
+    while true; do sleep 1; done
+    ```
 
-    }'
-- question: How do you iterate over a dictionary in Python?
-  answer: 'for key, value in mydict.items():
+    Common signals: `SIGINT` (Ctrl+C), `SIGTERM` (kill), `EXIT` (script ends).
 
-    print(key, value)'
-- question: How do you set environment variables in Bash?
-  answer: export VAR="DevOps"
-- question: What is an Ansible role?
-  answer: A reusable way to organize Ansible tasks, handlers, and templates.
-- question: What is a multiline string in YAML?
-  answer: 'message: |
+- question: What is the difference between $(command) and backticks in Bash?
+  answer: |
+    Both perform command substitution, but `$(command)` is preferred:
 
-    Line 1
+    ```bash
+    # Preferred — nestable and readable
+    echo "Date: $(date +%Y-%m-%d)"
+    files=$(find /var/log -name "$(hostname)*.log")
 
-    Line 2'
-- question: What is an associative array in Bash?
-  answer: 'declare -A myarray
+    # Legacy backticks — cannot nest, harder to read
+    echo "Date: `date +%Y-%m-%d`"
+    ```
 
-    myarray[name]="DevOps"
+    `$()` can be nested: `$(echo $(date))`, while backticks cannot.
 
-    echo ${myarray[name]}'
-- question: How do you run a shell command in Python?
-  answer: 'import os
+- question: How do you handle multiline commands in a Bash script?
+  answer: |
+    Use `\` for line continuation:
 
-    os.system("ls")'
-- question: What is jq in Linux?
-  answer: 'Used to parse JSON. Example:
+    ```bash
+    curl -X POST \
+      -H "Content-Type: application/json" \
+      -d '{"name": "DevOps"}' \
+      https://api.example.com/deploy
+    ```
 
-    cat data.json | jq ''.name'''
-- question: How do you exit a script with a status code?
-  answer: exit 1
-- question: How do you debug a Bash script?
-  answer: 'Use set -x for debugging:
+    Or use heredocs for multi-line strings:
 
+    ```bash
+    cat <<EOF
+    This is a
+    multi-line string
+    EOF
+    ```
+
+- question: How do you use conditionals inside a YAML file?
+  answer: |
+    YAML itself doesn't support conditionals, but tools built on top of it do. For example, Ansible uses Jinja2:
+
+    ```yaml
+    tasks:
+      - name: Install Nginx on Debian
+        apt:
+          name: nginx
+          state: present
+        when: ansible_os_family == "Debian"
+
+      - name: Install Nginx on RedHat
+        yum:
+          name: nginx
+          state: present
+        when: ansible_os_family == "RedHat"
+    ```
+
+- question: How do you encrypt secrets in YAML?
+  answer: |
+    Use **Ansible Vault** to encrypt sensitive YAML files:
+
+    ```bash
+    # Encrypt a file
+    ansible-vault encrypt secrets.yaml
+
+    # Edit an encrypted file
+    ansible-vault edit secrets.yaml
+
+    # Decrypt
+    ansible-vault decrypt secrets.yaml
+
+    # Run playbook with vault password
+    ansible-playbook site.yaml --ask-vault-pass
+    ```
+
+    For Kubernetes, use **Sealed Secrets** or **SOPS** to encrypt secrets in Git.
+
+- question: How do you execute a Python script inside a Bash script?
+  answer: |
+    ```bash
     #!/bin/bash
 
-    set -x
+    # Run a Python file
+    python3 /path/to/script.py
 
-    echo "Debugging mode enabled"'
-- question: How do you trap signals in a Bash script?
-  answer: 'trap "echo ''Script interrupted''; exit" SIGINT SIGTERM
+    # Run inline Python
+    python3 -c "import sys; print(sys.version)"
 
-    Catches Ctrl+C (SIGINT) and terminates gracefully.'
-- question: What is the difference between $(command) and backticks `command` in Bash?
-  answer: Both execute commands, but $(command) is preferred as it's nestable.
-- question: How do you handle multiline commands in a Bash script?
-  answer: 'Use \ for line continuation:
+    # Pass arguments
+    python3 deploy.py --env production
 
-    echo "This is a \
+    # Capture Python output
+    result=$(python3 -c "print(2 + 2)")
+    echo "Result: $result"
+    ```
 
-    multiline command"'
-- question: How do you use conditionals inside a YAML file?
-  answer: 'With Jinja2 templating in Ansible:
-
-    tasks:
-
-    - name: Install package
-
-    yum:
-
-    name: httpd
-
-    when: ansible_os_family == "RedHat"'
-- question: How do you encrypt secrets in YAML?
-  answer: 'Use Ansible Vault:
-
-    ansible-vault encrypt secrets.yaml'
-- question: How do you execute a Python script inside a Bash script?
-  answer: python3
 - question: What is the difference between continue and break in Bash loops?
-  answer: 'break exits the loop entirely.
+  answer: |
+    ```bash
+    for i in {1..5}; do
+      if [ $i -eq 3 ]; then
+        continue  # Skip iteration 3, go to next
+      fi
+      echo "$i"
+    done
+    # Output: 1 2 4 5
 
-    continue skips the current iteration.'
+    for i in {1..5}; do
+      if [ $i -eq 3 ]; then
+        break  # Exit the loop entirely
+      fi
+      echo "$i"
+    done
+    # Output: 1 2
+    ```
+
 - question: How do you parse a JSON file in Bash?
-  answer: 'Use jq:
+  answer: |
+    Use `jq`:
 
-    cat data.json | jq ''.key'''
+    ```bash
+    # Read a key
+    jq '.key' data.json
+
+    # Read nested key
+    jq '.server.host' config.json
+
+    # Iterate over an array
+    jq -r '.users[] | .name' data.json
+
+    # Extract raw string (no quotes)
+    NAME=$(jq -r '.name' data.json)
+    echo "$NAME"
+    ```
+
 - question: How do you use arrays in Groovy?
-  answer: 'def arr = ["a", "b", "c"]
+  answer: |
+    ```groovy
+    // List (dynamic array)
+    def servers = ["web01", "web02", "db01"]
+    println servers[0]      // web01
+    servers << "cache01"    // Append
 
-    println arr[0]'
-- question: What is a Jenkins shared library in Groovy?
-  answer: A reusable pipeline function stored in Git.
-- question: How do you set a timeout for a script in Bash?
-  answer: timeout 10s ./script.sh
-- question: How do you execute a Bash function in a subshell?
-  answer: '(my_function)
-
-    Runs in a new shell, not affecting the parent script.'
-- question: How do you use Python to send an HTTP request?
-  answer: 'import requests
-
-    response = requests.get("https://example.com")
-
-    print(response.text)'
-- question: How do you handle authentication in a Python script?
-  answer: 'import requests
-
-    requests.get("https://example.com", auth=("user", "pass"))'
-- question: How do you find and replace text in YAML files?
-  answer: 'Use yq:
-
-    yq e ''.name="NewValue"'' -i config.yaml'
-- question: How do you define a multi-stage Jenkins pipeline in Groovy?
-  answer: 'pipeline {
-
-    agent any
-
-    stages {
-
-    stage(''Build'') { steps { echo "Building..." } }
-
-    stage(''Test'') { steps { echo "Testing..." } }
-
+    // Iterate
+    servers.each { server ->
+      println "Server: ${server}"
     }
 
-    }'
+    // Filter
+    def webServers = servers.findAll { it.startsWith("web") }
+    ```
+
+- question: What is a Jenkins shared library in Groovy?
+  answer: |
+    A Jenkins shared library is a reusable Groovy codebase stored in a Git repository that multiple pipelines can import:
+
+    ```
+    vars/
+      deployApp.groovy         # Custom pipeline step
+    src/
+      org/example/Utils.groovy
+    ```
+
+    `vars/deployApp.groovy`:
+
+    ```groovy
+    def call(String env) {
+      sh "deploy --env ${env}"
+    }
+    ```
+
+    Usage in a Jenkinsfile:
+
+    ```groovy
+    @Library('my-shared-lib') _
+    pipeline {
+      agent any
+      stages {
+        stage('Deploy') {
+          steps { deployApp('production') }
+        }
+      }
+    }
+    ```
+
+- question: How do you set a timeout for a script in Bash?
+  answer: |
+    Use the `timeout` command:
+
+    ```bash
+    # Kill after 10 seconds
+    timeout 10s ./long_running_script.sh
+
+    # With a specific signal
+    timeout --signal=SIGKILL 30s ./script.sh
+
+    # Check if it timed out (exit code 124)
+    timeout 5s ./script.sh
+    if [ $? -eq 124 ]; then
+      echo "Script timed out"
+    fi
+    ```
+
+- question: How do you execute a Bash function in a subshell?
+  answer: |
+    Wrap the call in parentheses `()`:
+
+    ```bash
+    my_function() {
+      cd /tmp
+      export MY_VAR="hello"
+    }
+
+    # Run in subshell — changes don't affect the parent
+    (my_function)
+
+    echo "$MY_VAR"  # Empty — variable was set in subshell only
+    pwd              # Still in original directory
+    ```
+
+    Subshells are useful for isolating side effects like `cd` or variable changes.
+
+- question: How do you use Python to send an HTTP request?
+  answer: |
+    Use the `requests` library:
+
+    ```python
+    import requests
+
+    # GET request
+    response = requests.get("https://api.example.com/data")
+    print(response.json())
+
+    # POST request with JSON body
+    response = requests.post(
+        "https://api.example.com/deploy",
+        json={"env": "production"},
+        headers={"Authorization": "Bearer TOKEN"}
+    )
+    print(response.status_code)
+    ```
+
+- question: How do you handle authentication in a Python script?
+  answer: |
+    ```python
+    import requests
+    import os
+
+    # Basic auth
+    r = requests.get("https://api.example.com", auth=("user", "pass"))
+
+    # Bearer token
+    headers = {"Authorization": "Bearer <token>"}
+    r = requests.get("https://api.example.com", headers=headers)
+
+    # API key from environment variable (recommended)
+    api_key = os.environ["API_KEY"]
+    r = requests.get(f"https://api.example.com?key={api_key}")
+    ```
+
+    Never hardcode credentials — use environment variables or a secrets manager.
+
+- question: How do you find and replace text in YAML files?
+  answer: |
+    Use `yq` (a YAML-aware CLI processor):
+
+    ```bash
+    # Update a value
+    yq e '.name = "NewValue"' -i config.yaml
+
+    # Add a new field
+    yq e '.metadata.version = "2.0"' -i config.yaml
+
+    # Delete a field
+    yq e 'del(.deprecated)' -i config.yaml
+
+    # Read a value
+    yq e '.name' config.yaml
+    ```
+
+    Avoid using `sed` on YAML files — it can break indentation and structure.
+
+- question: How do you define a multi-stage Jenkins pipeline in Groovy?
+  answer: |
+    ```groovy
+    pipeline {
+      agent any
+      stages {
+        stage('Build') {
+          steps { sh 'make build' }
+        }
+        stage('Test') {
+          parallel {
+            stage('Unit Tests') {
+              steps { sh 'make test-unit' }
+            }
+            stage('Integration Tests') {
+              steps { sh 'make test-integration' }
+            }
+          }
+        }
+        stage('Deploy') {
+          when { branch 'main' }
+          steps { sh 'make deploy' }
+        }
+      }
+    }
+    ```
+
 - question: What is an inline script in a CI/CD pipeline?
-  answer: 'Running a script directly inside a pipeline (e.g., GitHub Actions, Jenkins).
+  answer: |
+    An inline script is a shell command written directly inside a pipeline definition, rather than calling an external script file.
 
-    Example in GitHub Actions:
+    GitHub Actions example:
 
+    ```yaml
     jobs:
+      build:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+          - run: |
+              echo "Building..."
+              npm install
+              npm run build
+    ```
 
-    build:
+    Use inline scripts for simple steps and external scripts for complex logic.
 
-    steps:
-
-    - run: echo "Inline script execution"'
 - question: How do you execute a script remotely via SSH in Bash?
-  answer: ssh user@server 'bash -s'
+  answer: |
+    ```bash
+    # Run a command remotely
+    ssh user@server 'uptime && df -h'
+
+    # Run a local script on a remote server
+    ssh user@server 'bash -s' < local_script.sh
+
+    # Run with arguments
+    ssh user@server 'bash -s' < deploy.sh --env production
+
+    # Run multiple commands
+    ssh user@server << 'EOF'
+      cd /opt/app
+      git pull
+      systemctl restart app
+    EOF
+    ```
+
 - question: How do you ensure idempotency in an Ansible playbook?
-  answer: Ansible modules ensure idempotency by only making changes when needed.
+  answer: |
+    Ansible modules are designed to be idempotent — they only make changes when the current state differs from the desired state.
+
+    Best practices:
+    - Use declarative modules (`apt`, `service`, `copy`) instead of `command`/`shell`
+    - For `command`/`shell`, add `creates` or `removes` conditions:
+
+    ```yaml
+    - name: Build app (only if binary missing)
+      command: make build
+      args:
+        creates: /opt/app/bin/server
+    ```
+
+    - Use `changed_when: false` for read-only commands
+    - Test with `--check` (dry run) mode

@@ -12,6 +12,8 @@ export type Phase =
   | 'a-pause'
   | 'done';
 
+export type Rating = 'again' | 'hard' | 'good' | 'easy';
+
 interface PlaybackState {
   currentFile: string | null;
   fileData: FileDetail | null;
@@ -20,6 +22,8 @@ interface PlaybackState {
   phase: Phase;
   isPlaying: boolean;
   isShuffled: boolean;
+  isQueueMode: boolean;
+  pendingRating: Rating | null;
 }
 
 type Action =
@@ -31,6 +35,9 @@ type Action =
   | { type: 'PREV_CARD' }
   | { type: 'GO_TO_CARD'; index: number }
   | { type: 'TOGGLE_SHUFFLE' }
+  | { type: 'TOGGLE_QUEUE_MODE' }
+  | { type: 'MARK_CARD'; rating: Rating }
+  | { type: 'SKIP_CARD' }
   | { type: 'RESTART' };
 
 function shuffle(arr: number[]): number[] {
@@ -47,6 +54,38 @@ function makeOrder(length: number, shouldShuffle: boolean): number[] {
   return shouldShuffle ? shuffle(order) : order;
 }
 
+function getReinsertDistance(rating: 'again' | 'hard' | 'good', remaining: number): number {
+  const jitter = Math.round(Math.random());
+  switch (rating) {
+    case 'again':
+      return Math.max(3, Math.floor(remaining * 0.10)) + jitter;
+    case 'hard':
+      return Math.max(5, Math.floor(remaining * 0.25)) + jitter;
+    case 'good':
+      return Math.max(7, Math.floor(remaining * 0.60)) + jitter;
+  }
+}
+
+function advanceQueue(state: PlaybackState): PlaybackState {
+  const rating = state.pendingRating;
+  const cardValue = state.cardOrder[state.currentCardIdx];
+  const newOrder = [...state.cardOrder];
+  newOrder.splice(state.currentCardIdx, 1);
+
+  if (rating === 'again' || rating === 'hard' || rating === 'good') {
+    const remaining = newOrder.length - state.currentCardIdx;
+    const distance = getReinsertDistance(rating, remaining);
+    const insertAt = Math.min(state.currentCardIdx + distance, newOrder.length);
+    newOrder.splice(insertAt, 0, cardValue);
+  }
+  // easy or null: don't reinsert
+
+  if (newOrder.length === 0 || state.currentCardIdx >= newOrder.length) {
+    return { ...state, cardOrder: newOrder, pendingRating: null, phase: 'done', isPlaying: false };
+  }
+  return { ...state, cardOrder: newOrder, pendingRating: null, phase: 'question' };
+}
+
 const initialState: PlaybackState = {
   currentFile: null,
   fileData: null,
@@ -55,6 +94,8 @@ const initialState: PlaybackState = {
   phase: 'idle',
   isPlaying: false,
   isShuffled: false,
+  isQueueMode: false,
+  pendingRating: null,
 };
 
 function reducer(state: PlaybackState, action: Action): PlaybackState {
@@ -69,11 +110,15 @@ function reducer(state: PlaybackState, action: Action): PlaybackState {
         currentCardIdx: 0,
         phase: 'idle',
         isPlaying: false,
+        pendingRating: null,
       };
     }
     case 'PLAY':
       if (state.phase === 'done') {
-        return { ...state, isPlaying: true, currentCardIdx: 0, phase: 'question' };
+        const order = state.isQueueMode
+          ? makeOrder(state.fileData?.questions.length || 0, state.isShuffled)
+          : state.cardOrder;
+        return { ...state, isPlaying: true, currentCardIdx: 0, cardOrder: order, phase: 'question', pendingRating: null };
       }
       if (state.phase === 'idle') {
         return { ...state, isPlaying: true, phase: 'question' };
@@ -84,6 +129,9 @@ function reducer(state: PlaybackState, action: Action): PlaybackState {
     case 'SET_PHASE':
       return { ...state, phase: action.phase };
     case 'NEXT_CARD': {
+      if (state.isQueueMode) {
+        return advanceQueue(state);
+      }
       const next = state.currentCardIdx + 1;
       if (next >= state.cardOrder.length) {
         return { ...state, phase: 'done', isPlaying: false };
@@ -92,18 +140,28 @@ function reducer(state: PlaybackState, action: Action): PlaybackState {
     }
     case 'PREV_CARD': {
       const prev = Math.max(0, state.currentCardIdx - 1);
-      return { ...state, currentCardIdx: prev, phase: 'question' };
+      return { ...state, currentCardIdx: prev, phase: 'question', pendingRating: null };
     }
     case 'GO_TO_CARD':
-      return { ...state, currentCardIdx: action.index, phase: 'question', isPlaying: true };
+      return { ...state, currentCardIdx: action.index, phase: 'question', isPlaying: true, pendingRating: null };
+    case 'MARK_CARD':
+      return { ...state, pendingRating: action.rating };
+    case 'SKIP_CARD':
+      // Easy immediate skip: clear pending (don't reinsert), advance
+      return advanceQueue({ ...state, pendingRating: null });
     case 'TOGGLE_SHUFFLE': {
       const newShuffled = !state.isShuffled;
       const order = makeOrder(state.fileData?.questions.length || 0, newShuffled);
-      return { ...state, isShuffled: newShuffled, cardOrder: order, currentCardIdx: 0, phase: 'idle', isPlaying: false };
+      return { ...state, isShuffled: newShuffled, cardOrder: order, currentCardIdx: 0, phase: 'idle', isPlaying: false, pendingRating: null };
+    }
+    case 'TOGGLE_QUEUE_MODE': {
+      const newQueueMode = !state.isQueueMode;
+      const order = makeOrder(state.fileData?.questions.length || 0, state.isShuffled);
+      return { ...state, isQueueMode: newQueueMode, cardOrder: order, currentCardIdx: 0, phase: 'idle', isPlaying: false, pendingRating: null };
     }
     case 'RESTART': {
       const order = makeOrder(state.fileData?.questions.length || 0, state.isShuffled);
-      return { ...state, cardOrder: order, currentCardIdx: 0, phase: 'idle', isPlaying: false };
+      return { ...state, cardOrder: order, currentCardIdx: 0, phase: 'idle', isPlaying: false, pendingRating: null };
     }
     default:
       return state;
@@ -128,7 +186,6 @@ export function usePlayback() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<number | null>(null);
-  // Use a ref to track phase so audio callbacks always see the current value
   const phaseRef = useRef<Phase>(state.phase);
   phaseRef.current = state.phase;
 
@@ -207,7 +264,6 @@ export function usePlayback() {
     const audio = audioRef.current;
 
     audio.onended = () => {
-      // Read phase from ref to avoid stale closure
       const p = phaseRef.current;
       if (p === 'q-speaking') {
         dispatch({ type: 'SET_PHASE', phase: 'q-pause' });
@@ -252,6 +308,10 @@ export function usePlayback() {
     stopAudioAndTimer(audioRef, timerRef);
     dispatch({ type: 'TOGGLE_SHUFFLE' });
   }, []);
+  const toggleQueueMode = useCallback(() => {
+    stopAudioAndTimer(audioRef, timerRef);
+    dispatch({ type: 'TOGGLE_QUEUE_MODE' });
+  }, []);
   const restart = useCallback(() => {
     stopAudioAndTimer(audioRef, timerRef);
     dispatch({ type: 'RESTART' });
@@ -259,6 +319,14 @@ export function usePlayback() {
   const goToCard = useCallback((index: number) => {
     stopAudioAndTimer(audioRef, timerRef);
     dispatch({ type: 'GO_TO_CARD', index });
+  }, []);
+  const rateCard = useCallback((rating: Rating) => {
+    if (rating === 'easy') {
+      stopAudioAndTimer(audioRef, timerRef);
+      dispatch({ type: 'SKIP_CARD' });
+    } else {
+      dispatch({ type: 'MARK_CARD', rating });
+    }
   }, []);
 
   // Derived state
@@ -269,6 +337,8 @@ export function usePlayback() {
       ? 'answer'
       : 'question';
   const isSpeaking = state.phase === 'q-speaking' || state.phase === 'a-speaking';
+  const queueRemaining = state.isQueueMode ? state.cardOrder.length - state.currentCardIdx : 0;
+  const isCardActive = state.isPlaying && state.phase !== 'idle' && state.phase !== 'done';
 
   return {
     state,
@@ -276,13 +346,17 @@ export function usePlayback() {
     currentRealIndex,
     displayType,
     isSpeaking,
+    queueRemaining,
+    isCardActive,
     play,
     pause,
     next,
     prev,
     loadFile,
     toggleShuffle,
+    toggleQueueMode,
     restart,
     goToCard,
+    rateCard,
   };
 }

@@ -69,7 +69,7 @@ export function QuestionList({
               justifyContent: 'center',
               flexShrink: 0,
             }}>
-              {orderIdx + 1}
+              {realIdx + 1}
             </span>
             <span style={{
               fontSize: '12px',

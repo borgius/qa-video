@@ -1,6 +1,7 @@
 import { SlideCard } from './SlideCard';
+import { RatingButtons } from './RatingButtons';
 import { YamlCard } from '../types';
-import { Phase } from '../hooks/usePlayback';
+import { Phase, Rating } from '../hooks/usePlayback';
 
 interface FlashcardViewerProps {
   card: YamlCard | null;
@@ -14,6 +15,11 @@ interface FlashcardViewerProps {
   onToggleSidebar: () => void;
   zoomed: boolean;
   onToggleZoom: () => void;
+  onRate?: (rating: Rating) => void;
+  queueRemaining?: number;
+  pendingRating?: Rating | null;
+  isQueueMode?: boolean;
+  isCardActive?: boolean;
 }
 
 const toolbarBtnStyle: React.CSSProperties = {
@@ -42,6 +48,11 @@ export function FlashcardViewer({
   onToggleSidebar,
   zoomed,
   onToggleZoom,
+  onRate,
+  queueRemaining,
+  pendingRating,
+  isQueueMode,
+  isCardActive,
 }: FlashcardViewerProps) {
   if (!card) {
     return (
@@ -134,6 +145,19 @@ export function FlashcardViewer({
         isSpeaking={isSpeaking}
         zoomed={zoomed}
       />
+
+      {/* Rating buttons (queue mode, floating overlay on top of slide) */}
+      {isQueueMode && isCardActive && onRate && (
+        <div style={{
+          position: 'absolute',
+          bottom: '12px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 20,
+        }}>
+          <RatingButtons onRate={onRate} remaining={queueRemaining ?? 0} selected={pendingRating ?? null} />
+        </div>
+      )}
 
       {/* Phase indicator */}
       {!zoomed && phase !== 'idle' && phase !== 'done' && (

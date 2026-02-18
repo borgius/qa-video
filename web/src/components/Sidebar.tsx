@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Phase } from '../hooks/usePlayback';
 import type { FileInfo, YamlCard } from '../types';
 import { PlaybackControls } from './PlaybackControls';
@@ -19,6 +19,8 @@ interface SidebarProps {
   onPrev: () => void;
   onShuffle: () => void;
   onRestart: () => void;
+  isQueueMode: boolean;
+  onToggleQueueMode: () => void;
   loadingFiles: boolean;
   onToggleSidebar: () => void;
   questions: YamlCard[];
@@ -41,6 +43,8 @@ export function Sidebar({
   onPrev,
   onShuffle,
   onRestart,
+  isQueueMode,
+  onToggleQueueMode,
   loadingFiles,
   onToggleSidebar,
   questions,
@@ -49,6 +53,11 @@ export function Sidebar({
 }: SidebarProps) {
   const hasQuestions = questions.length > 0;
   const [topicsExpanded, setTopicsExpanded] = useState(true);
+
+  // Auto-collapse topics when a file is selected
+  useEffect(() => {
+    if (selectedFile) setTopicsExpanded(false);
+  }, [selectedFile]);
   const selectedFileInfo = files.find(f => f.name === selectedFile);
 
   return (
@@ -259,6 +268,7 @@ export function Sidebar({
         isPlaying={isPlaying}
         phase={phase}
         isShuffled={isShuffled}
+        isQueueMode={isQueueMode}
         currentCardIdx={currentCardIdx}
         totalCards={totalCards}
         onPlay={onPlay}
@@ -267,6 +277,7 @@ export function Sidebar({
         onPrev={onPrev}
         onShuffle={onShuffle}
         onRestart={onRestart}
+        onToggleQueueMode={onToggleQueueMode}
         hasFile={selectedFile !== null}
       />
     </aside>

@@ -9,7 +9,7 @@ import { fetchFileDetail } from './api';
 export default function App() {
   const { files, loading: loadingFiles } = useFiles();
   const playback = usePlayback();
-  const { state, currentCard, currentRealIndex, displayType, isSpeaking } = playback;
+  const { state, currentCard, currentRealIndex, displayType, isSpeaking, queueRemaining, isCardActive } = playback;
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [zoomed, setZoomed] = useState(false);
 
@@ -34,6 +34,8 @@ export default function App() {
     onRestart: playback.restart,
     onToggleSidebar: toggleSidebar,
     onToggleZoom: toggleZoom,
+    onToggleQueueMode: playback.toggleQueueMode,
+    onRate: playback.rateCard,
   }), [state.isPlaying, playback, toggleSidebar, toggleZoom]);
 
   useKeyboard(keyboardActions);
@@ -65,6 +67,8 @@ export default function App() {
           onPrev={playback.prev}
           onShuffle={playback.toggleShuffle}
           onRestart={playback.restart}
+          isQueueMode={state.isQueueMode}
+          onToggleQueueMode={playback.toggleQueueMode}
           loadingFiles={loadingFiles}
           onToggleSidebar={toggleSidebar}
           questions={state.fileData?.questions ?? []}
@@ -85,6 +89,11 @@ export default function App() {
         onToggleSidebar={toggleSidebar}
         zoomed={zoomed}
         onToggleZoom={toggleZoom}
+        onRate={playback.rateCard}
+        queueRemaining={queueRemaining}
+        pendingRating={state.pendingRating}
+        isQueueMode={state.isQueueMode}
+        isCardActive={isCardActive}
       />
     </div>
   );

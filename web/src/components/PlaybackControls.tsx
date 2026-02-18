@@ -4,6 +4,7 @@ interface PlaybackControlsProps {
   isPlaying: boolean;
   phase: Phase;
   isShuffled: boolean;
+  isQueueMode: boolean;
   currentCardIdx: number;
   totalCards: number;
   onPlay: () => void;
@@ -12,6 +13,7 @@ interface PlaybackControlsProps {
   onPrev: () => void;
   onShuffle: () => void;
   onRestart: () => void;
+  onToggleQueueMode: () => void;
   hasFile: boolean;
 }
 
@@ -19,6 +21,7 @@ export function PlaybackControls({
   isPlaying,
   phase,
   isShuffled,
+  isQueueMode,
   currentCardIdx,
   totalCards,
   onPlay,
@@ -27,6 +30,7 @@ export function PlaybackControls({
   onPrev,
   onShuffle,
   onRestart,
+  onToggleQueueMode,
   hasFile,
 }: PlaybackControlsProps) {
   const isIdle = phase === 'idle' || phase === 'done';
@@ -90,6 +94,29 @@ export function PlaybackControls({
         gap: '8px',
         marginBottom: '12px',
       }}>
+        {/* Queue mode */}
+        <button
+          onClick={onToggleQueueMode}
+          disabled={!hasFile}
+          title="Queue mode (Q)"
+          style={{
+            width: '36px',
+            height: '36px',
+            borderRadius: '8px',
+            background: isQueueMode ? '#3b82f6' : 'rgba(255,255,255,0.1)',
+            color: 'var(--text-primary)',
+            fontSize: '14px',
+            fontWeight: 700,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            opacity: hasFile ? 1 : 0.3,
+            transition: 'background 0.2s',
+          }}
+        >
+          SRS
+        </button>
+
         {/* Shuffle */}
         <button
           onClick={onShuffle}
@@ -208,7 +235,7 @@ export function PlaybackControls({
         color: 'var(--text-muted)',
         textAlign: 'center',
       }}>
-        Space: play/pause &middot; &larr;&rarr;: prev/next &middot; S: shuffle &middot; R: restart
+        Space: play/pause &middot; &larr;&rarr;: prev/next &middot; S: shuffle &middot; Q: queue &middot; R: restart
       </div>
     </div>
   );

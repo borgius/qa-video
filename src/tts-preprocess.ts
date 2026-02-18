@@ -133,6 +133,11 @@ const ACRONYMS: [RegExp, string][] = [
 export function preprocessForTTS(text: string): string {
   let result = text;
 
+  // 0. Strip inline markdown markers (bold, italic, inline code)
+  result = result.replace(/`([^`]*)`/g, '$1');
+  result = result.replace(/\*{1,3}(.*?)\*{1,3}/g, '$1');
+  result = result.replace(/_{1,3}(.*?)_{1,3}/g, '$1');
+
   // 0. Replace newlines with a small pause (treated as end of sentence)
   result = result.replace(/\r?\n+/g, ',, ');
 

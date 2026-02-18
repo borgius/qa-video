@@ -1,12 +1,27 @@
 /**
- * Minimal Markdown parser for fenced code blocks in Q&A answers.
- * Only triple-backtick fenced code blocks are handled; all other text is
- * treated as plain prose.
+ * Markdown parser for Q&A answers.
+ * Handles fenced code blocks (block-level) and inline formatting
+ * (**bold**, *italic*, ***bold italic***, `inline code`).
  */
 
 export interface TextSegment { kind: 'text'; content: string; }
 export interface CodeSegment { kind: 'code'; lang: string; content: string; }
 export type MdSegment = TextSegment | CodeSegment;
+
+// ── Inline markdown types ────────────────────────────────────────────────────
+
+export interface InlineStyle {
+  bold: boolean;
+  italic: boolean;
+  code: boolean;
+}
+
+export interface InlineRun {
+  text: string;
+  style: InlineStyle;
+}
+
+export const PLAIN_STYLE: InlineStyle = { bold: false, italic: false, code: false };
 
 /**
  * Split `text` into alternating text and code-block segments using a
@@ -68,4 +83,101 @@ export function hasCodeBlocks(text: string): boolean {
  */
 export function codeToTTS(seg: CodeSegment): string {
   return `Code: ${seg.content}`;
+}
+
+// ── Inline markdown parsing ──────────────────────────────────────────────────
+
+/**
+ * Parse inline markdown into styled text runs.
+ * Handles `code`, ***bold italic***, **bold**, *italic* (and _ variants).
+ * Backticks have highest priority and disable other parsing inside them.
+ */
+export function parseInlineMarkdown(text: string): InlineRun[] {
+  const runs: InlineRun[] = [];
+  let i = 0;
+  let buf = '';
+  let bold = false;
+  let italic = false;
+
+  function flush(): void {
+    if (buf) {
+      runs.push({ text: buf, style: { bold, italic, code: false } });
+      buf = '';
+    }
+  }
+
+  while (i < text.length) {
+    const ch = text[i];
+
+    // Backtick: inline code (highest priority, no nesting)
+    if (ch === '`') {
+      flush();
+      i++;
+      const start = i;
+      while (i < text.length && text[i] !== '`') i++;
+      const code = text.slice(start, i);
+      if (code) runs.push({ text: code, style: { bold: false, italic: false, code: true } });
+      if (i < text.length) i++; // skip closing backtick
+      continue;
+    }
+
+    // Asterisks or underscores: bold/italic toggles
+    if (ch === '*' || ch === '_') {
+      let count = 0;
+      let j = i;
+      while (j < text.length && text[j] === ch) { count++; j++; }
+
+      if (count >= 3) {
+        flush();
+        bold = !bold;
+        italic = !italic;
+        i += 3;
+      } else if (count >= 2) {
+        flush();
+        bold = !bold;
+        i += 2;
+      } else {
+        flush();
+        italic = !italic;
+        i += 1;
+      }
+      continue;
+    }
+
+    buf += ch;
+    i++;
+  }
+
+  flush();
+
+  // Collapse adjacent runs with identical styles
+  const collapsed: InlineRun[] = [];
+  for (const run of runs) {
+    const prev = collapsed[collapsed.length - 1];
+    if (prev && prev.style.bold === run.style.bold
+      && prev.style.italic === run.style.italic
+      && prev.style.code === run.style.code) {
+      prev.text += run.text;
+    } else {
+      collapsed.push({ text: run.text, style: { ...run.style } });
+    }
+  }
+
+  return collapsed.length > 0
+    ? collapsed
+    : [{ text, style: { ...PLAIN_STYLE } }];
+}
+
+/**
+ * Strip inline markdown markers, keeping only the text content.
+ * Used for TTS preprocessing.
+ */
+export function stripInlineMarkdown(text: string): string {
+  let result = text;
+  // Strip backtick-wrapped code (keep content)
+  result = result.replace(/`([^`]*)`/g, '$1');
+  // Strip ***, **, * and ___, __, _ wrappers (keep content)
+  result = result.replace(/\*{1,3}(.*?)\*{1,3}/g, '$1');
+  result = result.replace(/_{1,3}(.*?)_{1,3}/g, '$1');
+  return result;
 }

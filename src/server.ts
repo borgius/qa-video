@@ -254,7 +254,7 @@ app.get('/api/slides/:name/:cardIndex/:type', async (req, res, next) => {
 
     const segType = type as 'question' | 'answer';
     const qSlug = slug(card.question);
-    const slideHash = `slide:v3:${text}:${segType}:${cardIndex}:${totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}`;
+    const slideHash = `slide:v4:${text}:${segType}:${cardIndex}:${totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}`;
     const tempDir = join(outputDir, '.tmp', name);
     mkdirSync(tempDir, { recursive: true });
 

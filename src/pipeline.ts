@@ -280,7 +280,7 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
   // Slide cache keys include :v2 to invalidate pre-markdown cached slides.
   for (let i = 0; i < segments.length; i++) {
     const seg = segments[i];
-    const slideHash = `slide:v3:${seg.text}:${seg.type}:${seg.cardIndex}:${seg.totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}`;
+    const slideHash = `slide:v4:${seg.text}:${seg.type}:${seg.cardIndex}:${seg.totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}`;
     const slideTypeTag = seg.type === 'question' ? 'q' : 'a';
     seg.imagePath = cachedPath(config.tempDir, `slide_${i}_${slideTypeTag}_${seg.questionSlug}`, slideHash, 'png');
   }

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import type { Rating } from './usePlayback';
 
 interface KeyboardActions {
   onTogglePlay: () => void;
@@ -8,13 +9,30 @@ interface KeyboardActions {
   onRestart: () => void;
   onToggleSidebar: () => void;
   onToggleZoom: () => void;
+  onToggleQueueMode: () => void;
+  onRate: (rating: Rating) => void;
 }
+
+const ratingKeys: Record<string, Rating> = {
+  '1': 'again',
+  '2': 'hard',
+  '3': 'good',
+  '4': 'easy',
+};
 
 export function useKeyboard(actions: KeyboardActions) {
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       // Don't trigger when typing in an input
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      // Rating keys (1-4)
+      const rating = ratingKeys[e.key];
+      if (rating) {
+        e.preventDefault();
+        actions.onRate(rating);
+        return;
+      }
 
       switch (e.key) {
         case ' ':
@@ -46,6 +64,10 @@ export function useKeyboard(actions: KeyboardActions) {
         case 'f':
           e.preventDefault();
           actions.onToggleZoom();
+          break;
+        case 'q':
+          e.preventDefault();
+          actions.onToggleQueueMode();
           break;
       }
     }

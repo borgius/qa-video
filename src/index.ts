@@ -777,7 +777,7 @@ program
       const vite = spawn(
         'npx',
         ['vite', '--port', String(webPort)],
-        { cwd: webDir, stdio: 'inherit', shell: true },
+        { cwd: webDir, stdio: 'inherit', shell: true, env: { ...process.env, PORT: String(apiPort) } },
       );
 
       vite.on('error', (err) => {
