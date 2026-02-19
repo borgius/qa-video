@@ -1,6 +1,6 @@
 {
   "name": "qa-video",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Generate flashcard videos from YAML Q&A files with TTS narration",
   "type": "module",
   "main": "dist/index.js",
