@@ -20,6 +20,20 @@ Each card shows the question (with voiceover), pauses, then shows the answer (wi
 
 ## Install
 
+**Global install (recommended):**
+
+```bash
+npm install -g qa-video
+```
+
+**Or run without installing:**
+
+```bash
+npx -y qa-video generate -i qa/core-concepts.yaml
+```
+
+**From source:**
+
 ```bash
 pnpm install
 pnpm build
