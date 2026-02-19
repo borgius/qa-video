@@ -179,12 +179,39 @@ qa-video clear -d qa/                 # clear caches for all files in dir
 
 ## YAML Format
 
+Each YAML file has two top-level keys: `config` (optional) and `questions` (required).
+
+### Config
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `name` | string | filename | Video title (used for YouTube upload) |
+| `description` | string | — | Video description (used for YouTube upload) |
+| `questionDelay` | number | `2` | Seconds of silence after question voiceover |
+| `answerDelay` | number | `3` | Seconds of silence after answer voiceover |
+| `cardGap` | number | `1` | Seconds of silence between cards |
+| `voice` | string | `af_heart` | Kokoro TTS voice for answer prose |
+| `questionVoice` | string | `am_adam` | Kokoro TTS voice for questions |
+| `codeVoice` | string | `am_echo` | Kokoro TTS voice for code blocks |
+| `fontSize` | number | `52` | Slide text font size (px) |
+| `backgroundColor` | string | `#1a1a2e` | Gap slide background color |
+| `questionColor` | string | `#16213e` | Question slide background color |
+| `answerColor` | string | `#0f3460` | Answer slide background color |
+| `textColor` | string | `#ffffff` | Slide text color |
+
+Config values in the YAML override defaults, but CLI flags take priority.
+
+The `youtube` block is auto-populated after a successful upload — do not edit it manually.
+
+### Questions
+
+Each entry has a `question` and an `answer` field. Both support **Markdown formatting** including bold, italic, inline code, fenced code blocks, and bullet/numbered lists.
+
+### Examples
+
+**Minimal — just questions and answers:**
+
 ```yaml
-config:
-  name: "Video Title"
-  description: "Video description for YouTube"
-  questionDelay: 1
-  answerDelay: 1
 questions:
 - question: What is DevOps?
   answer: DevOps is a set of practices that combine software development and IT operations.
@@ -192,7 +219,55 @@ questions:
   answer: Docker is a platform for containerizing applications.
 ```
 
-Config values in the YAML override defaults but CLI flags take priority.
+**With config and Markdown formatting:**
+
+```yaml
+config:
+  name: "DevOps Interview Questions: Core Concepts"
+  description: Covers fundamental DevOps concepts including CI/CD and containerization.
+  questionDelay: 1
+  answerDelay: 1
+
+questions:
+- question: What is DevOps?
+  answer: |
+    DevOps is a **cultural and technical movement** that unifies software development (Dev) and IT operations (Ops).
+
+    **Core principles:**
+    - **Collaboration** — breaking down silos between Dev, Ops, and QA
+    - **Automation** — automating builds, tests, deployments, and infrastructure
+    - **Continuous Improvement** — using metrics and feedback loops to iterate
+
+- question: What is the difference between `CMD` and `ENTRYPOINT` in Docker?
+  answer: |
+    - `CMD` sets **default arguments** that can be overridden at `docker run`
+    - `ENTRYPOINT` sets the **main executable** that always runs
+
+    Example Dockerfile:
+    ```
+    FROM node:20-alpine
+    ENTRYPOINT ["node"]
+    CMD ["app.js"]
+    ```
+```
+
+**Multi-line answers with YAML block scalars:**
+
+```yaml
+questions:
+- question: What is a Kubernetes Pod?
+  answer: |
+    A Pod is the smallest deployable unit in Kubernetes. It wraps one or more
+    containers that share networking and storage.
+
+- question: What are AWS Availability Zones?
+  answer: >-
+    Availability Zones are isolated data centers within a Region,
+    each with redundant power and networking.
+    They enable high availability when applications span multiple AZs.
+```
+
+> **Tip:** Use `|` (literal block) to preserve newlines (best for lists and code). Use `>-` (folded block) for long paragraphs that should be joined into one line.
 
 ## Caching
 
