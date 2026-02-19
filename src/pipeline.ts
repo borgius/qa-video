@@ -203,7 +203,8 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
   // Slide cache keys include :v2 to invalidate pre-markdown cached slides.
   for (let i = 0; i < segments.length; i++) {
     const seg = segments[i];
-    const slideHash = `slide:v4:${seg.text}:${seg.type}:${seg.cardIndex}:${seg.totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}`;
+    const qTextForHash = seg.type === 'answer' ? cards[seg.cardIndex].question : '';
+    const slideHash = `slide:v5:${seg.text}:${seg.type}:${seg.cardIndex}:${seg.totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}:${qTextForHash}`;
     const slideTypeTag = seg.type === 'question' ? 'q' : 'a';
     seg.imagePath = cachedPath(config.tempDir, `slide_${i}_${slideTypeTag}_${seg.questionSlug}`, slideHash, 'png');
   }
@@ -217,6 +218,7 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
         await renderSlide(seg.imagePath, {
           text: seg.text, type: seg.type, cardIndex: seg.cardIndex,
           totalCards: seg.totalCards, config,
+          questionText: seg.type === 'answer' ? cards[seg.cardIndex].question : undefined,
         });
       }
     }),

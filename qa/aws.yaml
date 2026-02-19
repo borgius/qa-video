@@ -5,10 +5,11 @@ config:
   questionDelay: 1
   answerDelay: 1
   youtube:
-    videoId: fO1iFopLmI0
-    url: https://youtu.be/fO1iFopLmI0
-    uploadedAt: 2026-02-16T15:01:27.618Z
+    videoId: 7AnijWod45Y
+    url: https://youtu.be/7AnijWod45Y
+    uploadedAt: 2026-02-19T14:16:16.655Z
     privacy: unlisted
+    contentSha: d0cf2ecf
 questions:
   - question: What is Amazon Web Services (AWS)?
     answer: AWS is a comprehensive cloud computing platform provided by Amazon that offers on-demand services such as

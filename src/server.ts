@@ -281,7 +281,8 @@ app.get('/api/slides/:name/:cardIndex/:type', async (req, res, next) => {
 
     const segType = type as 'question' | 'answer';
     const qSlug = slug(card.question);
-    const slideHash = `slide:v4:${text}:${segType}:${cardIndex}:${totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}`;
+    const qTextForHash = segType === 'answer' ? card.question : '';
+    const slideHash = `slide:v5:${text}:${segType}:${cardIndex}:${totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}:${qTextForHash}`;
     const tempDir = join(outputDir, '.tmp', name);
     mkdirSync(tempDir, { recursive: true });
 
@@ -300,6 +301,7 @@ app.get('/api/slides/:name/:cardIndex/:type', async (req, res, next) => {
       cardIndex,
       totalCards,
       config,
+      questionText: segType === 'answer' ? card.question : undefined,
     });
 
     res.sendFile(imagePath, { dotfiles: 'allow' });

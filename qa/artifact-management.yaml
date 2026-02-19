@@ -1,129 +1,218 @@
 config:
   name: "DevOps-Interview-Questions: Artifact Management"
-  description: Comprehensive coverage of artifact management in DevOps including container registries, JFrog Artifactory, Nexus Repository, package versioning, artifact promotion, supply chain security, and best practices for managing build artifacts across CI/CD pipelines.
+  description: Comprehensive coverage of artifact management in DevOps including container registries, JFrog Artifactory,
+    Nexus Repository, package versioning, artifact promotion, supply chain security, and best practices for managing
+    build artifacts across CI/CD pipelines.
   questionDelay: 1
   answerDelay: 1
-
+  youtube:
+    videoId: A8pw-HpE3ec
+    url: https://youtu.be/A8pw-HpE3ec
+    uploadedAt: 2026-02-19T14:15:54.462Z
+    privacy: unlisted
+    contentSha: 759f599c
 questions:
-- question: What is artifact management in DevOps?
-  answer: Artifact management is the practice of storing, versioning, and distributing build outputs such as container images, compiled binaries, packages, and libraries throughout the software delivery lifecycle. A central artifact repository provides a single source of truth for all artifacts, enables traceability from source code to deployment, and ensures consistent, verified artifacts are used across environments.
-
-- question: What is a container registry?
-  answer: A container registry is a repository for storing and distributing container images. It supports pushing and pulling images using the OCI distribution specification. Popular registries include Docker Hub, Amazon ECR, Google Container Registry, Azure Container Registry, GitHub Container Registry, and Harbor. Registries support image tagging, vulnerability scanning, and access control.
-
-- question: What is Docker Hub?
-  answer: Docker Hub is the world's largest public container registry and the default registry for Docker. It hosts millions of container images including official images maintained by software vendors. Docker Hub offers free public repositories and paid plans for private repositories with features like automated builds, vulnerability scanning, and organization management.
-
-- question: What is Amazon ECR?
-  answer: Amazon Elastic Container Registry is a fully managed container registry service from AWS. It integrates natively with ECS, EKS, and Lambda, and provides image scanning with Amazon Inspector, lifecycle policies for automatic cleanup, cross-region and cross-account replication, and encryption at rest. ECR supports both private and public repositories.
-
-- question: What is Harbor?
-  answer: Harbor is an open-source cloud-native container registry that provides image signing, vulnerability scanning with Trivy or Clair, role-based access control, image replication between registries, and audit logging. It extends the basic Docker registry with enterprise features and is a CNCF graduated project. Harbor supports both container images and Helm charts.
-
-- question: What is JFrog Artifactory?
-  answer: JFrog Artifactory is a universal artifact repository manager that supports over 30 package types including Maven, npm, PyPI, Docker, Helm, Go, and NuGet. It provides both local repositories for internal artifacts, remote repositories for caching external packages, and virtual repositories that combine both. Artifactory offers enterprise features like high availability, replication, and build integration.
-
-- question: What is Sonatype Nexus Repository?
-  answer: Nexus Repository is an artifact management platform that supports Docker, Maven, npm, PyPI, NuGet, Helm, and other formats. The free OSS version provides basic repository management, while the Pro version adds features like staging, clustering, and security scanning. Nexus can proxy external repositories and host internal artifacts, reducing external dependencies.
-
-- question: What is the difference between local, remote, and virtual repositories in Artifactory?
-  answer: A local repository stores artifacts that you upload directly, such as your own build outputs. A remote repository proxies and caches artifacts from external sources like Docker Hub or npm registry. A virtual repository aggregates multiple local and remote repositories behind a single URL. This architecture simplifies client configuration and provides resilience against external repository outages.
-
-- question: What is artifact versioning, and why is it important?
-  answer: Artifact versioning assigns unique identifiers to each build output, enabling traceability and reproducibility. Semantic versioning with major, minor, and patch numbers is common for release artifacts. CI builds often use the Git commit hash or build number as the version. Proper versioning ensures you can identify exactly which code produced a given artifact and roll back to specific versions.
-
-- question: What is the difference between mutable and immutable tags in container registries?
-  answer: Mutable tags like latest can be reassigned to different images over time, making deployments unpredictable. Immutable tags are permanently bound to a specific image digest and cannot be overwritten. Best practice is to use immutable tags based on Git commit hashes or semantic versions for production deployments, ensuring that what you test is exactly what you deploy.
-
-- question: What is an image digest?
-  answer: An image digest is a cryptographic hash, typically SHA-256, that uniquely identifies a specific container image. Unlike tags which can be reassigned, digests are immutable and tied to the exact image content. Referencing images by digest in deployments guarantees that the exact same image is used every time, regardless of tag changes.
-
-- question: What is artifact promotion?
-  answer: Artifact promotion is the practice of moving validated artifacts through a pipeline of repositories representing different stages, such as dev, staging, and production. Rather than rebuilding for each environment, the same artifact is promoted after passing quality gates. This ensures that the artifact deployed to production is identical to what was tested, following the build once deploy many principle.
-
-- question: What is a package manager, and how does it relate to artifact management?
-  answer: A package manager is a tool that automates downloading, installing, and managing software dependencies for a specific language or platform. Examples include npm for JavaScript, pip for Python, Maven for Java, and apt for Debian. Artifact repositories like Artifactory and Nexus serve as upstream mirrors and private registries for these package managers, caching dependencies and hosting internal packages.
-
-- question: What is npm registry and how is it used in DevOps?
-  answer: The npm registry is the default package repository for Node.js packages. Organizations often configure a private npm registry through Artifactory, Nexus, or GitHub Packages to host internal packages and proxy public packages. This provides caching for faster builds, security scanning of dependencies, and the ability to publish proprietary packages for internal use.
-
-- question: What is a Maven repository?
-  answer: A Maven repository stores Java artifacts in a structured format based on group ID, artifact ID, and version. The Maven Central repository is the primary public repository for open-source Java libraries. Organizations use repository managers like Artifactory or Nexus to host internal Maven artifacts and proxy Maven Central, providing caching and access control for their Java build pipelines.
-
-- question: What is a PyPI repository?
-  answer: PyPI, the Python Package Index, is the official repository for Python packages installed via pip. Organizations can host private PyPI repositories using Artifactory, Nexus, or tools like devpi to distribute internal Python packages. A private PyPI repository also caches public packages, reducing build times and providing protection against left-pad-style incidents where public packages are removed.
-
-- question: What are container image layers?
-  answer: Container images are composed of stacked layers, where each layer represents a change from the previous layer. Layers are shared between images that have common base layers, saving storage space and download time. Understanding layers is important for optimizing image size and build speed. Registries store and transfer layers independently, and clients only download layers they do not already have.
-
-- question: What is image signing, and why is it important?
-  answer: Image signing uses cryptographic signatures to verify that a container image was built by a trusted source and has not been tampered with. Tools like Cosign from the Sigstore project and Docker Content Trust enable signing and verification. Image signing is essential for supply chain security, and admission controllers can enforce that only signed images are deployed to production clusters.
-
-- question: What is Cosign?
-  answer: Cosign is a tool from the Sigstore project for signing, verifying, and storing container image signatures in OCI registries. It supports keyless signing using identity providers through Fulcio, a certificate authority, and stores signatures as OCI artifacts alongside the image. Cosign integrates with CI/CD pipelines and admission controllers for automated signing and verification.
-
-- question: What is an SBOM?
-  answer: A Software Bill of Materials is a formal inventory of all components, libraries, and dependencies included in a software artifact. SBOMs enable vulnerability tracking, license compliance, and supply chain transparency. Common formats include SPDX and CycloneDX. Tools like Syft generate SBOMs from container images, and they can be attached to images as attestations.
-
-- question: What is supply chain security for artifacts?
-  answer: Supply chain security protects the integrity of software artifacts throughout the build and delivery pipeline. It includes signing artifacts to verify provenance, scanning for vulnerabilities, generating SBOMs, using trusted base images, pinning dependencies to specific versions, and verifying checksums. Frameworks like SLSA define maturity levels for supply chain security practices.
-
-- question: What is SLSA?
-  answer: SLSA, pronounced salsa, stands for Supply-chain Levels for Software Artifacts. It is a security framework that defines four levels of increasing supply chain integrity, from basic build documentation to hermetic, reproducible builds with two-party review. SLSA provides a checklist for improving the security of build and release processes and is maintained by the Open Source Security Foundation.
-
-- question: What is a lifecycle policy for container images?
-  answer: A lifecycle policy automatically cleans up old container images from a registry based on rules like age, tag count, or tag pattern. Amazon ECR, Harbor, and other registries support lifecycle policies. These policies prevent registries from growing indefinitely, reduce storage costs, and ensure that obsolete or vulnerable images are removed according to organizational retention requirements.
-
-- question: What is image multi-arch support?
-  answer: Multi-architecture support allows a single image tag to reference different images for different CPU architectures like amd64 and arm64. This is implemented through manifest lists or OCI image indexes that map each architecture to its specific image. Tools like docker buildx build multi-arch images, and registries transparently serve the correct image based on the client's architecture.
-
-- question: How do you cache dependencies in CI/CD pipelines?
-  answer: Dependency caching stores downloaded packages between CI/CD pipeline runs to avoid re-downloading them each time. CI platforms like GitHub Actions and GitLab CI provide built-in cache mechanisms. Teams can also use artifact repository proxies that cache packages from public registries. Effective caching significantly reduces build times, especially for projects with many dependencies.
-
-- question: What is a binary repository vs a source repository?
-  answer: A source repository like Git stores source code and version history, while a binary repository stores compiled artifacts, packages, and container images. Binary repositories are optimized for storing and distributing large binary files, which Git handles poorly. The two work together in CI/CD, with source repositories triggering builds that produce artifacts stored in binary repositories.
-
-- question: What is artifact retention policy?
-  answer: An artifact retention policy defines how long build artifacts are kept and when they should be deleted. Policies typically keep release artifacts indefinitely, retain recent development builds for a limited time, and clean up outdated artifacts automatically. Good retention policies balance storage costs against the need to roll back or investigate issues with specific versions.
-
-- question: What is a virtual repository?
-  answer: A virtual repository presents a unified view of multiple underlying repositories through a single URL. In Artifactory, a virtual repository can aggregate local, remote, and other virtual repositories. This simplifies client configuration because developers configure a single repository URL that transparently resolves artifacts from any of the underlying sources based on configurable resolution rules.
-
-- question: How do you secure a container registry?
-  answer: Securing a container registry involves enabling TLS for all communication, requiring authentication and using role-based access control, scanning images for vulnerabilities before allowing them, enforcing image signing policies, implementing network restrictions, enabling audit logging, and regularly rotating credentials. Private registries should not be accessible from the public internet without proper security controls.
-
-- question: What is garbage collection in container registries?
-  answer: Garbage collection removes unreferenced image layers from registry storage to reclaim disk space. When image tags are deleted or overwritten, the underlying layers may become orphaned. Running garbage collection identifies and removes these unused layers. This should be scheduled during low-traffic periods as it may briefly impact registry performance.
-
-- question: What is a pull-through cache?
-  answer: A pull-through cache is a registry configuration that transparently proxies and caches images from an upstream registry on first pull. Subsequent pulls are served from the local cache. This reduces external bandwidth usage, improves pull speed, and provides resilience against upstream registry outages. Many registry solutions including Docker's registry, Harbor, and Artifactory support pull-through caching.
-
-- question: What is GitHub Packages?
-  answer: GitHub Packages is a package hosting service integrated with GitHub that supports container images, npm, Maven, NuGet, and RubyGems packages. It leverages GitHub's existing authentication and permissions model, making it convenient for projects already hosted on GitHub. Packages can be linked to repositories and published as part of GitHub Actions workflows.
-
-- question: What is Google Artifact Registry?
-  answer: Google Artifact Registry is a managed service for storing container images, language packages, and OS packages on Google Cloud Platform. It replaces the older Google Container Registry with additional features including multi-format support, regional and multi-regional repositories, IAM-based access control, and vulnerability scanning through Container Analysis. It integrates natively with GKE and Cloud Build.
-
-- question: How do you promote artifacts across environments?
-  answer: Artifact promotion can be implemented by copying artifacts between repositories representing different stages, by tagging artifacts with environment labels, or by using metadata properties to track promotion status. Promotion should require quality gates such as passing tests, security scans, and approvals. Artifactory and Nexus support promotion pipelines through their APIs and UI.
-
-- question: What is dependency confusion, and how do you prevent it?
-  answer: Dependency confusion is an attack where a malicious public package with the same name as an internal package is published to a public registry. Package managers may prefer the public version, pulling the malicious package instead. Prevention includes using namespace scoping for internal packages, configuring repository priority correctly, and using tools that detect name conflicts between internal and public registries.
-
-- question: What is a lock file, and why is it important?
-  answer: A lock file records the exact versions and hashes of all resolved dependencies, ensuring reproducible builds across different machines and time. Examples include package-lock.json for npm, Pipfile.lock for Python, and go.sum for Go. Lock files should be committed to version control. Without them, builds may pull different dependency versions and behave inconsistently.
-
-- question: What is the difference between snapshot and release versions?
-  answer: In Maven and similar systems, snapshot versions represent in-progress development builds that can be overwritten, while release versions are immutable and permanent. Snapshot versions are useful during development for sharing the latest changes, but production deployments should always use release versions to ensure reproducibility. Release versions follow semantic versioning conventions.
-
-- question: How do container registries handle authentication?
-  answer: Container registries typically use token-based authentication following the Docker registry authentication specification. Users authenticate with credentials to receive a token that authorizes subsequent operations. Integration with identity providers through OIDC or LDAP enables centralized user management. For CI/CD systems, service accounts or robot accounts with limited permissions are recommended over personal credentials.
-
-- question: What is an OCI artifact?
-  answer: An OCI artifact is any content stored in an OCI-compatible registry, extending beyond container images to include Helm charts, WebAssembly modules, Sigstore signatures, and SBOMs. The OCI distribution specification provides a standard API for pushing and pulling these artifacts. This enables registries to serve as universal artifact stores for cloud-native deployments.
-
-- question: What is Crane, and how is it used with container registries?
-  answer: Crane is a command-line tool for interacting with container registries without requiring a Docker daemon. It can copy images between registries, inspect manifests and layers, apply mutations like retagging, and export or import images. Crane is useful in CI/CD pipelines and serverless environments where running a Docker daemon is impractical.
-
-- question: How do you implement artifact traceability?
-  answer: Artifact traceability connects deployed artifacts back to their source code, build process, and test results. This is achieved by tagging artifacts with Git commit hashes, build numbers, and pipeline URLs. Repository managers can store build metadata alongside artifacts. SBOMs and provenance attestations provide additional traceability. This information is crucial for incident response and auditing.
+  - question: What is artifact management in DevOps?
+    answer: Artifact management is the practice of storing, versioning, and distributing build outputs such as container
+      images, compiled binaries, packages, and libraries throughout the software delivery lifecycle. A central artifact
+      repository provides a single source of truth for all artifacts, enables traceability from source code to
+      deployment, and ensures consistent, verified artifacts are used across environments.
+  - question: What is a container registry?
+    answer: A container registry is a repository for storing and distributing container images. It supports pushing and
+      pulling images using the OCI distribution specification. Popular registries include Docker Hub, Amazon ECR, Google
+      Container Registry, Azure Container Registry, GitHub Container Registry, and Harbor. Registries support image
+      tagging, vulnerability scanning, and access control.
+  - question: What is Docker Hub?
+    answer: Docker Hub is the world's largest public container registry and the default registry for Docker. It hosts
+      millions of container images including official images maintained by software vendors. Docker Hub offers free
+      public repositories and paid plans for private repositories with features like automated builds, vulnerability
+      scanning, and organization management.
+  - question: What is Amazon ECR?
+    answer: Amazon Elastic Container Registry is a fully managed container registry service from AWS. It integrates natively
+      with ECS, EKS, and Lambda, and provides image scanning with Amazon Inspector, lifecycle policies for automatic
+      cleanup, cross-region and cross-account replication, and encryption at rest. ECR supports both private and public
+      repositories.
+  - question: What is Harbor?
+    answer: Harbor is an open-source cloud-native container registry that provides image signing, vulnerability scanning
+      with Trivy or Clair, role-based access control, image replication between registries, and audit logging. It
+      extends the basic Docker registry with enterprise features and is a CNCF graduated project. Harbor supports both
+      container images and Helm charts.
+  - question: What is JFrog Artifactory?
+    answer: JFrog Artifactory is a universal artifact repository manager that supports over 30 package types including
+      Maven, npm, PyPI, Docker, Helm, Go, and NuGet. It provides both local repositories for internal artifacts, remote
+      repositories for caching external packages, and virtual repositories that combine both. Artifactory offers
+      enterprise features like high availability, replication, and build integration.
+  - question: What is Sonatype Nexus Repository?
+    answer: Nexus Repository is an artifact management platform that supports Docker, Maven, npm, PyPI, NuGet, Helm, and
+      other formats. The free OSS version provides basic repository management, while the Pro version adds features like
+      staging, clustering, and security scanning. Nexus can proxy external repositories and host internal artifacts,
+      reducing external dependencies.
+  - question: What is the difference between local, remote, and virtual repositories in Artifactory?
+    answer: A local repository stores artifacts that you upload directly, such as your own build outputs. A remote
+      repository proxies and caches artifacts from external sources like Docker Hub or npm registry. A virtual
+      repository aggregates multiple local and remote repositories behind a single URL. This architecture simplifies
+      client configuration and provides resilience against external repository outages.
+  - question: What is artifact versioning, and why is it important?
+    answer: Artifact versioning assigns unique identifiers to each build output, enabling traceability and reproducibility.
+      Semantic versioning with major, minor, and patch numbers is common for release artifacts. CI builds often use the
+      Git commit hash or build number as the version. Proper versioning ensures you can identify exactly which code
+      produced a given artifact and roll back to specific versions.
+  - question: What is the difference between mutable and immutable tags in container registries?
+    answer: Mutable tags like latest can be reassigned to different images over time, making deployments unpredictable.
+      Immutable tags are permanently bound to a specific image digest and cannot be overwritten. Best practice is to use
+      immutable tags based on Git commit hashes or semantic versions for production deployments, ensuring that what you
+      test is exactly what you deploy.
+  - question: What is an image digest?
+    answer: An image digest is a cryptographic hash, typically SHA-256, that uniquely identifies a specific container image.
+      Unlike tags which can be reassigned, digests are immutable and tied to the exact image content. Referencing images
+      by digest in deployments guarantees that the exact same image is used every time, regardless of tag changes.
+  - question: What is artifact promotion?
+    answer: Artifact promotion is the practice of moving validated artifacts through a pipeline of repositories representing
+      different stages, such as dev, staging, and production. Rather than rebuilding for each environment, the same
+      artifact is promoted after passing quality gates. This ensures that the artifact deployed to production is
+      identical to what was tested, following the build once deploy many principle.
+  - question: What is a package manager, and how does it relate to artifact management?
+    answer: A package manager is a tool that automates downloading, installing, and managing software dependencies for a
+      specific language or platform. Examples include npm for JavaScript, pip for Python, Maven for Java, and apt for
+      Debian. Artifact repositories like Artifactory and Nexus serve as upstream mirrors and private registries for
+      these package managers, caching dependencies and hosting internal packages.
+  - question: What is npm registry and how is it used in DevOps?
+    answer: The npm registry is the default package repository for Node.js packages. Organizations often configure a private
+      npm registry through Artifactory, Nexus, or GitHub Packages to host internal packages and proxy public packages.
+      This provides caching for faster builds, security scanning of dependencies, and the ability to publish proprietary
+      packages for internal use.
+  - question: What is a Maven repository?
+    answer: A Maven repository stores Java artifacts in a structured format based on group ID, artifact ID, and version. The
+      Maven Central repository is the primary public repository for open-source Java libraries. Organizations use
+      repository managers like Artifactory or Nexus to host internal Maven artifacts and proxy Maven Central, providing
+      caching and access control for their Java build pipelines.
+  - question: What is a PyPI repository?
+    answer: PyPI, the Python Package Index, is the official repository for Python packages installed via pip. Organizations
+      can host private PyPI repositories using Artifactory, Nexus, or tools like devpi to distribute internal Python
+      packages. A private PyPI repository also caches public packages, reducing build times and providing protection
+      against left-pad-style incidents where public packages are removed.
+  - question: What are container image layers?
+    answer: Container images are composed of stacked layers, where each layer represents a change from the previous layer.
+      Layers are shared between images that have common base layers, saving storage space and download time.
+      Understanding layers is important for optimizing image size and build speed. Registries store and transfer layers
+      independently, and clients only download layers they do not already have.
+  - question: What is image signing, and why is it important?
+    answer: Image signing uses cryptographic signatures to verify that a container image was built by a trusted source and
+      has not been tampered with. Tools like Cosign from the Sigstore project and Docker Content Trust enable signing
+      and verification. Image signing is essential for supply chain security, and admission controllers can enforce that
+      only signed images are deployed to production clusters.
+  - question: What is Cosign?
+    answer: Cosign is a tool from the Sigstore project for signing, verifying, and storing container image signatures in OCI
+      registries. It supports keyless signing using identity providers through Fulcio, a certificate authority, and
+      stores signatures as OCI artifacts alongside the image. Cosign integrates with CI/CD pipelines and admission
+      controllers for automated signing and verification.
+  - question: What is an SBOM?
+    answer: A Software Bill of Materials is a formal inventory of all components, libraries, and dependencies included in a
+      software artifact. SBOMs enable vulnerability tracking, license compliance, and supply chain transparency. Common
+      formats include SPDX and CycloneDX. Tools like Syft generate SBOMs from container images, and they can be attached
+      to images as attestations.
+  - question: What is supply chain security for artifacts?
+    answer: Supply chain security protects the integrity of software artifacts throughout the build and delivery pipeline.
+      It includes signing artifacts to verify provenance, scanning for vulnerabilities, generating SBOMs, using trusted
+      base images, pinning dependencies to specific versions, and verifying checksums. Frameworks like SLSA define
+      maturity levels for supply chain security practices.
+  - question: What is SLSA?
+    answer: SLSA, pronounced salsa, stands for Supply-chain Levels for Software Artifacts. It is a security framework that
+      defines four levels of increasing supply chain integrity, from basic build documentation to hermetic, reproducible
+      builds with two-party review. SLSA provides a checklist for improving the security of build and release processes
+      and is maintained by the Open Source Security Foundation.
+  - question: What is a lifecycle policy for container images?
+    answer: A lifecycle policy automatically cleans up old container images from a registry based on rules like age, tag
+      count, or tag pattern. Amazon ECR, Harbor, and other registries support lifecycle policies. These policies prevent
+      registries from growing indefinitely, reduce storage costs, and ensure that obsolete or vulnerable images are
+      removed according to organizational retention requirements.
+  - question: What is image multi-arch support?
+    answer: Multi-architecture support allows a single image tag to reference different images for different CPU
+      architectures like amd64 and arm64. This is implemented through manifest lists or OCI image indexes that map each
+      architecture to its specific image. Tools like docker buildx build multi-arch images, and registries transparently
+      serve the correct image based on the client's architecture.
+  - question: How do you cache dependencies in CI/CD pipelines?
+    answer: Dependency caching stores downloaded packages between CI/CD pipeline runs to avoid re-downloading them each
+      time. CI platforms like GitHub Actions and GitLab CI provide built-in cache mechanisms. Teams can also use
+      artifact repository proxies that cache packages from public registries. Effective caching significantly reduces
+      build times, especially for projects with many dependencies.
+  - question: What is a binary repository vs a source repository?
+    answer: A source repository like Git stores source code and version history, while a binary repository stores compiled
+      artifacts, packages, and container images. Binary repositories are optimized for storing and distributing large
+      binary files, which Git handles poorly. The two work together in CI/CD, with source repositories triggering builds
+      that produce artifacts stored in binary repositories.
+  - question: What is artifact retention policy?
+    answer: An artifact retention policy defines how long build artifacts are kept and when they should be deleted. Policies
+      typically keep release artifacts indefinitely, retain recent development builds for a limited time, and clean up
+      outdated artifacts automatically. Good retention policies balance storage costs against the need to roll back or
+      investigate issues with specific versions.
+  - question: What is a virtual repository?
+    answer: A virtual repository presents a unified view of multiple underlying repositories through a single URL. In
+      Artifactory, a virtual repository can aggregate local, remote, and other virtual repositories. This simplifies
+      client configuration because developers configure a single repository URL that transparently resolves artifacts
+      from any of the underlying sources based on configurable resolution rules.
+  - question: How do you secure a container registry?
+    answer: Securing a container registry involves enabling TLS for all communication, requiring authentication and using
+      role-based access control, scanning images for vulnerabilities before allowing them, enforcing image signing
+      policies, implementing network restrictions, enabling audit logging, and regularly rotating credentials. Private
+      registries should not be accessible from the public internet without proper security controls.
+  - question: What is garbage collection in container registries?
+    answer: Garbage collection removes unreferenced image layers from registry storage to reclaim disk space. When image
+      tags are deleted or overwritten, the underlying layers may become orphaned. Running garbage collection identifies
+      and removes these unused layers. This should be scheduled during low-traffic periods as it may briefly impact
+      registry performance.
+  - question: What is a pull-through cache?
+    answer: A pull-through cache is a registry configuration that transparently proxies and caches images from an upstream
+      registry on first pull. Subsequent pulls are served from the local cache. This reduces external bandwidth usage,
+      improves pull speed, and provides resilience against upstream registry outages. Many registry solutions including
+      Docker's registry, Harbor, and Artifactory support pull-through caching.
+  - question: What is GitHub Packages?
+    answer: GitHub Packages is a package hosting service integrated with GitHub that supports container images, npm, Maven,
+      NuGet, and RubyGems packages. It leverages GitHub's existing authentication and permissions model, making it
+      convenient for projects already hosted on GitHub. Packages can be linked to repositories and published as part of
+      GitHub Actions workflows.
+  - question: What is Google Artifact Registry?
+    answer: Google Artifact Registry is a managed service for storing container images, language packages, and OS packages
+      on Google Cloud Platform. It replaces the older Google Container Registry with additional features including
+      multi-format support, regional and multi-regional repositories, IAM-based access control, and vulnerability
+      scanning through Container Analysis. It integrates natively with GKE and Cloud Build.
+  - question: How do you promote artifacts across environments?
+    answer: Artifact promotion can be implemented by copying artifacts between repositories representing different stages,
+      by tagging artifacts with environment labels, or by using metadata properties to track promotion status. Promotion
+      should require quality gates such as passing tests, security scans, and approvals. Artifactory and Nexus support
+      promotion pipelines through their APIs and UI.
+  - question: What is dependency confusion, and how do you prevent it?
+    answer: Dependency confusion is an attack where a malicious public package with the same name as an internal package is
+      published to a public registry. Package managers may prefer the public version, pulling the malicious package
+      instead. Prevention includes using namespace scoping for internal packages, configuring repository priority
+      correctly, and using tools that detect name conflicts between internal and public registries.
+  - question: What is a lock file, and why is it important?
+    answer: A lock file records the exact versions and hashes of all resolved dependencies, ensuring reproducible builds
+      across different machines and time. Examples include package-lock.json for npm, Pipfile.lock for Python, and
+      go.sum for Go. Lock files should be committed to version control. Without them, builds may pull different
+      dependency versions and behave inconsistently.
+  - question: What is the difference between snapshot and release versions?
+    answer: In Maven and similar systems, snapshot versions represent in-progress development builds that can be
+      overwritten, while release versions are immutable and permanent. Snapshot versions are useful during development
+      for sharing the latest changes, but production deployments should always use release versions to ensure
+      reproducibility. Release versions follow semantic versioning conventions.
+  - question: How do container registries handle authentication?
+    answer: Container registries typically use token-based authentication following the Docker registry authentication
+      specification. Users authenticate with credentials to receive a token that authorizes subsequent operations.
+      Integration with identity providers through OIDC or LDAP enables centralized user management. For CI/CD systems,
+      service accounts or robot accounts with limited permissions are recommended over personal credentials.
+  - question: What is an OCI artifact?
+    answer: An OCI artifact is any content stored in an OCI-compatible registry, extending beyond container images to
+      include Helm charts, WebAssembly modules, Sigstore signatures, and SBOMs. The OCI distribution specification
+      provides a standard API for pushing and pulling these artifacts. This enables registries to serve as universal
+      artifact stores for cloud-native deployments.
+  - question: What is Crane, and how is it used with container registries?
+    answer: Crane is a command-line tool for interacting with container registries without requiring a Docker daemon. It can
+      copy images between registries, inspect manifests and layers, apply mutations like retagging, and export or import
+      images. Crane is useful in CI/CD pipelines and serverless environments where running a Docker daemon is
+      impractical.
+  - question: How do you implement artifact traceability?
+    answer: Artifact traceability connects deployed artifacts back to their source code, build process, and test results.
+      This is achieved by tagging artifacts with Git commit hashes, build numbers, and pipeline URLs. Repository
+      managers can store build metadata alongside artifacts. SBOMs and provenance attestations provide additional
+      traceability. This information is crucial for incident response and auditing.

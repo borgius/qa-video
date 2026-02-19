@@ -16,6 +16,7 @@ interface SlideOptions {
   cardIndex: number;
   totalCards: number;
   config: PipelineConfig;
+  questionText?: string;  // shown in the answer header
 }
 
 // ── Font helpers ─────────────────────────────────────────────────────────────
@@ -341,7 +342,7 @@ export async function renderSlide(
   outputPath: string,
   options: SlideOptions,
 ): Promise<void> {
-  const { text, type, cardIndex, totalCards, config } = options;
+  const { text, type, cardIndex, totalCards, config, questionText } = options;
   const { width, height, fontSize, textColor } = config;
 
   const bgColor = type === 'question' ? config.questionColor : config.answerColor;
@@ -358,14 +359,26 @@ export async function renderSlide(
   ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
   ctx.fillRect(0, 0, width, headerHeight);
 
+  const headerLabel = `${type === 'question' ? 'QUESTION' : 'ANSWER'} ${cardIndex + 1} of ${totalCards}`;
+  const headerText = type === 'answer' && questionText
+    ? `${headerLabel}: ${questionText}`
+    : headerLabel;
+
   ctx.fillStyle = textColor;
   ctx.font = `bold 28px "Arial", "Helvetica", sans-serif`;
   ctx.textAlign = 'left';
-  ctx.fillText(
-    `${type === 'question' ? 'QUESTION' : 'ANSWER'} ${cardIndex + 1} of ${totalCards}`,
-    40,
-    50,
-  );
+
+  // Truncate header if it exceeds available width (leave room for badge)
+  const maxHeaderWidth = width - 160;
+  let displayHeader = headerText;
+  if (ctx.measureText(displayHeader).width > maxHeaderWidth) {
+    while (displayHeader.length > 0 && ctx.measureText(displayHeader + '…').width > maxHeaderWidth) {
+      displayHeader = displayHeader.slice(0, -1);
+    }
+    displayHeader += '…';
+  }
+
+  ctx.fillText(displayHeader, 40, 50);
 
   // ── Type badge ──
   const badgeText = type === 'question' ? 'Q' : 'A';
