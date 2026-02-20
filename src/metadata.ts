@@ -26,9 +26,11 @@ export function generateTitle(filePath: string, data: YamlInput): string {
   return `${topic} — QA Flashcards (${n} Questions)`;
 }
 
+const ATTRIBUTION = 'Generated with qa-video (npm)';
+
 export function generateDescription(filePath: string, data: YamlInput): string {
   if (data.config.description) {
-    return data.config.description;
+    return `${data.config.description}\n\n${ATTRIBUTION}`;
   }
 
   const topic = topicFromFilename(filePath);
@@ -48,7 +50,7 @@ export function generateDescription(filePath: string, data: YamlInput): string {
     desc += `...and ${questions.length - maxShow} more questions.\n`;
   }
 
-  desc += `\nGenerated with qa-video.`;
+  desc += `\n${ATTRIBUTION}`;
 
   // YouTube 5000-char limit
   if (desc.length > 4800) {
