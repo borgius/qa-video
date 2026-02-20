@@ -1,1424 +1,1990 @@
 config:
   name: "DevOps-Interview-Questions: Monitoring & Logging"
-  description: Comprehensive coverage of monitoring and logging tools including Prometheus, Grafana, ELK Stack, Loki, and Filebeat with alerting, dashboards, query optimization, and scalability strategies.
+  description: Comprehensive coverage of monitoring and logging tools including Prometheus, Grafana, ELK Stack, Loki, and
+    Filebeat with alerting, dashboards, query optimization, and scalability strategies.
   questionDelay: 1
   answerDelay: 1
+  youtube:
+    videoId: 3XBXvQvlacM
+    url: https://youtu.be/3XBXvQvlacM
+    uploadedAt: 2026-02-20T15:10:26.682Z
+    privacy: unlisted
+    contentSha: 0b36836f
 questions:
-- question: What is Prometheus, and why is it used?
-  answer: |-
-    **Prometheus** is an open-source monitoring and alerting toolkit originally built at SoundCloud and now a CNCF graduated project.
+  - question: What is Prometheus, and why is it used?
+    answer: >-
+      **Prometheus** is an open-source monitoring and alerting toolkit originally built at SoundCloud and now a CNCF
+      graduated project.
 
-    **Core strengths:**
-    - **Pull-based model** — scrapes metrics over HTTP, giving the monitoring system control over what and when to collect
-    - **PromQL** — a powerful, purpose-built query language for time-series analysis
-    - **Multi-dimensional data model** — metrics are identified by name and key-value label pairs
-    - **Built-in alerting** via Alertmanager with routing, grouping, and silencing
-    - **No external dependencies** — single binary with an embedded TSDB (time-series database)
 
-    **Common use cases:**
-    - Monitoring CPU, memory, disk, and network usage across infrastructure
-    - Tracking application-level metrics (request rate, error rate, latency — the RED method)
-    - Alerting on SLO breaches such as high error rates or P99 latency spikes
+      **Core strengths:**
 
-- question: How does Prometheus collect data?
-  answer: |-
-    Prometheus uses a **pull model** — it scrapes metrics from HTTP endpoints (typically `/metrics`) at configured intervals.
+      - **Pull-based model** — scrapes metrics over HTTP, giving the monitoring system control over what and when to
+      collect
 
-    **Target discovery methods:**
-    - **Static config** — targets listed directly in `prometheus.yml`
-    - **Service discovery** — dynamic discovery via Kubernetes, Consul, EC2, DNS, file-based SD, etc.
+      - **PromQL** — a powerful, purpose-built query language for time-series analysis
 
-    **Example scrape configuration** (`prometheus.yml`):
-    ```yaml
-    scrape_configs:
-      - job_name: 'node_exporter'
-        scrape_interval: 15s
-        static_configs:
-          - targets: ['localhost:9100']
-    ```
+      - **Multi-dimensional data model** — metrics are identified by name and key-value label pairs
 
-    For **short-lived jobs** (batch, cron), use the **Pushgateway** since they may not live long enough for Prometheus to scrape.
+      - **Built-in alerting** via Alertmanager with routing, grouping, and silencing
 
-- question: What is PromQL?
-  answer: |-
-    **PromQL** (Prometheus Query Language) is used to query, filter, and aggregate time-series metrics stored in Prometheus. It powers dashboards, alerts, and recording rules.
+      - **No external dependencies** — single binary with an embedded TSDB (time-series database)
 
-    **Key concepts:**
-    - **Instant vector** — a set of time-series with a single sample each (e.g., `up`)
-    - **Range vector** — samples over a time window (e.g., `http_requests_total[5m]`)
-    - **Functions** — `rate()`, `increase()`, `histogram_quantile()`, `avg_over_time()`, etc.
 
-    **Example queries:**
+      **Common use cases:**
 
-    Per-CPU-mode usage rate:
-    ```promql
-    rate(node_cpu_seconds_total{mode="user"}[5m])
-    ```
+      - Monitoring CPU, memory, disk, and network usage across infrastructure
 
-    Per-second request rate over 5 minutes:
-    ```promql
-    rate(http_requests_total[5m])
-    ```
+      - Tracking application-level metrics (request rate, error rate, latency — the RED method)
 
-    95th percentile latency:
-    ```promql
-    histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))
-    ```
+      - Alerting on SLO breaches such as high error rates or P99 latency spikes
+  - question: How does Prometheus collect data?
+    answer: >-
+      Prometheus uses a **pull model** — it scrapes metrics from HTTP endpoints (typically `/metrics`) at configured
+      intervals.
 
-- question: What are Prometheus exporters?
-  answer: |-
-    **Exporters** are agents or libraries that expose metrics from third-party systems in a format Prometheus can scrape.
 
-    **Common exporters:**
-    - **Node Exporter** — Linux/macOS hardware and OS metrics (CPU, memory, disk, network)
-    - **Blackbox Exporter** — probes endpoints over HTTP, HTTPS, DNS, TCP, ICMP
-    - **MySQL Exporter** — database performance metrics (queries, connections, replication lag)
-    - **cAdvisor** — container-level resource usage and performance metrics
-    - **kube-state-metrics** — Kubernetes object state (deployments, pods, nodes)
+      **Target discovery methods:**
 
-    You can also instrument your own application code using **client libraries** (Go, Python, Java, etc.) to expose custom `/metrics` endpoints directly, without needing a separate exporter.
+      - **Static config** — targets listed directly in `prometheus.yml`
 
-- question: How do you set up an alert in Prometheus?
-  answer: |-
-    Alerts are defined in **alerting rules files** and evaluated by Prometheus, which fires them to the **Alertmanager** for routing and notification.
+      - **Service discovery** — dynamic discovery via Kubernetes, Consul, EC2, DNS, file-based SD, etc.
 
-    **Example** (`alerting_rules.yml`):
-    ```yaml
-    groups:
-      - name: instance_down
-        rules:
-          - alert: InstanceDown
-            expr: up == 0
-            for: 5m
-            labels:
-              severity: critical
-            annotations:
-              summary: "Instance {{ $labels.instance }} is down"
-              description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes."
-    ```
 
-    **Key fields:**
-    - `expr` — the PromQL condition that triggers the alert
-    - `for` — how long the condition must be true before firing (avoids flapping)
-    - `labels` — attach metadata for routing (e.g., `severity`)
-    - `annotations` — human-readable descriptions with template variables
+      **Example scrape configuration** (`prometheus.yml`):
 
-    The **Alertmanager** then handles deduplication, grouping, silencing, and routing to channels like Slack, PagerDuty, or email.
+      ```yaml
 
-- question: What is Grafana?
-  answer: |-
-    **Grafana** is an open-source observability and visualization platform for building interactive dashboards.
+      scrape_configs:
+        - job_name: 'node_exporter'
+          scrape_interval: 15s
+          static_configs:
+            - targets: ['localhost:9100']
+      ```
 
-    **Key features:**
-    - **Multi-datasource support** — Prometheus, Elasticsearch, Loki, InfluxDB, CloudWatch, PostgreSQL, and 100+ others
-    - **Rich visualization** — graphs, heatmaps, gauges, bar charts, stat panels, logs panels, and more
-    - **Unified alerting** — alert rules that can query any datasource and route to Slack, PagerDuty, email, webhooks
-    - **Templating variables** — dynamic dashboards with dropdown filters
-    - **Provisioning** — dashboards and datasources can be managed as code via YAML/JSON
-    - **Plugin ecosystem** — extend with community and enterprise plugins for panels, datasources, and apps
 
-    Grafana is typically paired with Prometheus for metrics and Loki for logs, forming the **PLG stack** (Prometheus, Loki, Grafana).
+      For **short-lived jobs** (batch, cron), use the **Pushgateway** since they may not live long enough for Prometheus
+      to scrape.
+  - question: What is PromQL?
+    answer: >-
+      **PromQL** (Prometheus Query Language) is used to query, filter, and aggregate time-series metrics stored in
+      Prometheus. It powers dashboards, alerts, and recording rules.
 
-- question: How do you connect Grafana to Prometheus?
-  answer: |-
-    **Via the UI:**
-    1. Log in to Grafana (default `http://localhost:3000`)
-    2. Navigate to **Configuration → Data Sources → Add data source**
-    3. Select **Prometheus**
-    4. Enter the Prometheus URL (e.g., `http://localhost:9090`)
-    5. Click **Save & Test** to verify connectivity
 
-    **Via provisioning** (infrastructure-as-code approach):
+      **Key concepts:**
 
-    Create `provisioning/datasources/prometheus.yaml`:
-    ```yaml
-    apiVersion: 1
-    datasources:
-      - name: Prometheus
-        type: prometheus
-        url: http://prometheus:9090
-        access: proxy
-        isDefault: true
-    ```
+      - **Instant vector** — a set of time-series with a single sample each (e.g., `up`)
 
-    The provisioning approach is preferred in production since it's version-controlled and reproducible.
+      - **Range vector** — samples over a time window (e.g., `http_requests_total[5m]`)
 
-- question: What are Grafana Panels?
-  answer: |-
-    **Panels** are the building blocks of Grafana dashboards — each panel visualizes data from one or more queries.
+      - **Functions** — `rate()`, `increase()`, `histogram_quantile()`, `avg_over_time()`, etc.
 
-    **Common panel types:**
-    - **Time Series** — line/area/bar charts for metrics over time (the most commonly used panel)
-    - **Stat** — a single large numeric value with optional sparkline
-    - **Gauge** — progress-bar or dial showing a value relative to thresholds
-    - **Bar Chart** — categorical comparisons
-    - **Table** — tabular data with sorting and filtering
-    - **Heatmap** — density visualization, great for latency distributions
-    - **Logs** — displays log lines from Loki or Elasticsearch
-    - **Node Graph** — network topology or dependency visualization
 
-    Each panel supports **thresholds** (color changes at certain values), **overrides** (per-series styling), and **transformations** (join, filter, calculate across queries).
+      **Example queries:**
 
-- question: How do you create alerts in Grafana?
-  answer: |-
-    Grafana's **Unified Alerting** system (introduced in Grafana 8+) supports multi-datasource alert rules.
 
-    **Steps to create an alert:**
-    1. Go to **Alerting → Alert Rules → New Alert Rule**
-    2. Define the **query** (e.g., a PromQL expression)
-    3. Add **reduce** and **threshold** expressions (e.g., last value > 1000)
-    4. Set the **evaluation interval** (e.g., every 1m) and **pending period** (e.g., for 5m)
-    5. Configure **labels** for routing (e.g., `team=backend`, `severity=warning`)
-    6. Set up **contact points** (Slack, Email, PagerDuty, etc.) and **notification policies** for routing
+      Per-CPU-mode usage rate:
 
-    **Alert states:** Normal, Pending, Firing, No Data, Error
+      ```promql
 
-    Alerts can also be provisioned as code using YAML files for GitOps workflows.
+      rate(node_cpu_seconds_total{mode="user"}[5m])
 
-- question: How do you configure a Grafana dashboard using JSON?
-  answer: |-
-    Grafana dashboards are internally represented as JSON and can be exported, version-controlled, and imported.
+      ```
 
-    **Export:** Dashboard settings → JSON Model → Copy
-    **Import:** Dashboards → Import → Paste JSON or upload file
 
-    **Example JSON snippet:**
-    ```json
-    {
-      "dashboard": {
-        "title": "My Dashboard",
-        "panels": [
-          {
-            "type": "timeseries",
-            "title": "CPU Usage",
-            "targets": [
-              {
-                "expr": "rate(node_cpu_seconds_total{mode='user'}[5m])",
-                "legendFormat": "{{instance}}"
-              }
-            ],
-            "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 }
+      Per-second request rate over 5 minutes:
+
+      ```promql
+
+      rate(http_requests_total[5m])
+
+      ```
+
+
+      95th percentile latency:
+
+      ```promql
+
+      histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))
+
+      ```
+  - question: What are Prometheus exporters?
+    answer: >-
+      **Exporters** are agents or libraries that expose metrics from third-party systems in a format Prometheus can
+      scrape.
+
+
+      **Common exporters:**
+
+      - **Node Exporter** — Linux/macOS hardware and OS metrics (CPU, memory, disk, network)
+
+      - **Blackbox Exporter** — probes endpoints over HTTP, HTTPS, DNS, TCP, ICMP
+
+      - **MySQL Exporter** — database performance metrics (queries, connections, replication lag)
+
+      - **cAdvisor** — container-level resource usage and performance metrics
+
+      - **kube-state-metrics** — Kubernetes object state (deployments, pods, nodes)
+
+
+      You can also instrument your own application code using **client libraries** (Go, Python, Java, etc.) to expose
+      custom `/metrics` endpoints directly, without needing a separate exporter.
+  - question: How do you set up an alert in Prometheus?
+    answer: >-
+      Alerts are defined in **alerting rules files** and evaluated by Prometheus, which fires them to the
+      **Alertmanager** for routing and notification.
+
+
+      **Example** (`alerting_rules.yml`):
+
+      ```yaml
+
+      groups:
+        - name: instance_down
+          rules:
+            - alert: InstanceDown
+              expr: up == 0
+              for: 5m
+              labels:
+                severity: critical
+              annotations:
+                summary: "Instance {{ $labels.instance }} is down"
+                description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes."
+      ```
+
+
+      **Key fields:**
+
+      - `expr` — the PromQL condition that triggers the alert
+
+      - `for` — how long the condition must be true before firing (avoids flapping)
+
+      - `labels` — attach metadata for routing (e.g., `severity`)
+
+      - `annotations` — human-readable descriptions with template variables
+
+
+      The **Alertmanager** then handles deduplication, grouping, silencing, and routing to channels like Slack,
+      PagerDuty, or email.
+  - question: What is Grafana?
+    answer: >-
+      **Grafana** is an open-source observability and visualization platform for building interactive dashboards.
+
+
+      **Key features:**
+
+      - **Multi-datasource support** — Prometheus, Elasticsearch, Loki, InfluxDB, CloudWatch, PostgreSQL, and 100+
+      others
+
+      - **Rich visualization** — graphs, heatmaps, gauges, bar charts, stat panels, logs panels, and more
+
+      - **Unified alerting** — alert rules that can query any datasource and route to Slack, PagerDuty, email, webhooks
+
+      - **Templating variables** — dynamic dashboards with dropdown filters
+
+      - **Provisioning** — dashboards and datasources can be managed as code via YAML/JSON
+
+      - **Plugin ecosystem** — extend with community and enterprise plugins for panels, datasources, and apps
+
+
+      Grafana is typically paired with Prometheus for metrics and Loki for logs, forming the **PLG stack** (Prometheus,
+      Loki, Grafana).
+  - question: How do you connect Grafana to Prometheus?
+    answer: |-
+      **Via the UI:**
+      1. Log in to Grafana (default `http://localhost:3000`)
+      2. Navigate to **Configuration → Data Sources → Add data source**
+      3. Select **Prometheus**
+      4. Enter the Prometheus URL (e.g., `http://localhost:9090`)
+      5. Click **Save & Test** to verify connectivity
+
+      **Via provisioning** (infrastructure-as-code approach):
+
+      Create `provisioning/datasources/prometheus.yaml`:
+      ```yaml
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: http://prometheus:9090
+          access: proxy
+          isDefault: true
+      ```
+
+      The provisioning approach is preferred in production since it's version-controlled and reproducible.
+  - question: What are Grafana Panels?
+    answer: >-
+      **Panels** are the building blocks of Grafana dashboards — each panel visualizes data from one or more queries.
+
+
+      **Common panel types:**
+
+      - **Time Series** — line/area/bar charts for metrics over time (the most commonly used panel)
+
+      - **Stat** — a single large numeric value with optional sparkline
+
+      - **Gauge** — progress-bar or dial showing a value relative to thresholds
+
+      - **Bar Chart** — categorical comparisons
+
+      - **Table** — tabular data with sorting and filtering
+
+      - **Heatmap** — density visualization, great for latency distributions
+
+      - **Logs** — displays log lines from Loki or Elasticsearch
+
+      - **Node Graph** — network topology or dependency visualization
+
+
+      Each panel supports **thresholds** (color changes at certain values), **overrides** (per-series styling), and
+      **transformations** (join, filter, calculate across queries).
+  - question: How do you create alerts in Grafana?
+    answer: |-
+      Grafana's **Unified Alerting** system (introduced in Grafana 8+) supports multi-datasource alert rules.
+
+      **Steps to create an alert:**
+      1. Go to **Alerting → Alert Rules → New Alert Rule**
+      2. Define the **query** (e.g., a PromQL expression)
+      3. Add **reduce** and **threshold** expressions (e.g., last value > 1000)
+      4. Set the **evaluation interval** (e.g., every 1m) and **pending period** (e.g., for 5m)
+      5. Configure **labels** for routing (e.g., `team=backend`, `severity=warning`)
+      6. Set up **contact points** (Slack, Email, PagerDuty, etc.) and **notification policies** for routing
+
+      **Alert states:** Normal, Pending, Firing, No Data, Error
+
+      Alerts can also be provisioned as code using YAML files for GitOps workflows.
+  - question: How do you configure a Grafana dashboard using JSON?
+    answer: >-
+      Grafana dashboards are internally represented as JSON and can be exported, version-controlled, and imported.
+
+
+      **Export:** Dashboard settings → JSON Model → Copy
+
+      **Import:** Dashboards → Import → Paste JSON or upload file
+
+
+      **Example JSON snippet:**
+
+      ```json
+
+      {
+        "dashboard": {
+          "title": "My Dashboard",
+          "panels": [
+            {
+              "type": "timeseries",
+              "title": "CPU Usage",
+              "targets": [
+                {
+                  "expr": "rate(node_cpu_seconds_total{mode='user'}[5m])",
+                  "legendFormat": "{{instance}}"
+                }
+              ],
+              "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 }
+            }
+          ]
+        }
+      }
+
+      ```
+
+
+      **Best practice:** Use `grafana-dashboard-provider` in provisioning to load JSON files from a directory
+      automatically, keeping dashboards in Git.
+  - question: What is the ELK Stack?
+    answer: >-
+      The **ELK Stack** is a popular open-source log management platform consisting of three components:
+
+
+      - **Elasticsearch** — a distributed search and analytics engine that stores and indexes log data
+
+      - **Logstash** — a server-side data processing pipeline that ingests, transforms, and forwards logs
+
+      - **Kibana** — a web-based visualization and exploration UI for Elasticsearch data
+
+
+      The modern version is often called the **Elastic Stack**, which adds **Beats** (lightweight data shippers) as a
+      fourth component.
+
+
+      **Typical flow:**
+
+      ```
+
+      Applications → Beats/Filebeat → Logstash (transform) → Elasticsearch (store/index) → Kibana (visualize)
+
+      ```
+
+
+      ELK excels at **full-text log search**, **log analytics**, and **security event monitoring** (SIEM).
+  - question: What is the role of Elasticsearch in ELK?
+    answer: >-
+      **Elasticsearch** is the core storage and search engine of the ELK Stack.
+
+
+      **Key characteristics:**
+
+      - **Distributed architecture** — data is split into shards across nodes for horizontal scaling
+
+      - **Inverted index** — enables fast full-text search across billions of log lines
+
+      - **RESTful API** — all operations (indexing, querying, cluster management) use HTTP/JSON
+
+      - **Near real-time** — documents become searchable within ~1 second of indexing
+
+      - **Query DSL** — a rich JSON-based query language supporting full-text search, aggregations, filters, and fuzzy
+      matching
+
+
+      Elasticsearch stores data in **indices**, where each index contains **documents** (JSON objects) with fields that
+      can be mapped to specific data types (keyword, text, date, integer, etc.).
+  - question: How does Logstash work?
+    answer: >-
+      Logstash processes data through a three-stage **pipeline**:
+
+
+      1. **Input** — reads data from sources (files, Beats, Kafka, syslog, S3, databases, etc.)
+
+      2. **Filter** — transforms and enriches data (parse, mutate, drop, add fields)
+
+      3. **Output** — sends processed data to destinations (Elasticsearch, S3, Kafka, stdout, etc.)
+
+
+      **Example configuration** (`logstash.conf`):
+
+      ```
+
+      input {
+        file { path => "/var/log/syslog" }
+      }
+
+
+      filter {
+        grok {
+          match => { "message" => "%{SYSLOGTIMESTAMP:timestamp} %{SYSLOGHOST:host} %{DATA:program}: %{GREEDYDATA:log_message}" }
+        }
+        date {
+          match => ["timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss"]
+        }
+      }
+
+
+      output {
+        elasticsearch {
+          hosts => ["localhost:9200"]
+          index => "syslog-%{+YYYY.MM.dd}"
+        }
+      }
+
+      ```
+
+
+      **Common filter plugins:** `grok` (pattern matching), `mutate` (rename/remove fields), `date` (timestamp parsing),
+      `geoip` (IP geolocation), `json` (parse JSON).
+  - question: What is Kibana used for?
+    answer: >-
+      **Kibana** is the visualization and management UI for the Elastic Stack.
+
+
+      **Core features:**
+
+      - **Discover** — search and browse raw log data with filters, saved queries, and field-level exploration
+
+      - **Dashboards** — combine multiple visualizations into interactive, shareable dashboards
+
+      - **Visualize / Lens** — create charts (line, bar, pie, heatmap, etc.) using drag-and-drop or the full Visualize
+      editor
+
+      - **Canvas** — pixel-perfect, presentation-ready reports with custom styling
+
+      - **Alerts** — rule-based alerting on log patterns, thresholds, or anomalies
+
+      - **SIEM / Security** — threat detection, investigation, and incident response
+
+      - **Machine Learning** — anomaly detection on time-series data
+
+      - **Dev Tools / Console** — execute Elasticsearch queries directly
+  - question: How do you install the ELK stack?
+    answer: >-
+      **On Debian/Ubuntu (APT):**
+
+      ```bash
+
+      # Add Elastic GPG key and repo
+
+      wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+
+      echo "deb https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee
+      /etc/apt/sources.list.d/elastic-8.x.list
+
+      sudo apt update
+
+
+      # Install components
+
+      sudo apt install elasticsearch logstash kibana
+
+
+      # Enable and start services
+
+      sudo systemctl enable --now elasticsearch logstash kibana
+
+      ```
+
+
+      **With Docker Compose** (often preferred):
+
+      ```yaml
+
+      services:
+        elasticsearch:
+          image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+          environment:
+            - discovery.type=single-node
+          ports: ["9200:9200"]
+        kibana:
+          image: docker.elastic.co/kibana/kibana:8.12.0
+          ports: ["5601:5601"]
+      ```
+
+
+      **Verify:** `curl -X GET "localhost:9200"` should return cluster info. Kibana is available at
+      `http://localhost:5601`.
+  - question: What is an Index in Elasticsearch?
+    answer: >-
+      An **index** is a logical namespace in Elasticsearch that holds a collection of **documents** (JSON objects). It's
+      analogous to a database in SQL.
+
+
+      **Key concepts:**
+
+      - Each document has an `_id` and fields with defined data types
+
+      - **Mappings** define the schema — field types (text, keyword, date, long, etc.)
+
+      - An index is split into **shards** for distributed storage and parallel querying
+
+
+      **Create an index with settings:**
+
+      ```bash
+
+      curl -X PUT "localhost:9200/logs" -H 'Content-Type: application/json' -d'
+
+      {
+        "settings": {
+          "number_of_shards": 3,
+          "number_of_replicas": 1
+        },
+        "mappings": {
+          "properties": {
+            "timestamp": { "type": "date" },
+            "level": { "type": "keyword" },
+            "message": { "type": "text" }
           }
-        ]
-      }
-    }
-    ```
+        }
+      }'
 
-    **Best practice:** Use `grafana-dashboard-provider` in provisioning to load JSON files from a directory automatically, keeping dashboards in Git.
+      ```
 
-- question: What is the ELK Stack?
-  answer: |-
-    The **ELK Stack** is a popular open-source log management platform consisting of three components:
 
-    - **Elasticsearch** — a distributed search and analytics engine that stores and indexes log data
-    - **Logstash** — a server-side data processing pipeline that ingests, transforms, and forwards logs
-    - **Kibana** — a web-based visualization and exploration UI for Elasticsearch data
+      **Naming convention:** Use time-based names like `logs-2024.01.15` with **index templates** and **ILM** for
+      automatic rollover and retention.
+  - question: How do you send logs from Logstash to Elasticsearch?
+    answer: >-
+      Define the **elasticsearch output plugin** in the Logstash configuration:
 
-    The modern version is often called the **Elastic Stack**, which adds **Beats** (lightweight data shippers) as a fourth component.
 
-    **Typical flow:**
-    ```
-    Applications → Beats/Filebeat → Logstash (transform) → Elasticsearch (store/index) → Kibana (visualize)
-    ```
+      ```
 
-    ELK excels at **full-text log search**, **log analytics**, and **security event monitoring** (SIEM).
-
-- question: What is the role of Elasticsearch in ELK?
-  answer: |-
-    **Elasticsearch** is the core storage and search engine of the ELK Stack.
-
-    **Key characteristics:**
-    - **Distributed architecture** — data is split into shards across nodes for horizontal scaling
-    - **Inverted index** — enables fast full-text search across billions of log lines
-    - **RESTful API** — all operations (indexing, querying, cluster management) use HTTP/JSON
-    - **Near real-time** — documents become searchable within ~1 second of indexing
-    - **Query DSL** — a rich JSON-based query language supporting full-text search, aggregations, filters, and fuzzy matching
-
-    Elasticsearch stores data in **indices**, where each index contains **documents** (JSON objects) with fields that can be mapped to specific data types (keyword, text, date, integer, etc.).
-
-- question: How does Logstash work?
-  answer: |-
-    Logstash processes data through a three-stage **pipeline**:
-
-    1. **Input** — reads data from sources (files, Beats, Kafka, syslog, S3, databases, etc.)
-    2. **Filter** — transforms and enriches data (parse, mutate, drop, add fields)
-    3. **Output** — sends processed data to destinations (Elasticsearch, S3, Kafka, stdout, etc.)
-
-    **Example configuration** (`logstash.conf`):
-    ```
-    input {
-      file { path => "/var/log/syslog" }
-    }
-
-    filter {
-      grok {
-        match => { "message" => "%{SYSLOGTIMESTAMP:timestamp} %{SYSLOGHOST:host} %{DATA:program}: %{GREEDYDATA:log_message}" }
-      }
-      date {
-        match => ["timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss"]
-      }
-    }
-
-    output {
-      elasticsearch {
-        hosts => ["localhost:9200"]
-        index => "syslog-%{+YYYY.MM.dd}"
-      }
-    }
-    ```
-
-    **Common filter plugins:** `grok` (pattern matching), `mutate` (rename/remove fields), `date` (timestamp parsing), `geoip` (IP geolocation), `json` (parse JSON).
-
-- question: What is Kibana used for?
-  answer: |-
-    **Kibana** is the visualization and management UI for the Elastic Stack.
-
-    **Core features:**
-    - **Discover** — search and browse raw log data with filters, saved queries, and field-level exploration
-    - **Dashboards** — combine multiple visualizations into interactive, shareable dashboards
-    - **Visualize / Lens** — create charts (line, bar, pie, heatmap, etc.) using drag-and-drop or the full Visualize editor
-    - **Canvas** — pixel-perfect, presentation-ready reports with custom styling
-    - **Alerts** — rule-based alerting on log patterns, thresholds, or anomalies
-    - **SIEM / Security** — threat detection, investigation, and incident response
-    - **Machine Learning** — anomaly detection on time-series data
-    - **Dev Tools / Console** — execute Elasticsearch queries directly
-
-- question: How do you install the ELK stack?
-  answer: |-
-    **On Debian/Ubuntu (APT):**
-    ```bash
-    # Add Elastic GPG key and repo
-    wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-    echo "deb https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
-    sudo apt update
-
-    # Install components
-    sudo apt install elasticsearch logstash kibana
-
-    # Enable and start services
-    sudo systemctl enable --now elasticsearch logstash kibana
-    ```
-
-    **With Docker Compose** (often preferred):
-    ```yaml
-    services:
-      elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
-        environment:
-          - discovery.type=single-node
-        ports: ["9200:9200"]
-      kibana:
-        image: docker.elastic.co/kibana/kibana:8.12.0
-        ports: ["5601:5601"]
-    ```
-
-    **Verify:** `curl -X GET "localhost:9200"` should return cluster info. Kibana is available at `http://localhost:5601`.
-
-- question: What is an Index in Elasticsearch?
-  answer: |-
-    An **index** is a logical namespace in Elasticsearch that holds a collection of **documents** (JSON objects). It's analogous to a database in SQL.
-
-    **Key concepts:**
-    - Each document has an `_id` and fields with defined data types
-    - **Mappings** define the schema — field types (text, keyword, date, long, etc.)
-    - An index is split into **shards** for distributed storage and parallel querying
-
-    **Create an index with settings:**
-    ```bash
-    curl -X PUT "localhost:9200/logs" -H 'Content-Type: application/json' -d'
-    {
-      "settings": {
-        "number_of_shards": 3,
-        "number_of_replicas": 1
-      },
-      "mappings": {
-        "properties": {
-          "timestamp": { "type": "date" },
-          "level": { "type": "keyword" },
-          "message": { "type": "text" }
+      output {
+        elasticsearch {
+          hosts => ["http://localhost:9200"]
+          index => "logs-%{+YYYY.MM.dd}"
+          user => "elastic"
+          password => "${ES_PASSWORD}"
         }
       }
-    }'
-    ```
-
-    **Naming convention:** Use time-based names like `logs-2024.01.15` with **index templates** and **ILM** for automatic rollover and retention.
-
-- question: How do you send logs from Logstash to Elasticsearch?
-  answer: |-
-    Define the **elasticsearch output plugin** in the Logstash configuration:
-
-    ```
-    output {
-      elasticsearch {
-        hosts => ["http://localhost:9200"]
-        index => "logs-%{+YYYY.MM.dd}"
-        user => "elastic"
-        password => "${ES_PASSWORD}"
-      }
-    }
-    ```
-
-    **Key options:**
-    - `index` — target index name, supports date math for daily indices
-    - `user`/`password` — authentication credentials (required in Elastic 8.x with security enabled)
-    - `ssl_certificate_verification` — verify TLS certs when connecting over HTTPS
-    - `pipeline` — specify an Elasticsearch ingest pipeline for further processing
-    - `template_name` — apply a custom index template
-
-    For high-throughput environments, tune `flush_size` (batch size) and `workers` (parallel output threads) to optimize indexing performance.
-
-- question: What is a Kibana Visualization?
-  answer: |-
-    A Kibana visualization is a chart, graph, or data display built from Elasticsearch queries.
-
-    **Common visualization types:**
-    - **Line Chart** — metrics over time (e.g., CPU usage, request rate)
-    - **Bar Chart** — categorical comparisons (e.g., logs per service)
-    - **Pie / Donut Chart** — proportional distributions (e.g., error types breakdown)
-    - **Heatmap** — density across two dimensions (e.g., request latency by hour)
-    - **Metric** — single aggregated number (e.g., total error count)
-    - **TSVB (Time Series Visual Builder)** — advanced multi-series time visualizations with math expressions
-
-    **Creating a visualization:**
-    1. Choose the visualization type
-    2. Select a data source (index pattern)
-    3. Configure **metrics** (count, avg, sum, percentiles) and **buckets** (date histogram, terms, filters)
-    4. Save and add to a dashboard
-
-- question: What is Filebeat?
-  answer: |-
-    **Filebeat** is a lightweight log shipper from the Beats family that reads log files and forwards them to Logstash or Elasticsearch.
-
-    **Why Filebeat over Logstash for collection?**
-    - Minimal resource footprint (~10-20 MB memory)
-    - Built-in **backpressure handling** — slows down if the output is overwhelmed
-    - **Registry file** tracks read positions, ensuring no log lines are lost or duplicated after restarts
-
-    **Example configuration** (`filebeat.yml`):
-    ```yaml
-    filebeat.inputs:
-      - type: log
-        enabled: true
-        paths:
-          - /var/log/syslog
-          - /var/log/auth.log
-        multiline.pattern: '^\d{4}-\d{2}-\d{2}'
-        multiline.negate: true
-        multiline.match: after
-
-    output.elasticsearch:
-      hosts: ["localhost:9200"]
-      index: "filebeat-%{+yyyy.MM.dd}"
-    ```
-
-    Filebeat also has **modules** (nginx, apache, mysql, system) that ship with preconfigured inputs, parsers, and Kibana dashboards.
-
-- question: What is the difference between Logstash and Filebeat?
-  answer: |-
-    **Filebeat:**
-    - Lightweight agent (~10 MB memory)
-    - Reads and forwards log files with minimal transformation
-    - Runs on each server as a sidecar or DaemonSet
-    - Built-in modules for common log formats
-    - Limited filtering: can add fields, drop events, simple conditionals
-
-    **Logstash:**
-    - Heavyweight processing engine (~500 MB+ memory with JVM)
-    - Rich transformation: grok parsing, field mutation, enrichment, conditional routing
-    - Supports 200+ input/filter/output plugins
-    - Runs as a centralized log processing tier
-
-    **Common architecture:** Deploy Filebeat on each node to collect and forward logs, then send to a centralized Logstash cluster for heavy parsing before indexing into Elasticsearch. This separates the lightweight collection from the resource-intensive processing.
-
-- question: What is the difference between Pull and Push monitoring models?
-  answer: |-
-    **Pull Model** (e.g., Prometheus):
-    - The monitoring system **scrapes targets** at regular intervals
-    - Monitoring system controls the collection schedule
-    - Easier to detect if a target is down (scrape fails)
-    - Example: Prometheus scraping `/metrics` every 15s
-
-    **Push Model** (e.g., StatsD, InfluxDB, Datadog Agent):
-    - Targets **send metrics** to a central collector
-    - Targets control when and what to send
-    - Better for short-lived jobs, serverless, and event-driven systems
-    - Example: Application pushing metrics to a StatsD server on each request
-
-    **Trade-offs:**
-    - Pull is better for **infrastructure monitoring** — gives the monitoring system full control and naturally detects failures
-    - Push is better for **ephemeral workloads** — jobs that may finish before they can be scraped
-    - Prometheus bridges this gap with the **Pushgateway** for short-lived jobs
-    - **OpenTelemetry** is emerging as a vendor-neutral standard that supports both push and pull collection
-
-- question: How does Prometheus handle high-cardinality data?
-  answer: |-
-    **High cardinality** occurs when metrics have many unique label combinations (e.g., per-user or per-request labels), causing memory and storage to explode.
-
-    **Why it's dangerous:**
-    - Each unique label combination creates a separate time series
-    - 1 metric × 10,000 user IDs = 10,000 time series — this can crash Prometheus
-
-    **Best practices:**
-    - **Avoid unbounded labels** — never use `user_id`, `request_id`, `email`, or `IP` as labels
-    - **Use histograms/summaries** instead of tracking individual events
-    - **Drop unnecessary labels** via `metric_relabel_configs`
-    - **Monitor cardinality** with `prometheus_tsdb_head_series` and `topk()` queries
-    - **Set retention policies** — limit storage duration with `--storage.tsdb.retention.time`
-
-    **Example — dropping a high-cardinality label:**
-    ```yaml
-    metric_relabel_configs:
-      - source_labels: [request_id]
-        action: labeldrop
-    ```
-
-- question: What are Recording Rules in Prometheus?
-  answer: |-
-    **Recording rules** precompute frequently used or expensive PromQL expressions and store the results as new time series. This improves dashboard load times and reduces query-time computation.
-
-    **Example** (`recording_rules.yml`):
-    ```yaml
-    groups:
-      - name: response_time_rules
-        interval: 30s
-        rules:
-          - record: job:http_request_duration_seconds:avg_rate5m
-            expr: avg(rate(http_request_duration_seconds_sum[5m])) by (job)
-          - record: job:http_requests:rate5m
-            expr: sum(rate(http_requests_total[5m])) by (job)
-    ```
-
-    **When to use recording rules:**
-    - Dashboard queries that scan many time series or long ranges
-    - Expressions used in alerting rules (precompute to reduce alert evaluation cost)
-    - Aggregations across many instances/jobs
-
-    **Naming convention:** `level:metric:operations` — e.g., `job:http_requests:rate5m`. This is the Prometheus naming best practice.
-
-- question: What is Thanos, and how does it complement Prometheus?
-  answer: |-
-    **Thanos** is a CNCF project that extends Prometheus for **long-term storage**, **global querying**, and **high availability**.
-
-    **Core components:**
-    - **Sidecar** — runs alongside Prometheus, uploads TSDB blocks to object storage (S3, GCS, Azure Blob)
-    - **Store Gateway** — serves historical data from object storage for queries
-    - **Querier** — provides a single PromQL endpoint that federates across all Prometheus instances and store gateways
-    - **Compactor** — downsamples and deduplicates historical data to reduce storage costs
-    - **Ruler** — evaluates recording/alerting rules against the global query view
-
-    **Key benefits:**
-    - Unlimited retention via cheap object storage
-    - Global query view across regions, clusters, and clouds
-    - Automatic deduplication when running HA Prometheus replicas
-    - Downsampling to 5m and 1h resolutions for old data
-
-    **Alternative:** **Grafana Mimir** (successor to Cortex) offers similar capabilities with a different architecture (horizontally scalable, multi-tenant by design).
-
-- question: How do you handle Prometheus high availability (HA)?
-  answer: |-
-    Prometheus is a **single-node system** by design, so HA requires external coordination.
-
-    **Approach 1 — Identical replicas:**
-    - Run 2+ Prometheus instances scraping the **same targets**
-    - Each replica stores its own copy of data
-    - Use a load balancer or **Thanos Querier** to deduplicate and merge results
-
-    **Approach 2 — Thanos/Mimir for deduplication:**
-    - Thanos Sidecar on each replica uploads data to object storage
-    - Thanos Querier deduplicates at query time using `replica` labels
-    - Provides seamless failover — if one replica dies, the other still has the data
-
-    **Approach 3 — Cortex/Mimir (horizontally scalable):**
-    - Prometheus writes via remote-write to a centralized, distributed backend
-    - Built-in replication, sharding, and multi-tenancy
-    - Best for very large environments with 10M+ active series
-
-    **For Alertmanager HA:** Run multiple Alertmanager instances in a gossip-based cluster — they automatically deduplicate alerts.
-
-- question: How do you enable authentication in Grafana?
-  answer: |-
-    Grafana supports multiple authentication methods, configured in `grafana.ini` or via environment variables.
-
-    **Built-in methods:**
-    - **Basic auth** — username/password (enabled by default)
-    - **OAuth 2.0** — Google, GitHub, GitLab, Azure AD, Okta, Generic OAuth
-    - **LDAP** — enterprise directory integration
-    - **SAML** — enterprise SSO (Grafana Enterprise)
-    - **API keys / Service accounts** — for programmatic access
-
-    **Example — GitHub OAuth** (`grafana.ini`):
-    ```ini
-    [auth.github]
-    enabled = true
-    client_id = YOUR_CLIENT_ID
-    client_secret = YOUR_CLIENT_SECRET
-    allowed_organizations = my-org
-    ```
-
-    **Best practices:**
-    - Disable basic auth in production after enabling SSO (`[auth.basic] enabled = false`)
-    - Use **RBAC** to assign roles (Viewer, Editor, Admin) per team/folder
-    - Enable **2FA/MFA** where possible
-    - Use service accounts (not personal API keys) for automation
-
-- question: What are Templating Variables in Grafana?
-  answer: |-
-    **Templating variables** make dashboards dynamic by allowing users to select values from dropdown menus that are injected into queries.
-
-    **Variable types:**
-    - **Query** — populated from a datasource query (e.g., `label_values(up, job)`)
-    - **Custom** — manual comma-separated values
-    - **Interval** — time intervals (`1m, 5m, 15m, 1h`)
-    - **Datasource** — switch between datasources dynamically
-    - **Ad hoc filters** — automatically apply label filters to all queries
-
-    **Example usage in a PromQL query:**
-    ```promql
-    rate(http_requests_total{job="$service", instance=~"$instance"}[5m])
-    ```
-
-    Here, `$service` and `$instance` are dropdowns. The `=~` operator supports multi-value selection with regex.
-
-    **Chained variables:** Variables can depend on each other — e.g., selecting a `namespace` variable filters the available `pod` values.
-
-- question: How do you set up Grafana provisioning?
-  answer: |-
-    **Provisioning** allows Grafana datasources, dashboards, and alert rules to be managed as code via YAML files, enabling GitOps workflows.
-
-    **Datasource provisioning** (`provisioning/datasources/default.yaml`):
-    ```yaml
-    apiVersion: 1
-    datasources:
-      - name: Prometheus
-        type: prometheus
-        url: http://prometheus:9090
-        access: proxy
-        isDefault: true
-      - name: Loki
-        type: loki
-        url: http://loki:3100
-        access: proxy
-    ```
-
-    **Dashboard provisioning** (`provisioning/dashboards/default.yaml`):
-    ```yaml
-    apiVersion: 1
-    providers:
-      - name: default
-        folder: 'Provisioned'
-        type: file
-        options:
-          path: /var/lib/grafana/dashboards
-          foldersFromFilesStructure: true
-    ```
-
-    Place JSON dashboard files in `/var/lib/grafana/dashboards/` and Grafana will load them automatically on startup. Changes to the YAML or JSON files are picked up without restart.
-
-- question: What are Grafana Loki and Promtail?
-  answer: |-
-    **Loki** is Grafana's log aggregation system, designed to be cost-effective and operationally simple.
-
-    **Key design principles:**
-    - **Index only metadata** (labels), not log content — drastically reduces storage and indexing cost
-    - **Uses the same label model as Prometheus** — correlate metrics and logs using identical labels
-    - **LogQL** — a query language similar to PromQL for filtering and aggregating logs
-
-    **Promtail** is the default log collection agent for Loki:
-    - Discovers log files via static config or Kubernetes pod discovery
-    - Attaches labels (job, namespace, pod, container) to log streams
-    - Pushes logs to Loki's HTTP API
-
-    **Example Promtail config:**
-    ```yaml
-    scrape_configs:
-      - job_name: system
-        static_configs:
-          - targets: [localhost]
-            labels:
-              job: syslog
-              __path__: /var/log/syslog
-    ```
-
-    **Alternatives to Promtail:** Grafana Alloy (the successor agent), Fluentd, or Fluent Bit with a Loki output plugin.
-
-- question: How can you monitor Kubernetes with Grafana?
-  answer: |-
-    The standard approach is the **kube-prometheus-stack** Helm chart, which deploys a complete monitoring pipeline.
-
-    **What it includes:**
-    - **Prometheus Operator** — manages Prometheus instances and scrape configs via CRDs (`ServiceMonitor`, `PodMonitor`)
-    - **Grafana** — with preconfigured dashboards for cluster, node, pod, and namespace-level metrics
-    - **Node Exporter** — hardware and OS metrics from each node
-    - **kube-state-metrics** — Kubernetes object state (deployment replicas, pod phases, resource requests)
-    - **Alertmanager** — preconfigured alerts for common failure scenarios
-
-    **Installation:**
-    ```bash
-    helm install kube-prom prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
-    ```
-
-    **For logs:** Add Loki + Promtail (or Grafana Alloy) to ship container logs, then correlate metrics and logs in Grafana using shared Kubernetes labels.
-
-- question: What is an Elasticsearch Shard, and why is it important?
-  answer: |-
-    A **shard** is the basic unit of storage and search in Elasticsearch. Each index is divided into shards that are distributed across cluster nodes.
-
-    **Shard types:**
-    - **Primary shards** — hold the original data; the number is set at index creation and cannot be changed later
-    - **Replica shards** — copies of primary shards for fault tolerance and read throughput
-
-    **Example — create an index with 3 primaries and 2 replicas:**
-    ```bash
-    curl -X PUT "localhost:9200/logs?pretty" -H 'Content-Type: application/json' -d'
-    {
-      "settings": { "number_of_shards": 3, "number_of_replicas": 2 }
-    }'
-    ```
-    This creates 3 primary + 6 replica = **9 total shards**.
-
-    **Sizing guidelines:**
-    - Target **10-50 GB per shard** for optimal performance
-    - Avoid too many small shards (high overhead) or too few large shards (slow recovery, uneven distribution)
-    - Each shard consumes heap memory — a rule of thumb is max ~20 shards per GB of heap
-
-- question: What is Index Lifecycle Management (ILM) in Elasticsearch?
-  answer: |-
-    **ILM** automates index management through defined lifecycle phases, optimizing storage cost and performance.
-
-    **Phases:**
-    - **Hot** — actively written to and frequently queried; uses fast storage (SSD)
-    - **Warm** — no longer written to but still queried; can be shrunk and moved to cheaper storage
-    - **Cold** — rarely queried; can use frozen tier or searchable snapshots
-    - **Frozen** — cheapest tier; data lives in object storage, searched on-demand
-    - **Delete** — automatic index deletion after retention period
-
-    **Example ILM policy:**
-    ```json
-    {
-      "policy": {
-        "phases": {
-          "hot":    { "actions": { "rollover": { "max_size": "50gb", "max_age": "1d" } } },
-          "warm":   { "min_age": "7d",  "actions": { "shrink": { "number_of_shards": 1 }, "forcemerge": { "max_num_segments": 1 } } },
-          "cold":   { "min_age": "30d", "actions": { "allocate": { "require": { "data": "cold" } } } },
-          "delete": { "min_age": "90d", "actions": { "delete": {} } }
+
+      ```
+
+
+      **Key options:**
+
+      - `index` — target index name, supports date math for daily indices
+
+      - `user`/`password` — authentication credentials (required in Elastic 8.x with security enabled)
+
+      - `ssl_certificate_verification` — verify TLS certs when connecting over HTTPS
+
+      - `pipeline` — specify an Elasticsearch ingest pipeline for further processing
+
+      - `template_name` — apply a custom index template
+
+
+      For high-throughput environments, tune `flush_size` (batch size) and `workers` (parallel output threads) to
+      optimize indexing performance.
+  - question: What is a Kibana Visualization?
+    answer: |-
+      A Kibana visualization is a chart, graph, or data display built from Elasticsearch queries.
+
+      **Common visualization types:**
+      - **Line Chart** — metrics over time (e.g., CPU usage, request rate)
+      - **Bar Chart** — categorical comparisons (e.g., logs per service)
+      - **Pie / Donut Chart** — proportional distributions (e.g., error types breakdown)
+      - **Heatmap** — density across two dimensions (e.g., request latency by hour)
+      - **Metric** — single aggregated number (e.g., total error count)
+      - **TSVB (Time Series Visual Builder)** — advanced multi-series time visualizations with math expressions
+
+      **Creating a visualization:**
+      1. Choose the visualization type
+      2. Select a data source (index pattern)
+      3. Configure **metrics** (count, avg, sum, percentiles) and **buckets** (date histogram, terms, filters)
+      4. Save and add to a dashboard
+  - question: What is Filebeat?
+    answer: >-
+      **Filebeat** is a lightweight log shipper from the Beats family that reads log files and forwards them to Logstash
+      or Elasticsearch.
+
+
+      **Why Filebeat over Logstash for collection?**
+
+      - Minimal resource footprint (~10-20 MB memory)
+
+      - Built-in **backpressure handling** — slows down if the output is overwhelmed
+
+      - **Registry file** tracks read positions, ensuring no log lines are lost or duplicated after restarts
+
+
+      **Example configuration** (`filebeat.yml`):
+
+      ```yaml
+
+      filebeat.inputs:
+        - type: log
+          enabled: true
+          paths:
+            - /var/log/syslog
+            - /var/log/auth.log
+          multiline.pattern: '^\d{4}-\d{2}-\d{2}'
+          multiline.negate: true
+          multiline.match: after
+
+      output.elasticsearch:
+        hosts: ["localhost:9200"]
+        index: "filebeat-%{+yyyy.MM.dd}"
+      ```
+
+
+      Filebeat also has **modules** (nginx, apache, mysql, system) that ship with preconfigured inputs, parsers, and
+      Kibana dashboards.
+  - question: What is the difference between Logstash and Filebeat?
+    answer: >-
+      **Filebeat:**
+
+      - Lightweight agent (~10 MB memory)
+
+      - Reads and forwards log files with minimal transformation
+
+      - Runs on each server as a sidecar or DaemonSet
+
+      - Built-in modules for common log formats
+
+      - Limited filtering: can add fields, drop events, simple conditionals
+
+
+      **Logstash:**
+
+      - Heavyweight processing engine (~500 MB+ memory with JVM)
+
+      - Rich transformation: grok parsing, field mutation, enrichment, conditional routing
+
+      - Supports 200+ input/filter/output plugins
+
+      - Runs as a centralized log processing tier
+
+
+      **Common architecture:** Deploy Filebeat on each node to collect and forward logs, then send to a centralized
+      Logstash cluster for heavy parsing before indexing into Elasticsearch. This separates the lightweight collection
+      from the resource-intensive processing.
+  - question: What is the difference between Pull and Push monitoring models?
+    answer: >-
+      **Pull Model** (e.g., Prometheus):
+
+      - The monitoring system **scrapes targets** at regular intervals
+
+      - Monitoring system controls the collection schedule
+
+      - Easier to detect if a target is down (scrape fails)
+
+      - Example: Prometheus scraping `/metrics` every 15s
+
+
+      **Push Model** (e.g., StatsD, InfluxDB, Datadog Agent):
+
+      - Targets **send metrics** to a central collector
+
+      - Targets control when and what to send
+
+      - Better for short-lived jobs, serverless, and event-driven systems
+
+      - Example: Application pushing metrics to a StatsD server on each request
+
+
+      **Trade-offs:**
+
+      - Pull is better for **infrastructure monitoring** — gives the monitoring system full control and naturally
+      detects failures
+
+      - Push is better for **ephemeral workloads** — jobs that may finish before they can be scraped
+
+      - Prometheus bridges this gap with the **Pushgateway** for short-lived jobs
+
+      - **OpenTelemetry** is emerging as a vendor-neutral standard that supports both push and pull collection
+  - question: How does Prometheus handle high-cardinality data?
+    answer: >-
+      **High cardinality** occurs when metrics have many unique label combinations (e.g., per-user or per-request
+      labels), causing memory and storage to explode.
+
+
+      **Why it's dangerous:**
+
+      - Each unique label combination creates a separate time series
+
+      - 1 metric × 10,000 user IDs = 10,000 time series — this can crash Prometheus
+
+
+      **Best practices:**
+
+      - **Avoid unbounded labels** — never use `user_id`, `request_id`, `email`, or `IP` as labels
+
+      - **Use histograms/summaries** instead of tracking individual events
+
+      - **Drop unnecessary labels** via `metric_relabel_configs`
+
+      - **Monitor cardinality** with `prometheus_tsdb_head_series` and `topk()` queries
+
+      - **Set retention policies** — limit storage duration with `--storage.tsdb.retention.time`
+
+
+      **Example — dropping a high-cardinality label:**
+
+      ```yaml
+
+      metric_relabel_configs:
+        - source_labels: [request_id]
+          action: labeldrop
+      ```
+  - question: What are Recording Rules in Prometheus?
+    answer: >-
+      **Recording rules** precompute frequently used or expensive PromQL expressions and store the results as new time
+      series. This improves dashboard load times and reduces query-time computation.
+
+
+      **Example** (`recording_rules.yml`):
+
+      ```yaml
+
+      groups:
+        - name: response_time_rules
+          interval: 30s
+          rules:
+            - record: job:http_request_duration_seconds:avg_rate5m
+              expr: avg(rate(http_request_duration_seconds_sum[5m])) by (job)
+            - record: job:http_requests:rate5m
+              expr: sum(rate(http_requests_total[5m])) by (job)
+      ```
+
+
+      **When to use recording rules:**
+
+      - Dashboard queries that scan many time series or long ranges
+
+      - Expressions used in alerting rules (precompute to reduce alert evaluation cost)
+
+      - Aggregations across many instances/jobs
+
+
+      **Naming convention:** `level:metric:operations` — e.g., `job:http_requests:rate5m`. This is the Prometheus naming
+      best practice.
+  - question: What is Thanos, and how does it complement Prometheus?
+    answer: >-
+      **Thanos** is a CNCF project that extends Prometheus for **long-term storage**, **global querying**, and **high
+      availability**.
+
+
+      **Core components:**
+
+      - **Sidecar** — runs alongside Prometheus, uploads TSDB blocks to object storage (S3, GCS, Azure Blob)
+
+      - **Store Gateway** — serves historical data from object storage for queries
+
+      - **Querier** — provides a single PromQL endpoint that federates across all Prometheus instances and store
+      gateways
+
+      - **Compactor** — downsamples and deduplicates historical data to reduce storage costs
+
+      - **Ruler** — evaluates recording/alerting rules against the global query view
+
+
+      **Key benefits:**
+
+      - Unlimited retention via cheap object storage
+
+      - Global query view across regions, clusters, and clouds
+
+      - Automatic deduplication when running HA Prometheus replicas
+
+      - Downsampling to 5m and 1h resolutions for old data
+
+
+      **Alternative:** **Grafana Mimir** (successor to Cortex) offers similar capabilities with a different architecture
+      (horizontally scalable, multi-tenant by design).
+  - question: How do you handle Prometheus high availability (HA)?
+    answer: >-
+      Prometheus is a **single-node system** by design, so HA requires external coordination.
+
+
+      **Approach 1 — Identical replicas:**
+
+      - Run 2+ Prometheus instances scraping the **same targets**
+
+      - Each replica stores its own copy of data
+
+      - Use a load balancer or **Thanos Querier** to deduplicate and merge results
+
+
+      **Approach 2 — Thanos/Mimir for deduplication:**
+
+      - Thanos Sidecar on each replica uploads data to object storage
+
+      - Thanos Querier deduplicates at query time using `replica` labels
+
+      - Provides seamless failover — if one replica dies, the other still has the data
+
+
+      **Approach 3 — Cortex/Mimir (horizontally scalable):**
+
+      - Prometheus writes via remote-write to a centralized, distributed backend
+
+      - Built-in replication, sharding, and multi-tenancy
+
+      - Best for very large environments with 10M+ active series
+
+
+      **For Alertmanager HA:** Run multiple Alertmanager instances in a gossip-based cluster — they automatically
+      deduplicate alerts.
+  - question: How do you enable authentication in Grafana?
+    answer: |-
+      Grafana supports multiple authentication methods, configured in `grafana.ini` or via environment variables.
+
+      **Built-in methods:**
+      - **Basic auth** — username/password (enabled by default)
+      - **OAuth 2.0** — Google, GitHub, GitLab, Azure AD, Okta, Generic OAuth
+      - **LDAP** — enterprise directory integration
+      - **SAML** — enterprise SSO (Grafana Enterprise)
+      - **API keys / Service accounts** — for programmatic access
+
+      **Example — GitHub OAuth** (`grafana.ini`):
+      ```ini
+      [auth.github]
+      enabled = true
+      client_id = YOUR_CLIENT_ID
+      client_secret = YOUR_CLIENT_SECRET
+      allowed_organizations = my-org
+      ```
+
+      **Best practices:**
+      - Disable basic auth in production after enabling SSO (`[auth.basic] enabled = false`)
+      - Use **RBAC** to assign roles (Viewer, Editor, Admin) per team/folder
+      - Enable **2FA/MFA** where possible
+      - Use service accounts (not personal API keys) for automation
+  - question: What are Templating Variables in Grafana?
+    answer: >-
+      **Templating variables** make dashboards dynamic by allowing users to select values from dropdown menus that are
+      injected into queries.
+
+
+      **Variable types:**
+
+      - **Query** — populated from a datasource query (e.g., `label_values(up, job)`)
+
+      - **Custom** — manual comma-separated values
+
+      - **Interval** — time intervals (`1m, 5m, 15m, 1h`)
+
+      - **Datasource** — switch between datasources dynamically
+
+      - **Ad hoc filters** — automatically apply label filters to all queries
+
+
+      **Example usage in a PromQL query:**
+
+      ```promql
+
+      rate(http_requests_total{job="$service", instance=~"$instance"}[5m])
+
+      ```
+
+
+      Here, `$service` and `$instance` are dropdowns. The `=~` operator supports multi-value selection with regex.
+
+
+      **Chained variables:** Variables can depend on each other — e.g., selecting a `namespace` variable filters the
+      available `pod` values.
+  - question: How do you set up Grafana provisioning?
+    answer: >-
+      **Provisioning** allows Grafana datasources, dashboards, and alert rules to be managed as code via YAML files,
+      enabling GitOps workflows.
+
+
+      **Datasource provisioning** (`provisioning/datasources/default.yaml`):
+
+      ```yaml
+
+      apiVersion: 1
+
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: http://prometheus:9090
+          access: proxy
+          isDefault: true
+        - name: Loki
+          type: loki
+          url: http://loki:3100
+          access: proxy
+      ```
+
+
+      **Dashboard provisioning** (`provisioning/dashboards/default.yaml`):
+
+      ```yaml
+
+      apiVersion: 1
+
+      providers:
+        - name: default
+          folder: 'Provisioned'
+          type: file
+          options:
+            path: /var/lib/grafana/dashboards
+            foldersFromFilesStructure: true
+      ```
+
+
+      Place JSON dashboard files in `/var/lib/grafana/dashboards/` and Grafana will load them automatically on startup.
+      Changes to the YAML or JSON files are picked up without restart.
+  - question: What are Grafana Loki and Promtail?
+    answer: >-
+      **Loki** is Grafana's log aggregation system, designed to be cost-effective and operationally simple.
+
+
+      **Key design principles:**
+
+      - **Index only metadata** (labels), not log content — drastically reduces storage and indexing cost
+
+      - **Uses the same label model as Prometheus** — correlate metrics and logs using identical labels
+
+      - **LogQL** — a query language similar to PromQL for filtering and aggregating logs
+
+
+      **Promtail** is the default log collection agent for Loki:
+
+      - Discovers log files via static config or Kubernetes pod discovery
+
+      - Attaches labels (job, namespace, pod, container) to log streams
+
+      - Pushes logs to Loki's HTTP API
+
+
+      **Example Promtail config:**
+
+      ```yaml
+
+      scrape_configs:
+        - job_name: system
+          static_configs:
+            - targets: [localhost]
+              labels:
+                job: syslog
+                __path__: /var/log/syslog
+      ```
+
+
+      **Alternatives to Promtail:** Grafana Alloy (the successor agent), Fluentd, or Fluent Bit with a Loki output
+      plugin.
+  - question: How can you monitor Kubernetes with Grafana?
+    answer: >-
+      The standard approach is the **kube-prometheus-stack** Helm chart, which deploys a complete monitoring pipeline.
+
+
+      **What it includes:**
+
+      - **Prometheus Operator** — manages Prometheus instances and scrape configs via CRDs (`ServiceMonitor`,
+      `PodMonitor`)
+
+      - **Grafana** — with preconfigured dashboards for cluster, node, pod, and namespace-level metrics
+
+      - **Node Exporter** — hardware and OS metrics from each node
+
+      - **kube-state-metrics** — Kubernetes object state (deployment replicas, pod phases, resource requests)
+
+      - **Alertmanager** — preconfigured alerts for common failure scenarios
+
+
+      **Installation:**
+
+      ```bash
+
+      helm install kube-prom prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
+
+      ```
+
+
+      **For logs:** Add Loki + Promtail (or Grafana Alloy) to ship container logs, then correlate metrics and logs in
+      Grafana using shared Kubernetes labels.
+  - question: What is an Elasticsearch Shard, and why is it important?
+    answer: >-
+      A **shard** is the basic unit of storage and search in Elasticsearch. Each index is divided into shards that are
+      distributed across cluster nodes.
+
+
+      **Shard types:**
+
+      - **Primary shards** — hold the original data; the number is set at index creation and cannot be changed later
+
+      - **Replica shards** — copies of primary shards for fault tolerance and read throughput
+
+
+      **Example — create an index with 3 primaries and 2 replicas:**
+
+      ```bash
+
+      curl -X PUT "localhost:9200/logs?pretty" -H 'Content-Type: application/json' -d'
+
+      {
+        "settings": { "number_of_shards": 3, "number_of_replicas": 2 }
+      }'
+
+      ```
+
+      This creates 3 primary + 6 replica = **9 total shards**.
+
+
+      **Sizing guidelines:**
+
+      - Target **10-50 GB per shard** for optimal performance
+
+      - Avoid too many small shards (high overhead) or too few large shards (slow recovery, uneven distribution)
+
+      - Each shard consumes heap memory — a rule of thumb is max ~20 shards per GB of heap
+  - question: What is Index Lifecycle Management (ILM) in Elasticsearch?
+    answer: >-
+      **ILM** automates index management through defined lifecycle phases, optimizing storage cost and performance.
+
+
+      **Phases:**
+
+      - **Hot** — actively written to and frequently queried; uses fast storage (SSD)
+
+      - **Warm** — no longer written to but still queried; can be shrunk and moved to cheaper storage
+
+      - **Cold** — rarely queried; can use frozen tier or searchable snapshots
+
+      - **Frozen** — cheapest tier; data lives in object storage, searched on-demand
+
+      - **Delete** — automatic index deletion after retention period
+
+
+      **Example ILM policy:**
+
+      ```json
+
+      {
+        "policy": {
+          "phases": {
+            "hot":    { "actions": { "rollover": { "max_size": "50gb", "max_age": "1d" } } },
+            "warm":   { "min_age": "7d",  "actions": { "shrink": { "number_of_shards": 1 }, "forcemerge": { "max_num_segments": 1 } } },
+            "cold":   { "min_age": "30d", "actions": { "allocate": { "require": { "data": "cold" } } } },
+            "delete": { "min_age": "90d", "actions": { "delete": {} } }
+          }
         }
       }
-    }
-    ```
 
-    ILM is essential for managing log retention at scale — without it, indices grow unbounded and degrade cluster performance.
+      ```
 
-- question: How do you configure Logstash pipelines?
-  answer: |-
-    Logstash uses a **pipeline** architecture: input → filter → output. Multiple pipelines can run in a single Logstash instance.
 
-    **Example** (`logstash.conf`):
-    ```
-    input {
-      beats {
-        port => 5044
+      ILM is essential for managing log retention at scale — without it, indices grow unbounded and degrade cluster
+      performance.
+  - question: How do you configure Logstash pipelines?
+    answer: >-
+      Logstash uses a **pipeline** architecture: input → filter → output. Multiple pipelines can run in a single
+      Logstash instance.
+
+
+      **Example** (`logstash.conf`):
+
+      ```
+
+      input {
+        beats {
+          port => 5044
+        }
       }
-    }
 
-    filter {
-      grok {
-        match => { "message" => "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:level} %{GREEDYDATA:log_message}" }
+
+      filter {
+        grok {
+          match => { "message" => "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:level} %{GREEDYDATA:log_message}" }
+        }
+        date {
+          match => ["timestamp", "ISO8601"]
+          target => "@timestamp"
+        }
+        mutate {
+          remove_field => ["timestamp", "agent", "ecs"]
+        }
       }
-      date {
-        match => ["timestamp", "ISO8601"]
-        target => "@timestamp"
+
+
+      output {
+        elasticsearch {
+          hosts => ["localhost:9200"]
+          index => "app-logs-%{+YYYY.MM.dd}"
+        }
       }
-      mutate {
-        remove_field => ["timestamp", "agent", "ecs"]
-      }
-    }
 
-    output {
-      elasticsearch {
-        hosts => ["localhost:9200"]
-        index => "app-logs-%{+YYYY.MM.dd}"
-      }
-    }
-    ```
+      ```
 
-    **Multiple pipelines** — define in `pipelines.yml`:
-    ```yaml
-    - pipeline.id: app-logs
-      path.config: "/etc/logstash/conf.d/app.conf"
-    - pipeline.id: system-logs
-      path.config: "/etc/logstash/conf.d/system.conf"
-    ```
 
-    This allows different log sources to have independent processing rules, scaling, and error handling.
+      **Multiple pipelines** — define in `pipelines.yml`:
 
-- question: What are Kibana Canvas and Lens?
-  answer: |-
-    **Lens:**
-    - A **drag-and-drop** visualization editor — the fastest way to create charts in Kibana
-    - Automatically suggests visualization types based on the selected fields
-    - Supports layers, formulas, and breakdown dimensions
-    - Best for: day-to-day data exploration and standard dashboards
+      ```yaml
 
-    **Canvas:**
-    - A **pixel-perfect**, presentation-grade report builder
-    - Uses a custom expression language for dynamic data binding
-    - Supports custom CSS, images, backgrounds, and branded styling
-    - Best for: executive reports, NOC wall displays, customer-facing dashboards
+      - pipeline.id: app-logs
+        path.config: "/etc/logstash/conf.d/app.conf"
+      - pipeline.id: system-logs
+        path.config: "/etc/logstash/conf.d/system.conf"
+      ```
 
-    **When to use which:**
-    - Use **Lens** for most monitoring and analytics dashboards (quick, flexible, data-focused)
-    - Use **Canvas** when visual design and branding matter more than interactivity
 
-- question: How do you configure Kibana security?
-  answer: |-
-    Kibana security is controlled through the **Elastic Stack security features** (formerly X-Pack).
+      This allows different log sources to have independent processing rules, scaling, and error handling.
+  - question: What are Kibana Canvas and Lens?
+    answer: |-
+      **Lens:**
+      - A **drag-and-drop** visualization editor — the fastest way to create charts in Kibana
+      - Automatically suggests visualization types based on the selected fields
+      - Supports layers, formulas, and breakdown dimensions
+      - Best for: day-to-day data exploration and standard dashboards
 
-    **Enable security** in `kibana.yml`:
-    ```yaml
-    xpack.security.enabled: true
-    elasticsearch.username: "kibana_system"
-    elasticsearch.password: "${KIBANA_PASSWORD}"
-    ```
+      **Canvas:**
+      - A **pixel-perfect**, presentation-grade report builder
+      - Uses a custom expression language for dynamic data binding
+      - Supports custom CSS, images, backgrounds, and branded styling
+      - Best for: executive reports, NOC wall displays, customer-facing dashboards
 
-    **Key security features:**
-    - **Authentication** — native realm, LDAP, Active Directory, SAML, OIDC, PKI certificates
-    - **RBAC** — role-based access control with fine-grained permissions on indices, spaces, and features
-    - **Spaces** — logical separation of dashboards and saved objects per team
-    - **Encrypted communications** — TLS between Kibana and Elasticsearch
-    - **Audit logging** — track who accessed what and when
+      **When to use which:**
+      - Use **Lens** for most monitoring and analytics dashboards (quick, flexible, data-focused)
+      - Use **Canvas** when visual design and branding matter more than interactivity
+  - question: How do you configure Kibana security?
+    answer: >-
+      Kibana security is controlled through the **Elastic Stack security features** (formerly X-Pack).
 
-    **Example role definition:**
-    ```json
-    {
-      "cluster": ["monitor"],
-      "indices": [
-        { "names": ["logs-*"], "privileges": ["read", "view_index_metadata"] }
-      ],
-      "applications": [
-        { "application": "kibana-.kibana", "privileges": ["feature_dashboard.read"], "resources": ["space:production"] }
-      ]
-    }
-    ```
 
-- question: What is Beats in the ELK stack?
-  answer: |-
-    **Beats** are lightweight, purpose-built data shippers that run as agents on servers to send operational data to Elasticsearch or Logstash.
+      **Enable security** in `kibana.yml`:
 
-    **Beat types:**
-    - **Filebeat** — log files (the most commonly used Beat)
-    - **Metricbeat** — system and service metrics (CPU, memory, Docker, Kubernetes, MySQL, etc.)
-    - **Packetbeat** — network traffic analysis (HTTP, DNS, MySQL, Redis protocols)
-    - **Auditbeat** — audit events (file integrity, system calls)
-    - **Heartbeat** — uptime monitoring via HTTP, TCP, and ICMP probes
-    - **Winlogbeat** — Windows event logs
+      ```yaml
 
-    **Why Beats instead of Logstash everywhere?**
-    - Tiny footprint (~10-30 MB memory) — safe to run on every node
-    - Each Beat has built-in **modules** with preconfigured parsing and Kibana dashboards
-    - Can ship directly to Elasticsearch (skipping Logstash) for simpler architectures
+      xpack.security.enabled: true
 
-- question: What is Curator in Elasticsearch?
-  answer: |-
-    **Curator** is a CLI tool for managing Elasticsearch indices — automating tasks that would otherwise require manual API calls.
+      elasticsearch.username: "kibana_system"
 
-    **Common actions:**
-    - **Delete** — remove indices older than N days
-    - **Close** — close indices to free memory while keeping data on disk
-    - **Snapshot** — create backups to an S3 or filesystem repository
-    - **Forcemerge** — optimize read performance by reducing segment count
-    - **Allocation** — move indices to warm/cold nodes based on age
+      elasticsearch.password: "${KIBANA_PASSWORD}"
 
-    **Example — delete indices older than 30 days:**
-    ```yaml
-    actions:
-      1:
-        action: delete_indices
-        filters:
-          - filtertype: age
-            source: creation_date
-            direction: older
-            unit: days
-            unit_count: 30
-    ```
+      ```
 
-    **Note:** In modern Elastic Stack (7.x+), **ILM** (Index Lifecycle Management) replaces most Curator use cases with a built-in, policy-driven approach. Curator is still useful for ad-hoc tasks or legacy clusters.
 
-- question: How do you integrate Prometheus and ELK Stack?
-  answer: |-
-    There are several approaches to combining metrics (Prometheus) and logs (ELK) into a unified observability platform:
+      **Key security features:**
 
-    **Approach 1 — Metricbeat with Prometheus module:**
-    ```yaml
-    metricbeat.modules:
-      - module: prometheus
-        metricsets: ["collector"]
-        hosts: ["localhost:9090"]
-        period: 10s
-    ```
-    This scrapes Prometheus metrics and indexes them into Elasticsearch, queryable via Kibana.
+      - **Authentication** — native realm, LDAP, Active Directory, SAML, OIDC, PKI certificates
 
-    **Approach 2 — Grafana as a unified UI:**
-    - Add both Prometheus and Elasticsearch as datasources in Grafana
-    - Build dashboards that combine metric panels (from Prometheus) and log panels (from Elasticsearch)
-    - Use **Explore** to correlate metrics and logs side-by-side
+      - **RBAC** — role-based access control with fine-grained permissions on indices, spaces, and features
 
-    **Approach 3 — Prometheus remote write to Elasticsearch:**
-    - Use `remote_write` with an adapter to send Prometheus metrics to Elasticsearch
-    - Useful for long-term metric storage in an existing ES cluster
+      - **Spaces** — logical separation of dashboards and saved objects per team
 
-    **Best practice:** Use each tool for its strength — Prometheus for metrics alerting, Elasticsearch for log search — and correlate using shared labels and Grafana.
+      - **Encrypted communications** — TLS between Kibana and Elasticsearch
 
-- question: What is a Slow Query in Elasticsearch?
-  answer: |-
-    A **slow query** is any search that exceeds a configured time threshold, indicating performance problems.
+      - **Audit logging** — track who accessed what and when
 
-    **Enable slow query logging** to identify problematic queries:
-    ```json
-    PUT /my-index/_settings
-    {
-      "index.search.slowlog.threshold.query.warn": "2s",
-      "index.search.slowlog.threshold.query.info": "1s",
-      "index.search.slowlog.threshold.fetch.warn": "500ms",
-      "index.indexing.slowlog.threshold.index.warn": "5s"
-    }
-    ```
 
-    **Common causes:**
-    - **Wildcard or regex queries** on text fields — avoid leading wildcards (`*foo`)
-    - **Deep pagination** — using `from: 10000` forces ES to score all prior documents; use `search_after` instead
-    - **Large aggregations** on high-cardinality fields
-    - **Missing keyword fields** — sorting/filtering on `text` fields is slow; use `keyword` sub-fields
-    - **Too many shards** — the query coordinator must merge results from all shards
+      **Example role definition:**
 
-    Slow query logs are written to `<cluster>_index_search_slowlog.log` and can be shipped to ELK itself for analysis.
+      ```json
 
-- question: What is the ELK alternative to Prometheus and Grafana?
-  answer: |-
-    These are complementary tools optimized for different data types:
-
-    **Prometheus + Grafana** — best for **metrics** monitoring:
-    - Numeric time-series data (CPU, memory, request rates, latency)
-    - PromQL for powerful metric queries
-    - Lightweight, purpose-built for alerting on infrastructure and application metrics
-
-    **ELK Stack** — best for **log** management:
-    - Full-text search across unstructured log data
-    - Rich query DSL for complex log analysis
-    - SIEM capabilities for security use cases
-
-    **Modern alternatives and complements:**
-    - **Grafana Loki** — log aggregation designed to work with Prometheus labels (lighter than ELK)
-    - **OpenTelemetry** — vendor-neutral collection of metrics, logs, and traces
-    - **InfluxDB + Telegraf** — time-series focused metrics platform
-    - **Datadog / New Relic / Splunk** — commercial all-in-one observability platforms
-    - **Grafana Tempo** — distributed tracing backend (completes the metrics-logs-traces triad)
-
-    Many organizations use **both** stacks: Prometheus + Grafana for metrics and alerting, ELK for log search and compliance.
-
-- question: How do you scale Prometheus for a large environment?
-  answer: |-
-    Prometheus is single-node by design, so scaling requires architectural patterns:
-
-    **1. Sharding (horizontal partitioning):**
-    - Split scraping targets across multiple Prometheus instances
-    - Use **hashmod relabeling** or separate `scrape_configs` per instance
-    - In Kubernetes, deploy via StatefulSet with target partitioning
-
-    **2. Federation (hierarchical aggregation):**
-    - Child Prometheus instances scrape targets and precompute recording rules
-    - A parent Prometheus scrapes aggregated metrics from children via `/federate`
-    - Reduces the data volume at the top level
-
-    **3. Remote storage (long-term and global query):**
-    - **Thanos** — sidecar + object storage (S3/GCS) with a global query layer
-    - **Grafana Mimir** — horizontally scalable, multi-tenant, stores in object storage
-    - **VictoriaMetrics** — high-performance, compatible with PromQL
-
-    **4. Optimizations within a single instance:**
-    - Use recording rules to precompute expensive queries
-    - Drop high-cardinality labels via `metric_relabel_configs`
-    - Tune `--storage.tsdb.retention.time` and `--storage.tsdb.retention.size`
-
-- question: How does Prometheus handle stale or missing metrics?
-  answer: |-
-    **Stale markers:**
-    - When a target stops reporting a metric (e.g., a pod is deleted), Prometheus inserts a **stale marker** into the time series
-    - This tells PromQL to stop returning that series in instant queries, preventing stale data from appearing in dashboards
-
-    **Detecting missing metrics with `absent()`:**
-    ```promql
-    absent(up{job="my_service"})
-    ```
-    Returns `1` if the metric doesn't exist at all — useful for alerting on missing targets.
-
-    **`absent_over_time()` for intermittent gaps:**
-    ```promql
-    absent_over_time(up{job="my_service"}[5m])
-    ```
-    Returns `1` if no samples exist in the last 5 minutes.
-
-    **Dead Man's Switch (Watchdog alert):**
-    - A recording rule that **always fires** (e.g., `vector(1)`)
-    - If Alertmanager stops receiving this alert, the alerting pipeline itself is broken
-    - Services like PagerDuty and Deadman's Snitch can detect the absence of the watchdog signal
-
-- question: What is Prometheus WAL (Write-Ahead Log) and its purpose?
-  answer: |-
-    The **Write-Ahead Log (WAL)** is Prometheus's crash-recovery mechanism for ingested samples.
-
-    **How it works:**
-    1. Incoming samples are first written to the WAL on disk (append-only, sequential writes)
-    2. Samples accumulate in memory in a **head block**
-    3. Every 2 hours, the head block is compacted into an immutable TSDB block on disk
-    4. The corresponding WAL segments are then deleted
-
-    **Why it matters:**
-    - **Crash recovery** — if Prometheus crashes, it replays the WAL on startup to recover all samples that hadn't been compacted yet
-    - **Minimal data loss** — without WAL, all in-memory samples since the last compaction would be lost
-    - **Sequential I/O** — WAL writes are fast because they're append-only
-
-    **WAL files** are stored in `<data-dir>/wal/` and consist of numbered segment files.
-
-    **WAL-only mode** (`--enable-feature=agent`): Prometheus can run as a lightweight agent that only writes to WAL and remote-writes to a central backend (Thanos, Mimir), without storing local TSDB blocks.
-
-- question: What are Histogram and Summary metrics in Prometheus?
-  answer: |-
-    Both measure **distributions** (e.g., request latency), but they work differently:
-
-    **Histogram:**
-    - Counts observations into configurable **buckets** (e.g., ≤50ms, ≤100ms, ≤250ms, ≤500ms, ≤1s)
-    - Exposes `_bucket`, `_sum`, and `_count` time series
-    - Percentiles are calculated at query time using `histogram_quantile()`
-    - **Can be aggregated** across instances — this is the key advantage
-    ```promql
-    histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))
-    ```
-
-    **Summary:**
-    - Precomputes percentiles (quantiles) **on the client side**
-    - Exposes `{quantile="0.95"}`, `_sum`, and `_count` time series
-    - **Cannot be meaningfully aggregated** across instances (you can't average percentiles)
-    - Slightly more accurate for a single instance since there's no bucket granularity loss
-
-    **When to use which:**
-    - **Histogram** (recommended default) — aggregatable, flexible bucket definitions, can recalculate percentiles after the fact
-    - **Summary** — only when you need precise quantiles from a single instance and don't need cross-instance aggregation
-
-- question: How do you secure Prometheus endpoints?
-  answer: |-
-    Prometheus supports **native TLS and basic auth** (since v2.24), plus network-level restrictions.
-
-    **Native TLS + basic auth** (`web.yml`):
-    ```yaml
-    tls_server_config:
-      cert_file: /etc/prometheus/prometheus.crt
-      key_file: /etc/prometheus/prometheus.key
-    basic_auth_users:
-      admin: $2y$10$hashed_bcrypt_password
-    ```
-    Launch with: `prometheus --web.config.file=web.yml`
-
-    **Reverse proxy (Nginx/Traefik):**
-    - Terminate TLS at the proxy
-    - Add OAuth2 or mTLS authentication
-    - Rate-limit query endpoints to prevent abuse
-
-    **Kubernetes-specific:**
-    - Use **NetworkPolicies** to restrict which pods can reach Prometheus
-    - Use **RBAC** on the Kubernetes API to control who can port-forward or access the service
-    - Run Prometheus behind an **Ingress** with auth middleware
-
-    **Additional hardening:**
-    - Disable `--web.enable-admin-api` and `--web.enable-remote-write-receiver` unless needed
-    - Use `--web.external-url` to set the correct external URL behind a proxy
-
-- question: How do you monitor Prometheus itself using Grafana?
-  answer: |-
-    Prometheus exposes its own operational metrics at `/metrics` — these should be monitored to ensure reliability.
-
-    **Key self-monitoring metrics:**
-    - `prometheus_tsdb_head_series` — number of active time series (track for cardinality issues)
-    - `prometheus_tsdb_head_chunks_created_total` — chunk creation rate
-    - `rate(prometheus_target_scrapes_exceeded_sample_limit_total[5m])` — targets exceeding sample limits
-    - `prometheus_target_interval_length_seconds` — actual vs. configured scrape interval
-    - `rate(prometheus_rule_evaluation_failures_total[5m])` — failing recording/alerting rules
-    - `prometheus_engine_query_duration_seconds` — query execution time
-
-    **Setup:**
-    1. Add Prometheus as its own scrape target (it exposes `/metrics` by default)
-    2. Import the official **Prometheus Overview** dashboard from Grafana Labs (ID: 3662)
-    3. Set up alerts on critical conditions (WAL corruption, high memory, scrape failures)
-
-    For multi-instance setups, use **Thanos or Federation** to get a meta-monitoring view across all Prometheus instances.
-
-- question: What are Grafana Annotations and how are they useful?
-  answer: |-
-    **Annotations** overlay event markers on time-series graphs, providing context for metric changes.
-
-    **Use cases:**
-    - Mark **deployments** — correlate a latency spike with a new release
-    - Mark **incidents** — highlight downtime or degraded performance windows
-    - Mark **config changes** — track when infrastructure was modified
-
-    **Adding annotations:**
-    - **Manual** — click on a graph and add a text annotation
-    - **API** — `POST /api/annotations` with timestamp, text, and tags
-    - **Query-based** — configure a datasource query that returns annotation events automatically
-
-    **Example — automated deployment annotations via API:**
-    ```bash
-    curl -X POST http://grafana:3000/api/annotations \
-      -H "Authorization: Bearer $GRAFANA_TOKEN" \
-      -H "Content-Type: application/json" \
-      -d '{"text": "Deployed v2.4.1", "tags": ["deploy", "production"], "time": 1700000000000}'
-    ```
-
-    Integrate this `curl` call into your CI/CD pipeline so every deployment is automatically marked on all dashboards.
-
-- question: How do you configure Grafana for multi-tenancy?
-  answer: |-
-    Grafana supports several isolation levels for multi-tenant environments:
-
-    **1. Organizations (built-in):**
-    - Each org has completely isolated dashboards, datasources, and users
-    - Users can belong to multiple orgs with different roles in each
-    - Suitable for distinct teams or customers
-
-    **2. Folder + Team-based RBAC:**
-    - Create folders per team (e.g., `Backend`, `Platform`, `Security`)
-    - Assign folder permissions to teams (Viewer, Editor, Admin)
-    - Datasource permissions restrict which teams can query which data
-
-    **3. Multi-instance deployment:**
-    - Run separate Grafana instances per tenant
-    - Full isolation of config, plugins, and data
-    - Higher operational overhead but strongest isolation
-
-    **4. Grafana Cloud / Enterprise features:**
-    - **Data source permissions** — restrict access at the datasource level
-    - **Reporting** — scheduled PDF reports per team
-    - **Enhanced RBAC** — fine-grained permissions on dashboards, annotations, and alert rules
-
-- question: What is Alerting in Grafana and how does it work?
-  answer: |-
-    Grafana's **Unified Alerting** system (Grafana 9+) provides a consistent alerting experience across all datasources.
-
-    **How it works:**
-    1. **Alert rules** define a query + condition (e.g., `avg(cpu_usage) > 80` for 5 minutes)
-    2. Rules are evaluated at a configured interval (e.g., every 1m)
-    3. When a condition is met, the alert transitions through states: **Normal → Pending → Firing**
-    4. **Notification policies** route alerts based on labels to the appropriate **contact point**
-
-    **Alert states:** Normal, Pending, Firing, No Data, Error
-
-    **Contact points:** Slack, PagerDuty, Email, OpsGenie, Webhooks, Telegram, Microsoft Teams, etc.
-
-    **Key features:**
-    - **Silences** — temporarily mute alerts during maintenance
-    - **Grouping** — batch related alerts into a single notification
-    - **Inhibition** — suppress alerts when a higher-severity alert is already firing
-    - **Multi-datasource** — a single alert rule can query Prometheus, Loki, Elasticsearch, and more
-
-    **Example alert condition:** `avg() of query(A, 5m, now) > 1000` → fires when average request count exceeds 1000 over a 5-minute window.
-
-- question: How does Loki compare with Elasticsearch for logging?
-  answer: |-
-    **Loki** and **Elasticsearch** take fundamentally different approaches to log storage:
-
-    **Grafana Loki:**
-    - Indexes only **labels** (metadata), stores log lines as compressed chunks
-    - Extremely **cost-effective** — much less storage and compute than ES
-    - **LogQL** — label-based filtering first, then grep-like line matching
-    - Designed for **Kubernetes-native** environments with Prometheus-style labels
-    - Best for: high-volume logs where you typically know which service/pod to look at
-
-    **Elasticsearch:**
-    - Builds a **full-text inverted index** on every log field
-    - Powerful **Query DSL** with fuzzy matching, aggregations, and complex boolean queries
-    - Higher resource requirements (CPU, memory, storage) but faster for ad-hoc full-text search
-    - Rich ecosystem: SIEM, anomaly detection, APM built-in
-    - Best for: complex log analysis, security investigations, compliance
-
-    **Decision guide:**
-    - Choose **Loki** if you primarily filter by known labels and grep for patterns — much cheaper at scale
-    - Choose **Elasticsearch** if you need full-text search across unknown fields, complex aggregations, or SIEM features
-
-- question: What is the Hot-Warm-Cold architecture in Elasticsearch?
-  answer: |-
-    A **tiered storage strategy** that assigns nodes to different roles based on data age, optimizing cost and performance.
-
-    **Hot nodes:**
-    - Fast SSDs, high CPU/RAM
-    - Handle all indexing (writes) and recent queries
-    - Store the last hours to days of data
-
-    **Warm nodes:**
-    - Cheaper storage (HDD or lower-tier SSD)
-    - Read-only data that is still occasionally queried
-    - Indices are **shrunk** and **force-merged** to reduce resource usage
-
-    **Cold nodes:**
-    - Cheapest storage; data may be partially cached
-    - Rarely accessed logs kept for compliance or historical analysis
-    - Can use **searchable snapshots** from object storage (S3/GCS)
-
-    **Frozen tier** (newest addition):
-    - Data lives entirely in object storage
-    - Fetched and cached on demand — cheapest option for long-term retention
-
-    **Implementation:** Use **ILM policies** to automatically transition indices between tiers based on age, and **node attributes** (`node.attr.data: hot|warm|cold`) for shard allocation.
-
-- question: How do you reduce indexing pressure in Elasticsearch?
-  answer: |-
-    **1. Tune index settings:**
-    - Increase `index.refresh_interval` from `1s` (default) to `30s` or `60s` — reduces segment creation during heavy writes
-    - Set `index.translog.durability: async` for higher throughput at the cost of potential data loss on crash
-    - Disable replicas during bulk import (`"number_of_replicas": 0`), re-enable after
-
-    **2. Optimize shard strategy:**
-    - Avoid too many small shards — each shard has fixed overhead (heap memory, file handles)
-    - Target **10-50 GB per shard** and **20 shards per GB of heap** as guidelines
-    - Use ILM rollover to create new indices at a target size rather than daily
-
-    **3. Use bulk API:**
-    - Always index documents in bulk (batches of 5-15 MB) rather than one at a time
-    - Tune `bulk_max_size` in Logstash/Filebeat
-
-    **4. Pipeline and mapping optimizations:**
-    - Disable `_source` for metrics-only indices if you don't need the original document
-    - Set `index: false` on fields you never search
-    - Use `keyword` instead of `text` for fields that don't need full-text analysis
-
-- question: How does Logstash manage backpressure?
-  answer: |-
-    **Backpressure** occurs when Logstash's output (e.g., Elasticsearch) can't keep up with input volume. Logstash has several mechanisms to handle this:
-
-    **1. Persistent Queues (PQ):**
-    - Buffer events on disk when the output is slower than the input
-    - Survives Logstash restarts — no data loss
-    ```yaml
-    queue.type: persisted
-    queue.max_bytes: 4gb
-    queue.checkpoint.writes: 1024
-    ```
-
-    **2. Dead Letter Queue (DLQ):**
-    - Events that fail to be processed (e.g., mapping errors in Elasticsearch) are written to the DLQ for later reprocessing
-    ```yaml
-    dead_letter_queue.enable: true
-    dead_letter_queue.max_bytes: 1gb
-    ```
-
-    **3. Internal backpressure:**
-    - When the in-memory queue fills up, Logstash slows down input plugins
-    - Beats (Filebeat, Metricbeat) automatically pause sending when Logstash signals backpressure
-
-    **4. Scaling out:**
-    - Add more Logstash pipeline workers (`pipeline.workers`)
-    - Deploy multiple Logstash instances behind a load balancer
-
-- question: What are Query Caching strategies in Elasticsearch?
-  answer: |-
-    Elasticsearch uses multiple cache layers to accelerate repeated queries:
-
-    **1. Node Query Cache (filter cache):**
-    - Caches the results of **filter clauses** (`term`, `range`, `bool filter`)
-    - Shared across all shards on a node
-    - Automatically evicts with an LRU policy
-    - Size: `indices.queries.cache.size: 10%` (default)
-
-    **2. Shard Request Cache:**
-    - Caches the **full results** of search requests on each shard
-    - Only caches requests with `size: 0` (aggregation-only queries)
-    - Automatically invalidated when the shard's data changes (refresh)
-    - Very effective for dashboards that repeatedly run the same aggregations
-
-    **3. Fielddata Cache:**
-    - Caches field values in memory for sorting and aggregations on `text` fields
-    - **Avoid** — use `keyword` or `doc_values` instead (fielddata is expensive and heap-heavy)
-
-    **Best practices:**
-    - Use `filter` context instead of `query` context where scoring isn't needed — filters are cacheable
-    - Monitor cache hit rates via `_nodes/stats` and `_cat/nodes?v&h=name,qcm,qce` (query cache metrics)
-
-- question: How do you use Kibana for anomaly detection?
-  answer: |-
-    Kibana's **Machine Learning** feature (requires at least a Basic license) detects anomalies in time-series data automatically.
-
-    **How it works:**
-    1. Create an **anomaly detection job** that learns normal behavior patterns
-    2. The ML model identifies deviations from the baseline
-    3. Results are displayed with **anomaly scores** (0-100) on a timeline
-
-    **Example job configuration:**
-    ```json
-    {
-      "analysis_config": {
-        "bucket_span": "15m",
-        "detectors": [
-          { "function": "mean", "field_name": "response_time", "partition_field_name": "service" }
+      {
+        "cluster": ["monitor"],
+        "indices": [
+          { "names": ["logs-*"], "privileges": ["read", "view_index_metadata"] }
+        ],
+        "applications": [
+          { "application": "kibana-.kibana", "privileges": ["feature_dashboard.read"], "resources": ["space:production"] }
         ]
-      },
-      "data_description": {
-        "time_field": "@timestamp"
       }
-    }
-    ```
 
-    **Common detector functions:** `mean`, `count`, `sum`, `rare`, `freq_rare`, `high_count`, `low_count`
+      ```
+  - question: What is Beats in the ELK stack?
+    answer: >-
+      **Beats** are lightweight, purpose-built data shippers that run as agents on servers to send operational data to
+      Elasticsearch or Logstash.
 
-    **Use cases:**
-    - Detect unusual spikes in error rates or response times
-    - **SIEM** — identify anomalous login patterns, unusual network traffic, or privilege escalation
-    - **Infrastructure** — spot unexpected resource usage per host or container
 
-    Anomaly results can trigger **alerting rules** that notify teams via Slack, email, or webhooks.
+      **Beat types:**
 
-- question: How do you secure Elasticsearch clusters?
-  answer: |-
-    **1. Enable security features:**
-    ```yaml
-    # elasticsearch.yml
-    xpack.security.enabled: true
-    xpack.security.enrollment.enabled: true
-    ```
-    In Elastic 8.x, security is **enabled by default** with auto-generated passwords and certificates.
+      - **Filebeat** — log files (the most commonly used Beat)
 
-    **2. Encryption:**
-    - **TLS for transport layer** (node-to-node communication) — mandatory in production
-    - **TLS for HTTP layer** (client-to-node) — encrypts API traffic
-    - Auto-configure with `elasticsearch-certutil` or bring your own CA
+      - **Metricbeat** — system and service metrics (CPU, memory, Docker, Kubernetes, MySQL, etc.)
 
-    **3. Authentication:**
-    - Native realm (built-in users), LDAP, Active Directory, SAML, OIDC, PKI certificates
-    - **API keys** for service-to-service communication
-    - Use `elasticsearch-reset-password` to manage built-in user credentials
+      - **Packetbeat** — network traffic analysis (HTTP, DNS, MySQL, Redis protocols)
 
-    **4. Authorization (RBAC):**
-    - Define roles with index-level, field-level, and document-level security
-    - Restrict which indices a user can read/write, and even which fields they can see
+      - **Auditbeat** — audit events (file integrity, system calls)
 
-    **5. Network security:**
-    - Bind to specific interfaces (`network.host`)
-    - Use firewalls or security groups to restrict port access (9200, 9300)
-    - Deploy behind a reverse proxy for additional auth layers
+      - **Heartbeat** — uptime monitoring via HTTP, TCP, and ICMP probes
 
-    **6. Audit logging:**
-    - Enable `xpack.security.audit.enabled: true` to log all access and changes for compliance
+      - **Winlogbeat** — Windows event logs
 
-- question: How do you integrate Prometheus with Elasticsearch?
-  answer: |-
-    **Option 1 — Metricbeat Prometheus module** (push Prometheus data into ES):
-    ```yaml
-    metricbeat.modules:
-      - module: prometheus
-        metricsets: ["collector"]
-        hosts: ["localhost:9090/metrics"]
-        period: 10s
 
-    output.elasticsearch:
-      hosts: ["localhost:9200"]
-    ```
-    This scrapes the Prometheus `/metrics` endpoint and indexes the data in Elasticsearch for analysis in Kibana.
+      **Why Beats instead of Logstash everywhere?**
 
-    **Option 2 — Prometheus remote write to Elasticsearch:**
-    - Use a remote-write adapter or Elastic's native Prometheus input
-    - Sends all Prometheus metrics to ES for long-term storage and Kibana visualization
+      - Tiny footprint (~10-30 MB memory) — safe to run on every node
 
-    **Option 3 — Grafana as a unified layer:**
-    - Add both Prometheus and Elasticsearch as Grafana datasources
-    - Correlate metrics (Prometheus) and logs (Elasticsearch) in the same dashboard
-    - This is the most common and recommended approach
+      - Each Beat has built-in **modules** with preconfigured parsing and Kibana dashboards
 
-    **Option 4 — OpenTelemetry Collector:**
-    - Collect metrics and logs in a vendor-neutral format
-    - Export to both Prometheus (for metrics alerting) and Elasticsearch (for log analysis) simultaneously
+      - Can ship directly to Elasticsearch (skipping Logstash) for simpler architectures
+  - question: What is Curator in Elasticsearch?
+    answer: >-
+      **Curator** is a CLI tool for managing Elasticsearch indices — automating tasks that would otherwise require
+      manual API calls.
 
-- question: How do you optimize Elasticsearch queries for performance?
-  answer: |-
-    **1. Use filters over queries:**
-    - `filter` context skips scoring and is cacheable — use for exact matches, ranges, and boolean conditions
-    ```json
-    { "query": { "bool": { "filter": [ { "term": { "status": "error" } }, { "range": { "@timestamp": { "gte": "now-1h" } } } ] } } }
-    ```
 
-    **2. Avoid expensive operations:**
-    - No leading wildcards (`*error`) — they scan every term in the index
-    - Use `search_after` instead of deep `from` pagination
-    - Avoid `script` queries in hot paths
+      **Common actions:**
 
-    **3. Use the right field types:**
-    - `keyword` for filtering, sorting, and aggregations (not `text`)
-    - `doc_values` (enabled by default on keyword/numeric) — columnar storage for fast aggregations
-    - Disable `_source` or use `_source` filtering to reduce response payload
+      - **Delete** — remove indices older than N days
 
-    **4. Optimize aggregations:**
-    - Filter before aggregating — narrow the dataset with a date range first
-    - Use `composite` aggregation for paginating large bucket lists
-    - Pre-aggregate at index time using ingest pipelines when possible
+      - **Close** — close indices to free memory while keeping data on disk
 
-    **5. Index design:**
-    - Use time-based indices with ILM for rollover
-    - Right-size shards (10-50 GB) to balance parallelism and overhead
-    - Use `index.sort` to co-locate documents and enable early query termination
+      - **Snapshot** — create backups to an S3 or filesystem repository
 
-- question: How do you implement centralized logging in Kubernetes?
-  answer: |-
-    **Common architecture:**
-    ```
-    Pods (stdout/stderr) → Node-level agent (DaemonSet) → Aggregation → Storage → Visualization
-    ```
+      - **Forcemerge** — optimize read performance by reducing segment count
 
-    **Option 1 — EFK Stack (Elasticsearch + Fluentd + Kibana):**
-    - Deploy **Fluentd** as a DaemonSet that reads container logs from `/var/log/containers/`
-    - Fluentd parses, enriches with Kubernetes metadata, and forwards to Elasticsearch
-    ```xml
-    <match **>
-      @type elasticsearch
-      host elasticsearch.logging.svc
-      port 9200
-      logstash_format true
-      include_tag_key true
-    </match>
-    ```
+      - **Allocation** — move indices to warm/cold nodes based on age
 
-    **Option 2 — PLG Stack (Promtail + Loki + Grafana):**
-    - Deploy **Promtail** (or Grafana Alloy) as a DaemonSet
-    - Automatically discovers pods and attaches Kubernetes labels
-    - Sends logs to Loki; query in Grafana with LogQL
-    - Much lighter on resources than EFK
 
-    **Option 3 — Filebeat + Elasticsearch:**
-    - Filebeat DaemonSet with Kubernetes autodiscover
-    - Built-in modules with preconfigured parsing for common apps
+      **Example — delete indices older than 30 days:**
 
-    **Best practices:**
-    - Use **structured logging** (JSON) from applications to avoid complex parsing
-    - Set **resource limits** on logging agents to prevent them from starving application pods
-    - Implement **log retention policies** (ILM or Loki retention) to control storage growth
+      ```yaml
 
-- question: What are the best practices for log retention and compliance?
-  answer: |-
-    **1. Define retention policies by data classification:**
-    - Security/audit logs: 1-7 years (depending on compliance: SOC2, HIPAA, PCI-DSS, GDPR)
-    - Application logs: 30-90 days typically
-    - Debug/trace logs: 7-14 days
+      actions:
+        1:
+          action: delete_indices
+          filters:
+            - filtertype: age
+              source: creation_date
+              direction: older
+              unit: days
+              unit_count: 30
+      ```
 
-    **2. Automate retention with ILM:**
-    - Use Elasticsearch ILM to move indices through hot → warm → cold → delete phases
-    - In Loki, configure `retention_period` and `compactor` for automatic cleanup
 
-    **3. Protect sensitive data:**
-    - **Mask PII** (personally identifiable information) at ingestion — use Logstash `mutate` or ingest pipelines to redact emails, SSNs, credit card numbers
-    - **Encrypt data at rest** — enable encryption on Elasticsearch data directories and object storage
-    - **Encrypt in transit** — TLS between all components
+      **Note:** In modern Elastic Stack (7.x+), **ILM** (Index Lifecycle Management) replaces most Curator use cases
+      with a built-in, policy-driven approach. Curator is still useful for ad-hoc tasks or legacy clusters.
+  - question: How do you integrate Prometheus and ELK Stack?
+    answer: >-
+      There are several approaches to combining metrics (Prometheus) and logs (ELK) into a unified observability
+      platform:
 
-    **4. Access control:**
-    - Use RBAC to restrict who can view which indices
-    - Enable **audit logging** to track all access to sensitive log data
-    - Implement field-level security to hide sensitive fields from unauthorized users
 
-    **5. Backup and disaster recovery:**
-    - Use Elasticsearch **snapshots** to S3/GCS for backup
-    - Test restore procedures regularly
-    - Keep snapshots in a separate region for disaster recovery
+      **Approach 1 — Metricbeat with Prometheus module:**
+
+      ```yaml
+
+      metricbeat.modules:
+        - module: prometheus
+          metricsets: ["collector"]
+          hosts: ["localhost:9090"]
+          period: 10s
+      ```
+
+      This scrapes Prometheus metrics and indexes them into Elasticsearch, queryable via Kibana.
+
+
+      **Approach 2 — Grafana as a unified UI:**
+
+      - Add both Prometheus and Elasticsearch as datasources in Grafana
+
+      - Build dashboards that combine metric panels (from Prometheus) and log panels (from Elasticsearch)
+
+      - Use **Explore** to correlate metrics and logs side-by-side
+
+
+      **Approach 3 — Prometheus remote write to Elasticsearch:**
+
+      - Use `remote_write` with an adapter to send Prometheus metrics to Elasticsearch
+
+      - Useful for long-term metric storage in an existing ES cluster
+
+
+      **Best practice:** Use each tool for its strength — Prometheus for metrics alerting, Elasticsearch for log search
+      — and correlate using shared labels and Grafana.
+  - question: What is a Slow Query in Elasticsearch?
+    answer: |-
+      A **slow query** is any search that exceeds a configured time threshold, indicating performance problems.
+
+      **Enable slow query logging** to identify problematic queries:
+      ```json
+      PUT /my-index/_settings
+      {
+        "index.search.slowlog.threshold.query.warn": "2s",
+        "index.search.slowlog.threshold.query.info": "1s",
+        "index.search.slowlog.threshold.fetch.warn": "500ms",
+        "index.indexing.slowlog.threshold.index.warn": "5s"
+      }
+      ```
+
+      **Common causes:**
+      - **Wildcard or regex queries** on text fields — avoid leading wildcards (`*foo`)
+      - **Deep pagination** — using `from: 10000` forces ES to score all prior documents; use `search_after` instead
+      - **Large aggregations** on high-cardinality fields
+      - **Missing keyword fields** — sorting/filtering on `text` fields is slow; use `keyword` sub-fields
+      - **Too many shards** — the query coordinator must merge results from all shards
+
+      Slow query logs are written to `<cluster>_index_search_slowlog.log` and can be shipped to ELK itself for analysis.
+  - question: What is the ELK alternative to Prometheus and Grafana?
+    answer: >-
+      These are complementary tools optimized for different data types:
+
+
+      **Prometheus + Grafana** — best for **metrics** monitoring:
+
+      - Numeric time-series data (CPU, memory, request rates, latency)
+
+      - PromQL for powerful metric queries
+
+      - Lightweight, purpose-built for alerting on infrastructure and application metrics
+
+
+      **ELK Stack** — best for **log** management:
+
+      - Full-text search across unstructured log data
+
+      - Rich query DSL for complex log analysis
+
+      - SIEM capabilities for security use cases
+
+
+      **Modern alternatives and complements:**
+
+      - **Grafana Loki** — log aggregation designed to work with Prometheus labels (lighter than ELK)
+
+      - **OpenTelemetry** — vendor-neutral collection of metrics, logs, and traces
+
+      - **InfluxDB + Telegraf** — time-series focused metrics platform
+
+      - **Datadog / New Relic / Splunk** — commercial all-in-one observability platforms
+
+      - **Grafana Tempo** — distributed tracing backend (completes the metrics-logs-traces triad)
+
+
+      Many organizations use **both** stacks: Prometheus + Grafana for metrics and alerting, ELK for log search and
+      compliance.
+  - question: How do you scale Prometheus for a large environment?
+    answer: |-
+      Prometheus is single-node by design, so scaling requires architectural patterns:
+
+      **1. Sharding (horizontal partitioning):**
+      - Split scraping targets across multiple Prometheus instances
+      - Use **hashmod relabeling** or separate `scrape_configs` per instance
+      - In Kubernetes, deploy via StatefulSet with target partitioning
+
+      **2. Federation (hierarchical aggregation):**
+      - Child Prometheus instances scrape targets and precompute recording rules
+      - A parent Prometheus scrapes aggregated metrics from children via `/federate`
+      - Reduces the data volume at the top level
+
+      **3. Remote storage (long-term and global query):**
+      - **Thanos** — sidecar + object storage (S3/GCS) with a global query layer
+      - **Grafana Mimir** — horizontally scalable, multi-tenant, stores in object storage
+      - **VictoriaMetrics** — high-performance, compatible with PromQL
+
+      **4. Optimizations within a single instance:**
+      - Use recording rules to precompute expensive queries
+      - Drop high-cardinality labels via `metric_relabel_configs`
+      - Tune `--storage.tsdb.retention.time` and `--storage.tsdb.retention.size`
+  - question: How does Prometheus handle stale or missing metrics?
+    answer: >-
+      **Stale markers:**
+
+      - When a target stops reporting a metric (e.g., a pod is deleted), Prometheus inserts a **stale marker** into the
+      time series
+
+      - This tells PromQL to stop returning that series in instant queries, preventing stale data from appearing in
+      dashboards
+
+
+      **Detecting missing metrics with `absent()`:**
+
+      ```promql
+
+      absent(up{job="my_service"})
+
+      ```
+
+      Returns `1` if the metric doesn't exist at all — useful for alerting on missing targets.
+
+
+      **`absent_over_time()` for intermittent gaps:**
+
+      ```promql
+
+      absent_over_time(up{job="my_service"}[5m])
+
+      ```
+
+      Returns `1` if no samples exist in the last 5 minutes.
+
+
+      **Dead Man's Switch (Watchdog alert):**
+
+      - A recording rule that **always fires** (e.g., `vector(1)`)
+
+      - If Alertmanager stops receiving this alert, the alerting pipeline itself is broken
+
+      - Services like PagerDuty and Deadman's Snitch can detect the absence of the watchdog signal
+  - question: What is Prometheus WAL (Write-Ahead Log) and its purpose?
+    answer: >-
+      The **Write-Ahead Log (WAL)** is Prometheus's crash-recovery mechanism for ingested samples.
+
+
+      **How it works:**
+
+      1. Incoming samples are first written to the WAL on disk (append-only, sequential writes)
+
+      2. Samples accumulate in memory in a **head block**
+
+      3. Every 2 hours, the head block is compacted into an immutable TSDB block on disk
+
+      4. The corresponding WAL segments are then deleted
+
+
+      **Why it matters:**
+
+      - **Crash recovery** — if Prometheus crashes, it replays the WAL on startup to recover all samples that hadn't
+      been compacted yet
+
+      - **Minimal data loss** — without WAL, all in-memory samples since the last compaction would be lost
+
+      - **Sequential I/O** — WAL writes are fast because they're append-only
+
+
+      **WAL files** are stored in `<data-dir>/wal/` and consist of numbered segment files.
+
+
+      **WAL-only mode** (`--enable-feature=agent`): Prometheus can run as a lightweight agent that only writes to WAL
+      and remote-writes to a central backend (Thanos, Mimir), without storing local TSDB blocks.
+  - question: What are Histogram and Summary metrics in Prometheus?
+    answer: >-
+      Both measure **distributions** (e.g., request latency), but they work differently:
+
+
+      **Histogram:**
+
+      - Counts observations into configurable **buckets** (e.g., ≤50ms, ≤100ms, ≤250ms, ≤500ms, ≤1s)
+
+      - Exposes `_bucket`, `_sum`, and `_count` time series
+
+      - Percentiles are calculated at query time using `histogram_quantile()`
+
+      - **Can be aggregated** across instances — this is the key advantage
+
+      ```promql
+
+      histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))
+
+      ```
+
+
+      **Summary:**
+
+      - Precomputes percentiles (quantiles) **on the client side**
+
+      - Exposes `{quantile="0.95"}`, `_sum`, and `_count` time series
+
+      - **Cannot be meaningfully aggregated** across instances (you can't average percentiles)
+
+      - Slightly more accurate for a single instance since there's no bucket granularity loss
+
+
+      **When to use which:**
+
+      - **Histogram** (recommended default) — aggregatable, flexible bucket definitions, can recalculate percentiles
+      after the fact
+
+      - **Summary** — only when you need precise quantiles from a single instance and don't need cross-instance
+      aggregation
+  - question: How do you secure Prometheus endpoints?
+    answer: |-
+      Prometheus supports **native TLS and basic auth** (since v2.24), plus network-level restrictions.
+
+      **Native TLS + basic auth** (`web.yml`):
+      ```yaml
+      tls_server_config:
+        cert_file: /etc/prometheus/prometheus.crt
+        key_file: /etc/prometheus/prometheus.key
+      basic_auth_users:
+        admin: $2y$10$hashed_bcrypt_password
+      ```
+      Launch with: `prometheus --web.config.file=web.yml`
+
+      **Reverse proxy (Nginx/Traefik):**
+      - Terminate TLS at the proxy
+      - Add OAuth2 or mTLS authentication
+      - Rate-limit query endpoints to prevent abuse
+
+      **Kubernetes-specific:**
+      - Use **NetworkPolicies** to restrict which pods can reach Prometheus
+      - Use **RBAC** on the Kubernetes API to control who can port-forward or access the service
+      - Run Prometheus behind an **Ingress** with auth middleware
+
+      **Additional hardening:**
+      - Disable `--web.enable-admin-api` and `--web.enable-remote-write-receiver` unless needed
+      - Use `--web.external-url` to set the correct external URL behind a proxy
+  - question: How do you monitor Prometheus itself using Grafana?
+    answer: >-
+      Prometheus exposes its own operational metrics at `/metrics` — these should be monitored to ensure reliability.
+
+
+      **Key self-monitoring metrics:**
+
+      - `prometheus_tsdb_head_series` — number of active time series (track for cardinality issues)
+
+      - `prometheus_tsdb_head_chunks_created_total` — chunk creation rate
+
+      - `rate(prometheus_target_scrapes_exceeded_sample_limit_total[5m])` — targets exceeding sample limits
+
+      - `prometheus_target_interval_length_seconds` — actual vs. configured scrape interval
+
+      - `rate(prometheus_rule_evaluation_failures_total[5m])` — failing recording/alerting rules
+
+      - `prometheus_engine_query_duration_seconds` — query execution time
+
+
+      **Setup:**
+
+      1. Add Prometheus as its own scrape target (it exposes `/metrics` by default)
+
+      2. Import the official **Prometheus Overview** dashboard from Grafana Labs (ID: 3662)
+
+      3. Set up alerts on critical conditions (WAL corruption, high memory, scrape failures)
+
+
+      For multi-instance setups, use **Thanos or Federation** to get a meta-monitoring view across all Prometheus
+      instances.
+  - question: What are Grafana Annotations and how are they useful?
+    answer: |-
+      **Annotations** overlay event markers on time-series graphs, providing context for metric changes.
+
+      **Use cases:**
+      - Mark **deployments** — correlate a latency spike with a new release
+      - Mark **incidents** — highlight downtime or degraded performance windows
+      - Mark **config changes** — track when infrastructure was modified
+
+      **Adding annotations:**
+      - **Manual** — click on a graph and add a text annotation
+      - **API** — `POST /api/annotations` with timestamp, text, and tags
+      - **Query-based** — configure a datasource query that returns annotation events automatically
+
+      **Example — automated deployment annotations via API:**
+      ```bash
+      curl -X POST http://grafana:3000/api/annotations \
+        -H "Authorization: Bearer $GRAFANA_TOKEN" \
+        -H "Content-Type: application/json" \
+        -d '{"text": "Deployed v2.4.1", "tags": ["deploy", "production"], "time": 1700000000000}'
+      ```
+
+      Integrate this `curl` call into your CI/CD pipeline so every deployment is automatically marked on all dashboards.
+  - question: How do you configure Grafana for multi-tenancy?
+    answer: |-
+      Grafana supports several isolation levels for multi-tenant environments:
+
+      **1. Organizations (built-in):**
+      - Each org has completely isolated dashboards, datasources, and users
+      - Users can belong to multiple orgs with different roles in each
+      - Suitable for distinct teams or customers
+
+      **2. Folder + Team-based RBAC:**
+      - Create folders per team (e.g., `Backend`, `Platform`, `Security`)
+      - Assign folder permissions to teams (Viewer, Editor, Admin)
+      - Datasource permissions restrict which teams can query which data
+
+      **3. Multi-instance deployment:**
+      - Run separate Grafana instances per tenant
+      - Full isolation of config, plugins, and data
+      - Higher operational overhead but strongest isolation
+
+      **4. Grafana Cloud / Enterprise features:**
+      - **Data source permissions** — restrict access at the datasource level
+      - **Reporting** — scheduled PDF reports per team
+      - **Enhanced RBAC** — fine-grained permissions on dashboards, annotations, and alert rules
+  - question: What is Alerting in Grafana and how does it work?
+    answer: >-
+      Grafana's **Unified Alerting** system (Grafana 9+) provides a consistent alerting experience across all
+      datasources.
+
+
+      **How it works:**
+
+      1. **Alert rules** define a query + condition (e.g., `avg(cpu_usage) > 80` for 5 minutes)
+
+      2. Rules are evaluated at a configured interval (e.g., every 1m)
+
+      3. When a condition is met, the alert transitions through states: **Normal → Pending → Firing**
+
+      4. **Notification policies** route alerts based on labels to the appropriate **contact point**
+
+
+      **Alert states:** Normal, Pending, Firing, No Data, Error
+
+
+      **Contact points:** Slack, PagerDuty, Email, OpsGenie, Webhooks, Telegram, Microsoft Teams, etc.
+
+
+      **Key features:**
+
+      - **Silences** — temporarily mute alerts during maintenance
+
+      - **Grouping** — batch related alerts into a single notification
+
+      - **Inhibition** — suppress alerts when a higher-severity alert is already firing
+
+      - **Multi-datasource** — a single alert rule can query Prometheus, Loki, Elasticsearch, and more
+
+
+      **Example alert condition:** `avg() of query(A, 5m, now) > 1000` → fires when average request count exceeds 1000
+      over a 5-minute window.
+  - question: How does Loki compare with Elasticsearch for logging?
+    answer: >-
+      **Loki** and **Elasticsearch** take fundamentally different approaches to log storage:
+
+
+      **Grafana Loki:**
+
+      - Indexes only **labels** (metadata), stores log lines as compressed chunks
+
+      - Extremely **cost-effective** — much less storage and compute than ES
+
+      - **LogQL** — label-based filtering first, then grep-like line matching
+
+      - Designed for **Kubernetes-native** environments with Prometheus-style labels
+
+      - Best for: high-volume logs where you typically know which service/pod to look at
+
+
+      **Elasticsearch:**
+
+      - Builds a **full-text inverted index** on every log field
+
+      - Powerful **Query DSL** with fuzzy matching, aggregations, and complex boolean queries
+
+      - Higher resource requirements (CPU, memory, storage) but faster for ad-hoc full-text search
+
+      - Rich ecosystem: SIEM, anomaly detection, APM built-in
+
+      - Best for: complex log analysis, security investigations, compliance
+
+
+      **Decision guide:**
+
+      - Choose **Loki** if you primarily filter by known labels and grep for patterns — much cheaper at scale
+
+      - Choose **Elasticsearch** if you need full-text search across unknown fields, complex aggregations, or SIEM
+      features
+  - question: What is the Hot-Warm-Cold architecture in Elasticsearch?
+    answer: >-
+      A **tiered storage strategy** that assigns nodes to different roles based on data age, optimizing cost and
+      performance.
+
+
+      **Hot nodes:**
+
+      - Fast SSDs, high CPU/RAM
+
+      - Handle all indexing (writes) and recent queries
+
+      - Store the last hours to days of data
+
+
+      **Warm nodes:**
+
+      - Cheaper storage (HDD or lower-tier SSD)
+
+      - Read-only data that is still occasionally queried
+
+      - Indices are **shrunk** and **force-merged** to reduce resource usage
+
+
+      **Cold nodes:**
+
+      - Cheapest storage; data may be partially cached
+
+      - Rarely accessed logs kept for compliance or historical analysis
+
+      - Can use **searchable snapshots** from object storage (S3/GCS)
+
+
+      **Frozen tier** (newest addition):
+
+      - Data lives entirely in object storage
+
+      - Fetched and cached on demand — cheapest option for long-term retention
+
+
+      **Implementation:** Use **ILM policies** to automatically transition indices between tiers based on age, and
+      **node attributes** (`node.attr.data: hot|warm|cold`) for shard allocation.
+  - question: How do you reduce indexing pressure in Elasticsearch?
+    answer: >-
+      **1. Tune index settings:**
+
+      - Increase `index.refresh_interval` from `1s` (default) to `30s` or `60s` — reduces segment creation during heavy
+      writes
+
+      - Set `index.translog.durability: async` for higher throughput at the cost of potential data loss on crash
+
+      - Disable replicas during bulk import (`"number_of_replicas": 0`), re-enable after
+
+
+      **2. Optimize shard strategy:**
+
+      - Avoid too many small shards — each shard has fixed overhead (heap memory, file handles)
+
+      - Target **10-50 GB per shard** and **20 shards per GB of heap** as guidelines
+
+      - Use ILM rollover to create new indices at a target size rather than daily
+
+
+      **3. Use bulk API:**
+
+      - Always index documents in bulk (batches of 5-15 MB) rather than one at a time
+
+      - Tune `bulk_max_size` in Logstash/Filebeat
+
+
+      **4. Pipeline and mapping optimizations:**
+
+      - Disable `_source` for metrics-only indices if you don't need the original document
+
+      - Set `index: false` on fields you never search
+
+      - Use `keyword` instead of `text` for fields that don't need full-text analysis
+  - question: How does Logstash manage backpressure?
+    answer: >-
+      **Backpressure** occurs when Logstash's output (e.g., Elasticsearch) can't keep up with input volume. Logstash has
+      several mechanisms to handle this:
+
+
+      **1. Persistent Queues (PQ):**
+
+      - Buffer events on disk when the output is slower than the input
+
+      - Survives Logstash restarts — no data loss
+
+      ```yaml
+
+      queue.type: persisted
+
+      queue.max_bytes: 4gb
+
+      queue.checkpoint.writes: 1024
+
+      ```
+
+
+      **2. Dead Letter Queue (DLQ):**
+
+      - Events that fail to be processed (e.g., mapping errors in Elasticsearch) are written to the DLQ for later
+      reprocessing
+
+      ```yaml
+
+      dead_letter_queue.enable: true
+
+      dead_letter_queue.max_bytes: 1gb
+
+      ```
+
+
+      **3. Internal backpressure:**
+
+      - When the in-memory queue fills up, Logstash slows down input plugins
+
+      - Beats (Filebeat, Metricbeat) automatically pause sending when Logstash signals backpressure
+
+
+      **4. Scaling out:**
+
+      - Add more Logstash pipeline workers (`pipeline.workers`)
+
+      - Deploy multiple Logstash instances behind a load balancer
+  - question: What are Query Caching strategies in Elasticsearch?
+    answer: |-
+      Elasticsearch uses multiple cache layers to accelerate repeated queries:
+
+      **1. Node Query Cache (filter cache):**
+      - Caches the results of **filter clauses** (`term`, `range`, `bool filter`)
+      - Shared across all shards on a node
+      - Automatically evicts with an LRU policy
+      - Size: `indices.queries.cache.size: 10%` (default)
+
+      **2. Shard Request Cache:**
+      - Caches the **full results** of search requests on each shard
+      - Only caches requests with `size: 0` (aggregation-only queries)
+      - Automatically invalidated when the shard's data changes (refresh)
+      - Very effective for dashboards that repeatedly run the same aggregations
+
+      **3. Fielddata Cache:**
+      - Caches field values in memory for sorting and aggregations on `text` fields
+      - **Avoid** — use `keyword` or `doc_values` instead (fielddata is expensive and heap-heavy)
+
+      **Best practices:**
+      - Use `filter` context instead of `query` context where scoring isn't needed — filters are cacheable
+      - Monitor cache hit rates via `_nodes/stats` and `_cat/nodes?v&h=name,qcm,qce` (query cache metrics)
+  - question: How do you use Kibana for anomaly detection?
+    answer: >-
+      Kibana's **Machine Learning** feature (requires at least a Basic license) detects anomalies in time-series data
+      automatically.
+
+
+      **How it works:**
+
+      1. Create an **anomaly detection job** that learns normal behavior patterns
+
+      2. The ML model identifies deviations from the baseline
+
+      3. Results are displayed with **anomaly scores** (0-100) on a timeline
+
+
+      **Example job configuration:**
+
+      ```json
+
+      {
+        "analysis_config": {
+          "bucket_span": "15m",
+          "detectors": [
+            { "function": "mean", "field_name": "response_time", "partition_field_name": "service" }
+          ]
+        },
+        "data_description": {
+          "time_field": "@timestamp"
+        }
+      }
+
+      ```
+
+
+      **Common detector functions:** `mean`, `count`, `sum`, `rare`, `freq_rare`, `high_count`, `low_count`
+
+
+      **Use cases:**
+
+      - Detect unusual spikes in error rates or response times
+
+      - **SIEM** — identify anomalous login patterns, unusual network traffic, or privilege escalation
+
+      - **Infrastructure** — spot unexpected resource usage per host or container
+
+
+      Anomaly results can trigger **alerting rules** that notify teams via Slack, email, or webhooks.
+  - question: How do you secure Elasticsearch clusters?
+    answer: |-
+      **1. Enable security features:**
+      ```yaml
+      # elasticsearch.yml
+      xpack.security.enabled: true
+      xpack.security.enrollment.enabled: true
+      ```
+      In Elastic 8.x, security is **enabled by default** with auto-generated passwords and certificates.
+
+      **2. Encryption:**
+      - **TLS for transport layer** (node-to-node communication) — mandatory in production
+      - **TLS for HTTP layer** (client-to-node) — encrypts API traffic
+      - Auto-configure with `elasticsearch-certutil` or bring your own CA
+
+      **3. Authentication:**
+      - Native realm (built-in users), LDAP, Active Directory, SAML, OIDC, PKI certificates
+      - **API keys** for service-to-service communication
+      - Use `elasticsearch-reset-password` to manage built-in user credentials
+
+      **4. Authorization (RBAC):**
+      - Define roles with index-level, field-level, and document-level security
+      - Restrict which indices a user can read/write, and even which fields they can see
+
+      **5. Network security:**
+      - Bind to specific interfaces (`network.host`)
+      - Use firewalls or security groups to restrict port access (9200, 9300)
+      - Deploy behind a reverse proxy for additional auth layers
+
+      **6. Audit logging:**
+      - Enable `xpack.security.audit.enabled: true` to log all access and changes for compliance
+  - question: How do you integrate Prometheus with Elasticsearch?
+    answer: |-
+      **Option 1 — Metricbeat Prometheus module** (push Prometheus data into ES):
+      ```yaml
+      metricbeat.modules:
+        - module: prometheus
+          metricsets: ["collector"]
+          hosts: ["localhost:9090/metrics"]
+          period: 10s
+
+      output.elasticsearch:
+        hosts: ["localhost:9200"]
+      ```
+      This scrapes the Prometheus `/metrics` endpoint and indexes the data in Elasticsearch for analysis in Kibana.
+
+      **Option 2 — Prometheus remote write to Elasticsearch:**
+      - Use a remote-write adapter or Elastic's native Prometheus input
+      - Sends all Prometheus metrics to ES for long-term storage and Kibana visualization
+
+      **Option 3 — Grafana as a unified layer:**
+      - Add both Prometheus and Elasticsearch as Grafana datasources
+      - Correlate metrics (Prometheus) and logs (Elasticsearch) in the same dashboard
+      - This is the most common and recommended approach
+
+      **Option 4 — OpenTelemetry Collector:**
+      - Collect metrics and logs in a vendor-neutral format
+      - Export to both Prometheus (for metrics alerting) and Elasticsearch (for log analysis) simultaneously
+  - question: How do you optimize Elasticsearch queries for performance?
+    answer: >-
+      **1. Use filters over queries:**
+
+      - `filter` context skips scoring and is cacheable — use for exact matches, ranges, and boolean conditions
+
+      ```json
+
+      { "query": { "bool": { "filter": [ { "term": { "status": "error" } }, { "range": { "@timestamp": { "gte": "now-1h"
+      } } } ] } } }
+
+      ```
+
+
+      **2. Avoid expensive operations:**
+
+      - No leading wildcards (`*error`) — they scan every term in the index
+
+      - Use `search_after` instead of deep `from` pagination
+
+      - Avoid `script` queries in hot paths
+
+
+      **3. Use the right field types:**
+
+      - `keyword` for filtering, sorting, and aggregations (not `text`)
+
+      - `doc_values` (enabled by default on keyword/numeric) — columnar storage for fast aggregations
+
+      - Disable `_source` or use `_source` filtering to reduce response payload
+
+
+      **4. Optimize aggregations:**
+
+      - Filter before aggregating — narrow the dataset with a date range first
+
+      - Use `composite` aggregation for paginating large bucket lists
+
+      - Pre-aggregate at index time using ingest pipelines when possible
+
+
+      **5. Index design:**
+
+      - Use time-based indices with ILM for rollover
+
+      - Right-size shards (10-50 GB) to balance parallelism and overhead
+
+      - Use `index.sort` to co-locate documents and enable early query termination
+  - question: How do you implement centralized logging in Kubernetes?
+    answer: |-
+      **Common architecture:**
+      ```
+      Pods (stdout/stderr) → Node-level agent (DaemonSet) → Aggregation → Storage → Visualization
+      ```
+
+      **Option 1 — EFK Stack (Elasticsearch + Fluentd + Kibana):**
+      - Deploy **Fluentd** as a DaemonSet that reads container logs from `/var/log/containers/`
+      - Fluentd parses, enriches with Kubernetes metadata, and forwards to Elasticsearch
+      ```xml
+      <match **>
+        @type elasticsearch
+        host elasticsearch.logging.svc
+        port 9200
+        logstash_format true
+        include_tag_key true
+      </match>
+      ```
+
+      **Option 2 — PLG Stack (Promtail + Loki + Grafana):**
+      - Deploy **Promtail** (or Grafana Alloy) as a DaemonSet
+      - Automatically discovers pods and attaches Kubernetes labels
+      - Sends logs to Loki; query in Grafana with LogQL
+      - Much lighter on resources than EFK
+
+      **Option 3 — Filebeat + Elasticsearch:**
+      - Filebeat DaemonSet with Kubernetes autodiscover
+      - Built-in modules with preconfigured parsing for common apps
+
+      **Best practices:**
+      - Use **structured logging** (JSON) from applications to avoid complex parsing
+      - Set **resource limits** on logging agents to prevent them from starving application pods
+      - Implement **log retention policies** (ILM or Loki retention) to control storage growth
+  - question: What are the best practices for log retention and compliance?
+    answer: >-
+      **1. Define retention policies by data classification:**
+
+      - Security/audit logs: 1-7 years (depending on compliance: SOC2, HIPAA, PCI-DSS, GDPR)
+
+      - Application logs: 30-90 days typically
+
+      - Debug/trace logs: 7-14 days
+
+
+      **2. Automate retention with ILM:**
+
+      - Use Elasticsearch ILM to move indices through hot → warm → cold → delete phases
+
+      - In Loki, configure `retention_period` and `compactor` for automatic cleanup
+
+
+      **3. Protect sensitive data:**
+
+      - **Mask PII** (personally identifiable information) at ingestion — use Logstash `mutate` or ingest pipelines to
+      redact emails, SSNs, credit card numbers
+
+      - **Encrypt data at rest** — enable encryption on Elasticsearch data directories and object storage
+
+      - **Encrypt in transit** — TLS between all components
+
+
+      **4. Access control:**
+
+      - Use RBAC to restrict who can view which indices
+
+      - Enable **audit logging** to track all access to sensitive log data
+
+      - Implement field-level security to hide sensitive fields from unauthorized users
+
+
+      **5. Backup and disaster recovery:**
+
+      - Use Elasticsearch **snapshots** to S3/GCS for backup
+
+      - Test restore procedures regularly
+
+      - Keep snapshots in a separate region for disaster recovery

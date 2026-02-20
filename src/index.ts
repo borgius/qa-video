@@ -791,8 +791,20 @@ program
         }
         serveDir = dirname(inputPath);
         filterFile = basename(inputPath);
+      } else if (opts.dir) {
+        serveDir = resolve(opts.dir);
       } else {
-        serveDir = resolve(opts.dir || 'qa');
+        // Default: prefer project-local qa/, fall back to internal qa/ bundled with the package
+        const projectQa = resolve('qa');
+        const internalQa = join(dirname(new URL(import.meta.url).pathname), '..', 'qa');
+        if (existsSync(projectQa)) {
+          serveDir = projectQa;
+        } else if (existsSync(internalQa)) {
+          serveDir = internalQa;
+        } else {
+          console.error('Error: No qa/ directory found in current project or package');
+          process.exit(1);
+        }
       }
 
       if (!existsSync(serveDir)) {

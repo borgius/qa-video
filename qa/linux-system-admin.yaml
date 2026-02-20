@@ -1,1538 +1,2317 @@
 config:
   name: "DevOps-Interview-Questions: Linux & System Administration"
-  description: Deep dive into Linux system administration covering file permissions, process management, networking, security hardening, performance optimization, storage management, virtualization, and high availability clustering.
+  description: Deep dive into Linux system administration covering file permissions, process management, networking,
+    security hardening, performance optimization, storage management, virtualization, and high availability clustering.
   questionDelay: 1
   answerDelay: 1
+  youtube:
+    videoId: i00aDQyZ-SQ
+    url: https://youtu.be/i00aDQyZ-SQ
+    uploadedAt: 2026-02-20T15:09:57.973Z
+    privacy: unlisted
+    contentSha: 5f08a2a4
 questions:
-- question: What is Linux and why is it popular in DevOps?
-  answer: |-
-    Linux is an **open-source operating system kernel** created by Linus Torvalds in 1991. It has become the foundation of modern infrastructure for several reasons:
-
-    - **Open source** — fully customizable with community-driven improvements
-    - **Stability and security** — reliable for production systems with a robust permission model
-    - **Modular design** — install only what you need, reducing the attack surface and resource usage
-    - **Powerful CLI** — enables automation through shell scripting and pipelines
-    - **Dominates infrastructure** — powers most servers, cloud platforms, Docker, and Kubernetes
-    - **Distribution variety** — Ubuntu, RHEL, Debian, Alpine, and others serve different use cases from lightweight containers to enterprise servers
-    - **Resource efficient** — supports higher-density deployments compared to other operating systems
-
-    The extensive tooling ecosystem around Linux covers every aspect of the software development lifecycle, making it the natural choice for DevOps workflows.
-
-- question: What are the fundamental Linux file permissions?
-  answer: |-
-    Linux file permissions control access through **three permission types** for **three user classes**:
-
-    **Permission types** (with octal values):
-    - **Read (r = 4)** — view file contents or list directory entries
-    - **Write (w = 2)** — modify a file or create/delete entries in a directory
-    - **Execute (x = 1)** — run a file as a program or enter a directory with `cd`
-
-    **User classes:**
-    - **Owner (u)** — the file's creator
-    - **Group (g)** — users in the file's assigned group
-    - **Others (o)** — everyone else
-
-    Permissions are displayed as `rwxrwxrwx` representing owner, group, and others. For example, `-rwxr-xr--` means the owner has full access (7), group can read and execute (5), others can only read (4).
-
-    **Special permission bits:**
-    - **SUID (4xxx)** — file executes as the file owner (e.g., `passwd`)
-    - **SGID (2xxx)** — file executes as the group; on directories, new files inherit the group
-    - **Sticky bit (1xxx)** — only the file owner can delete files in the directory (e.g., `/tmp`)
-
-- question: How do you change file permissions in Linux?
-  answer: |-
-    File permissions are changed with the `chmod` command using **symbolic** or **numeric** mode:
-
-    **Symbolic mode** — `chmod [who][op][perms]`:
-    - **who:** `u` (owner), `g` (group), `o` (others), `a` (all)
-    - **operation:** `+` (add), `-` (remove), `=` (set exactly)
-    - Example: `chmod u+x script.sh` adds execute for the owner
-    - Example: `chmod go-w config.yaml` removes write from group and others
-
-    **Numeric (octal) mode** — sum r=4, w=2, x=1 per class:
-    - `chmod 755 script.sh` — owner rwx (7), group r-x (5), others r-x (5)
-    - `chmod 600 secrets.env` — owner rw only, no access for anyone else
-
-    **Related commands:**
-    - `chown user:group file` — change file owner and group
-    - `chgrp group file` — change group only
-    - `umask 027` — set default permissions for new files (subtractive mask)
-
-- question: What is the difference between soft link and hard link in Linux?
-  answer: |-
-    **Hard links** and **soft links** (symbolic links) are two ways to reference files:
-
-    **Hard link** (`ln source link`):
-    - Direct reference to the file's **inode** (same inode number as original)
-    - Data persists even if the original filename is deleted
-    - Cannot cross filesystem boundaries
-    - Cannot link to directories (to prevent loops)
-    - Indistinguishable from the original — both are equal directory entries
-
-    **Soft link** (`ln -s source link`):
-    - Points to the **pathname** of another file (like a shortcut)
-    - Has its own inode, different from the target
-    - Can cross filesystem boundaries
-    - Can link to directories
-    - Becomes a **dangling link** if the target is deleted or moved
-
-    **Quick check:** `ls -li` shows inode numbers — hard links share the same inode; soft links show `->` pointing to the target path.
-
-- question: What is a process in Linux and how do you manage processes?
-  answer: |-
-    A **process** is a running instance of a program with its own PID, memory space, and system resources.
-
-    **Viewing processes:**
-    - `ps aux` — snapshot of all running processes
-    - `top` / `htop` — interactive, real-time process monitoring
-    - `pgrep name` — find PIDs by process name
-
-    **Controlling processes:**
-    - `kill PID` — send SIGTERM (graceful shutdown)
-    - `kill -9 PID` — send SIGKILL (force kill, use as last resort)
-    - `killall name` — kill all processes by name
-    - `Ctrl+Z` — suspend foreground process; `bg` to resume in background; `fg` to bring back
-    - `command &` — start a process in the background
-    - `jobs` — list background processes in the current shell
-
-    **Adjusting priority:**
-    - `nice -n 10 command` — start with lower priority (higher niceness)
-    - `renice -n -5 -p PID` — change priority of a running process
-
-- question: What is the difference between a daemon and a regular process?
-  answer: |-
-    A **daemon** is a background process that runs continuously without direct user interaction, typically providing system services.
-
-    **Daemon characteristics:**
-    - Started at **boot time** by the init system (systemd)
-    - Runs in the background with **no controlling terminal**
-    - Names often end with **d** — `sshd`, `httpd`, `crond`, `dockerd`
-    - Usually runs with **system-level privileges**
-    - Managed via `systemctl start|stop|status service_name`
-
-    **Regular process characteristics:**
-    - Started **by a user** directly (from a shell or GUI)
-    - Runs in the **foreground** with a controlling terminal
-    - Runs with the **user's privileges**
-    - Typically **terminates** when its task completes or the terminal closes
-
-    A regular process can be daemonized by detaching from the terminal, but modern practice is to define a **systemd unit file** and let systemd manage the process lifecycle.
-
-- question: Explain the Linux directory structure and key directories.
-  answer: |-
-    Linux follows the **Filesystem Hierarchy Standard (FHS)**:
-
-    - `/` — root directory, the top of the hierarchy
-    - `/bin` — essential user commands (`ls`, `cp`, `cat`)
-    - `/sbin` — system administration binaries (`iptables`, `fdisk`)
-    - `/etc` — system-wide configuration files
-    - `/home` — user home directories
-    - `/root` — root user's home directory
-    - `/var` — variable data: logs (`/var/log`), mail, spool files
-    - `/tmp` — temporary files (cleared on reboot)
-    - `/usr` — user-installed programs, libraries, and documentation
-    - `/lib` — shared libraries needed by `/bin` and `/sbin`
-    - `/opt` — optional/third-party software
-    - `/boot` — bootloader files, kernel images
-    - `/dev` — device files (block and character devices)
-    - `/proc` — virtual filesystem exposing kernel and process info
-    - `/sys` — virtual filesystem for kernel device/driver info
-    - `/mnt` and `/media` — mount points for temporary and removable media
-
-    Key admin paths: `/var/log` (system logs), `/etc/systemd/system` (service unit files), `/etc/fstab` (mount definitions).
-
-- question: What are environment variables and how do you set them in Linux?
-  answer: |-
-    **Environment variables** are dynamic key-value pairs that affect the behavior of processes and the shell.
-
-    **Viewing variables:**
-    - `env` or `printenv` — list all environment variables
-    - `echo $VARIABLE_NAME` — print a specific variable
-
-    **Setting variables:**
-    - `VAR=value` — shell-only (not inherited by child processes)
-    - `export VAR=value` — exported to child processes
-    - Persistent: add `export` lines to `~/.bashrc` (user) or `/etc/environment` (system-wide)
-
-    **Common variables:**
-    - `PATH` — colon-separated list of directories searched for executables
-    - `HOME` — current user's home directory
-    - `USER` / `LOGNAME` — current username
-    - `SHELL` — default shell path
-    - `LANG` / `LC_ALL` — locale settings
-    - `EDITOR` — default text editor
-
-    Use `unset VAR` to remove a variable from the current session.
-
-- question: What is SSH and how do you use it securely?
-  answer: |-
-    **SSH (Secure Shell)** is a cryptographic protocol for secure remote access, command execution, and file transfers over untrusted networks.
-
-    **Basic usage:** `ssh user@hostname`
-
-    **Security best practices:**
-    - **Key-based authentication** — generate keys with `ssh-keygen`, deploy with `ssh-copy-id`; disable password auth in `sshd_config`
-    - **Disable root login** — set `PermitRootLogin no` in `/etc/ssh/sshd_config`
-    - **Change default port** — reduces automated scanning noise
-    - **Use `fail2ban`** — automatically bans IPs after repeated failed login attempts
-    - **Restrict access** — use `AllowUsers` or `AllowGroups` directives to limit who can SSH in
-    - **Strong algorithms** — disable weak ciphers and MACs in `sshd_config`
-    - **Two-factor authentication** — add MFA via PAM modules like `google-authenticator`
-
-    **SSH config** (`~/.ssh/config`) simplifies connections with per-host settings for port, user, key file, and proxy jumps.
-
-- question: What is systemd and how do you manage services with it?
-  answer: |-
-    **systemd** is the init system and service manager in most modern Linux distributions. It manages system startup, services, logging, and more.
-
-    **Common commands:**
-    - `systemctl start|stop|restart service` — control a service
-    - `systemctl enable|disable service` — toggle autostart at boot
-    - `systemctl status service` — check service state and recent logs
-    - `journalctl -u service` — view full logs for a service
-
-    **Unit files** define service behavior and live in `/etc/systemd/system/` (admin overrides) or `/usr/lib/systemd/system/` (package defaults).
-
-    **Creating a custom service:**
-    - Write a unit file with `[Unit]`, `[Service]`, and `[Install]` sections
-    - Run `systemctl daemon-reload` to register it
-    - `systemctl enable --now service` to start and enable in one step
-
-    **Other systemd features:**
-    - **Timers** — cron-like scheduling via `.timer` unit files
-    - **Targets** — groups of units replacing traditional runlevels
-    - **journald** — structured, indexed logging with `journalctl`
-
-- question: How do you schedule tasks in Linux using cron?
-  answer: |-
-    **cron** is a time-based job scheduler that automates recurring tasks.
-
-    **Crontab format:** five time fields followed by the command:
-
-    ```
-    MIN HOUR DOM MON DOW command
-    ```
-
-    - Example: `0 2 * * * /scripts/backup.sh` — runs at 2:00 AM daily
-    - Example: `*/15 * * * * /scripts/health-check.sh` — every 15 minutes
-
-    **Management commands:**
-    - `crontab -e` — edit your crontab
-    - `crontab -l` — list scheduled jobs
-    - `crontab -r` — remove all jobs
-
-    **Shortcuts:** `@daily`, `@weekly`, `@monthly`, `@reboot`
-
-    **System-wide cron:** drop scripts into `/etc/cron.daily/`, `/etc/cron.hourly/`, etc.
-
-    **Alternatives:**
-    - **anacron** — ensures jobs run even if the machine was off at the scheduled time
-    - **systemd timers** — more flexible scheduling with calendar expressions, logging via journald, and dependency management; increasingly preferred over cron on modern systems
-
-- question: How do you monitor system performance in Linux?
-  answer: |-
-    Linux provides a rich set of performance monitoring tools:
-
-    **CPU and load:**
-    - `top` / `htop` — real-time process and CPU monitoring
-    - `uptime` — load averages (1, 5, 15 minutes)
-    - `mpstat` — per-CPU statistics
-
-    **Memory:**
-    - `free -h` — total, used, free, and cached memory
-    - `vmstat` — virtual memory, swap, I/O, and CPU stats
-
-    **Disk:**
-    - `df -h` — filesystem space usage
-    - `du -sh /path` — directory size
-    - `iostat -x` — disk I/O throughput and latency
-    - `iotop` — per-process I/O usage
-
-    **Network:**
-    - `ss -tulpn` — listening ports and connections
-    - `iftop` — real-time bandwidth per connection
-    - `nload` — interface throughput
-
-    **All-in-one:** `glances`, `nmon`, or `dstat` for combined views.
-
-    **For production environments**, use monitoring stacks like **Prometheus + Grafana**, **Datadog**, or **Nagios** for historical metrics, alerting, and dashboards.
-
-- question: What is a package manager and how do you use it?
-  answer: |-
-    A **package manager** automates installing, updating, and removing software, including dependency resolution and integrity verification.
-
-    **Debian/Ubuntu (APT):**
-    - `apt update` — refresh package index
-    - `apt install package` — install
-    - `apt upgrade` — upgrade all packages
-    - `apt remove package` — uninstall (keep config); `apt purge` removes config too
-    - `apt search keyword` — find packages
-
-    **RHEL/CentOS/Fedora (DNF, formerly YUM):**
-    - `dnf install package` — install
-    - `dnf update` — upgrade all packages
-    - `dnf remove package` — uninstall
-    - `dnf search keyword` — find packages
-
-    **Key concepts:**
-    - **Repositories** — software sources configured in `/etc/apt/sources.list.d/` or `/etc/yum.repos.d/`
-    - **GPG signing** — packages are cryptographically signed to verify authenticity
-    - **Dependency resolution** — the manager automatically installs required libraries
-    - `apt list --installed` / `dnf list installed` — see what's installed
-
-- question: What is RAID and what are the common RAID levels?
-  answer: |-
-    **RAID (Redundant Array of Independent Disks)** combines multiple physical disks into a logical unit for redundancy, performance, or both.
-
-    **Common levels:**
-    - **RAID 0 (striping)** — data split across disks; maximum performance, **zero redundancy**; any disk failure loses everything
-    - **RAID 1 (mirroring)** — data duplicated across two disks; full redundancy but 50% capacity used for mirrors
-    - **RAID 5 (striping + distributed parity)** — tolerates one disk failure; needs minimum 3 disks; good balance of performance, capacity, and redundancy
-    - **RAID 6 (double parity)** — tolerates two simultaneous disk failures; needs minimum 4 disks; lower write performance than RAID 5
-    - **RAID 10 (1+0, mirrored stripes)** — combines mirroring and striping; excellent performance and redundancy; requires minimum 4 disks, uses 50% capacity
-
-    **Implementation in Linux:**
-    - **Hardware RAID** — managed by a dedicated controller; transparent to the OS
-    - **Software RAID** — managed by the kernel's `md` driver via `mdadm`
-
-    RAID protects against disk failures but is **not a backup** — it doesn't protect against accidental deletion, corruption, or ransomware.
-
-- question: What is LVM and why is it useful?
-  answer: |-
-    **LVM (Logical Volume Manager)** adds a flexible abstraction layer between physical disks and filesystems.
-
-    **Three-tier architecture:**
-    - **Physical Volumes (PVs)** — raw disks or partitions initialized with `pvcreate`
-    - **Volume Groups (VGs)** — pools of storage combining one or more PVs via `vgcreate`
-    - **Logical Volumes (LVs)** — virtual partitions carved from a VG via `lvcreate`
-
-    **Key benefits:**
-    - **Online resizing** — grow or shrink volumes without downtime using `lvextend` + `resize2fs` (ext4) or `xfs_growfs` (XFS)
-    - **Span multiple disks** — a single LV can span across several physical drives
-    - **Snapshots** — create point-in-time copies for backups or testing
-    - **Thin provisioning** — overcommit storage and allocate on demand
-    - **Live migration** — move data between physical disks with `pvmove` while the volume stays mounted
-
-    LVM is the standard for flexible storage on Linux servers and is especially valuable in environments where storage needs change frequently.
-
-- question: What is the purpose of /etc/fstab file?
-  answer: |-
-    `/etc/fstab` (filesystem table) defines how filesystems are **automatically mounted at boot**.
-
-    **Each entry has six fields:**
-    - **Device** — identified by `UUID=...` (preferred for stability) or device path
-    - **Mount point** — directory where the filesystem appears (e.g., `/home`, `/data`)
-    - **Filesystem type** — `ext4`, `xfs`, `btrfs`, `nfs`, `swap`, etc.
-    - **Mount options** — `defaults`, `noatime`, `ro`, `noexec`, `nosuid`, etc.
-    - **Dump flag** — `0` or `1` (for backup tools; rarely used)
-    - **Fsck order** — `0` (skip), `1` (root fs), `2` (other fs)
-
-    **Example entry:**
-
-    ```
-    UUID=abc-123  /data  ext4  defaults,noatime  0  2
-    ```
-
-    **Important commands:**
-    - `mount -a` — mount all fstab entries not currently mounted
-    - `findmnt` — display current mount tree
-    - `blkid` — find UUIDs for devices
-
-    **Warning:** a syntax error in fstab can prevent the system from booting. Always test changes with `mount -a` before rebooting, and use `nofail` for non-critical mounts.
-
-- question: How do you troubleshoot network connectivity issues in Linux?
-  answer: |-
-    Network troubleshooting follows a **bottom-up, layered approach**:
-
-    **1. Interface status:**
-    - `ip addr` — check interface state and IP addresses
-    - `ip link` — verify the interface is UP
-
-    **2. Local connectivity:**
-    - `ping 127.0.0.1` — verify the network stack is working
-    - `ping gateway_ip` — test LAN connectivity
-
-    **3. External connectivity:**
-    - `ping 8.8.8.8` — test internet reachability (bypasses DNS)
-    - If this works but hostnames fail, it's a **DNS issue**
-
-    **4. DNS resolution:**
-    - `nslookup domain` or `dig domain` — test DNS
-    - Check `/etc/resolv.conf` for nameserver configuration
-
-    **5. Routing:**
-    - `ip route` — view the routing table
-    - `traceroute` / `mtr` — trace the path to a destination, identify where packets drop
-
-    **6. Port/service issues:**
-    - `ss -tulpn` — check listening ports
-    - `nc -zv host port` — test if a remote port is reachable
-    - `tcpdump -i eth0 port 80` — capture and analyze packets
-
-    **7. Firewall:**
-    - `iptables -L -n` or `nft list ruleset` — review firewall rules
-    - `journalctl -k | grep DROP` — check for dropped packets in logs
-
-- question: How do you set up and configure a basic firewall in Linux?
-  answer: |-
-    Linux offers several firewall tools at different abstraction levels:
-
-    **UFW (Ubuntu/Debian)** — simplest interface:
-    - `sudo ufw default deny incoming`
-    - `sudo ufw default allow outgoing`
-    - `sudo ufw allow ssh`
-    - `sudo ufw allow 443/tcp`
-    - `sudo ufw enable`
-
-    **firewalld (RHEL/CentOS)** — zone-based:
-    - `sudo firewall-cmd --permanent --add-service=ssh`
-    - `sudo firewall-cmd --permanent --add-service=https`
-    - `sudo firewall-cmd --reload`
-
-    **nftables** — modern replacement for iptables (default in most current distros):
-    - `nft add rule inet filter input tcp dport 22 accept`
-    - Configuration in `/etc/nftables.conf`
-
-    **iptables** — legacy but still widely used:
-    - `iptables -A INPUT -p tcp --dport 22 -j ACCEPT`
-    - `iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT`
-    - `iptables -P INPUT DROP`
-    - Save with `iptables-save > /etc/iptables/rules.v4`
-
-    **Critical rule:** always allow SSH access **before** setting a default deny policy to avoid locking yourself out.
-
-- question: What is SELinux and AppArmor? How do they enhance security?
-  answer: |-
-    **SELinux** and **AppArmor** are Linux Security Modules (LSMs) that implement **Mandatory Access Control (MAC)**, restricting what processes can do even if running as root.
-
-    **SELinux** (Red Hat, CentOS, Fedora):
-    - Developed by the NSA; uses **security contexts** (`user:role:type:level`)
-    - Policies control access based on **type enforcement** — processes of one type can only access resources of allowed types
-    - Modes: **enforcing** (blocks violations), **permissive** (logs only), **disabled**
-    - Tools: `getenforce`, `setenforce`, `semanage`, `restorecon`, `audit2allow`
-
-    **AppArmor** (Ubuntu, SUSE, Debian):
-    - Uses **path-based profiles** that define what files and capabilities a program can access
-    - Modes: **enforce** (blocks violations), **complain** (logs only)
-    - Tools: `aa-status`, `aa-enforce`, `aa-complain`, `aa-genprof`
-
-    **Why they matter:** traditional Unix permissions only control who can access a resource. MAC controls **what each program can do**, so a compromised Apache process can't read `/etc/shadow` even if it runs as a privileged user.
-
-- question: How do you manage user accounts and permissions in Linux?
-  answer: |-
-    **User management commands:**
-    - `useradd -m -s /bin/bash username` — create user with home dir and shell
-    - `passwd username` — set or change password
-    - `usermod -aG group username` — add user to a supplementary group
-    - `userdel -r username` — delete user and their home directory
-
-    **Group management:**
-    - `groupadd groupname` — create a group
-    - `groups username` — list a user's groups
-    - `groupdel groupname` — delete a group
-
-    **Privilege delegation with sudo:**
-    - Edit with `visudo` (syntax-checked editing of `/etc/sudoers`)
-    - Grant full access: `username ALL=(ALL:ALL) ALL`
-    - Grant specific commands: `username ALL=(ALL) /usr/bin/systemctl restart nginx`
-
-    **Advanced access control:**
-    - **ACLs** — fine-grained permissions beyond owner/group/other: `setfacl -m u:username:rw file` and `getfacl file`
-    - **Password policies** — `chage -M 90 username` sets max password age to 90 days
-    - **Resource limits** — configure in `/etc/security/limits.conf` (max open files, processes, etc.)
-
-- question: How do you optimize Linux server performance?
-  answer: |-
-    Performance optimization targets four key subsystems:
-
-    **CPU:**
-    - Identify bottlenecks with `top`, `htop`, `mpstat`
-    - Adjust process priority with `nice` / `renice`
-    - Set CPU governor to **performance** mode for latency-sensitive workloads
-    - Pin critical processes to specific cores with `taskset`
-
-    **Memory:**
-    - Tune `vm.swappiness` (lower values = less aggressive swapping; 10 is common for servers)
-    - Configure **huge pages** for memory-intensive workloads (databases, JVMs)
-    - Adjust `vm.dirty_ratio` and `vm.dirty_background_ratio` to control write-back behavior
-
-    **Disk I/O:**
-    - Choose appropriate filesystems: **XFS** for large files, **ext4** for general use
-    - Use `noatime` mount option to reduce unnecessary metadata writes
-    - Select the right I/O scheduler: `mq-deadline` for SSDs, `bfq` for interactive workloads on HDDs
-    - Implement RAID or SSD caching for high-throughput needs
-
-    **Network:**
-    - Increase TCP buffer sizes (`net.core.rmem_max`, `net.core.wmem_max`)
-    - Enable TCP window scaling for high-bandwidth links
-    - Configure **jumbo frames** (MTU 9000) on dedicated networks
-
-    Apply changes permanently via `/etc/sysctl.conf` and set resource limits in `/etc/security/limits.conf`. Always establish **performance baselines** before tuning and change one parameter at a time.
-
-- question: How do you implement centralized logging in a Linux environment?
-  answer: |-
-    **Centralized logging** collects logs from multiple servers into a single location for analysis, correlation, and compliance.
-
-    **Common architectures:**
-    - **ELK stack** — Elasticsearch (storage/search), Logstash (processing), Kibana (visualization), with Filebeat as the log shipper
-    - **Grafana Loki** — lightweight, label-based log aggregation designed to pair with Grafana dashboards
-    - **Graylog** — combines Elasticsearch and MongoDB with its own web UI
-    - **rsyslog forwarding** — simple setup: clients send to `*.* @@logserver:514` (TCP) or `@logserver:514` (UDP)
-
-    **Implementation steps:**
-    - Install the aggregation platform on a central server
-    - Deploy log shippers (Filebeat, Fluentd, or rsyslog forwarding) on each source
-    - Define parsing rules to extract structured fields from raw logs
-    - Build dashboards and configure alerts for critical events
-
-    **Security considerations:**
-    - Encrypt log transport with **TLS**
-    - Implement **log rotation** and retention policies to manage storage
-    - Protect the central server — compromised logs undermine forensic investigations
-    - Consider **log signing** for tamper detection in regulated environments
-
-- question: How do you implement backup and recovery strategies for Linux systems?
-  answer: |-
-    A solid backup strategy balances **RPO** (how much data you can afford to lose) and **RTO** (how fast you need to recover).
-
-    **Backup tools:**
-    - `rsync -avz --delete /source/ /backup/` — efficient file-level sync with incremental transfers
-    - `tar czf backup.tar.gz /data` — compressed archives
-    - `dd if=/dev/sda of=disk.img bs=4M` — full disk imaging
-    - **Restic** / **BorgBackup** — modern, deduplicated, encrypted backup tools
-
-    **Database backups:**
-    - `pg_dump` / `pg_dumpall` — PostgreSQL logical backups
-    - `mysqldump` — MySQL/MariaDB logical backups
-    - **XtraBackup** — hot physical backups for MySQL without locking
-
-    **Strategy:**
-    - **3-2-1 rule** — 3 copies, on 2 different media types, with 1 offsite
-    - Combine **full** + **incremental** backups to reduce storage and backup windows
-    - Schedule via `cron` or systemd timers
-
-    **Critical practices:**
-    - **Encrypt** backups containing sensitive data
-    - **Test restores regularly** — an untested backup is not a backup
-    - Document recovery procedures and keep them accessible during incidents
-
-- question: How do you secure a Linux server?
-  answer: |-
-    Server hardening is a **layered approach** addressing multiple attack surfaces:
-
-    **Minimize attack surface:**
-    - Install only required packages; remove or disable unused services
-    - Close unnecessary ports; verify with `ss -tulpn`
-
-    **User security:**
-    - Enforce strong passwords with PAM modules (`pam_pwquality`)
-    - Apply **principle of least privilege** — use `sudo` instead of root logins
-    - Disable root SSH login; use key-based authentication only
-
-    **Network hardening:**
-    - Configure a firewall (UFW, firewalld, or nftables) to allow only needed traffic
-    - Use `fail2ban` to block brute-force attempts
-    - Change SSH default port and restrict access with `AllowUsers`
-
-    **Mandatory Access Control:**
-    - Enable **SELinux** (RHEL) or **AppArmor** (Ubuntu) in enforcing mode
-
-    **Patching and updates:**
-    - Apply security patches promptly; enable `unattended-upgrades` (Debian/Ubuntu) or `dnf-automatic` (RHEL) for critical fixes
-
-    **Auditing and monitoring:**
-    - Enable `auditd` for system call auditing
-    - Implement file integrity monitoring (AIDE or OSSEC)
-    - Centralize logs and set up alerts for suspicious activity
-    - Use secure mount options: `noexec`, `nosuid`, `nodev` on `/tmp` and similar
-
-- question: How do you manage kernel parameters and modules in Linux?
-  answer: |-
-    **Kernel parameters** control runtime behavior of the Linux kernel.
-
-    **Viewing and setting parameters:**
-    - `sysctl -a` — list all parameters
-    - `sysctl -w net.ipv4.ip_forward=1` — set temporarily (lost on reboot)
-    - Permanent: add entries to `/etc/sysctl.conf` or files in `/etc/sysctl.d/`
-    - Apply without reboot: `sysctl -p`
-
-    **Common tuning parameters:**
-    - `vm.swappiness` — control swap aggressiveness
-    - `net.core.somaxconn` — TCP listen backlog size
-    - `fs.file-max` — system-wide file descriptor limit
-    - `kernel.randomize_va_space` — ASLR for security
-
-    **Kernel modules** extend functionality without recompilation:
-    - `lsmod` — list loaded modules
-    - `modinfo module_name` — show module details
-    - `modprobe module_name` — load a module with dependencies
-    - `rmmod module_name` — unload a module
-
-    **Persistence:**
-    - Auto-load at boot: add module names to `/etc/modules` or files in `/etc/modules-load.d/`
-    - Blacklist: add `blacklist module_name` to a file in `/etc/modprobe.d/`
-    - Module parameters: `options module_name param=value` in `/etc/modprobe.d/`
-
-- question: How do you troubleshoot high CPU, memory, or disk I/O usage in Linux?
-  answer: |-
-    **High CPU:**
-    - `top` / `htop` — identify the process consuming CPU; sort by `%CPU`
-    - `ps aux --sort=-%cpu | head` — list top CPU consumers
-    - `perf top` — kernel-level profiling to find hot functions
-    - **Remediation:** optimize the application, adjust `nice` values, set CPU limits via cgroups
-
-    **High memory:**
-    - `free -h` — check total, used, available, and swap usage
-    - `ps aux --sort=-%mem | head` — identify memory-hungry processes
-    - `vmstat 1` — watch swap in/out activity (high `si`/`so` = memory pressure)
-    - `smem` — show proportional set size (true memory per process)
-    - **Remediation:** fix memory leaks, increase swap, add RAM, or set `MemoryMax` via cgroups
-
-    **High disk I/O:**
-    - `iostat -x 1` — per-device I/O stats (watch `%util` and `await`)
-    - `iotop` — identify which processes are causing I/O
-    - `df -h` / `du -sh /path` — check for full filesystems
-    - **Remediation:** optimize queries/writes, add faster storage, adjust I/O scheduler, or spread I/O across disks with RAID
-
-    **Holistic view:** `glances`, `nmon`, or `dstat` monitor CPU, memory, disk, and network simultaneously.
-
-- question: What is load balancing and how do you implement it in Linux?
-  answer: |-
-    **Load balancing** distributes traffic across multiple servers to improve reliability, performance, and availability.
-
-    **Layer 7 (application level):**
-    - **HAProxy** — high-performance, feature-rich; configure `frontend` (listener) and `backend` (server pool) in `/etc/haproxy/haproxy.cfg`
-    - **Nginx** — uses the `upstream` directive to define server pools; supports HTTP, gRPC, and WebSocket
-
-    **Layer 4 (transport level):**
-    - **LVS (Linux Virtual Server)** — kernel-level IPVS module; highest throughput, managed via `ipvsadm`
-
-    **Load balancing algorithms:**
-    - **Round-robin** — equal distribution
-    - **Least connections** — routes to the server with fewest active connections
-    - **Weighted** — accounts for servers with different capacities
-    - **IP hash** — session persistence by client IP
-
-    **High availability for the load balancer itself:**
-    - Use **Keepalived** with VRRP to manage a floating VIP between active/backup load balancers
-    - Health checks automatically remove failed backends from the pool
-
-- question: What is containerization and how do you use containers in Linux?
-  answer: |-
-    **Containerization** packages an application with all its dependencies into an isolated, portable unit that shares the host OS kernel.
-
-    **Docker** — the most widely used container platform:
-    - `docker build -t myapp .` — build an image from a Dockerfile
-    - `docker run -d -p 8080:80 myapp` — run a container in the background
-    - `docker ps` — list running containers
-    - `docker logs container_id` — view container output
-
-    **Podman** — a daemonless, rootless alternative to Docker:
-    - CLI-compatible with Docker (drop-in replacement)
-    - No central daemon — each container runs as a child process
-    - Better suited for rootless and systemd-integrated workflows
-
-    **Orchestration** — for production multi-container deployments:
-    - **Kubernetes** — industry standard for scaling, self-healing, rolling updates, and service discovery
-    - **Docker Compose** — simpler multi-container orchestration for development
-
-    **Security best practices:**
-    - Use minimal base images (Alpine, distroless)
-    - Run as a non-root user inside the container
-    - Scan images for vulnerabilities (Trivy, Grype)
-    - Set resource limits (`--memory`, `--cpus`)
-
-- question: How do you implement configuration management in Linux environments?
-  answer: |-
-    **Configuration management** automates and enforces consistent system configuration across fleets of servers.
-
-    **Popular tools:**
-    - **Ansible** — agentless (SSH-based), YAML playbooks, push model; easiest to adopt
-    - **Puppet** — agent-based, its own DSL, pull model; strong ecosystem
-    - **Chef** — agent-based, Ruby-based, pull model
-    - **SaltStack** — agent-based, event-driven, fast at scale
-
-    **Ansible example workflow:**
-    - Define target hosts in an **inventory** file
-    - Write **playbooks** (YAML) declaring the desired state
-    - Execute: `ansible-playbook -i inventory playbook.yml`
-    - Organize reusable logic into **roles**
-
-    **Best practices:**
-    - **Version control** all configuration code (Git)
-    - Use **environment-specific variables** (dev, staging, prod)
-    - **Test in staging** before applying to production
-    - Apply the principle of **idempotency** — running a playbook twice produces the same result
-    - Implement **drift detection** — alert when systems deviate from the declared state
-
-- question: What is systemd-networkd and how do you configure networking with it?
-  answer: |-
-    **systemd-networkd** is a system daemon for managing network configuration on systemd-based distributions, replacing legacy `/etc/network/interfaces` scripts.
-
-    **Enable it:**
-
-    ```
-    systemctl enable --now systemd-networkd
-    systemctl enable --now systemd-resolved
-    ```
-
-    **Configuration files** live in `/etc/systemd/network/`:
-    - `.network` files — configure interfaces (IP, gateway, DNS)
-    - `.netdev` files — define virtual devices (bridges, VLANs, bonds)
-
-    **Static IP example** (`/etc/systemd/network/10-eth0.network`):
-
-    ```
-    [Match]
-    Name=eth0
-
-    [Network]
-    Address=192.168.1.100/24
-    Gateway=192.168.1.1
-    DNS=8.8.8.8
-    ```
-
-    **DHCP example:**
-
-    ```
-    [Match]
-    Name=eth0
-
-    [Network]
-    DHCP=yes
-    ```
-
-    After changes: `systemctl restart systemd-networkd`
-
-    Advantages over legacy tools: declarative config, predictable interface naming, built-in DHCP client, and tight integration with the rest of systemd.
-
-- question: What are Linux namespaces and how are they used?
-  answer: |-
-    **Linux namespaces** are a kernel feature that isolates system resources for processes, forming the foundation of container technologies.
-
-    **Namespace types:**
-    - **PID** — process isolation; PID 1 inside the namespace is not PID 1 on the host
-    - **NET** — separate network stack (interfaces, routes, firewall rules)
-    - **MNT** — independent filesystem mount points
-    - **UTS** — isolated hostname and domain name
-    - **IPC** — separate shared memory, semaphores, message queues
-    - **USER** — map UIDs/GIDs; allows root inside namespace without root on host
-    - **CGROUP** — isolated view of cgroup hierarchy
-    - **TIME** — independent system clocks (kernel 5.6+)
-
-    **Working with namespaces:**
-    - `unshare --net --pid --fork bash` — launch a shell in new network and PID namespaces
-    - `nsenter -t PID -n` — enter the network namespace of a running process
-    - `lsns` — list all namespaces on the system
-
-    Docker, Podman, and LXC all use namespaces combined with **cgroups** (for resource limits) and **seccomp** (for syscall filtering) to create isolated containers.
-
-- question: How do you implement disk encryption in Linux?
-  answer: |-
-    Disk encryption protects data at rest against unauthorized physical access.
-
-    **Full-disk / partition encryption with LUKS:**
-    - `cryptsetup luksFormat /dev/sdb1` — initialize an encrypted partition
-    - `cryptsetup open /dev/sdb1 cryptdata` — unlock and map to `/dev/mapper/cryptdata`
-    - `mkfs.ext4 /dev/mapper/cryptdata` — create a filesystem on the encrypted volume
-    - `mount /dev/mapper/cryptdata /data` — mount as usual
-
-    **Auto-mount at boot:**
-    - Add an entry to `/etc/crypttab` (maps encrypted device to a name)
-    - Add the corresponding mount to `/etc/fstab`
-
-    **Directory-level encryption:**
-    - **fscrypt** — native kernel-level filesystem encryption for ext4 and F2FS; preferred over the deprecated eCryptfs
-    - Encrypt individual directories without encrypting the entire partition
-
-    **File-level encryption:**
-    - `gpg -c file` — symmetric encryption of individual files
-    - **age** — modern, simple file encryption tool
-
-    **Key management:**
-    - LUKS supports **multiple key slots** — add backup keys with `cryptsetup luksAddKey`
-    - Back up the LUKS header: `cryptsetup luksHeaderBackup`
-    - Consider **TPM** or hardware security modules for automated unlocking in servers
-
-- question: What is systemd-journald and how do you use it for system logging?
-  answer: |-
-    **systemd-journald** collects and stores logs in a structured, indexed binary format, replacing plain-text syslog in many setups.
-
-    **Querying logs with `journalctl`:**
-    - `journalctl -u nginx` — logs for a specific service
-    - `journalctl -b` — current boot only; `-b -1` for previous boot
-    - `journalctl -p err` — filter by priority (emerg, alert, crit, err, warning, notice, info, debug)
-    - `journalctl --since "1 hour ago"` — time-based filtering
-    - `journalctl -f` — follow new entries in real time
-    - `journalctl -o json-pretty` — output in structured JSON
-
-    **Persistent storage:**
-    - By default, logs may be stored only in memory (`/run/log/journal/`)
-    - Create `/var/log/journal/` for persistence across reboots
-
-    **Configuration** (`/etc/systemd/journald.conf`):
-    - `Storage=persistent` — force persistent logging
-    - `SystemMaxUse=500M` — cap total journal size
-    - `MaxRetentionSec=1month` — auto-delete old entries
-
-    **Integration:** journald can forward to traditional syslog daemons (`rsyslog`, `syslog-ng`) for compatibility with existing log pipelines.
-
-- question: How do you manage system time and NTP in Linux?
-  answer: |-
-    Accurate time synchronization is critical for log correlation, authentication (Kerberos), TLS certificates, and distributed systems.
-
-    **Check and configure time:**
-    - `timedatectl status` — view current time, timezone, and NTP sync status
-    - `timedatectl set-timezone America/New_York` — set timezone
-    - `timedatectl set-ntp true` — enable NTP synchronization
-
-    **NTP implementations:**
-    - **systemd-timesyncd** — lightweight SNTP client, sufficient for most systems; configured in `/etc/systemd/timesyncd.conf`
-    - **chrony** — more capable NTP client/server; handles intermittent connectivity and fast synchronization well
-      - Install: `apt install chrony` or `dnf install chrony`
-      - Config: `/etc/chrony/chrony.conf`
-      - Monitor: `chronyc tracking` (sync status), `chronyc sources` (server list)
-
-    **Best practices:**
-    - Use at least **3-4 NTP sources** for redundancy and accuracy
-    - In isolated networks, set up an **internal NTP server** hierarchy
-    - Monitor sync offset — drift beyond a few milliseconds may indicate issues
-    - For precision-critical systems (finance, telecom), consider **PTP (Precision Time Protocol)** or GPS-disciplined clocks
-
-- question: What is Linux resource management with cgroups?
-  answer: |-
-    **Control Groups (cgroups)** limit, account for, and isolate resource usage of process groups. Modern systems use **cgroups v2**, managed through systemd.
-
-    **Controllable resources:**
-    - **CPU** — limit usage or pin to specific cores
-    - **Memory** — cap total usage and swap
-    - **Disk I/O** — throttle read/write bandwidth
-    - **PIDs** — limit number of processes
-
-    **Setting limits via systemd:**
-    - `systemctl set-property myservice.service CPUQuota=200%` — limit to 2 CPU cores
-    - `systemctl set-property myservice.service MemoryMax=1G` — hard memory cap
-    - `systemctl set-property myservice.service IOWriteBandwidthMax="/dev/sda 50M"` — throttle I/O
-
-    **Persistent limits** — add directives to the service's unit file under `[Service]`:
-
-    ```
-    CPUQuota=200%
-    MemoryMax=1G
-    MemorySwapMax=0
-    ```
-
-    **Monitoring:**
-    - `systemd-cgls` — display the cgroup hierarchy
-    - `systemd-cgtop` — real-time resource usage per cgroup
-
-    **In containers:** Docker (`--memory`, `--cpus`) and Kubernetes (resource requests/limits) use cgroups under the hood. Cgroups prevent resource starvation in multi-tenant and containerized environments.
-
-- question: What is Linux Traffic Control (tc) and how is it used?
-  answer: |-
-    **Traffic Control (tc)** is a kernel framework for managing network traffic through QoS policies, traffic shaping, and bandwidth allocation.
-
-    **Core concepts:**
-    - **Queueing disciplines (qdiscs)** — control how packets are queued and dequeued
-    - **Classes** — subdivide qdiscs to create hierarchical bandwidth allocation
-    - **Filters** — classify packets into classes based on IP, port, or other criteria
-
-    **Common use cases:**
-
-    **Bandwidth limiting:**
-
-    ```
-    tc qdisc add dev eth0 root tbf rate 10mbit burst 32kbit latency 400ms
-    ```
-
-    **Prioritizing traffic** with HTB (Hierarchical Token Bucket):
-    - Create classes for different traffic types (e.g., SSH high priority, bulk downloads low priority)
-    - Assign bandwidth guarantees and ceilings per class
-
-    **Bufferbloat mitigation** with CoDel or fq_codel:
-
-    ```
-    tc qdisc replace dev eth0 root fq_codel
-    ```
-
-    **Network simulation** (useful for testing):
-    - Add latency: `tc qdisc add dev eth0 root netem delay 100ms`
-    - Simulate packet loss: `tc qdisc add dev eth0 root netem loss 5%`
-
-    TC is essential for WAN optimization, ensuring critical services get priority, and testing application behavior under degraded network conditions.
-
-- question: How do you implement Linux network bonding and teaming?
-  answer: |-
-    **Network bonding** combines multiple physical NICs into a single logical interface for increased bandwidth, redundancy, or both.
-
-    **Bonding** (traditional, kernel-level):
-    - Install: `apt install ifenslave` or `dnf install NetworkManager-team`
-    - Common modes:
-      - **Mode 1 (active-backup)** — only one NIC active; failover on link failure (no switch config needed)
-      - **Mode 4 (802.3ad/LACP)** — link aggregation for bandwidth + redundancy (requires switch support)
-      - **Mode 6 (balance-alb)** — adaptive load balancing without switch configuration
-    - Verify: `cat /proc/net/bonding/bond0`
-
-    **NetworkManager configuration** (modern approach):
-
-    ```
-    nmcli con add type bond ifname bond0 mode active-backup
-    nmcli con add type ethernet ifname eth0 master bond0
-    nmcli con add type ethernet ifname eth1 master bond0
-    ```
-
-    **Network teaming** was introduced in RHEL 7 as a userspace alternative with the `teamd` daemon and runner types like `activebackup` and `lacp`. However, **teaming is deprecated in RHEL 9+** in favor of kernel bonding, so bonding is the recommended approach for new deployments.
-
-    **Important:** modes involving link aggregation (LACP) require matching configuration on the network switch. Verify traffic distribution with `ip -s link show`.
-
-- question: How do you configure and troubleshoot iptables firewall?
-  answer: |-
-    **iptables** is the traditional Linux packet filtering framework. While **nftables** is the modern replacement (default in Debian 11+, RHEL 8+), iptables remains widely deployed.
-
-    **Architecture:**
-    - **Tables:** `filter` (default), `nat`, `mangle`, `raw`
-    - **Chains:** `INPUT` (incoming), `OUTPUT` (outgoing), `FORWARD` (routed)
-    - Rules are evaluated **top-to-bottom**; first match wins
-
-    **Basic firewall setup:**
-
-    ```
-    iptables -P INPUT DROP
-    iptables -P FORWARD DROP
-    iptables -P OUTPUT ACCEPT
-    iptables -A INPUT -i lo -j ACCEPT
-    iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-    iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-    ```
-
-    **Troubleshooting:**
-    - `iptables -L -v -n` — list rules with packet counters and numeric output
-    - `iptables -L -v -n --line-numbers` — show rule numbers for targeted deletion
-    - Add a LOG rule before DROP: `iptables -I INPUT 1 -j LOG --log-prefix "IPT-DROP: "` to see what's being blocked
-    - `iptables -F` — flush all rules temporarily to test if the firewall is the issue
-
-    **Persistence:**
-    - `iptables-save > /etc/iptables/rules.v4` — save current rules
-    - `iptables-restore < /etc/iptables/rules.v4` — restore
-    - Install `netfilter-persistent` to auto-restore on boot
-
-    **Migration note:** for new setups, prefer `nftables` which provides a unified syntax, better performance, and atomic rule updates.
-
-- question: How do you implement and manage SELinux policies?
-  answer: |-
-    **SELinux** enforces Mandatory Access Control through security policies that define fine-grained permissions via **type enforcement**.
-
-    **Key concepts:**
-    - **Security contexts:** `user:role:type:level` (the **type** is most commonly managed)
-    - **Policy types:** `targeted` (default — confines specific daemons), `strict`, `mls`
-    - **Modes:** `enforcing` → `permissive` → `disabled` (set in `/etc/selinux/config`)
-
-    **Day-to-day management:**
-    - `sestatus` — check current mode and policy
-    - `ls -Z file` / `ps -Z` — view security contexts on files and processes
-    - `semanage fcontext -a -t httpd_sys_content_t "/var/www/html(/.*)?"` — set expected context for a path
-    - `restorecon -Rv /var/www/html` — apply the expected contexts
-    - `semanage port -a -t http_port_t -p tcp 8080` — allow a service to bind to a non-standard port
-
-    **Troubleshooting denials:**
-    - `ausearch -m AVC -ts recent` — find recent denial messages
-    - `sealert -a /var/log/audit/audit.log` — human-readable analysis (requires `setroubleshoot`)
-    - `audit2allow -a -M mypolicy` — generate a custom policy module from denials
-    - `semodule -i mypolicy.pp` — install the module
-
-    **Best practices:**
-    - **Never disable SELinux globally** — use `permissive` mode for troubleshooting
-    - Test custom policies thoroughly before enforcing
-    - Use `semanage boolean -l` to discover pre-built toggles before writing custom modules
-    - Review `audit2allow` output carefully — blindly applying it may over-permit
-
-- question: How do you manage and monitor system logs effectively?
-  answer: |-
-    Effective log management combines proper configuration, rotation, analysis, and monitoring.
-
-    **Log sources:**
-    - **journald** — structured binary logs; query with `journalctl`
-    - **rsyslog** / **syslog-ng** — traditional text-based logging to `/var/log/`
-    - **Application logs** — written to custom paths or stdout (for containers)
-
-    **Log rotation** — prevents logs from filling the disk:
-    - Configure `logrotate` via `/etc/logrotate.d/` — rotate by size or time, compress old logs, set retention
-    - journald: set `SystemMaxUse` and `MaxRetentionSec` in `/etc/systemd/journald.conf`
-
-    **Monitoring and alerting:**
-    - **Logwatch** — daily email summaries of notable events
-    - **fail2ban** — detects and responds to patterns like brute-force login attempts
-    - Centralized solutions (ELK, Loki, Graylog) enable cross-system correlation and dashboards
-
-    **Centralized shipping:**
-    - rsyslog forwarding: `*.* @@logserver:514` (TCP with TLS)
-    - Filebeat / Fluentd / Promtail as dedicated log shippers
-
-    **Best practices:**
-    - Use **consistent timestamps** (UTC preferred) across all systems
-    - Set proper permissions on log files (`640` or tighter)
-    - Archive security-critical logs to **immutable storage**
-    - Establish baseline patterns to identify anomalies
-    - Regularly verify that logging works — especially for security-critical events
-
-- question: How do you implement disk quotas in Linux?
-  answer: |-
-    **Disk quotas** limit how much storage individual users or groups can consume, preventing any single user from monopolizing disk space.
-
-    **Setup steps:**
-
-    **1. Enable quotas in fstab:**
-    - Add `usrquota,grpquota` to mount options in `/etc/fstab`
-    - Remount: `mount -o remount /filesystem`
-
-    **2. Initialize quota database:**
-    - `apt install quota` (if not installed)
-    - `quotacheck -cum /filesystem` — creates `aquota.user` and `aquota.group`
-    - For XFS: use `xfs_quota` commands instead (quotas are enabled differently)
-
-    **3. Enable enforcement:**
-    - `quotaon -av`
-
-    **4. Set limits:**
-    - `edquota -u username` — opens editor to set:
-      - **Soft limit** — warning threshold; user can exceed temporarily
-      - **Hard limit** — absolute maximum; writes are blocked beyond this
-      - **Grace period** — time allowed above soft limit before it becomes hard
-    - `edquota -g groupname` — set group quotas
-    - `edquota -p template_user -u new_user` — copy quota settings between users
-
-    **Monitoring:**
-    - `repquota -a` — system-wide quota report
-    - `quota -u username` — individual user's usage and limits
-
-    Integrate quota assignment into user provisioning workflows (scripts or Ansible) to ensure consistency.
-
-- question: How do you implement and manage RAID in Linux?
-  answer: |-
-    Linux **software RAID** uses the kernel's `md` (multiple device) driver, managed via `mdadm`.
-
-    **Creating an array** (RAID 5 example):
-
-    ```
-    mdadm --create /dev/md0 --level=5 --raid-devices=3 /dev/sda1 /dev/sdb1 /dev/sdc1
-    mkfs.ext4 /dev/md0
-    mount /dev/md0 /data
-    ```
-
-    **Making it persistent:**
-
-    ```
-    mdadm --detail --scan >> /etc/mdadm/mdadm.conf
-    update-initramfs -u
-    ```
-
-    Add `/dev/md0` to `/etc/fstab` for auto-mount at boot.
-
-    **Monitoring:**
-    - `cat /proc/mdstat` — real-time array status and rebuild progress
-    - `mdadm --detail /dev/md0` — detailed array information
-    - Configure **email alerts**: set `MAILADDR` in `mdadm.conf` and enable the monitoring daemon
-    - Use `smartctl` (smartmontools) to monitor underlying disk health
-
-    **Replacing a failed disk:**
-
-    ```
-    mdadm /dev/md0 --fail /dev/sdb1 --remove /dev/sdb1
-    # physically replace the drive, partition identically
-    mdadm /dev/md0 --add /dev/sdb1
-    ```
-
-    The array rebuilds automatically — monitor with `cat /proc/mdstat`.
-
-    **Maintenance:**
-    - Periodic scrubbing: `echo check > /sys/block/md0/md/sync_action` to detect silent data corruption
-    - Always pair RAID with a **backup strategy** — RAID protects against disk failure, not data loss
-
-- question: How do you manage and troubleshoot systemd services?
-  answer: |-
-    **Service management:**
-    - `systemctl start|stop|restart|reload service` — control service state
-    - `systemctl enable|disable service` — toggle autostart at boot
-    - `systemctl status service` — state, PID, recent logs, and resource usage
-    - `systemctl list-units --failed` — find all failed units
-
-    **Troubleshooting a failed service:**
-
-    **1. Check status and logs:**
-    - `systemctl status service` — quick overview with exit code
-    - `journalctl -u service -n 50 --no-pager` — last 50 log lines
-    - `journalctl -u service -p err` — error-level messages only
-
-    **2. Validate the unit file:**
-    - `systemd-analyze verify /etc/systemd/system/myservice.service` — syntax check
-    - `systemctl show service` — dump all properties
-    - `systemctl list-dependencies service` — view dependency tree
-
-    **3. Common causes of failure:**
-    - Wrong `ExecStart` path or missing executable
-    - Permission issues (wrong user, SELinux denials)
-    - Missing dependencies or incorrect `After=` / `Requires=` directives
-    - Resource exhaustion (check with `systemd-cgtop`)
-
-    **Customizing services without modifying package files:**
-    - `systemctl edit service` — creates a drop-in override in `/etc/systemd/system/service.d/`
-    - After any unit file change: `systemctl daemon-reload`
-
-    **Debugging:** temporarily add `Environment=DEBUG=1` or modify `ExecStart` to enable verbose logging, then examine output via `journalctl`.
-
-- question: How do you configure and optimize Linux for database servers?
-  answer: |-
-    Database workloads demand careful tuning of kernel, memory, storage, and process settings.
-
-    **Kernel parameters** (`/etc/sysctl.conf`):
-    - `vm.swappiness=10` — minimize swapping (critical for DB performance)
-    - `vm.dirty_ratio=15` and `vm.dirty_background_ratio=5` — tune write-back flushing
-    - `fs.file-max=2097152` — allow high file descriptor counts
-    - `net.core.somaxconn=65535` — handle large connection backlogs
-
-    **Memory:**
-    - Allocate **70-80% of RAM** to the database buffer pool (InnoDB buffer pool, PostgreSQL shared_buffers)
-    - Configure **huge pages** for databases that support them (PostgreSQL, Oracle) to reduce TLB misses
-    - Leave enough free memory for the OS page cache and other processes
-
-    **Storage:**
-    - Use **XFS** — preferred for database workloads due to scalability and parallel I/O
-    - Mount with `noatime,nodiratime` to eliminate unnecessary metadata writes
-    - Use I/O scheduler `mq-deadline` for SSDs or `bfq` for HDDs
-    - **RAID 10** for the best combination of performance and redundancy
-    - Separate volumes for **data**, **WAL/logs**, and **temp** to reduce I/O contention
-
-    **Process and CPU:**
-    - Increase limits in `/etc/security/limits.conf`: `nofile` (open files), `nproc` (processes)
-    - Set CPU governor to `performance` for consistent latency
-    - On NUMA systems, use `numactl` to ensure the database allocates memory from local nodes
-
-    **Monitoring:** use Prometheus with database-specific exporters (postgres_exporter, mysqld_exporter) for query performance, connection counts, and buffer hit ratios.
-
-- question: How do you implement and maintain LVM (Logical Volume Management)?
-  answer: |-
-    **LVM** provides flexible disk management through a three-tier hierarchy: PVs → VGs → LVs.
-
-    **Initial setup:**
-
-    ```
-    pvcreate /dev/sdb /dev/sdc
-    vgcreate datavg /dev/sdb /dev/sdc
-    lvcreate -L 100G -n datalv datavg
-    mkfs.xfs /dev/datavg/datalv
-    mount /dev/datavg/datalv /data
-    ```
-
-    **Growing storage:**
-
-    ```
-    # Add a new disk to the VG
-    pvcreate /dev/sdd
-    vgextend datavg /dev/sdd
-
-    # Extend the LV and resize the filesystem
-    lvextend -L +50G /dev/datavg/datalv
-    xfs_growfs /data          # XFS (online)
-    # or: resize2fs /dev/datavg/datalv   # ext4 (online)
-    ```
-
-    **Snapshots** (for backups or testing):
-
-    ```
-    lvcreate -L 5G -s -n data_snap /dev/datavg/datalv
-    mount -o ro /dev/datavg/data_snap /mnt/snapshot
-    ```
-
-    **Live migration** (replace disk without downtime):
-
-    ```
-    pvmove /dev/sdb /dev/sdd
-    vgreduce datavg /dev/sdb
-    pvremove /dev/sdb
-    ```
-
-    **Monitoring:**
-    - `pvs` / `vgs` / `lvs` — compact status display
-    - `pvdisplay` / `vgdisplay` / `lvdisplay` — detailed information
-    - Back up LVM metadata: `vgcfgbackup datavg`
-
-    **Thin provisioning** (`lvcreate --thin`) allows overcommitting storage but requires careful monitoring to prevent actual space exhaustion.
-
-- question: What is Linux Containers (LXC) and how do they differ from Docker?
-  answer: |-
-    **LXC (Linux Containers)** is a lightweight virtualization technology that runs isolated Linux systems sharing the host kernel.
-
-    **LXC vs Docker:**
-
-    **Design philosophy:**
-    - **LXC** — **system containers**: runs a full OS with init system and multiple processes, behaving like a lightweight VM
-    - **Docker** — **application containers**: optimized for single-process, microservice-style workloads
-
-    **Runtime:**
-    - LXC uses its own runtime directly leveraging kernel namespaces and cgroups
-    - Docker originally used LXC but now uses **containerd** with its own image format and layered filesystem
-
-    **Image management:**
-    - Docker provides a **layered image format**, Dockerfile, and registry system (Docker Hub)
-    - LXC uses OS templates or **LXD** image servers; no equivalent to Dockerfiles
-
-    **Management:**
-    - LXC: `lxc-create`, `lxc-start`, `lxc-attach`; modern **LXD** adds a REST API and improved UX
-    - Docker: `docker build`, `docker run`, `docker-compose`
-
-    **When to use each:**
-    - **LXC/LXD** — when you need VM-like behavior with low overhead: multi-process workloads, testing environments, or running legacy applications that expect a full OS
-    - **Docker** — microservices, CI/CD pipelines, application portability, and when you need a rich ecosystem of pre-built images
-
-    Many organizations use both: LXC for infrastructure-level isolation and Docker for application deployment.
-
-- question: How do you implement and manage KVM virtualization?
-  answer: |-
-    **KVM (Kernel-based Virtual Machine)** is Linux's built-in Type-1 hypervisor, turning the kernel into a hypervisor for running virtual machines.
-
-    **Prerequisites:**
-    - Verify hardware support: `grep -E '(vmx|svm)' /proc/cpuinfo`
-    - Install: `apt install qemu-kvm libvirt-daemon-system virtinst` (Debian/Ubuntu)
-
-    **Creating a VM:**
-
-    ```
-    virt-install --name vm1 --memory 2048 --vcpus 2 \
-      --disk size=20 --cdrom ubuntu.iso \
-      --os-variant ubuntu22.04
-    ```
-
-    **Management tools:**
-    - `virsh` — CLI for VM lifecycle: `virsh list --all`, `virsh start|shutdown|destroy vm1`
-    - `virt-manager` — GUI for desktop management
-    - **Cockpit** with the machines plugin — web-based management
-    - **Proxmox VE** / **oVirt** — enterprise management platforms
-
-    **Storage backends:**
-    - **qcow2** — supports snapshots and thin provisioning (most common)
-    - **raw** — better I/O performance for database VMs
-    - LVM-backed storage pools for production
-
-    **Networking:**
-    - Default **NAT** network via libvirt (for isolated VMs)
-    - **Bridged** networking for direct LAN access
-    - **Open vSwitch** for SDN and advanced VLAN management
-
-    **Performance tuning:**
-    - Use **virtio** drivers for disk and network (near-native performance)
-    - Enable **huge pages** for memory-intensive VMs
-    - **CPU pinning** for latency-sensitive workloads
-    - NUMA-aware memory allocation on multi-socket systems
-
-- question: How do you implement Linux kernel hardening?
-  answer: |-
-    Kernel hardening reduces the attack surface and mitigates exploitation of kernel vulnerabilities.
-
-    **Sysctl hardening** (`/etc/sysctl.d/99-hardening.conf`):
-    - `kernel.randomize_va_space=2` — full ASLR (address space layout randomization)
-    - `kernel.kptr_restrict=2` — hide kernel pointers from all users
-    - `kernel.dmesg_restrict=1` — restrict dmesg to root only
-    - `fs.protected_symlinks=1` and `fs.protected_hardlinks=1` — prevent symlink/hardlink attacks
-    - `kernel.yama.ptrace_scope=2` — restrict ptrace to root (prevents process debugging attacks)
-    - `net.ipv4.conf.all.rp_filter=1` — enable reverse path filtering
-
-    **Module security:**
-    - `kernel.modules_disabled=1` — prevent loading new modules after boot (set via sysctl after boot)
-    - Enable **module signing** to only allow signed modules
-    - Blacklist unnecessary modules in `/etc/modprobe.d/`
-
-    **Mandatory Access Control:**
-    - Enable **SELinux** or **AppArmor** in enforcing mode
-    - Develop profiles/policies for all critical applications
-
-    **Additional measures:**
-    - Enable **seccomp** filtering to restrict available syscalls per process
-    - Mount `/proc` and `/sys` with restrictive options where possible
-    - Disable user namespaces if not needed: `kernel.unprivileged_userns_clone=0`
-
-    **Auditing and compliance:**
-    - Enable `auditd` for syscall-level auditing
-    - Implement file integrity monitoring (AIDE, OSSEC)
-    - Use **Lynis** or **OpenSCAP** to audit kernel security settings and track compliance
-    - Keep the kernel updated with security patches from your distribution
-
-- question: How do you troubleshoot Linux boot problems?
-  answer: |-
-    Boot troubleshooting follows the **boot sequence**: firmware → bootloader → kernel → initramfs → systemd → services.
-
-    **1. Firmware/hardware stage:**
-    - Check power, RAM seating, disk connections
-    - Listen for beep codes; check firmware (BIOS/UEFI) error messages
-    - Verify boot device order
-
-    **2. GRUB bootloader:**
-    - Hold **Shift** (BIOS) or **Esc** (UEFI) to access the GRUB menu
-    - Press **e** to edit kernel parameters:
-      - Add `nomodeset` for graphics driver issues
-      - Add `single` or `systemd.unit=rescue.target` for single-user mode
-    - If GRUB is broken: boot from live USB, mount root filesystem, and reinstall GRUB
-
-    **3. Kernel initialization:**
-    - From rescue: `journalctl -b -1` to review previous boot logs
-    - Look for kernel panics, driver failures, or hardware initialization errors
-    - Regenerate initramfs: `update-initramfs -u` (Debian) or `dracut -f` (RHEL)
-
-    **4. Systemd initialization:**
-    - `systemctl list-units --failed` — identify failed services
-    - Check `/etc/fstab` — a bad entry can halt boot (use `nofail` for non-critical mounts)
-    - `systemd-analyze blame` — identify slow-starting services
-
-    **5. Filesystem issues:**
-    - Boot from live USB, then `fsck /dev/sdXN` to repair filesystem corruption
-    - Check disk health with `smartctl -a /dev/sda`
-
-    **Recovery approach:** boot from a live USB, mount the root filesystem, `chroot` into it, and fix configuration or reinstall packages as needed. Always back up config files before modifying them.
-
-- question: How do you manage Linux kernel modules?
-  answer: |-
-    **Kernel modules** extend kernel functionality without recompilation or rebooting.
-
-    **Core commands:**
-    - `lsmod` — list currently loaded modules
-    - `modinfo module_name` — show description, parameters, dependencies
-    - `modprobe module_name` — load a module with all dependencies
-    - `modprobe -r module_name` — unload a module and unused dependencies
-    - `insmod` / `rmmod` — low-level load/unload without dependency resolution
-
-    **Loading at boot:**
-    - Add module name to `/etc/modules` or a file in `/etc/modules-load.d/`
-
-    **Setting module parameters:**
-    - At load time: `modprobe module_name param=value`
-    - Permanently: add `options module_name param=value` in `/etc/modprobe.d/`
-    - View current parameters: `cat /sys/module/<module_name>/parameters/<param>`
-
-    **Blacklisting (prevent loading):**
-    - `blacklist module_name` in `/etc/modprobe.d/blacklist.conf` — prevents auto-loading
-    - `install module_name /bin/false` — prevents even explicit loading
-
-    **Security considerations:**
-    - Set `kernel.modules_disabled=1` after boot to lock module loading on hardened systems
-    - Enable kernel module signing if your distribution supports it
-    - Regularly review `lsmod` output for unexpected modules
-
-    **Debugging:**
-    - `dmesg | tail` immediately after loading/unloading
-    - `modprobe --show-depends module_name` — display dependency chain
-
-- question: How do you implement user authentication with LDAP?
-  answer: |-
-    **LDAP (Lightweight Directory Access Protocol)** provides centralized authentication and directory services for Linux environments.
-
-    **Server setup (OpenLDAP):**
-    - Install: `apt install slapd ldap-utils`
-    - Configure domain structure (e.g., `dc=example,dc=com`)
-    - Enable **TLS/SSL** for encrypted communication
-    - Create organizational units for users and groups
-
-    **Client configuration:**
-    - Install: `apt install libnss-ldap libpam-ldap nscd`
-    - Configure `/etc/ldap.conf` with server URI, search base, and bind credentials
-    - Update `/etc/nsswitch.conf` to include `ldap` for passwd, group, and shadow
-    - Configure PAM in `/etc/pam.d/` to use LDAP authentication
-    - Test: `getent passwd username` and `id username`
-
-    **Modern alternative — SSSD:**
-    - **SSSD (System Security Services Daemon)** is preferred over direct LDAP PAM/NSS modules
-    - Provides caching, failover between servers, and offline authentication
-    - Supports LDAP, Active Directory, and FreeIPA
-    - Config: `/etc/sssd/sssd.conf`
-
-    **Security:**
-    - Enforce TLS for all LDAP traffic (use `ldaps://` or StartTLS)
-    - Implement password policies on the server (complexity, expiration, lockout)
-    - Configure clients to **fail closed** if LDAP is unreachable
-
-    **Higher-level solutions:** consider **FreeIPA** (integrates LDAP, Kerberos, DNS, and certificate management) for a complete identity management platform.
-
-- question: How do you implement and manage DRBD (Distributed Replicated Block Device)?
-  answer: |-
-    **DRBD** replicates block devices between servers over the network, creating a **network RAID-1** for high availability.
-
-    **Replication protocols:**
-    - **Protocol A** — asynchronous; best performance, risk of data loss on primary failure
-    - **Protocol B** — semi-synchronous; write confirmed when received by peer's network buffer
-    - **Protocol C** — fully synchronous; write confirmed after peer writes to disk; safest but slowest
-
-    **Setup:**
-    - Install: `apt install drbd-utils` on both nodes
-    - Load the module: `modprobe drbd`
-    - Create resource config in `/etc/drbd.d/resource.res` defining nodes, devices, and protocol
-
-    **Initialization:**
-
-    ```
-    drbdadm create-md myresource       # on both nodes
-    drbdadm up myresource              # on both nodes
-    drbdadm primary myresource --force  # on the designated primary
-    ```
-
-    Monitor sync progress with `drbdadm status` or `cat /proc/drbd`.
-
-    **After initial sync:**
-
-    ```
-    mkfs.ext4 /dev/drbd0
-    mount /dev/drbd0 /data
-    ```
-
-    **Integration with clustering:**
-    - DRBD handles **data replication only** — use **Pacemaker** + **Corosync** for automated failover of services and IP addresses
-    - Configure STONITH/fencing to handle split-brain scenarios
-
-    **Management:**
-    - Monitor: `drbdadm status`, `cat /proc/drbd`
-    - Configure split-brain detection and automatic recovery policies
-    - Dedicate a **separate network interface** for replication traffic to avoid contention
-    - Test failover regularly to verify the setup works under real failure conditions
-
-- question: How do you configure and manage syslog in Linux?
-  answer: |-
-    **Syslog** is the traditional logging standard. **rsyslog** is the most common implementation on modern Linux systems.
-
-    **Configuration** (`/etc/rsyslog.conf` and `/etc/rsyslog.d/`):
-    - Format: `facility.priority  destination`
-    - Example: `kern.warning  /var/log/kern.log` — kernel warnings to a specific file
-    - Example: `*.crit  /var/log/critical.log` — all critical messages
-
-    **Remote logging:**
-    - UDP: `*.* @logserver:514`
-    - TCP: `*.* @@logserver:514`
-    - TCP with TLS: configure `imtcp` with `StreamDriver` settings for encrypted transport
-
-    **Structured logging:**
-    - Use rsyslog **templates** to format messages as JSON for log aggregation tools
-    - Configure **rate limiting** to prevent log flooding attacks
-
-    **Log rotation** (`/etc/logrotate.d/`):
-
-    ```
-    /var/log/myapp.log {
-        weekly
-        rotate 4
-        compress
-        missingok
-        notifempty
-        postrotate
-            systemctl reload rsyslog
-        endscript
-    }
-    ```
-
-    **Performance tuning:**
-    - Use in-memory queues for high-volume logging
-    - Configure appropriate buffer sizes
-    - Use asynchronous processing for non-critical logs
-
-    **Note:** on systemd-based systems, **journald** captures all logs by default. rsyslog typically receives forwarded logs from journald for persistent storage and remote shipping.
-
-- question: How do you configure and manage DNS server (BIND) in Linux?
-  answer: |-
-    **BIND (Berkeley Internet Name Domain)** is the most widely deployed DNS server software.
-
-    **Installation:**
-    - `apt install bind9` (Debian/Ubuntu) or `dnf install bind` (RHEL)
-    - Main config: `/etc/bind/named.conf` or `/etc/named.conf`
-
-    **Zone configuration:**
-    - Define zones in `named.conf.local` or the main config
-    - Create forward zone files containing SOA, NS, A, AAAA, MX, CNAME records
-    - Create reverse zone files for PTR records
-    - Set appropriate TTL values based on change frequency
-
-    **Security hardening:**
-    - **TSIG keys** — authenticate zone transfers between primary and secondary servers
-    - **DNSSEC** — sign zones to prevent DNS spoofing:
-      - Generate keys with `dnssec-keygen`
-      - Sign zones with `dnssec-signzone`
-      - Publish DS records in the parent zone
-    - Restrict zone transfers: `allow-transfer { trusted-servers; };`
-    - Enable **rate limiting** to mitigate amplification attacks
-    - Restrict recursion: `allow-recursion { internal-nets; };`
-
-    **Recursive resolver features:**
-    - Response Policy Zones (RPZ) for DNS-based filtering
-    - Forwarding for efficient resolution
-    - Caching tuning based on available memory
-
-    **Management:**
-    - `rndc reload` — reload zones without restart
-    - `rndc flush` — clear cache
-    - `named-checkconf` / `named-checkzone` — validate configuration and zone files
-    - Monitor query logs for anomalies and performance issues
-
-- question: How do you implement and manage High Availability clustering in Linux?
-  answer: |-
-    **HA clustering** eliminates single points of failure by automatically failing over services between nodes.
-
-    **Core components:**
-    - **Corosync** — cluster messaging and membership layer
-    - **Pacemaker** — cluster resource manager (decides what runs where)
-    - Install: `apt install pacemaker corosync` or `dnf install pacemaker corosync`
-
-    **Cluster setup:**
-    - Configure node communication in `/etc/corosync/corosync.conf` (UDP unicast or multicast)
-    - Start services: `systemctl enable --now corosync pacemaker`
-    - Define **resources** — services, virtual IPs, filesystems, or anything that should be highly available
-    - Set **constraints** — co-location (resources that must run together), ordering (startup sequence), and location preferences
-
-    **Fencing (STONITH)** — critical for preventing split-brain:
-    - Fencing forcibly powers off a failed node to ensure it can't corrupt shared resources
-    - Options: IPMI, iLO/iDRAC, PDU, hypervisor API, or SBD (storage-based death)
-    - **Never run a production cluster without fencing**
-
-    **Storage options:**
-    - **DRBD** — replicated block devices between nodes
-    - **Shared storage** (SAN/NAS) with cluster filesystems (GFS2, OCFS2)
-    - Database-specific replication (Galera, PostgreSQL streaming replication with Patroni)
-
-    **Monitoring:**
-    - `pcs status` or `crm_mon` — cluster and resource state
-    - `pcs resource show` — resource configuration
-    - Integrate with Prometheus / Nagios for alerting
-
-    **Maintenance:**
-    - `pcs node standby node1` — gracefully drain a node for patching
-    - Regularly **simulate failures** to verify failover works correctly
-    - Document recovery procedures for scenarios where automatic failover isn't possible
-
-- question: How do you implement and manage Linux Virtual Server (LVS) for load balancing?
-  answer: |-
-    **LVS (Linux Virtual Server)** is a kernel-level (Layer 4) load balancer built on the **IPVS** module, offering extremely high throughput.
-
-    **Setup:**
-    - Install: `apt install ipvsadm` or `dnf install ipvsadm`
-    - Configure a **Virtual IP (VIP)** that clients connect to
-
-    **Packet forwarding methods:**
-    - **DR (Direct Routing)** — best performance; real servers respond directly to clients (requires VIP config on real servers)
-    - **NAT** — director rewrites addresses; simpler setup but director handles all traffic
-    - **IPIP (Tunneling)** — encapsulates packets; supports geographically distributed backends
-
-    **Load balancing algorithms:**
-    - **Round-robin (rr)** — equal distribution
-    - **Weighted round-robin (wrr)** — accounts for different server capacities
-    - **Least connections (lc)** — routes to server with fewest active connections
-    - **Weighted least connections (wlc)** — combines capacity weights with connection count
-
-    **Example configuration:**
-
-    ```
-    ipvsadm -A -t 10.0.0.1:80 -s wlc
-    ipvsadm -a -t 10.0.0.1:80 -r 10.0.0.10:80 -g -w 3
-    ipvsadm -a -t 10.0.0.1:80 -r 10.0.0.11:80 -g -w 2
-    ```
-
-    **High availability with Keepalived:**
-    - Provides **VRRP** for floating VIP between active/backup directors
-    - Built-in health checking of real servers
-    - Synchronizes connection tables between directors for seamless failover
-
-    **Monitoring:**
-    - `ipvsadm -L -n --stats` — view connection and traffic statistics
-    - Configure health checks to automatically remove failed backends from the pool
+  - question: What is Linux and why is it popular in DevOps?
+    answer: >-
+      Linux is an **open-source operating system kernel** created by Linus Torvalds in 1991. It has become the
+      foundation of modern infrastructure for several reasons:
+
+
+      - **Open source** — fully customizable with community-driven improvements
+
+      - **Stability and security** — reliable for production systems with a robust permission model
+
+      - **Modular design** — install only what you need, reducing the attack surface and resource usage
+
+      - **Powerful CLI** — enables automation through shell scripting and pipelines
+
+      - **Dominates infrastructure** — powers most servers, cloud platforms, Docker, and Kubernetes
+
+      - **Distribution variety** — Ubuntu, RHEL, Debian, Alpine, and others serve different use cases from lightweight
+      containers to enterprise servers
+
+      - **Resource efficient** — supports higher-density deployments compared to other operating systems
+
+
+      The extensive tooling ecosystem around Linux covers every aspect of the software development lifecycle, making it
+      the natural choice for DevOps workflows.
+  - question: What are the fundamental Linux file permissions?
+    answer: >-
+      Linux file permissions control access through **three permission types** for **three user classes**:
+
+
+      **Permission types** (with octal values):
+
+      - **Read (r = 4)** — view file contents or list directory entries
+
+      - **Write (w = 2)** — modify a file or create/delete entries in a directory
+
+      - **Execute (x = 1)** — run a file as a program or enter a directory with `cd`
+
+
+      **User classes:**
+
+      - **Owner (u)** — the file's creator
+
+      - **Group (g)** — users in the file's assigned group
+
+      - **Others (o)** — everyone else
+
+
+      Permissions are displayed as `rwxrwxrwx` representing owner, group, and others. For example, `-rwxr-xr--` means
+      the owner has full access (7), group can read and execute (5), others can only read (4).
+
+
+      **Special permission bits:**
+
+      - **SUID (4xxx)** — file executes as the file owner (e.g., `passwd`)
+
+      - **SGID (2xxx)** — file executes as the group; on directories, new files inherit the group
+
+      - **Sticky bit (1xxx)** — only the file owner can delete files in the directory (e.g., `/tmp`)
+  - question: How do you change file permissions in Linux?
+    answer: |-
+      File permissions are changed with the `chmod` command using **symbolic** or **numeric** mode:
+
+      **Symbolic mode** — `chmod [who][op][perms]`:
+      - **who:** `u` (owner), `g` (group), `o` (others), `a` (all)
+      - **operation:** `+` (add), `-` (remove), `=` (set exactly)
+      - Example: `chmod u+x script.sh` adds execute for the owner
+      - Example: `chmod go-w config.yaml` removes write from group and others
+
+      **Numeric (octal) mode** — sum r=4, w=2, x=1 per class:
+      - `chmod 755 script.sh` — owner rwx (7), group r-x (5), others r-x (5)
+      - `chmod 600 secrets.env` — owner rw only, no access for anyone else
+
+      **Related commands:**
+      - `chown user:group file` — change file owner and group
+      - `chgrp group file` — change group only
+      - `umask 027` — set default permissions for new files (subtractive mask)
+  - question: What is the difference between soft link and hard link in Linux?
+    answer: >-
+      **Hard links** and **soft links** (symbolic links) are two ways to reference files:
+
+
+      **Hard link** (`ln source link`):
+
+      - Direct reference to the file's **inode** (same inode number as original)
+
+      - Data persists even if the original filename is deleted
+
+      - Cannot cross filesystem boundaries
+
+      - Cannot link to directories (to prevent loops)
+
+      - Indistinguishable from the original — both are equal directory entries
+
+
+      **Soft link** (`ln -s source link`):
+
+      - Points to the **pathname** of another file (like a shortcut)
+
+      - Has its own inode, different from the target
+
+      - Can cross filesystem boundaries
+
+      - Can link to directories
+
+      - Becomes a **dangling link** if the target is deleted or moved
+
+
+      **Quick check:** `ls -li` shows inode numbers — hard links share the same inode; soft links show `->` pointing to
+      the target path.
+  - question: What is a process in Linux and how do you manage processes?
+    answer: |-
+      A **process** is a running instance of a program with its own PID, memory space, and system resources.
+
+      **Viewing processes:**
+      - `ps aux` — snapshot of all running processes
+      - `top` / `htop` — interactive, real-time process monitoring
+      - `pgrep name` — find PIDs by process name
+
+      **Controlling processes:**
+      - `kill PID` — send SIGTERM (graceful shutdown)
+      - `kill -9 PID` — send SIGKILL (force kill, use as last resort)
+      - `killall name` — kill all processes by name
+      - `Ctrl+Z` — suspend foreground process; `bg` to resume in background; `fg` to bring back
+      - `command &` — start a process in the background
+      - `jobs` — list background processes in the current shell
+
+      **Adjusting priority:**
+      - `nice -n 10 command` — start with lower priority (higher niceness)
+      - `renice -n -5 -p PID` — change priority of a running process
+  - question: What is the difference between a daemon and a regular process?
+    answer: >-
+      A **daemon** is a background process that runs continuously without direct user interaction, typically providing
+      system services.
+
+
+      **Daemon characteristics:**
+
+      - Started at **boot time** by the init system (systemd)
+
+      - Runs in the background with **no controlling terminal**
+
+      - Names often end with **d** — `sshd`, `httpd`, `crond`, `dockerd`
+
+      - Usually runs with **system-level privileges**
+
+      - Managed via `systemctl start|stop|status service_name`
+
+
+      **Regular process characteristics:**
+
+      - Started **by a user** directly (from a shell or GUI)
+
+      - Runs in the **foreground** with a controlling terminal
+
+      - Runs with the **user's privileges**
+
+      - Typically **terminates** when its task completes or the terminal closes
+
+
+      A regular process can be daemonized by detaching from the terminal, but modern practice is to define a **systemd
+      unit file** and let systemd manage the process lifecycle.
+  - question: Explain the Linux directory structure and key directories.
+    answer: >-
+      Linux follows the **Filesystem Hierarchy Standard (FHS)**:
+
+
+      - `/` — root directory, the top of the hierarchy
+
+      - `/bin` — essential user commands (`ls`, `cp`, `cat`)
+
+      - `/sbin` — system administration binaries (`iptables`, `fdisk`)
+
+      - `/etc` — system-wide configuration files
+
+      - `/home` — user home directories
+
+      - `/root` — root user's home directory
+
+      - `/var` — variable data: logs (`/var/log`), mail, spool files
+
+      - `/tmp` — temporary files (cleared on reboot)
+
+      - `/usr` — user-installed programs, libraries, and documentation
+
+      - `/lib` — shared libraries needed by `/bin` and `/sbin`
+
+      - `/opt` — optional/third-party software
+
+      - `/boot` — bootloader files, kernel images
+
+      - `/dev` — device files (block and character devices)
+
+      - `/proc` — virtual filesystem exposing kernel and process info
+
+      - `/sys` — virtual filesystem for kernel device/driver info
+
+      - `/mnt` and `/media` — mount points for temporary and removable media
+
+
+      Key admin paths: `/var/log` (system logs), `/etc/systemd/system` (service unit files), `/etc/fstab` (mount
+      definitions).
+  - question: What are environment variables and how do you set them in Linux?
+    answer: |-
+      **Environment variables** are dynamic key-value pairs that affect the behavior of processes and the shell.
+
+      **Viewing variables:**
+      - `env` or `printenv` — list all environment variables
+      - `echo $VARIABLE_NAME` — print a specific variable
+
+      **Setting variables:**
+      - `VAR=value` — shell-only (not inherited by child processes)
+      - `export VAR=value` — exported to child processes
+      - Persistent: add `export` lines to `~/.bashrc` (user) or `/etc/environment` (system-wide)
+
+      **Common variables:**
+      - `PATH` — colon-separated list of directories searched for executables
+      - `HOME` — current user's home directory
+      - `USER` / `LOGNAME` — current username
+      - `SHELL` — default shell path
+      - `LANG` / `LC_ALL` — locale settings
+      - `EDITOR` — default text editor
+
+      Use `unset VAR` to remove a variable from the current session.
+  - question: What is SSH and how do you use it securely?
+    answer: >-
+      **SSH (Secure Shell)** is a cryptographic protocol for secure remote access, command execution, and file transfers
+      over untrusted networks.
+
+
+      **Basic usage:** `ssh user@hostname`
+
+
+      **Security best practices:**
+
+      - **Key-based authentication** — generate keys with `ssh-keygen`, deploy with `ssh-copy-id`; disable password auth
+      in `sshd_config`
+
+      - **Disable root login** — set `PermitRootLogin no` in `/etc/ssh/sshd_config`
+
+      - **Change default port** — reduces automated scanning noise
+
+      - **Use `fail2ban`** — automatically bans IPs after repeated failed login attempts
+
+      - **Restrict access** — use `AllowUsers` or `AllowGroups` directives to limit who can SSH in
+
+      - **Strong algorithms** — disable weak ciphers and MACs in `sshd_config`
+
+      - **Two-factor authentication** — add MFA via PAM modules like `google-authenticator`
+
+
+      **SSH config** (`~/.ssh/config`) simplifies connections with per-host settings for port, user, key file, and proxy
+      jumps.
+  - question: What is systemd and how do you manage services with it?
+    answer: >-
+      **systemd** is the init system and service manager in most modern Linux distributions. It manages system startup,
+      services, logging, and more.
+
+
+      **Common commands:**
+
+      - `systemctl start|stop|restart service` — control a service
+
+      - `systemctl enable|disable service` — toggle autostart at boot
+
+      - `systemctl status service` — check service state and recent logs
+
+      - `journalctl -u service` — view full logs for a service
+
+
+      **Unit files** define service behavior and live in `/etc/systemd/system/` (admin overrides) or
+      `/usr/lib/systemd/system/` (package defaults).
+
+
+      **Creating a custom service:**
+
+      - Write a unit file with `[Unit]`, `[Service]`, and `[Install]` sections
+
+      - Run `systemctl daemon-reload` to register it
+
+      - `systemctl enable --now service` to start and enable in one step
+
+
+      **Other systemd features:**
+
+      - **Timers** — cron-like scheduling via `.timer` unit files
+
+      - **Targets** — groups of units replacing traditional runlevels
+
+      - **journald** — structured, indexed logging with `journalctl`
+  - question: How do you schedule tasks in Linux using cron?
+    answer: >-
+      **cron** is a time-based job scheduler that automates recurring tasks.
+
+
+      **Crontab format:** five time fields followed by the command:
+
+
+      ```
+
+      MIN HOUR DOM MON DOW command
+
+      ```
+
+
+      - Example: `0 2 * * * /scripts/backup.sh` — runs at 2:00 AM daily
+
+      - Example: `*/15 * * * * /scripts/health-check.sh` — every 15 minutes
+
+
+      **Management commands:**
+
+      - `crontab -e` — edit your crontab
+
+      - `crontab -l` — list scheduled jobs
+
+      - `crontab -r` — remove all jobs
+
+
+      **Shortcuts:** `@daily`, `@weekly`, `@monthly`, `@reboot`
+
+
+      **System-wide cron:** drop scripts into `/etc/cron.daily/`, `/etc/cron.hourly/`, etc.
+
+
+      **Alternatives:**
+
+      - **anacron** — ensures jobs run even if the machine was off at the scheduled time
+
+      - **systemd timers** — more flexible scheduling with calendar expressions, logging via journald, and dependency
+      management; increasingly preferred over cron on modern systems
+  - question: How do you monitor system performance in Linux?
+    answer: >-
+      Linux provides a rich set of performance monitoring tools:
+
+
+      **CPU and load:**
+
+      - `top` / `htop` — real-time process and CPU monitoring
+
+      - `uptime` — load averages (1, 5, 15 minutes)
+
+      - `mpstat` — per-CPU statistics
+
+
+      **Memory:**
+
+      - `free -h` — total, used, free, and cached memory
+
+      - `vmstat` — virtual memory, swap, I/O, and CPU stats
+
+
+      **Disk:**
+
+      - `df -h` — filesystem space usage
+
+      - `du -sh /path` — directory size
+
+      - `iostat -x` — disk I/O throughput and latency
+
+      - `iotop` — per-process I/O usage
+
+
+      **Network:**
+
+      - `ss -tulpn` — listening ports and connections
+
+      - `iftop` — real-time bandwidth per connection
+
+      - `nload` — interface throughput
+
+
+      **All-in-one:** `glances`, `nmon`, or `dstat` for combined views.
+
+
+      **For production environments**, use monitoring stacks like **Prometheus + Grafana**, **Datadog**, or **Nagios**
+      for historical metrics, alerting, and dashboards.
+  - question: What is a package manager and how do you use it?
+    answer: >-
+      A **package manager** automates installing, updating, and removing software, including dependency resolution and
+      integrity verification.
+
+
+      **Debian/Ubuntu (APT):**
+
+      - `apt update` — refresh package index
+
+      - `apt install package` — install
+
+      - `apt upgrade` — upgrade all packages
+
+      - `apt remove package` — uninstall (keep config); `apt purge` removes config too
+
+      - `apt search keyword` — find packages
+
+
+      **RHEL/CentOS/Fedora (DNF, formerly YUM):**
+
+      - `dnf install package` — install
+
+      - `dnf update` — upgrade all packages
+
+      - `dnf remove package` — uninstall
+
+      - `dnf search keyword` — find packages
+
+
+      **Key concepts:**
+
+      - **Repositories** — software sources configured in `/etc/apt/sources.list.d/` or `/etc/yum.repos.d/`
+
+      - **GPG signing** — packages are cryptographically signed to verify authenticity
+
+      - **Dependency resolution** — the manager automatically installs required libraries
+
+      - `apt list --installed` / `dnf list installed` — see what's installed
+  - question: What is RAID and what are the common RAID levels?
+    answer: >-
+      **RAID (Redundant Array of Independent Disks)** combines multiple physical disks into a logical unit for
+      redundancy, performance, or both.
+
+
+      **Common levels:**
+
+      - **RAID 0 (striping)** — data split across disks; maximum performance, **zero redundancy**; any disk failure
+      loses everything
+
+      - **RAID 1 (mirroring)** — data duplicated across two disks; full redundancy but 50% capacity used for mirrors
+
+      - **RAID 5 (striping + distributed parity)** — tolerates one disk failure; needs minimum 3 disks; good balance of
+      performance, capacity, and redundancy
+
+      - **RAID 6 (double parity)** — tolerates two simultaneous disk failures; needs minimum 4 disks; lower write
+      performance than RAID 5
+
+      - **RAID 10 (1+0, mirrored stripes)** — combines mirroring and striping; excellent performance and redundancy;
+      requires minimum 4 disks, uses 50% capacity
+
+
+      **Implementation in Linux:**
+
+      - **Hardware RAID** — managed by a dedicated controller; transparent to the OS
+
+      - **Software RAID** — managed by the kernel's `md` driver via `mdadm`
+
+
+      RAID protects against disk failures but is **not a backup** — it doesn't protect against accidental deletion,
+      corruption, or ransomware.
+  - question: What is LVM and why is it useful?
+    answer: >-
+      **LVM (Logical Volume Manager)** adds a flexible abstraction layer between physical disks and filesystems.
+
+
+      **Three-tier architecture:**
+
+      - **Physical Volumes (PVs)** — raw disks or partitions initialized with `pvcreate`
+
+      - **Volume Groups (VGs)** — pools of storage combining one or more PVs via `vgcreate`
+
+      - **Logical Volumes (LVs)** — virtual partitions carved from a VG via `lvcreate`
+
+
+      **Key benefits:**
+
+      - **Online resizing** — grow or shrink volumes without downtime using `lvextend` + `resize2fs` (ext4) or
+      `xfs_growfs` (XFS)
+
+      - **Span multiple disks** — a single LV can span across several physical drives
+
+      - **Snapshots** — create point-in-time copies for backups or testing
+
+      - **Thin provisioning** — overcommit storage and allocate on demand
+
+      - **Live migration** — move data between physical disks with `pvmove` while the volume stays mounted
+
+
+      LVM is the standard for flexible storage on Linux servers and is especially valuable in environments where storage
+      needs change frequently.
+  - question: What is the purpose of /etc/fstab file?
+    answer: >-
+      `/etc/fstab` (filesystem table) defines how filesystems are **automatically mounted at boot**.
+
+
+      **Each entry has six fields:**
+
+      - **Device** — identified by `UUID=...` (preferred for stability) or device path
+
+      - **Mount point** — directory where the filesystem appears (e.g., `/home`, `/data`)
+
+      - **Filesystem type** — `ext4`, `xfs`, `btrfs`, `nfs`, `swap`, etc.
+
+      - **Mount options** — `defaults`, `noatime`, `ro`, `noexec`, `nosuid`, etc.
+
+      - **Dump flag** — `0` or `1` (for backup tools; rarely used)
+
+      - **Fsck order** — `0` (skip), `1` (root fs), `2` (other fs)
+
+
+      **Example entry:**
+
+
+      ```
+
+      UUID=abc-123  /data  ext4  defaults,noatime  0  2
+
+      ```
+
+
+      **Important commands:**
+
+      - `mount -a` — mount all fstab entries not currently mounted
+
+      - `findmnt` — display current mount tree
+
+      - `blkid` — find UUIDs for devices
+
+
+      **Warning:** a syntax error in fstab can prevent the system from booting. Always test changes with `mount -a`
+      before rebooting, and use `nofail` for non-critical mounts.
+  - question: How do you troubleshoot network connectivity issues in Linux?
+    answer: |-
+      Network troubleshooting follows a **bottom-up, layered approach**:
+
+      **1. Interface status:**
+      - `ip addr` — check interface state and IP addresses
+      - `ip link` — verify the interface is UP
+
+      **2. Local connectivity:**
+      - `ping 127.0.0.1` — verify the network stack is working
+      - `ping gateway_ip` — test LAN connectivity
+
+      **3. External connectivity:**
+      - `ping 8.8.8.8` — test internet reachability (bypasses DNS)
+      - If this works but hostnames fail, it's a **DNS issue**
+
+      **4. DNS resolution:**
+      - `nslookup domain` or `dig domain` — test DNS
+      - Check `/etc/resolv.conf` for nameserver configuration
+
+      **5. Routing:**
+      - `ip route` — view the routing table
+      - `traceroute` / `mtr` — trace the path to a destination, identify where packets drop
+
+      **6. Port/service issues:**
+      - `ss -tulpn` — check listening ports
+      - `nc -zv host port` — test if a remote port is reachable
+      - `tcpdump -i eth0 port 80` — capture and analyze packets
+
+      **7. Firewall:**
+      - `iptables -L -n` or `nft list ruleset` — review firewall rules
+      - `journalctl -k | grep DROP` — check for dropped packets in logs
+  - question: How do you set up and configure a basic firewall in Linux?
+    answer: |-
+      Linux offers several firewall tools at different abstraction levels:
+
+      **UFW (Ubuntu/Debian)** — simplest interface:
+      - `sudo ufw default deny incoming`
+      - `sudo ufw default allow outgoing`
+      - `sudo ufw allow ssh`
+      - `sudo ufw allow 443/tcp`
+      - `sudo ufw enable`
+
+      **firewalld (RHEL/CentOS)** — zone-based:
+      - `sudo firewall-cmd --permanent --add-service=ssh`
+      - `sudo firewall-cmd --permanent --add-service=https`
+      - `sudo firewall-cmd --reload`
+
+      **nftables** — modern replacement for iptables (default in most current distros):
+      - `nft add rule inet filter input tcp dport 22 accept`
+      - Configuration in `/etc/nftables.conf`
+
+      **iptables** — legacy but still widely used:
+      - `iptables -A INPUT -p tcp --dport 22 -j ACCEPT`
+      - `iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT`
+      - `iptables -P INPUT DROP`
+      - Save with `iptables-save > /etc/iptables/rules.v4`
+
+      **Critical rule:** always allow SSH access **before** setting a default deny policy to avoid locking yourself out.
+  - question: What is SELinux and AppArmor? How do they enhance security?
+    answer: >-
+      **SELinux** and **AppArmor** are Linux Security Modules (LSMs) that implement **Mandatory Access Control (MAC)**,
+      restricting what processes can do even if running as root.
+
+
+      **SELinux** (Red Hat, CentOS, Fedora):
+
+      - Developed by the NSA; uses **security contexts** (`user:role:type:level`)
+
+      - Policies control access based on **type enforcement** — processes of one type can only access resources of
+      allowed types
+
+      - Modes: **enforcing** (blocks violations), **permissive** (logs only), **disabled**
+
+      - Tools: `getenforce`, `setenforce`, `semanage`, `restorecon`, `audit2allow`
+
+
+      **AppArmor** (Ubuntu, SUSE, Debian):
+
+      - Uses **path-based profiles** that define what files and capabilities a program can access
+
+      - Modes: **enforce** (blocks violations), **complain** (logs only)
+
+      - Tools: `aa-status`, `aa-enforce`, `aa-complain`, `aa-genprof`
+
+
+      **Why they matter:** traditional Unix permissions only control who can access a resource. MAC controls **what each
+      program can do**, so a compromised Apache process can't read `/etc/shadow` even if it runs as a privileged user.
+  - question: How do you manage user accounts and permissions in Linux?
+    answer: |-
+      **User management commands:**
+      - `useradd -m -s /bin/bash username` — create user with home dir and shell
+      - `passwd username` — set or change password
+      - `usermod -aG group username` — add user to a supplementary group
+      - `userdel -r username` — delete user and their home directory
+
+      **Group management:**
+      - `groupadd groupname` — create a group
+      - `groups username` — list a user's groups
+      - `groupdel groupname` — delete a group
+
+      **Privilege delegation with sudo:**
+      - Edit with `visudo` (syntax-checked editing of `/etc/sudoers`)
+      - Grant full access: `username ALL=(ALL:ALL) ALL`
+      - Grant specific commands: `username ALL=(ALL) /usr/bin/systemctl restart nginx`
+
+      **Advanced access control:**
+      - **ACLs** — fine-grained permissions beyond owner/group/other: `setfacl -m u:username:rw file` and `getfacl file`
+      - **Password policies** — `chage -M 90 username` sets max password age to 90 days
+      - **Resource limits** — configure in `/etc/security/limits.conf` (max open files, processes, etc.)
+  - question: How do you optimize Linux server performance?
+    answer: >-
+      Performance optimization targets four key subsystems:
+
+
+      **CPU:**
+
+      - Identify bottlenecks with `top`, `htop`, `mpstat`
+
+      - Adjust process priority with `nice` / `renice`
+
+      - Set CPU governor to **performance** mode for latency-sensitive workloads
+
+      - Pin critical processes to specific cores with `taskset`
+
+
+      **Memory:**
+
+      - Tune `vm.swappiness` (lower values = less aggressive swapping; 10 is common for servers)
+
+      - Configure **huge pages** for memory-intensive workloads (databases, JVMs)
+
+      - Adjust `vm.dirty_ratio` and `vm.dirty_background_ratio` to control write-back behavior
+
+
+      **Disk I/O:**
+
+      - Choose appropriate filesystems: **XFS** for large files, **ext4** for general use
+
+      - Use `noatime` mount option to reduce unnecessary metadata writes
+
+      - Select the right I/O scheduler: `mq-deadline` for SSDs, `bfq` for interactive workloads on HDDs
+
+      - Implement RAID or SSD caching for high-throughput needs
+
+
+      **Network:**
+
+      - Increase TCP buffer sizes (`net.core.rmem_max`, `net.core.wmem_max`)
+
+      - Enable TCP window scaling for high-bandwidth links
+
+      - Configure **jumbo frames** (MTU 9000) on dedicated networks
+
+
+      Apply changes permanently via `/etc/sysctl.conf` and set resource limits in `/etc/security/limits.conf`. Always
+      establish **performance baselines** before tuning and change one parameter at a time.
+  - question: How do you implement centralized logging in a Linux environment?
+    answer: >-
+      **Centralized logging** collects logs from multiple servers into a single location for analysis, correlation, and
+      compliance.
+
+
+      **Common architectures:**
+
+      - **ELK stack** — Elasticsearch (storage/search), Logstash (processing), Kibana (visualization), with Filebeat as
+      the log shipper
+
+      - **Grafana Loki** — lightweight, label-based log aggregation designed to pair with Grafana dashboards
+
+      - **Graylog** — combines Elasticsearch and MongoDB with its own web UI
+
+      - **rsyslog forwarding** — simple setup: clients send to `*.* @@logserver:514` (TCP) or `@logserver:514` (UDP)
+
+
+      **Implementation steps:**
+
+      - Install the aggregation platform on a central server
+
+      - Deploy log shippers (Filebeat, Fluentd, or rsyslog forwarding) on each source
+
+      - Define parsing rules to extract structured fields from raw logs
+
+      - Build dashboards and configure alerts for critical events
+
+
+      **Security considerations:**
+
+      - Encrypt log transport with **TLS**
+
+      - Implement **log rotation** and retention policies to manage storage
+
+      - Protect the central server — compromised logs undermine forensic investigations
+
+      - Consider **log signing** for tamper detection in regulated environments
+  - question: How do you implement backup and recovery strategies for Linux systems?
+    answer: >-
+      A solid backup strategy balances **RPO** (how much data you can afford to lose) and **RTO** (how fast you need to
+      recover).
+
+
+      **Backup tools:**
+
+      - `rsync -avz --delete /source/ /backup/` — efficient file-level sync with incremental transfers
+
+      - `tar czf backup.tar.gz /data` — compressed archives
+
+      - `dd if=/dev/sda of=disk.img bs=4M` — full disk imaging
+
+      - **Restic** / **BorgBackup** — modern, deduplicated, encrypted backup tools
+
+
+      **Database backups:**
+
+      - `pg_dump` / `pg_dumpall` — PostgreSQL logical backups
+
+      - `mysqldump` — MySQL/MariaDB logical backups
+
+      - **XtraBackup** — hot physical backups for MySQL without locking
+
+
+      **Strategy:**
+
+      - **3-2-1 rule** — 3 copies, on 2 different media types, with 1 offsite
+
+      - Combine **full** + **incremental** backups to reduce storage and backup windows
+
+      - Schedule via `cron` or systemd timers
+
+
+      **Critical practices:**
+
+      - **Encrypt** backups containing sensitive data
+
+      - **Test restores regularly** — an untested backup is not a backup
+
+      - Document recovery procedures and keep them accessible during incidents
+  - question: How do you secure a Linux server?
+    answer: >-
+      Server hardening is a **layered approach** addressing multiple attack surfaces:
+
+
+      **Minimize attack surface:**
+
+      - Install only required packages; remove or disable unused services
+
+      - Close unnecessary ports; verify with `ss -tulpn`
+
+
+      **User security:**
+
+      - Enforce strong passwords with PAM modules (`pam_pwquality`)
+
+      - Apply **principle of least privilege** — use `sudo` instead of root logins
+
+      - Disable root SSH login; use key-based authentication only
+
+
+      **Network hardening:**
+
+      - Configure a firewall (UFW, firewalld, or nftables) to allow only needed traffic
+
+      - Use `fail2ban` to block brute-force attempts
+
+      - Change SSH default port and restrict access with `AllowUsers`
+
+
+      **Mandatory Access Control:**
+
+      - Enable **SELinux** (RHEL) or **AppArmor** (Ubuntu) in enforcing mode
+
+
+      **Patching and updates:**
+
+      - Apply security patches promptly; enable `unattended-upgrades` (Debian/Ubuntu) or `dnf-automatic` (RHEL) for
+      critical fixes
+
+
+      **Auditing and monitoring:**
+
+      - Enable `auditd` for system call auditing
+
+      - Implement file integrity monitoring (AIDE or OSSEC)
+
+      - Centralize logs and set up alerts for suspicious activity
+
+      - Use secure mount options: `noexec`, `nosuid`, `nodev` on `/tmp` and similar
+  - question: How do you manage kernel parameters and modules in Linux?
+    answer: |-
+      **Kernel parameters** control runtime behavior of the Linux kernel.
+
+      **Viewing and setting parameters:**
+      - `sysctl -a` — list all parameters
+      - `sysctl -w net.ipv4.ip_forward=1` — set temporarily (lost on reboot)
+      - Permanent: add entries to `/etc/sysctl.conf` or files in `/etc/sysctl.d/`
+      - Apply without reboot: `sysctl -p`
+
+      **Common tuning parameters:**
+      - `vm.swappiness` — control swap aggressiveness
+      - `net.core.somaxconn` — TCP listen backlog size
+      - `fs.file-max` — system-wide file descriptor limit
+      - `kernel.randomize_va_space` — ASLR for security
+
+      **Kernel modules** extend functionality without recompilation:
+      - `lsmod` — list loaded modules
+      - `modinfo module_name` — show module details
+      - `modprobe module_name` — load a module with dependencies
+      - `rmmod module_name` — unload a module
+
+      **Persistence:**
+      - Auto-load at boot: add module names to `/etc/modules` or files in `/etc/modules-load.d/`
+      - Blacklist: add `blacklist module_name` to a file in `/etc/modprobe.d/`
+      - Module parameters: `options module_name param=value` in `/etc/modprobe.d/`
+  - question: How do you troubleshoot high CPU, memory, or disk I/O usage in Linux?
+    answer: >-
+      **High CPU:**
+
+      - `top` / `htop` — identify the process consuming CPU; sort by `%CPU`
+
+      - `ps aux --sort=-%cpu | head` — list top CPU consumers
+
+      - `perf top` — kernel-level profiling to find hot functions
+
+      - **Remediation:** optimize the application, adjust `nice` values, set CPU limits via cgroups
+
+
+      **High memory:**
+
+      - `free -h` — check total, used, available, and swap usage
+
+      - `ps aux --sort=-%mem | head` — identify memory-hungry processes
+
+      - `vmstat 1` — watch swap in/out activity (high `si`/`so` = memory pressure)
+
+      - `smem` — show proportional set size (true memory per process)
+
+      - **Remediation:** fix memory leaks, increase swap, add RAM, or set `MemoryMax` via cgroups
+
+
+      **High disk I/O:**
+
+      - `iostat -x 1` — per-device I/O stats (watch `%util` and `await`)
+
+      - `iotop` — identify which processes are causing I/O
+
+      - `df -h` / `du -sh /path` — check for full filesystems
+
+      - **Remediation:** optimize queries/writes, add faster storage, adjust I/O scheduler, or spread I/O across disks
+      with RAID
+
+
+      **Holistic view:** `glances`, `nmon`, or `dstat` monitor CPU, memory, disk, and network simultaneously.
+  - question: What is load balancing and how do you implement it in Linux?
+    answer: >-
+      **Load balancing** distributes traffic across multiple servers to improve reliability, performance, and
+      availability.
+
+
+      **Layer 7 (application level):**
+
+      - **HAProxy** — high-performance, feature-rich; configure `frontend` (listener) and `backend` (server pool) in
+      `/etc/haproxy/haproxy.cfg`
+
+      - **Nginx** — uses the `upstream` directive to define server pools; supports HTTP, gRPC, and WebSocket
+
+
+      **Layer 4 (transport level):**
+
+      - **LVS (Linux Virtual Server)** — kernel-level IPVS module; highest throughput, managed via `ipvsadm`
+
+
+      **Load balancing algorithms:**
+
+      - **Round-robin** — equal distribution
+
+      - **Least connections** — routes to the server with fewest active connections
+
+      - **Weighted** — accounts for servers with different capacities
+
+      - **IP hash** — session persistence by client IP
+
+
+      **High availability for the load balancer itself:**
+
+      - Use **Keepalived** with VRRP to manage a floating VIP between active/backup load balancers
+
+      - Health checks automatically remove failed backends from the pool
+  - question: What is containerization and how do you use containers in Linux?
+    answer: >-
+      **Containerization** packages an application with all its dependencies into an isolated, portable unit that shares
+      the host OS kernel.
+
+
+      **Docker** — the most widely used container platform:
+
+      - `docker build -t myapp .` — build an image from a Dockerfile
+
+      - `docker run -d -p 8080:80 myapp` — run a container in the background
+
+      - `docker ps` — list running containers
+
+      - `docker logs container_id` — view container output
+
+
+      **Podman** — a daemonless, rootless alternative to Docker:
+
+      - CLI-compatible with Docker (drop-in replacement)
+
+      - No central daemon — each container runs as a child process
+
+      - Better suited for rootless and systemd-integrated workflows
+
+
+      **Orchestration** — for production multi-container deployments:
+
+      - **Kubernetes** — industry standard for scaling, self-healing, rolling updates, and service discovery
+
+      - **Docker Compose** — simpler multi-container orchestration for development
+
+
+      **Security best practices:**
+
+      - Use minimal base images (Alpine, distroless)
+
+      - Run as a non-root user inside the container
+
+      - Scan images for vulnerabilities (Trivy, Grype)
+
+      - Set resource limits (`--memory`, `--cpus`)
+  - question: How do you implement configuration management in Linux environments?
+    answer: |-
+      **Configuration management** automates and enforces consistent system configuration across fleets of servers.
+
+      **Popular tools:**
+      - **Ansible** — agentless (SSH-based), YAML playbooks, push model; easiest to adopt
+      - **Puppet** — agent-based, its own DSL, pull model; strong ecosystem
+      - **Chef** — agent-based, Ruby-based, pull model
+      - **SaltStack** — agent-based, event-driven, fast at scale
+
+      **Ansible example workflow:**
+      - Define target hosts in an **inventory** file
+      - Write **playbooks** (YAML) declaring the desired state
+      - Execute: `ansible-playbook -i inventory playbook.yml`
+      - Organize reusable logic into **roles**
+
+      **Best practices:**
+      - **Version control** all configuration code (Git)
+      - Use **environment-specific variables** (dev, staging, prod)
+      - **Test in staging** before applying to production
+      - Apply the principle of **idempotency** — running a playbook twice produces the same result
+      - Implement **drift detection** — alert when systems deviate from the declared state
+  - question: What is systemd-networkd and how do you configure networking with it?
+    answer: >-
+      **systemd-networkd** is a system daemon for managing network configuration on systemd-based distributions,
+      replacing legacy `/etc/network/interfaces` scripts.
+
+
+      **Enable it:**
+
+
+      ```
+
+      systemctl enable --now systemd-networkd
+
+      systemctl enable --now systemd-resolved
+
+      ```
+
+
+      **Configuration files** live in `/etc/systemd/network/`:
+
+      - `.network` files — configure interfaces (IP, gateway, DNS)
+
+      - `.netdev` files — define virtual devices (bridges, VLANs, bonds)
+
+
+      **Static IP example** (`/etc/systemd/network/10-eth0.network`):
+
+
+      ```
+
+      [Match]
+
+      Name=eth0
+
+
+      [Network]
+
+      Address=192.168.1.100/24
+
+      Gateway=192.168.1.1
+
+      DNS=8.8.8.8
+
+      ```
+
+
+      **DHCP example:**
+
+
+      ```
+
+      [Match]
+
+      Name=eth0
+
+
+      [Network]
+
+      DHCP=yes
+
+      ```
+
+
+      After changes: `systemctl restart systemd-networkd`
+
+
+      Advantages over legacy tools: declarative config, predictable interface naming, built-in DHCP client, and tight
+      integration with the rest of systemd.
+  - question: What are Linux namespaces and how are they used?
+    answer: >-
+      **Linux namespaces** are a kernel feature that isolates system resources for processes, forming the foundation of
+      container technologies.
+
+
+      **Namespace types:**
+
+      - **PID** — process isolation; PID 1 inside the namespace is not PID 1 on the host
+
+      - **NET** — separate network stack (interfaces, routes, firewall rules)
+
+      - **MNT** — independent filesystem mount points
+
+      - **UTS** — isolated hostname and domain name
+
+      - **IPC** — separate shared memory, semaphores, message queues
+
+      - **USER** — map UIDs/GIDs; allows root inside namespace without root on host
+
+      - **CGROUP** — isolated view of cgroup hierarchy
+
+      - **TIME** — independent system clocks (kernel 5.6+)
+
+
+      **Working with namespaces:**
+
+      - `unshare --net --pid --fork bash` — launch a shell in new network and PID namespaces
+
+      - `nsenter -t PID -n` — enter the network namespace of a running process
+
+      - `lsns` — list all namespaces on the system
+
+
+      Docker, Podman, and LXC all use namespaces combined with **cgroups** (for resource limits) and **seccomp** (for
+      syscall filtering) to create isolated containers.
+  - question: How do you implement disk encryption in Linux?
+    answer: >-
+      Disk encryption protects data at rest against unauthorized physical access.
+
+
+      **Full-disk / partition encryption with LUKS:**
+
+      - `cryptsetup luksFormat /dev/sdb1` — initialize an encrypted partition
+
+      - `cryptsetup open /dev/sdb1 cryptdata` — unlock and map to `/dev/mapper/cryptdata`
+
+      - `mkfs.ext4 /dev/mapper/cryptdata` — create a filesystem on the encrypted volume
+
+      - `mount /dev/mapper/cryptdata /data` — mount as usual
+
+
+      **Auto-mount at boot:**
+
+      - Add an entry to `/etc/crypttab` (maps encrypted device to a name)
+
+      - Add the corresponding mount to `/etc/fstab`
+
+
+      **Directory-level encryption:**
+
+      - **fscrypt** — native kernel-level filesystem encryption for ext4 and F2FS; preferred over the deprecated
+      eCryptfs
+
+      - Encrypt individual directories without encrypting the entire partition
+
+
+      **File-level encryption:**
+
+      - `gpg -c file` — symmetric encryption of individual files
+
+      - **age** — modern, simple file encryption tool
+
+
+      **Key management:**
+
+      - LUKS supports **multiple key slots** — add backup keys with `cryptsetup luksAddKey`
+
+      - Back up the LUKS header: `cryptsetup luksHeaderBackup`
+
+      - Consider **TPM** or hardware security modules for automated unlocking in servers
+  - question: What is systemd-journald and how do you use it for system logging?
+    answer: >-
+      **systemd-journald** collects and stores logs in a structured, indexed binary format, replacing plain-text syslog
+      in many setups.
+
+
+      **Querying logs with `journalctl`:**
+
+      - `journalctl -u nginx` — logs for a specific service
+
+      - `journalctl -b` — current boot only; `-b -1` for previous boot
+
+      - `journalctl -p err` — filter by priority (emerg, alert, crit, err, warning, notice, info, debug)
+
+      - `journalctl --since "1 hour ago"` — time-based filtering
+
+      - `journalctl -f` — follow new entries in real time
+
+      - `journalctl -o json-pretty` — output in structured JSON
+
+
+      **Persistent storage:**
+
+      - By default, logs may be stored only in memory (`/run/log/journal/`)
+
+      - Create `/var/log/journal/` for persistence across reboots
+
+
+      **Configuration** (`/etc/systemd/journald.conf`):
+
+      - `Storage=persistent` — force persistent logging
+
+      - `SystemMaxUse=500M` — cap total journal size
+
+      - `MaxRetentionSec=1month` — auto-delete old entries
+
+
+      **Integration:** journald can forward to traditional syslog daemons (`rsyslog`, `syslog-ng`) for compatibility
+      with existing log pipelines.
+  - question: How do you manage system time and NTP in Linux?
+    answer: >-
+      Accurate time synchronization is critical for log correlation, authentication (Kerberos), TLS certificates, and
+      distributed systems.
+
+
+      **Check and configure time:**
+
+      - `timedatectl status` — view current time, timezone, and NTP sync status
+
+      - `timedatectl set-timezone America/New_York` — set timezone
+
+      - `timedatectl set-ntp true` — enable NTP synchronization
+
+
+      **NTP implementations:**
+
+      - **systemd-timesyncd** — lightweight SNTP client, sufficient for most systems; configured in
+      `/etc/systemd/timesyncd.conf`
+
+      - **chrony** — more capable NTP client/server; handles intermittent connectivity and fast synchronization well
+        - Install: `apt install chrony` or `dnf install chrony`
+        - Config: `/etc/chrony/chrony.conf`
+        - Monitor: `chronyc tracking` (sync status), `chronyc sources` (server list)
+
+      **Best practices:**
+
+      - Use at least **3-4 NTP sources** for redundancy and accuracy
+
+      - In isolated networks, set up an **internal NTP server** hierarchy
+
+      - Monitor sync offset — drift beyond a few milliseconds may indicate issues
+
+      - For precision-critical systems (finance, telecom), consider **PTP (Precision Time Protocol)** or GPS-disciplined
+      clocks
+  - question: What is Linux resource management with cgroups?
+    answer: >-
+      **Control Groups (cgroups)** limit, account for, and isolate resource usage of process groups. Modern systems use
+      **cgroups v2**, managed through systemd.
+
+
+      **Controllable resources:**
+
+      - **CPU** — limit usage or pin to specific cores
+
+      - **Memory** — cap total usage and swap
+
+      - **Disk I/O** — throttle read/write bandwidth
+
+      - **PIDs** — limit number of processes
+
+
+      **Setting limits via systemd:**
+
+      - `systemctl set-property myservice.service CPUQuota=200%` — limit to 2 CPU cores
+
+      - `systemctl set-property myservice.service MemoryMax=1G` — hard memory cap
+
+      - `systemctl set-property myservice.service IOWriteBandwidthMax="/dev/sda 50M"` — throttle I/O
+
+
+      **Persistent limits** — add directives to the service's unit file under `[Service]`:
+
+
+      ```
+
+      CPUQuota=200%
+
+      MemoryMax=1G
+
+      MemorySwapMax=0
+
+      ```
+
+
+      **Monitoring:**
+
+      - `systemd-cgls` — display the cgroup hierarchy
+
+      - `systemd-cgtop` — real-time resource usage per cgroup
+
+
+      **In containers:** Docker (`--memory`, `--cpus`) and Kubernetes (resource requests/limits) use cgroups under the
+      hood. Cgroups prevent resource starvation in multi-tenant and containerized environments.
+  - question: What is Linux Traffic Control (tc) and how is it used?
+    answer: >-
+      **Traffic Control (tc)** is a kernel framework for managing network traffic through QoS policies, traffic shaping,
+      and bandwidth allocation.
+
+
+      **Core concepts:**
+
+      - **Queueing disciplines (qdiscs)** — control how packets are queued and dequeued
+
+      - **Classes** — subdivide qdiscs to create hierarchical bandwidth allocation
+
+      - **Filters** — classify packets into classes based on IP, port, or other criteria
+
+
+      **Common use cases:**
+
+
+      **Bandwidth limiting:**
+
+
+      ```
+
+      tc qdisc add dev eth0 root tbf rate 10mbit burst 32kbit latency 400ms
+
+      ```
+
+
+      **Prioritizing traffic** with HTB (Hierarchical Token Bucket):
+
+      - Create classes for different traffic types (e.g., SSH high priority, bulk downloads low priority)
+
+      - Assign bandwidth guarantees and ceilings per class
+
+
+      **Bufferbloat mitigation** with CoDel or fq_codel:
+
+
+      ```
+
+      tc qdisc replace dev eth0 root fq_codel
+
+      ```
+
+
+      **Network simulation** (useful for testing):
+
+      - Add latency: `tc qdisc add dev eth0 root netem delay 100ms`
+
+      - Simulate packet loss: `tc qdisc add dev eth0 root netem loss 5%`
+
+
+      TC is essential for WAN optimization, ensuring critical services get priority, and testing application behavior
+      under degraded network conditions.
+  - question: How do you implement Linux network bonding and teaming?
+    answer: >-
+      **Network bonding** combines multiple physical NICs into a single logical interface for increased bandwidth,
+      redundancy, or both.
+
+
+      **Bonding** (traditional, kernel-level):
+
+      - Install: `apt install ifenslave` or `dnf install NetworkManager-team`
+
+      - Common modes:
+        - **Mode 1 (active-backup)** — only one NIC active; failover on link failure (no switch config needed)
+        - **Mode 4 (802.3ad/LACP)** — link aggregation for bandwidth + redundancy (requires switch support)
+        - **Mode 6 (balance-alb)** — adaptive load balancing without switch configuration
+      - Verify: `cat /proc/net/bonding/bond0`
+
+
+      **NetworkManager configuration** (modern approach):
+
+
+      ```
+
+      nmcli con add type bond ifname bond0 mode active-backup
+
+      nmcli con add type ethernet ifname eth0 master bond0
+
+      nmcli con add type ethernet ifname eth1 master bond0
+
+      ```
+
+
+      **Network teaming** was introduced in RHEL 7 as a userspace alternative with the `teamd` daemon and runner types
+      like `activebackup` and `lacp`. However, **teaming is deprecated in RHEL 9+** in favor of kernel bonding, so
+      bonding is the recommended approach for new deployments.
+
+
+      **Important:** modes involving link aggregation (LACP) require matching configuration on the network switch.
+      Verify traffic distribution with `ip -s link show`.
+  - question: How do you configure and troubleshoot iptables firewall?
+    answer: >-
+      **iptables** is the traditional Linux packet filtering framework. While **nftables** is the modern replacement
+      (default in Debian 11+, RHEL 8+), iptables remains widely deployed.
+
+
+      **Architecture:**
+
+      - **Tables:** `filter` (default), `nat`, `mangle`, `raw`
+
+      - **Chains:** `INPUT` (incoming), `OUTPUT` (outgoing), `FORWARD` (routed)
+
+      - Rules are evaluated **top-to-bottom**; first match wins
+
+
+      **Basic firewall setup:**
+
+
+      ```
+
+      iptables -P INPUT DROP
+
+      iptables -P FORWARD DROP
+
+      iptables -P OUTPUT ACCEPT
+
+      iptables -A INPUT -i lo -j ACCEPT
+
+      iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+      iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+
+      ```
+
+
+      **Troubleshooting:**
+
+      - `iptables -L -v -n` — list rules with packet counters and numeric output
+
+      - `iptables -L -v -n --line-numbers` — show rule numbers for targeted deletion
+
+      - Add a LOG rule before DROP: `iptables -I INPUT 1 -j LOG --log-prefix "IPT-DROP: "` to see what's being blocked
+
+      - `iptables -F` — flush all rules temporarily to test if the firewall is the issue
+
+
+      **Persistence:**
+
+      - `iptables-save > /etc/iptables/rules.v4` — save current rules
+
+      - `iptables-restore < /etc/iptables/rules.v4` — restore
+
+      - Install `netfilter-persistent` to auto-restore on boot
+
+
+      **Migration note:** for new setups, prefer `nftables` which provides a unified syntax, better performance, and
+      atomic rule updates.
+  - question: How do you implement and manage SELinux policies?
+    answer: >-
+      **SELinux** enforces Mandatory Access Control through security policies that define fine-grained permissions via
+      **type enforcement**.
+
+
+      **Key concepts:**
+
+      - **Security contexts:** `user:role:type:level` (the **type** is most commonly managed)
+
+      - **Policy types:** `targeted` (default — confines specific daemons), `strict`, `mls`
+
+      - **Modes:** `enforcing` → `permissive` → `disabled` (set in `/etc/selinux/config`)
+
+
+      **Day-to-day management:**
+
+      - `sestatus` — check current mode and policy
+
+      - `ls -Z file` / `ps -Z` — view security contexts on files and processes
+
+      - `semanage fcontext -a -t httpd_sys_content_t "/var/www/html(/.*)?"` — set expected context for a path
+
+      - `restorecon -Rv /var/www/html` — apply the expected contexts
+
+      - `semanage port -a -t http_port_t -p tcp 8080` — allow a service to bind to a non-standard port
+
+
+      **Troubleshooting denials:**
+
+      - `ausearch -m AVC -ts recent` — find recent denial messages
+
+      - `sealert -a /var/log/audit/audit.log` — human-readable analysis (requires `setroubleshoot`)
+
+      - `audit2allow -a -M mypolicy` — generate a custom policy module from denials
+
+      - `semodule -i mypolicy.pp` — install the module
+
+
+      **Best practices:**
+
+      - **Never disable SELinux globally** — use `permissive` mode for troubleshooting
+
+      - Test custom policies thoroughly before enforcing
+
+      - Use `semanage boolean -l` to discover pre-built toggles before writing custom modules
+
+      - Review `audit2allow` output carefully — blindly applying it may over-permit
+  - question: How do you manage and monitor system logs effectively?
+    answer: |-
+      Effective log management combines proper configuration, rotation, analysis, and monitoring.
+
+      **Log sources:**
+      - **journald** — structured binary logs; query with `journalctl`
+      - **rsyslog** / **syslog-ng** — traditional text-based logging to `/var/log/`
+      - **Application logs** — written to custom paths or stdout (for containers)
+
+      **Log rotation** — prevents logs from filling the disk:
+      - Configure `logrotate` via `/etc/logrotate.d/` — rotate by size or time, compress old logs, set retention
+      - journald: set `SystemMaxUse` and `MaxRetentionSec` in `/etc/systemd/journald.conf`
+
+      **Monitoring and alerting:**
+      - **Logwatch** — daily email summaries of notable events
+      - **fail2ban** — detects and responds to patterns like brute-force login attempts
+      - Centralized solutions (ELK, Loki, Graylog) enable cross-system correlation and dashboards
+
+      **Centralized shipping:**
+      - rsyslog forwarding: `*.* @@logserver:514` (TCP with TLS)
+      - Filebeat / Fluentd / Promtail as dedicated log shippers
+
+      **Best practices:**
+      - Use **consistent timestamps** (UTC preferred) across all systems
+      - Set proper permissions on log files (`640` or tighter)
+      - Archive security-critical logs to **immutable storage**
+      - Establish baseline patterns to identify anomalies
+      - Regularly verify that logging works — especially for security-critical events
+  - question: How do you implement disk quotas in Linux?
+    answer: >-
+      **Disk quotas** limit how much storage individual users or groups can consume, preventing any single user from
+      monopolizing disk space.
+
+
+      **Setup steps:**
+
+
+      **1. Enable quotas in fstab:**
+
+      - Add `usrquota,grpquota` to mount options in `/etc/fstab`
+
+      - Remount: `mount -o remount /filesystem`
+
+
+      **2. Initialize quota database:**
+
+      - `apt install quota` (if not installed)
+
+      - `quotacheck -cum /filesystem` — creates `aquota.user` and `aquota.group`
+
+      - For XFS: use `xfs_quota` commands instead (quotas are enabled differently)
+
+
+      **3. Enable enforcement:**
+
+      - `quotaon -av`
+
+
+      **4. Set limits:**
+
+      - `edquota -u username` — opens editor to set:
+        - **Soft limit** — warning threshold; user can exceed temporarily
+        - **Hard limit** — absolute maximum; writes are blocked beyond this
+        - **Grace period** — time allowed above soft limit before it becomes hard
+      - `edquota -g groupname` — set group quotas
+
+      - `edquota -p template_user -u new_user` — copy quota settings between users
+
+
+      **Monitoring:**
+
+      - `repquota -a` — system-wide quota report
+
+      - `quota -u username` — individual user's usage and limits
+
+
+      Integrate quota assignment into user provisioning workflows (scripts or Ansible) to ensure consistency.
+  - question: How do you implement and manage RAID in Linux?
+    answer: |-
+      Linux **software RAID** uses the kernel's `md` (multiple device) driver, managed via `mdadm`.
+
+      **Creating an array** (RAID 5 example):
+
+      ```
+      mdadm --create /dev/md0 --level=5 --raid-devices=3 /dev/sda1 /dev/sdb1 /dev/sdc1
+      mkfs.ext4 /dev/md0
+      mount /dev/md0 /data
+      ```
+
+      **Making it persistent:**
+
+      ```
+      mdadm --detail --scan >> /etc/mdadm/mdadm.conf
+      update-initramfs -u
+      ```
+
+      Add `/dev/md0` to `/etc/fstab` for auto-mount at boot.
+
+      **Monitoring:**
+      - `cat /proc/mdstat` — real-time array status and rebuild progress
+      - `mdadm --detail /dev/md0` — detailed array information
+      - Configure **email alerts**: set `MAILADDR` in `mdadm.conf` and enable the monitoring daemon
+      - Use `smartctl` (smartmontools) to monitor underlying disk health
+
+      **Replacing a failed disk:**
+
+      ```
+      mdadm /dev/md0 --fail /dev/sdb1 --remove /dev/sdb1
+      # physically replace the drive, partition identically
+      mdadm /dev/md0 --add /dev/sdb1
+      ```
+
+      The array rebuilds automatically — monitor with `cat /proc/mdstat`.
+
+      **Maintenance:**
+      - Periodic scrubbing: `echo check > /sys/block/md0/md/sync_action` to detect silent data corruption
+      - Always pair RAID with a **backup strategy** — RAID protects against disk failure, not data loss
+  - question: How do you manage and troubleshoot systemd services?
+    answer: >-
+      **Service management:**
+
+      - `systemctl start|stop|restart|reload service` — control service state
+
+      - `systemctl enable|disable service` — toggle autostart at boot
+
+      - `systemctl status service` — state, PID, recent logs, and resource usage
+
+      - `systemctl list-units --failed` — find all failed units
+
+
+      **Troubleshooting a failed service:**
+
+
+      **1. Check status and logs:**
+
+      - `systemctl status service` — quick overview with exit code
+
+      - `journalctl -u service -n 50 --no-pager` — last 50 log lines
+
+      - `journalctl -u service -p err` — error-level messages only
+
+
+      **2. Validate the unit file:**
+
+      - `systemd-analyze verify /etc/systemd/system/myservice.service` — syntax check
+
+      - `systemctl show service` — dump all properties
+
+      - `systemctl list-dependencies service` — view dependency tree
+
+
+      **3. Common causes of failure:**
+
+      - Wrong `ExecStart` path or missing executable
+
+      - Permission issues (wrong user, SELinux denials)
+
+      - Missing dependencies or incorrect `After=` / `Requires=` directives
+
+      - Resource exhaustion (check with `systemd-cgtop`)
+
+
+      **Customizing services without modifying package files:**
+
+      - `systemctl edit service` — creates a drop-in override in `/etc/systemd/system/service.d/`
+
+      - After any unit file change: `systemctl daemon-reload`
+
+
+      **Debugging:** temporarily add `Environment=DEBUG=1` or modify `ExecStart` to enable verbose logging, then examine
+      output via `journalctl`.
+  - question: How do you configure and optimize Linux for database servers?
+    answer: >-
+      Database workloads demand careful tuning of kernel, memory, storage, and process settings.
+
+
+      **Kernel parameters** (`/etc/sysctl.conf`):
+
+      - `vm.swappiness=10` — minimize swapping (critical for DB performance)
+
+      - `vm.dirty_ratio=15` and `vm.dirty_background_ratio=5` — tune write-back flushing
+
+      - `fs.file-max=2097152` — allow high file descriptor counts
+
+      - `net.core.somaxconn=65535` — handle large connection backlogs
+
+
+      **Memory:**
+
+      - Allocate **70-80% of RAM** to the database buffer pool (InnoDB buffer pool, PostgreSQL shared_buffers)
+
+      - Configure **huge pages** for databases that support them (PostgreSQL, Oracle) to reduce TLB misses
+
+      - Leave enough free memory for the OS page cache and other processes
+
+
+      **Storage:**
+
+      - Use **XFS** — preferred for database workloads due to scalability and parallel I/O
+
+      - Mount with `noatime,nodiratime` to eliminate unnecessary metadata writes
+
+      - Use I/O scheduler `mq-deadline` for SSDs or `bfq` for HDDs
+
+      - **RAID 10** for the best combination of performance and redundancy
+
+      - Separate volumes for **data**, **WAL/logs**, and **temp** to reduce I/O contention
+
+
+      **Process and CPU:**
+
+      - Increase limits in `/etc/security/limits.conf`: `nofile` (open files), `nproc` (processes)
+
+      - Set CPU governor to `performance` for consistent latency
+
+      - On NUMA systems, use `numactl` to ensure the database allocates memory from local nodes
+
+
+      **Monitoring:** use Prometheus with database-specific exporters (postgres_exporter, mysqld_exporter) for query
+      performance, connection counts, and buffer hit ratios.
+  - question: How do you implement and maintain LVM (Logical Volume Management)?
+    answer: >-
+      **LVM** provides flexible disk management through a three-tier hierarchy: PVs → VGs → LVs.
+
+
+      **Initial setup:**
+
+
+      ```
+
+      pvcreate /dev/sdb /dev/sdc
+
+      vgcreate datavg /dev/sdb /dev/sdc
+
+      lvcreate -L 100G -n datalv datavg
+
+      mkfs.xfs /dev/datavg/datalv
+
+      mount /dev/datavg/datalv /data
+
+      ```
+
+
+      **Growing storage:**
+
+
+      ```
+
+      # Add a new disk to the VG
+
+      pvcreate /dev/sdd
+
+      vgextend datavg /dev/sdd
+
+
+      # Extend the LV and resize the filesystem
+
+      lvextend -L +50G /dev/datavg/datalv
+
+      xfs_growfs /data          # XFS (online)
+
+      # or: resize2fs /dev/datavg/datalv   # ext4 (online)
+
+      ```
+
+
+      **Snapshots** (for backups or testing):
+
+
+      ```
+
+      lvcreate -L 5G -s -n data_snap /dev/datavg/datalv
+
+      mount -o ro /dev/datavg/data_snap /mnt/snapshot
+
+      ```
+
+
+      **Live migration** (replace disk without downtime):
+
+
+      ```
+
+      pvmove /dev/sdb /dev/sdd
+
+      vgreduce datavg /dev/sdb
+
+      pvremove /dev/sdb
+
+      ```
+
+
+      **Monitoring:**
+
+      - `pvs` / `vgs` / `lvs` — compact status display
+
+      - `pvdisplay` / `vgdisplay` / `lvdisplay` — detailed information
+
+      - Back up LVM metadata: `vgcfgbackup datavg`
+
+
+      **Thin provisioning** (`lvcreate --thin`) allows overcommitting storage but requires careful monitoring to prevent
+      actual space exhaustion.
+  - question: What is Linux Containers (LXC) and how do they differ from Docker?
+    answer: >-
+      **LXC (Linux Containers)** is a lightweight virtualization technology that runs isolated Linux systems sharing the
+      host kernel.
+
+
+      **LXC vs Docker:**
+
+
+      **Design philosophy:**
+
+      - **LXC** — **system containers**: runs a full OS with init system and multiple processes, behaving like a
+      lightweight VM
+
+      - **Docker** — **application containers**: optimized for single-process, microservice-style workloads
+
+
+      **Runtime:**
+
+      - LXC uses its own runtime directly leveraging kernel namespaces and cgroups
+
+      - Docker originally used LXC but now uses **containerd** with its own image format and layered filesystem
+
+
+      **Image management:**
+
+      - Docker provides a **layered image format**, Dockerfile, and registry system (Docker Hub)
+
+      - LXC uses OS templates or **LXD** image servers; no equivalent to Dockerfiles
+
+
+      **Management:**
+
+      - LXC: `lxc-create`, `lxc-start`, `lxc-attach`; modern **LXD** adds a REST API and improved UX
+
+      - Docker: `docker build`, `docker run`, `docker-compose`
+
+
+      **When to use each:**
+
+      - **LXC/LXD** — when you need VM-like behavior with low overhead: multi-process workloads, testing environments,
+      or running legacy applications that expect a full OS
+
+      - **Docker** — microservices, CI/CD pipelines, application portability, and when you need a rich ecosystem of
+      pre-built images
+
+
+      Many organizations use both: LXC for infrastructure-level isolation and Docker for application deployment.
+  - question: How do you implement and manage KVM virtualization?
+    answer: >-
+      **KVM (Kernel-based Virtual Machine)** is Linux's built-in Type-1 hypervisor, turning the kernel into a hypervisor
+      for running virtual machines.
+
+
+      **Prerequisites:**
+
+      - Verify hardware support: `grep -E '(vmx|svm)' /proc/cpuinfo`
+
+      - Install: `apt install qemu-kvm libvirt-daemon-system virtinst` (Debian/Ubuntu)
+
+
+      **Creating a VM:**
+
+
+      ```
+
+      virt-install --name vm1 --memory 2048 --vcpus 2 \
+        --disk size=20 --cdrom ubuntu.iso \
+        --os-variant ubuntu22.04
+      ```
+
+
+      **Management tools:**
+
+      - `virsh` — CLI for VM lifecycle: `virsh list --all`, `virsh start|shutdown|destroy vm1`
+
+      - `virt-manager` — GUI for desktop management
+
+      - **Cockpit** with the machines plugin — web-based management
+
+      - **Proxmox VE** / **oVirt** — enterprise management platforms
+
+
+      **Storage backends:**
+
+      - **qcow2** — supports snapshots and thin provisioning (most common)
+
+      - **raw** — better I/O performance for database VMs
+
+      - LVM-backed storage pools for production
+
+
+      **Networking:**
+
+      - Default **NAT** network via libvirt (for isolated VMs)
+
+      - **Bridged** networking for direct LAN access
+
+      - **Open vSwitch** for SDN and advanced VLAN management
+
+
+      **Performance tuning:**
+
+      - Use **virtio** drivers for disk and network (near-native performance)
+
+      - Enable **huge pages** for memory-intensive VMs
+
+      - **CPU pinning** for latency-sensitive workloads
+
+      - NUMA-aware memory allocation on multi-socket systems
+  - question: How do you implement Linux kernel hardening?
+    answer: |-
+      Kernel hardening reduces the attack surface and mitigates exploitation of kernel vulnerabilities.
+
+      **Sysctl hardening** (`/etc/sysctl.d/99-hardening.conf`):
+      - `kernel.randomize_va_space=2` — full ASLR (address space layout randomization)
+      - `kernel.kptr_restrict=2` — hide kernel pointers from all users
+      - `kernel.dmesg_restrict=1` — restrict dmesg to root only
+      - `fs.protected_symlinks=1` and `fs.protected_hardlinks=1` — prevent symlink/hardlink attacks
+      - `kernel.yama.ptrace_scope=2` — restrict ptrace to root (prevents process debugging attacks)
+      - `net.ipv4.conf.all.rp_filter=1` — enable reverse path filtering
+
+      **Module security:**
+      - `kernel.modules_disabled=1` — prevent loading new modules after boot (set via sysctl after boot)
+      - Enable **module signing** to only allow signed modules
+      - Blacklist unnecessary modules in `/etc/modprobe.d/`
+
+      **Mandatory Access Control:**
+      - Enable **SELinux** or **AppArmor** in enforcing mode
+      - Develop profiles/policies for all critical applications
+
+      **Additional measures:**
+      - Enable **seccomp** filtering to restrict available syscalls per process
+      - Mount `/proc` and `/sys` with restrictive options where possible
+      - Disable user namespaces if not needed: `kernel.unprivileged_userns_clone=0`
+
+      **Auditing and compliance:**
+      - Enable `auditd` for syscall-level auditing
+      - Implement file integrity monitoring (AIDE, OSSEC)
+      - Use **Lynis** or **OpenSCAP** to audit kernel security settings and track compliance
+      - Keep the kernel updated with security patches from your distribution
+  - question: How do you troubleshoot Linux boot problems?
+    answer: >-
+      Boot troubleshooting follows the **boot sequence**: firmware → bootloader → kernel → initramfs → systemd →
+      services.
+
+
+      **1. Firmware/hardware stage:**
+
+      - Check power, RAM seating, disk connections
+
+      - Listen for beep codes; check firmware (BIOS/UEFI) error messages
+
+      - Verify boot device order
+
+
+      **2. GRUB bootloader:**
+
+      - Hold **Shift** (BIOS) or **Esc** (UEFI) to access the GRUB menu
+
+      - Press **e** to edit kernel parameters:
+        - Add `nomodeset` for graphics driver issues
+        - Add `single` or `systemd.unit=rescue.target` for single-user mode
+      - If GRUB is broken: boot from live USB, mount root filesystem, and reinstall GRUB
+
+
+      **3. Kernel initialization:**
+
+      - From rescue: `journalctl -b -1` to review previous boot logs
+
+      - Look for kernel panics, driver failures, or hardware initialization errors
+
+      - Regenerate initramfs: `update-initramfs -u` (Debian) or `dracut -f` (RHEL)
+
+
+      **4. Systemd initialization:**
+
+      - `systemctl list-units --failed` — identify failed services
+
+      - Check `/etc/fstab` — a bad entry can halt boot (use `nofail` for non-critical mounts)
+
+      - `systemd-analyze blame` — identify slow-starting services
+
+
+      **5. Filesystem issues:**
+
+      - Boot from live USB, then `fsck /dev/sdXN` to repair filesystem corruption
+
+      - Check disk health with `smartctl -a /dev/sda`
+
+
+      **Recovery approach:** boot from a live USB, mount the root filesystem, `chroot` into it, and fix configuration or
+      reinstall packages as needed. Always back up config files before modifying them.
+  - question: How do you manage Linux kernel modules?
+    answer: |-
+      **Kernel modules** extend kernel functionality without recompilation or rebooting.
+
+      **Core commands:**
+      - `lsmod` — list currently loaded modules
+      - `modinfo module_name` — show description, parameters, dependencies
+      - `modprobe module_name` — load a module with all dependencies
+      - `modprobe -r module_name` — unload a module and unused dependencies
+      - `insmod` / `rmmod` — low-level load/unload without dependency resolution
+
+      **Loading at boot:**
+      - Add module name to `/etc/modules` or a file in `/etc/modules-load.d/`
+
+      **Setting module parameters:**
+      - At load time: `modprobe module_name param=value`
+      - Permanently: add `options module_name param=value` in `/etc/modprobe.d/`
+      - View current parameters: `cat /sys/module/<module_name>/parameters/<param>`
+
+      **Blacklisting (prevent loading):**
+      - `blacklist module_name` in `/etc/modprobe.d/blacklist.conf` — prevents auto-loading
+      - `install module_name /bin/false` — prevents even explicit loading
+
+      **Security considerations:**
+      - Set `kernel.modules_disabled=1` after boot to lock module loading on hardened systems
+      - Enable kernel module signing if your distribution supports it
+      - Regularly review `lsmod` output for unexpected modules
+
+      **Debugging:**
+      - `dmesg | tail` immediately after loading/unloading
+      - `modprobe --show-depends module_name` — display dependency chain
+  - question: How do you implement user authentication with LDAP?
+    answer: >-
+      **LDAP (Lightweight Directory Access Protocol)** provides centralized authentication and directory services for
+      Linux environments.
+
+
+      **Server setup (OpenLDAP):**
+
+      - Install: `apt install slapd ldap-utils`
+
+      - Configure domain structure (e.g., `dc=example,dc=com`)
+
+      - Enable **TLS/SSL** for encrypted communication
+
+      - Create organizational units for users and groups
+
+
+      **Client configuration:**
+
+      - Install: `apt install libnss-ldap libpam-ldap nscd`
+
+      - Configure `/etc/ldap.conf` with server URI, search base, and bind credentials
+
+      - Update `/etc/nsswitch.conf` to include `ldap` for passwd, group, and shadow
+
+      - Configure PAM in `/etc/pam.d/` to use LDAP authentication
+
+      - Test: `getent passwd username` and `id username`
+
+
+      **Modern alternative — SSSD:**
+
+      - **SSSD (System Security Services Daemon)** is preferred over direct LDAP PAM/NSS modules
+
+      - Provides caching, failover between servers, and offline authentication
+
+      - Supports LDAP, Active Directory, and FreeIPA
+
+      - Config: `/etc/sssd/sssd.conf`
+
+
+      **Security:**
+
+      - Enforce TLS for all LDAP traffic (use `ldaps://` or StartTLS)
+
+      - Implement password policies on the server (complexity, expiration, lockout)
+
+      - Configure clients to **fail closed** if LDAP is unreachable
+
+
+      **Higher-level solutions:** consider **FreeIPA** (integrates LDAP, Kerberos, DNS, and certificate management) for
+      a complete identity management platform.
+  - question: How do you implement and manage DRBD (Distributed Replicated Block Device)?
+    answer: >-
+      **DRBD** replicates block devices between servers over the network, creating a **network RAID-1** for high
+      availability.
+
+
+      **Replication protocols:**
+
+      - **Protocol A** — asynchronous; best performance, risk of data loss on primary failure
+
+      - **Protocol B** — semi-synchronous; write confirmed when received by peer's network buffer
+
+      - **Protocol C** — fully synchronous; write confirmed after peer writes to disk; safest but slowest
+
+
+      **Setup:**
+
+      - Install: `apt install drbd-utils` on both nodes
+
+      - Load the module: `modprobe drbd`
+
+      - Create resource config in `/etc/drbd.d/resource.res` defining nodes, devices, and protocol
+
+
+      **Initialization:**
+
+
+      ```
+
+      drbdadm create-md myresource       # on both nodes
+
+      drbdadm up myresource              # on both nodes
+
+      drbdadm primary myresource --force  # on the designated primary
+
+      ```
+
+
+      Monitor sync progress with `drbdadm status` or `cat /proc/drbd`.
+
+
+      **After initial sync:**
+
+
+      ```
+
+      mkfs.ext4 /dev/drbd0
+
+      mount /dev/drbd0 /data
+
+      ```
+
+
+      **Integration with clustering:**
+
+      - DRBD handles **data replication only** — use **Pacemaker** + **Corosync** for automated failover of services and
+      IP addresses
+
+      - Configure STONITH/fencing to handle split-brain scenarios
+
+
+      **Management:**
+
+      - Monitor: `drbdadm status`, `cat /proc/drbd`
+
+      - Configure split-brain detection and automatic recovery policies
+
+      - Dedicate a **separate network interface** for replication traffic to avoid contention
+
+      - Test failover regularly to verify the setup works under real failure conditions
+  - question: How do you configure and manage syslog in Linux?
+    answer: >-
+      **Syslog** is the traditional logging standard. **rsyslog** is the most common implementation on modern Linux
+      systems.
+
+
+      **Configuration** (`/etc/rsyslog.conf` and `/etc/rsyslog.d/`):
+
+      - Format: `facility.priority  destination`
+
+      - Example: `kern.warning  /var/log/kern.log` — kernel warnings to a specific file
+
+      - Example: `*.crit  /var/log/critical.log` — all critical messages
+
+
+      **Remote logging:**
+
+      - UDP: `*.* @logserver:514`
+
+      - TCP: `*.* @@logserver:514`
+
+      - TCP with TLS: configure `imtcp` with `StreamDriver` settings for encrypted transport
+
+
+      **Structured logging:**
+
+      - Use rsyslog **templates** to format messages as JSON for log aggregation tools
+
+      - Configure **rate limiting** to prevent log flooding attacks
+
+
+      **Log rotation** (`/etc/logrotate.d/`):
+
+
+      ```
+
+      /var/log/myapp.log {
+          weekly
+          rotate 4
+          compress
+          missingok
+          notifempty
+          postrotate
+              systemctl reload rsyslog
+          endscript
+      }
+
+      ```
+
+
+      **Performance tuning:**
+
+      - Use in-memory queues for high-volume logging
+
+      - Configure appropriate buffer sizes
+
+      - Use asynchronous processing for non-critical logs
+
+
+      **Note:** on systemd-based systems, **journald** captures all logs by default. rsyslog typically receives
+      forwarded logs from journald for persistent storage and remote shipping.
+  - question: How do you configure and manage DNS server (BIND) in Linux?
+    answer: |-
+      **BIND (Berkeley Internet Name Domain)** is the most widely deployed DNS server software.
+
+      **Installation:**
+      - `apt install bind9` (Debian/Ubuntu) or `dnf install bind` (RHEL)
+      - Main config: `/etc/bind/named.conf` or `/etc/named.conf`
+
+      **Zone configuration:**
+      - Define zones in `named.conf.local` or the main config
+      - Create forward zone files containing SOA, NS, A, AAAA, MX, CNAME records
+      - Create reverse zone files for PTR records
+      - Set appropriate TTL values based on change frequency
+
+      **Security hardening:**
+      - **TSIG keys** — authenticate zone transfers between primary and secondary servers
+      - **DNSSEC** — sign zones to prevent DNS spoofing:
+        - Generate keys with `dnssec-keygen`
+        - Sign zones with `dnssec-signzone`
+        - Publish DS records in the parent zone
+      - Restrict zone transfers: `allow-transfer { trusted-servers; };`
+      - Enable **rate limiting** to mitigate amplification attacks
+      - Restrict recursion: `allow-recursion { internal-nets; };`
+
+      **Recursive resolver features:**
+      - Response Policy Zones (RPZ) for DNS-based filtering
+      - Forwarding for efficient resolution
+      - Caching tuning based on available memory
+
+      **Management:**
+      - `rndc reload` — reload zones without restart
+      - `rndc flush` — clear cache
+      - `named-checkconf` / `named-checkzone` — validate configuration and zone files
+      - Monitor query logs for anomalies and performance issues
+  - question: How do you implement and manage High Availability clustering in Linux?
+    answer: >-
+      **HA clustering** eliminates single points of failure by automatically failing over services between nodes.
+
+
+      **Core components:**
+
+      - **Corosync** — cluster messaging and membership layer
+
+      - **Pacemaker** — cluster resource manager (decides what runs where)
+
+      - Install: `apt install pacemaker corosync` or `dnf install pacemaker corosync`
+
+
+      **Cluster setup:**
+
+      - Configure node communication in `/etc/corosync/corosync.conf` (UDP unicast or multicast)
+
+      - Start services: `systemctl enable --now corosync pacemaker`
+
+      - Define **resources** — services, virtual IPs, filesystems, or anything that should be highly available
+
+      - Set **constraints** — co-location (resources that must run together), ordering (startup sequence), and location
+      preferences
+
+
+      **Fencing (STONITH)** — critical for preventing split-brain:
+
+      - Fencing forcibly powers off a failed node to ensure it can't corrupt shared resources
+
+      - Options: IPMI, iLO/iDRAC, PDU, hypervisor API, or SBD (storage-based death)
+
+      - **Never run a production cluster without fencing**
+
+
+      **Storage options:**
+
+      - **DRBD** — replicated block devices between nodes
+
+      - **Shared storage** (SAN/NAS) with cluster filesystems (GFS2, OCFS2)
+
+      - Database-specific replication (Galera, PostgreSQL streaming replication with Patroni)
+
+
+      **Monitoring:**
+
+      - `pcs status` or `crm_mon` — cluster and resource state
+
+      - `pcs resource show` — resource configuration
+
+      - Integrate with Prometheus / Nagios for alerting
+
+
+      **Maintenance:**
+
+      - `pcs node standby node1` — gracefully drain a node for patching
+
+      - Regularly **simulate failures** to verify failover works correctly
+
+      - Document recovery procedures for scenarios where automatic failover isn't possible
+  - question: How do you implement and manage Linux Virtual Server (LVS) for load balancing?
+    answer: >-
+      **LVS (Linux Virtual Server)** is a kernel-level (Layer 4) load balancer built on the **IPVS** module, offering
+      extremely high throughput.
+
+
+      **Setup:**
+
+      - Install: `apt install ipvsadm` or `dnf install ipvsadm`
+
+      - Configure a **Virtual IP (VIP)** that clients connect to
+
+
+      **Packet forwarding methods:**
+
+      - **DR (Direct Routing)** — best performance; real servers respond directly to clients (requires VIP config on
+      real servers)
+
+      - **NAT** — director rewrites addresses; simpler setup but director handles all traffic
+
+      - **IPIP (Tunneling)** — encapsulates packets; supports geographically distributed backends
+
+
+      **Load balancing algorithms:**
+
+      - **Round-robin (rr)** — equal distribution
+
+      - **Weighted round-robin (wrr)** — accounts for different server capacities
+
+      - **Least connections (lc)** — routes to server with fewest active connections
+
+      - **Weighted least connections (wlc)** — combines capacity weights with connection count
+
+
+      **Example configuration:**
+
+
+      ```
+
+      ipvsadm -A -t 10.0.0.1:80 -s wlc
+
+      ipvsadm -a -t 10.0.0.1:80 -r 10.0.0.10:80 -g -w 3
+
+      ipvsadm -a -t 10.0.0.1:80 -r 10.0.0.11:80 -g -w 2
+
+      ```
+
+
+      **High availability with Keepalived:**
+
+      - Provides **VRRP** for floating VIP between active/backup directors
+
+      - Built-in health checking of real servers
+
+      - Synchronizes connection tables between directors for seamless failover
+
+
+      **Monitoring:**
+
+      - `ipvsadm -L -n --stats` — view connection and traffic statistics
+
+      - Configure health checks to automatically remove failed backends from the pool
