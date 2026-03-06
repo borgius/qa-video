@@ -4,3 +4,4 @@ dist
 build
 tmp
 client_secret.json
+.qa

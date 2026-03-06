@@ -278,6 +278,7 @@ const ACRONYMS: [RegExp, string][] = [
   [/\bXML\b/g, 'X M L'],
   [/\bYAML\b/g, 'YAML'], // already pronounced correctly as a word
   [/\bxDS\b/g, 'X D S'],
+  [/\bargocd-([\w-]+)*\b/ig, 'Argo C D $1']
 ];
 
 const ignoreCaseAcronyms = new Map([
@@ -295,6 +296,8 @@ const ignoreCaseAcronyms = new Map([
   ['options', 'OPTIONS'],
   ['trace', 'TRACE'],
   ['connect', 'CONNECT'],
+  ['argocd', 'Argo C D'],
+  ['url', 'U R L'],
 ]);
 
 export function preprocessForTTS(text: string): string {
