@@ -1,0 +1,375 @@
+config:
+  name: 'DevOps-Interview-Questions: ArgoCD Advanced'
+  description: Advanced ArgoCD topics including diff customization, ApplicationSets, notifications, image automation,
+    troubleshooting, scaling, high availability, disaster recovery, migration patterns, and production best practices.
+  questionDelay: 1
+  answerDelay: 1
+questions:
+- question: When should you use ignoreDifferences?
+  answer: Use it when a field is intentionally managed outside Git and would otherwise create noisy or misleading
+    drift. It should not be used to hide real configuration problems.
+- question: What are managedFieldsManagers filters in ArgoCD diffing?
+  answer: These filters ignore changes associated with specific Kubernetes field managers in managedFields. They
+    are useful when controllers legitimately own parts of a resource and you do not want ArgoCD to fight them.
+- question: What is compareOptions in ArgoCD?
+  answer: compareOptions tune how ArgoCD calculates diffs, including behaviors like ignoring extraneous resources
+    in some cases. They help adapt drift detection to real-world controller behavior.
+- question: What is orphaned resources monitoring in ArgoCD?
+  answer: Orphaned resources monitoring identifies resources in a namespace or project scope that are not managed
+    by an expected application. It helps detect leftovers, manual changes, or accidental ownership gaps.
+- question: Why is orphaned resource monitoring useful?
+  answer: 'It highlights resources that may have escaped GitOps control, which can create security, cost, or operational
+    issues. In other words: ghost resources with real bills.'
+- question: What are resource inclusions and exclusions in ArgoCD?
+  answer: They define which resource kinds ArgoCD should consider globally or skip entirely. This is useful when
+    some cluster resources should never be managed or even watched by ArgoCD.
+- question: How does ArgoCD detect shared resource conflicts?
+  answer: ArgoCD tracks ownership of managed resources using labels or annotations and compares this ownership during
+    sync. If multiple apps target the same resource, conflicts can be surfaced or blocked.
+- question: What does the skip-reconcile annotation do?
+  answer: The skip-reconcile annotation tells ArgoCD to stop reconciling a specific application temporarily. It
+    can be useful for maintenance windows or debugging, but it should be removed promptly to restore GitOps control.
+- question: What is operation termination in ArgoCD?
+  answer: Operation termination stops an in-progress sync or other application operation. This is useful if a rollout
+    is clearly wrong or stuck and you want to halt further apply steps.
+- question: What happens if a sync fails midway?
+  answer: ArgoCD marks the operation failed and leaves the cluster in whatever partially applied state resulted
+    up to that point. Operators then inspect errors, fix the source or environment, and retry or roll back.
+- question: Does ArgoCD automatically roll back failed syncs?
+  answer: Not by default in the same way some deployment tools do. ArgoCD focuses on reconciling Git state, so rollback
+    is typically performed by reverting Git or syncing to an earlier revision.
+- question: What is an ArgoCD Project sourceRepos rule?
+  answer: sourceRepos in a Project defines which repositories applications in that project may use. This prevents
+    teams from pointing trusted deployment flows at arbitrary repos.
+- question: What is an ArgoCD Project destinations rule?
+  answer: destinations define which clusters and namespaces a project is allowed to deploy to. This is a key boundary
+    for multi-tenant or regulated environments.
+- question: What is clusterResourceWhitelist in an ArgoCD Project?
+  answer: clusterResourceWhitelist controls which cluster-scoped resource kinds a project may manage. It helps prevent
+    teams from accidentally or intentionally changing high-impact cluster-wide resources.
+- question: What is namespaceResourceBlacklist in an ArgoCD Project?
+  answer: namespaceResourceBlacklist blocks specified namespace-scoped resource kinds from being deployed by applications
+    in a project. It is part of the project guardrail toolkit.
+- question: What are Project roles in ArgoCD?
+  answer: Project roles are scoped permission sets associated with a project. They can grant view, sync, update,
+    or custom actions to specific users, groups, or automation tokens.
+- question: What are JWT tokens for ArgoCD Project roles?
+  answer: ArgoCD can mint JWT tokens tied to project roles for automation use cases. These tokens should be short-lived
+    when possible and handled like any privileged credential.
+- question: How does local user management work in ArgoCD?
+  answer: ArgoCD supports local user accounts configured in its settings, but many teams prefer SSO for centralized
+    identity lifecycle management. Local accounts are best kept minimal and purpose-specific.
+- question: How does OIDC integration work in ArgoCD?
+  answer: ArgoCD delegates authentication to an OIDC provider directly or through Dex. User identity claims are
+    then mapped into ArgoCD RBAC policies for authorization.
+- question: What role does Dex play when using SSO with ArgoCD?
+  answer: Dex acts as an authentication intermediary, especially when your identity system needs protocol translation
+    or a simpler integration path. In some setups ArgoCD can talk directly to OIDC without Dex.
+- question: How are groups mapped to permissions in ArgoCD?
+  answer: Group claims from the identity provider are matched against RBAC policy rules in argocd-rbac-cm. This
+    lets teams manage membership upstream and keep authorization declarative.
+- question: What is policy.csv in ArgoCD RBAC?
+  answer: policy.csv contains Casbin-style RBAC rules that define what subjects can do on what resources. It is
+    the heart of ArgoCD authorization logic.
+- question: Why does the default RBAC policy matter?
+  answer: The default policy determines what access is granted when no explicit rule matches. A permissive default
+    can create accidental broad access, so production setups usually keep it very restrictive.
+- question: What is least privilege in ArgoCD?
+  answer: Least privilege means giving each person, team, or token only the minimal application, project, and cluster
+    access they require. It limits blast radius and reduces the chance of one bad click becoming a great story later.
+- question: How do you secure repository credentials in ArgoCD?
+  answer: Repository credentials should be stored in Kubernetes Secrets, encrypted at rest, scoped narrowly, and
+    rotated regularly. Prefer provider-native short-lived credentials where possible instead of long-lived shared
+    secrets.
+- question: Why are SSH known hosts important for ArgoCD Git access?
+  answer: Known hosts verification protects against man-in-the-middle attacks when connecting to Git over SSH. Skipping
+    host verification is convenient right up until it becomes a postmortem bullet point.
+- question: How does ArgoCD trust private Git servers with custom CAs?
+  answer: Custom CA bundles can be configured so ArgoCD trusts internal Git or Helm endpoints signed by private
+    certificate authorities. Without this, TLS verification will fail during repository access.
+- question: What is GnuPG verification in ArgoCD?
+  answer: ArgoCD can verify signed commits or tags using configured GnuPG public keys. This adds supply-chain assurance
+    that the source being deployed was authored or approved by trusted identities.
+- question: Why is signed source verification useful in GitOps?
+  answer: Git is the source of truth, so proving the authenticity of commits and tags increases trust in the deployment
+    flow. It helps defend against compromised repos, accounts, or unreviewed changes.
+- question: How does ArgoCD store external cluster credentials?
+  answer: Cluster connection data is usually stored as Secrets in the ArgoCD namespace. These secrets include API
+    server details, authentication info, and optional labels used by generators.
+- question: What permissions does ArgoCD need on managed clusters?
+  answer: It needs enough Kubernetes RBAC to create, update, delete, and observe the resources it manages. The right
+    level depends on whether ArgoCD is managing only namespaces for a team or whole clusters.
+- question: What is app-in-any-namespace in ArgoCD?
+  answer: App-in-any-namespace allows Application resources to exist outside the ArgoCD control namespace while
+    still being managed by the ArgoCD control plane. It can support stronger team autonomy with proper governance.
+- question: What are the risks of app-in-any-namespace?
+  answer: It increases the operational and security surface because more namespaces can define deployable applications.
+    Strong project policies and RBAC become even more important.
+- question: How do webhooks help ArgoCD?
+  answer: Webhooks notify ArgoCD immediately when repositories change, reducing the delay between a Git update and
+    ArgoCD noticing it. Without webhooks, ArgoCD relies more heavily on periodic polling.
+- question: Why should Git webhooks use shared secrets?
+  answer: Shared secrets let ArgoCD verify that incoming webhook requests actually came from the repository provider.
+    This prevents unauthenticated third parties from spoofing refresh events.
+- question: What is the Git polling versus webhook trade-off in ArgoCD?
+  answer: Polling is simpler and more resilient to webhook misconfiguration, but it introduces delay and unnecessary
+    source checks. Webhooks are faster and more efficient, but they require correct network and secret setup.
+- question: What is the list generator in ApplicationSet?
+  answer: The list generator produces applications from an explicit list of parameter values. It is simple and predictable,
+    making it ideal when the number of targets is known and relatively stable.
+- question: What is the cluster generator in ApplicationSet?
+  answer: The cluster generator creates applications from clusters registered in ArgoCD. It is commonly used for
+    multi-cluster rollouts where the same app should exist in many destinations.
+- question: What is the Git directory generator in ApplicationSet?
+  answer: The Git directory generator creates applications based on matching directories in a repository. This is
+    ideal for repo layouts where each folder represents one app or environment.
+- question: What is the Git file generator in ApplicationSet?
+  answer: The Git file generator reads structured files from a repository and uses their contents as generator parameters.
+    This works well for metadata-driven environments and platform catalogs.
+- question: What is the matrix generator in ApplicationSet?
+  answer: The matrix generator combines the output of two other generators to create a cartesian product of parameters.
+    It is useful for building apps across many clusters and environments from reusable inputs.
+- question: What is the merge generator in ApplicationSet?
+  answer: The merge generator combines parameter sets from multiple generators based on matching keys. It is useful
+    when one generator provides defaults and another provides environment-specific overrides.
+- question: What is the SCM provider generator in ApplicationSet?
+  answer: The SCM provider generator discovers repositories from providers such as GitHub or GitLab and creates
+    applications from them. It is helpful for large organizations with repository conventions.
+- question: What is the pull request generator in ApplicationSet?
+  answer: The pull request generator creates ephemeral applications for open pull requests. It is commonly used
+    for preview environments where each PR gets its own deployable namespace.
+- question: What is the plugin generator in ApplicationSet?
+  answer: The plugin generator allows external logic to provide generator output. It offers flexibility for custom
+    inventory sources, but like other extensions it should be treated carefully from a security perspective.
+- question: What is goTemplate in ApplicationSet?
+  answer: goTemplate enables Go template syntax in the ApplicationSet template, allowing generated parameter values
+    to be inserted dynamically. It is powerful, but complex templates can become difficult to debug.
+- question: What is templatePatch in ApplicationSet?
+  answer: templatePatch lets you patch the generated Application template with additional logic or fields. It helps
+    avoid repeating near-identical templates across many ApplicationSets.
+- question: What is RollingSync in ApplicationSet?
+  answer: RollingSync is a strategy that rolls generated application updates out in controlled batches rather than
+    all at once. It reduces risk when one ApplicationSet manages a large fleet.
+- question: When should you use ApplicationSet instead of App of Apps?
+  answer: Use ApplicationSet when applications can be generated from a repeatable pattern such as clusters, directories,
+    or repositories. App of Apps is often better when the child applications are curated explicitly.
+- question: When should you use App of Apps instead of ApplicationSet?
+  answer: App of Apps is useful when you want a manually curated hierarchy with explicit child applications and
+    independent configuration per child. It is great for platform bootstrapping and foundational services.
+- question: Can you combine App of Apps and ApplicationSet?
+  answer: Yes. Many platforms use App of Apps for top-level platform composition and ApplicationSets for dynamic
+    fleet-style generation underneath it. The pattern works well when ownership boundaries are clear.
+- question: How does ApplicationSet track generated Applications?
+  answer: The ApplicationSet controller sets owner references and metadata so it knows which Applications it generated
+    and can update or prune them when generator output changes.
+- question: What happens when an item disappears from an ApplicationSet generator?
+  answer: The generated Application may be deleted depending on controller behavior and preservation settings. This
+    is why generator changes must be treated with the same seriousness as normal production code changes.
+- question: What is preserveResourcesOnDeletion in ApplicationSet workflows?
+  answer: It is used when you want generated Applications or their managed resources to remain even if the generator
+    no longer emits them. This can prevent destructive cleanup during transitions or controller changes.
+- question: How can cluster secrets be used with the cluster generator?
+  answer: Registered cluster secrets can carry labels and annotations that the generator uses for selection and
+    templating. This enables patterns like only generating apps for production clusters or clusters in a given region.
+- question: What is a good pattern for onboarding a new cluster into ArgoCD?
+  answer: Register the cluster with least-privilege credentials, label it with environment metadata, verify project
+    restrictions, and then let ApplicationSets or root apps generate the expected workloads. This keeps onboarding
+    repeatable and low-drama.
+- question: How do you manage hundreds of applications in ArgoCD?
+  answer: Use Projects for boundaries, ApplicationSets for generation, consistent naming conventions, dashboards
+    for health, and Git repo structures that make ownership obvious. Large environments need both technical controls
+    and humane organization.
+- question: What is a common multi-cluster pattern with ArgoCD?
+  answer: A central ArgoCD instance manages many clusters, while Projects and ApplicationSets enforce who can deploy
+    what and where. Some organizations prefer one ArgoCD per environment or region for blast-radius control.
+- question: When might you choose one ArgoCD instance per environment?
+  answer: Separate instances can reduce blast radius, simplify compliance boundaries, and avoid one control plane
+    becoming a single point of organizational pain. The trade-off is more operational overhead.
+- question: What is ArgoCD Notifications used for in practice?
+  answer: It is used to notify teams about sync success, sync failure, health degradation, drift, and other lifecycle
+    events. It keeps GitOps from becoming a silent movie when deployments go wrong.
+- question: What are notification triggers in ArgoCD Notifications?
+  answer: Triggers define the events or conditions that cause notifications to fire, such as app-sync-succeeded
+    or health-degraded. They connect application state transitions to templates and destinations.
+- question: What are notification templates in ArgoCD Notifications?
+  answer: Templates define the message body, formatting, and variables for notifications. They let teams tailor
+    alerts for Slack, email, webhooks, and other services.
+- question: What are subscriptions in ArgoCD Notifications?
+  answer: Subscriptions map recipients or channels to triggers, usually via annotations or configuration. This makes
+    it possible for each application or team to receive the alerts that matter to them.
+- question: How does ArgoCD integrate with Slack?
+  answer: ArgoCD Notifications can send formatted messages to Slack channels using configured webhooks or app integrations.
+    Teams often use this for sync failures, degraded health, and production change visibility.
+- question: What is Argo CD Image Updater?
+  answer: Argo CD Image Updater is a companion tool that detects new container images and updates application source
+    definitions accordingly. It helps automate image tag promotion while keeping GitOps workflows intact.
+- question: How does Argo CD Image Updater keep GitOps intact?
+  answer: Instead of deploying directly to the cluster, it updates Git or application parameters so ArgoCD performs
+    the actual reconciliation. The desired state still changes through a versioned source of truth.
+- question: What are common write-back strategies for Argo CD Image Updater?
+  answer: It can write updates back to Git or update Application parameters depending on the chosen workflow. Git
+    write-back is usually preferred for stronger auditability and reviewability.
+- question: How does ArgoCD work with Argo Rollouts?
+  answer: ArgoCD manages the Rollout custom resources from Git, while Argo Rollouts handles the progressive delivery
+    logic in the cluster. Git defines the strategy and thresholds; the rollout controller executes them.
+- question: What is a good GitOps pattern for database migrations with ArgoCD?
+  answer: Use explicit PreSync hooks or dedicated migration jobs with careful ordering and observability. Database
+    changes are one of the few places where "just sync it" deserves a suspicious eyebrow.
+- question: What are common causes of OutOfSync status with no obvious source change?
+  answer: Controllers, webhooks, defaulting logic, or status-like fields incorrectly included in manifests can all
+    create noisy diffs. ignoreDifferences and proper manifest hygiene usually solve this.
+- question: Why might a resource be Healthy but the app be OutOfSync?
+  answer: Health measures runtime condition, not whether the live spec exactly matches Git. A deployment can be
+    happily running with replicas available while still differing from the desired configuration.
+- question: Why might an app be Synced but Degraded?
+  answer: ArgoCD may have applied the desired state successfully, but the resources themselves are unhealthy, crashing,
+    or not progressing. Sync answers “was it applied,” not “is it working.”
+- question: What does Missing mean in ArgoCD resource status?
+  answer: Missing means a desired resource from Git is not present in the live cluster. This can happen before first
+    sync, after manual deletion, or when apply failed.
+- question: What does Unknown health mean in ArgoCD?
+  answer: Unknown means ArgoCD does not know how to evaluate health for that resource kind or the health script
+    provided no clear state. Custom resource kinds often need custom health checks.
+- question: What does Degraded health usually indicate in ArgoCD?
+  answer: Degraded generally means ArgoCD believes the resource is not meeting its expected operational condition,
+    such as a Deployment with unavailable replicas or a failed Job hook.
+- question: What is a common cause of manifest generation errors in ArgoCD?
+  answer: Broken Helm templates, missing value files, invalid Kustomize patches, plugin failures, or repository
+    access issues commonly cause manifest generation errors. Repo-server logs are usually the first place to investigate.
+- question: Where should you look first when repo rendering fails?
+  answer: Start with repo-server logs because that component performs source fetches and manifest rendering. They
+    usually show the exact Helm, Kustomize, plugin, or auth error behind the failure.
+- question: What causes repository authentication failures in ArgoCD?
+  answer: Expired tokens, wrong SSH keys, missing known hosts, incorrect CA trust, bad repository URLs, or permission
+    changes on the source provider are the usual suspects.
+- question: What causes immutable field sync failures?
+  answer: Some Kubernetes fields cannot be changed in place once a resource exists. When Git changes those fields,
+    ArgoCD may need replacement or a manual migration strategy instead of a normal apply.
+- question: How do you handle immutable field changes safely with ArgoCD?
+  answer: Plan the change explicitly, often by creating a new resource, using controlled recreation, or separating
+    migration steps into multiple commits. Blind force replace in production is bold in all the wrong ways.
+- question: What is a common CRD race condition in ArgoCD?
+  answer: ArgoCD may try to validate or apply a custom resource before its CRD exists in the cluster. Sync waves
+    and SkipDryRunOnMissingResource are common fixes.
+- question: Why do some hooks get stuck in ArgoCD?
+  answer: Hook Jobs may hang, fail, wait on unavailable dependencies, or never satisfy deletion conditions. Observing
+    the Job, its pods, and related events usually reveals the root cause.
+- question: What is a common cause of perpetual Progressing status?
+  answer: A Deployment or StatefulSet may not meet readiness conditions, a hook may still be running, or a custom
+    health check may be too strict. Progressing usually means ArgoCD is waiting for success that never arrives.
+- question: How do you troubleshoot an application stuck in Progressing?
+  answer: Check the resource tree, controller logs, Kubernetes events, pod readiness, and custom health logic. The
+    answer is usually in the workload behavior rather than the application object itself.
+- question: What is a common cause of resource ownership conflicts in ArgoCD?
+  answer: Two applications may render the same resource name and namespace or share cluster-scoped resources unintentionally.
+    Clear app boundaries and project policies help prevent this.
+- question: How do you troubleshoot a diff caused by mutating admission webhooks?
+  answer: Identify which fields are being injected or modified after apply, then ignore those fields if they are
+    expected. Admission-generated changes are a classic source of noisy drift.
+- question: Why are HPA-managed replica counts often ignored in ArgoCD diffs?
+  answer: The HPA controller legitimately changes the replicas field at runtime. If Git pins replicas while HPA
+    changes it, ArgoCD and HPA can fight unless that field is intentionally excluded from diffing.
+- question: How should you handle controller-generated Secrets or ConfigMaps with ArgoCD?
+  answer: Avoid treating generated artifacts as Git-managed desired state unless they truly belong there. Exclude
+    or ignore them when appropriate so ArgoCD does not chase ephemeral runtime outputs.
+- question: Can ArgoCD manage Jobs?
+  answer: Yes, but Jobs need special care because they are often one-shot resources whose lifecycle differs from
+    long-running workloads. Hooks or explicit recreation strategies are common patterns.
+- question: Why can pruning be dangerous?
+  answer: Pruning deletes resources no longer present in Git, which is powerful but unforgiving if a bad commit
+    removes the wrong thing. Many teams require review controls before enabling auto-prune broadly.
+- question: When should you disable auto-prune?
+  answer: Disable it when deletions are high risk, when environments are still being stabilized, or when manual
+    approval is required for destructive changes. Production data systems often deserve this extra caution.
+- question: When is self-heal most valuable?
+  answer: Self-heal is especially valuable in environments where manual kubectl changes happen frequently or where
+    drift has security implications. It reinforces Git as the only accepted source of desired state.
+- question: When might you avoid self-heal temporarily?
+  answer: You may disable it during incident response, maintenance, or exploratory debugging when short-lived manual
+    changes are necessary. The important part is to re-enable it once the situation is understood.
+- question: What metrics are important to monitor for ArgoCD itself?
+  answer: Key metrics include reconciliation counts and duration, app sync status totals, queue depth, repo-server
+    request latency, cache behavior, and error rates. These show whether ArgoCD is healthy as a control plane.
+- question: What logs are most useful when troubleshooting ArgoCD?
+  answer: The application-controller, repo-server, argocd-server, and notifications controller logs are the usual
+    starting points. Which one matters depends on whether the problem is diffing, rendering, auth, or user interaction.
+- question: How does repo-server caching affect performance?
+  answer: Caching reduces repeated fetch and render work, which improves responsiveness and scale. The trade-off
+    is that you sometimes need a hard refresh when the cache is not reflecting new source state fast enough.
+- question: Why can large monorepos be challenging for ArgoCD?
+  answer: Large repos increase fetch size, render cost, and the chance of accidental coupling between unrelated
+    apps. Clear path conventions and targeted Application definitions help keep performance manageable.
+- question: How do you scale repo-server in large ArgoCD deployments?
+  answer: Scale repo-server replicas, tune caching, minimize expensive plugins, and reduce redundant rendering work
+    through sensible repo structure. Heavy manifest generation belongs on a diet.
+- question: How do you scale the application-controller in large environments?
+  answer: Tune reconciliation behavior, controller resources, and sharding strategies if supported by your design.
+    Large fleets benefit from distributing load rather than relying on one overworked controller instance.
+- question: What does high availability mean for ArgoCD?
+  answer: HA means running critical components with multiple replicas, ensuring backing dependencies are resilient,
+    and avoiding single points of failure in routing and persistence. You want the control plane to survive node
+    and pod failures gracefully.
+- question: Which ArgoCD components are usually scaled horizontally?
+  answer: argocd-server and repo-server are commonly scaled horizontally, and other controllers may also be replicated
+    depending on the component and architecture. HA guidance depends on the specific version and deployment mode.
+- question: Why does Redis availability matter in ArgoCD?
+  answer: Because Redis supports caching and coordination functions, degraded Redis can impact responsiveness and
+    some controller workflows. In large or critical environments, Redis should not be treated as a toy dependency.
+- question: What is a good disaster recovery strategy for ArgoCD?
+  answer: Keep all configuration declarative in Git, back up cluster registration and secrets, test reinstall procedures,
+    and verify that a fresh ArgoCD can reconstruct the desired state quickly. Recovery plans should be exercised,
+    not just admired in documentation.
+- question: What are good naming conventions for ArgoCD Applications?
+  answer: Names should make app purpose, environment, and sometimes cluster obvious at a glance. Consistency is
+    more important than artistry here because operators need to scan large application lists quickly.
+- question: What is a good repository layout for ArgoCD-managed environments?
+  answer: Use clear separation between reusable bases and environment-specific overlays, and make ownership obvious
+    by path. The best layout is one reviewers can understand without a treasure map.
+- question: Why should GitOps changes use pull requests and reviews?
+  answer: Reviews provide change control, peer validation, and an auditable approval trail before ArgoCD acts on
+    the new desired state. This is one of the biggest governance advantages of GitOps.
+- question: Why is branch protection important in GitOps repositories?
+  answer: Branch protection prevents unreviewed or direct pushes from changing production intent. Since Git drives
+    deployment, protecting Git is effectively protecting production.
+- question: What is a good emergency hotfix workflow with ArgoCD?
+  answer: Make the change in Git through an expedited but still traceable process, then let ArgoCD reconcile it.
+    Manual cluster edits should be the temporary exception, not the official plan.
+- question: How do you reconcile emergency manual changes back into Git?
+  answer: As soon as the incident is stabilized, capture the manual change in Git and let ArgoCD converge back to
+    declared state. Leaving the fix only in-cluster creates hidden drift and future confusion.
+- question: What is a common ArgoCD anti-pattern?
+  answer: A common anti-pattern is using ArgoCD while still relying on frequent manual kubectl edits in production.
+    That turns GitOps into “Git-ish” ops, which is considerably less fun than it sounds.
+- question: What is another common ArgoCD anti-pattern?
+  answer: Letting multiple applications own overlapping resources is a recipe for conflict, confusion, and unpredictable
+    syncs. Clear ownership boundaries are essential.
+- question: When should you split a large ArgoCD Application into smaller ones?
+  answer: Split applications when ownership differs, failure domains differ, sync timing differs, or troubleshooting
+    one big tree becomes painful. Smaller, coherent apps are usually easier to reason about.
+- question: When might a single larger ArgoCD Application be reasonable?
+  answer: A larger application can make sense when a tightly coupled stack must always move together and shares
+    the same owners, repo, lifecycle, and destination. The key is cohesion, not raw object count.
+- question: How does ArgoCD compare with Flux at a high level?
+  answer: ArgoCD emphasizes an integrated UI-driven experience with strong application-centric workflows, while
+    Flux leans toward modular controllers and Kubernetes-native resource composition. Both implement GitOps well,
+    but their operator ergonomics differ.
+- question: When is ArgoCD often preferred over Flux?
+  answer: ArgoCD is often preferred when teams want a rich UI, strong visual diffing, easy app management, and centralized
+    multi-cluster operations. It is especially attractive for platform teams serving many application owners.
+- question: When might Flux be preferred over ArgoCD?
+  answer: Flux may be preferred when teams want a controller toolkit model, tighter Helm-native workflows, or integrated
+    image automation patterns without relying on a central UI-centric platform.
+- question: How do you migrate from manual Helm usage to ArgoCD?
+  answer: First define the chart source and values declaratively in Git, then let ArgoCD render and manage the resulting
+    manifests. The big mindset shift is that Helm becomes a render engine, not the deployment authority.
+- question: How do you migrate from push-based CI/CD to ArgoCD?
+  answer: Move deployment intent into Git, adjust CI to build artifacts and update the repo instead of applying
+    to the cluster, then let ArgoCD take over reconciliation. This cleanly separates build from deploy.
+- question: What are good production best practices for ArgoCD?
+  answer: Use Projects and RBAC boundaries, secure repository and cluster credentials, protect Git branches, enable
+    observability, tune diff noise carefully, and keep as much configuration declarative as possible. The goal is
+    a calm control plane, not a heroic one.
+- question: What is the simplest explanation of ArgoCD for an interview?
+  answer: ArgoCD is a Kubernetes GitOps controller that continuously compares what should exist according to Git
+    with what actually exists in the cluster, then helps bring them back into alignment. It turns Git commits into
+    auditable deployment intent.

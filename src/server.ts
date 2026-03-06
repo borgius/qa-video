@@ -4,7 +4,7 @@ import { readdirSync, mkdirSync } from 'fs';
 import { createServer } from 'node:net';
 import { join, resolve } from 'path';
 import { concatenateAudioFiles } from './assembler.js';
-import { cachedPath, isCached, slug } from './cache.js';
+import { cachedPath, isCached, resolveOutputDir, slug } from './cache.js';
 import { generateTitle, topicFromFilename } from './metadata.js';
 import { parseYamlFile } from './parser.js';
 import { renderSlide } from './renderer.js';
@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 3001;
 
 let qaDir = resolve(process.cwd(), 'qa');
 let filterFile: string | undefined;
-const outputDir = resolve(process.cwd(), 'output');
+let outputDir = resolveOutputDir(qaDir);
 
 app.use(cors());
 app.use(express.json());
@@ -336,8 +336,13 @@ async function findAvailablePort(startPort: number, maxAttempts = 20): Promise<n
   throw new Error(`No available port found after trying ${startPort}–${startPort + maxAttempts - 1}`);
 }
 
-export async function startServer(port?: number, opts?: { qaDir?: string; filterFile?: string }): Promise<number> {
-  if (opts?.qaDir) qaDir = opts.qaDir;
+export async function startServer(port?: number, opts?: { qaDir?: string; filterFile?: string; outputDir?: string }): Promise<number> {
+  if (opts?.qaDir) {
+    qaDir = opts.qaDir;
+    outputDir = opts.outputDir ? opts.outputDir : resolveOutputDir(qaDir);
+  } else if (opts?.outputDir) {
+    outputDir = opts.outputDir;
+  }
   if (opts?.filterFile) filterFile = opts.filterFile;
   const requestedPort = port ?? Number(PORT);
   const listenPort = await findAvailablePort(requestedPort);

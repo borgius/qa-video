@@ -1,9 +1,37 @@
 import { createHash } from 'crypto';
 import { existsSync, readdirSync } from 'fs';
 import { unlink } from 'fs/promises';
-import { join } from 'path';
+import { dirname, join } from 'path';
 
-/** Short SHA-8 hash of content for cache keys */
+/**
+ * Walk up the directory tree from `startDir` looking for a `.git` directory.
+ * Returns the git root path, or `null` if not found.
+ */
+export function findGitRoot(startDir: string): string | null {
+  let dir = startDir;
+  while (true) {
+    if (existsSync(join(dir, '.git'))) return dir;
+    const parent = dirname(dir);
+    if (parent === dir) return null; // filesystem root
+    dir = parent;
+  }
+}
+
+/**
+ * Resolve the output directory for a given reference directory (the directory
+ * containing the YAML file or the QA files directory).
+ *
+ * Rules:
+ *   - If inside a git repo → `<git-root>/.qa`
+ *   - Otherwise           → `<referenceDir>/../.qa`  (sibling of the qa dir)
+ */
+export function resolveOutputDir(referenceDir: string): string {
+  const gitRoot = findGitRoot(referenceDir);
+  if (gitRoot) return join(gitRoot, '.qa');
+  return join(referenceDir, '..', '.qa');
+}
+
+
 export function sha(content: string): string {
   return createHash('sha256').update(content).digest('hex').substring(0, 8);
 }

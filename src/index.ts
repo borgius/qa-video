@@ -14,7 +14,7 @@ import { parseYamlFile } from './parser.js';
 import { generateTitle, generateDescription } from './metadata.js';
 import { runAuthFlow, getAuthenticatedClient } from './youtube-auth.js';
 import { uploadToYouTube, findVideoByShaTag, ensureVideoHasShaTag } from './uploader.js';
-import { sha } from './cache.js';
+import { sha, resolveOutputDir } from './cache.js';
 import { getDriver, listDrivers, driverNames } from './importers/index.js';
 
 const require = createRequire(import.meta.url);
@@ -31,14 +31,16 @@ function buildConfig(inputPath: string, opts: any): PipelineConfig {
   const inputName = basename(inputPath, '.yaml').replace(/\.yml$/, '');
   const outputPath = opts.output
     ? resolve(opts.output)
-    : join(dirname(inputPath), '..', 'output', `${inputName}.mp4`);
+    : opts.outputDir
+      ? join(resolve(opts.outputDir), `${inputName}.mp4`)
+      : join(resolveOutputDir(dirname(inputPath)), `${inputName}.mp4`);
 
   const outputDir = dirname(outputPath);
   mkdirSync(outputDir, { recursive: true });
 
   const tempDir = opts.tempDir
     ? resolve(opts.tempDir)
-    : join(dirname(outputPath), '.tmp', inputName);
+    : join(outputDir, '.tmp', inputName);
   mkdirSync(tempDir, { recursive: true });
 
   return {
@@ -81,6 +83,7 @@ sharedOptions(
     .description('Generate a video from a single YAML Q&A file')
     .requiredOption('-i, --input <path>', 'Path to YAML file')
     .option('-o, --output <path>', 'Output video file path')
+    .option('--output-dir <path>', 'Output directory (default: auto-resolved .qa/)')
 ).action(async (opts) => {
   try {
     const inputPath = resolve(opts.input);
@@ -326,7 +329,7 @@ program
         const inputName = basename(inputPath, '.yaml').replace(/\.yml$/, '');
         const tmpDir = opts.outputDir
           ? join(resolve(opts.outputDir), '.tmp', inputName)
-          : join(dirname(inputPath), '..', 'output', '.tmp', inputName);
+          : join(resolveOutputDir(dirname(inputPath)), '.tmp', inputName);
         targets.push(tmpDir);
       } else if (opts.dir) {
         const dirPath = resolve(opts.dir);
@@ -335,12 +338,12 @@ program
           const inputName = basename(file, '.yaml').replace(/\.yml$/, '');
           const tmpDir = opts.outputDir
             ? join(resolve(opts.outputDir), '.tmp', inputName)
-            : join(dirname(join(dirPath, file)), '..', 'output', '.tmp', inputName);
+            : join(resolveOutputDir(dirPath), '.tmp', inputName);
           targets.push(tmpDir);
         }
       } else {
-        // Default: clear all .tmp under output/
-        const defaultTmp = join(process.cwd(), 'output', '.tmp');
+        // Default: clear all .tmp under .qa/
+        const defaultTmp = join(resolveOutputDir(process.cwd()), '.tmp');
         targets.push(defaultTmp);
       }
 
@@ -425,7 +428,7 @@ function resolveUploadTarget(input: string): { videoPath: string; yamlPath?: str
   if (inputPath.endsWith('.yaml') || inputPath.endsWith('.yml')) {
     if (!existsSync(inputPath)) throw new Error(`Input file not found: ${inputPath}`);
     const inputName = basename(inputPath, '.yaml').replace(/\.yml$/, '');
-    const videoPath = join(dirname(inputPath), '..', 'output', `${inputName}.mp4`);
+    const videoPath = join(resolveOutputDir(dirname(inputPath)), `${inputName}.mp4`);
     return { videoPath, yamlPath: inputPath };
   }
 
@@ -504,7 +507,7 @@ program
   .action(async (opts) => {
     try {
       // Determine list of videos to upload
-      const inputArg = opts.input ?? 'output';
+      const inputArg = opts.input ?? resolveOutputDir(process.cwd());
       const resolvedInput = resolve(inputArg);
       let targets: { videoPath: string; yamlPath?: string }[];
 
@@ -768,6 +771,7 @@ program
   .option('-d, --dir <path>', 'Directory containing YAML files (default: qa/)')
   .option('-p, --port <number>', 'API port', '3001')
   .option('--web-port <number>', 'Web UI port', '5173')
+  .option('--output-dir <path>', 'Output directory for TTS/slide cache (default: auto-resolved .qa/)')
   .action(async (opts) => {
     try {
       // ── Resolve qaDir and optional filterFile ──
@@ -827,7 +831,8 @@ program
       const webDir = join(dirname(new URL(import.meta.url).pathname), '..', 'web');
 
       const { startServer } = await import('./server.js');
-      const actualApiPort = await startServer(apiPort, { qaDir: serveDir, filterFile });
+      const outputDir = opts.outputDir ? resolve(opts.outputDir) : undefined;
+      const actualApiPort = await startServer(apiPort, { qaDir: serveDir, filterFile, outputDir });
 
       const { spawn } = await import('node:child_process');
       const vite = spawn(

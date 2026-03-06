@@ -97,18 +97,18 @@ The `--from` flag is optional when the file extension uniquely identifies the fo
 qa-video auth
 
 # Upload a single video (any of these work)
-qa-video upload -i output/core-concepts.mp4
-qa-video upload -i output/core-concepts       # auto-detects .mp4
-qa-video upload -i qa/core-concepts.yaml      # resolves to output/core-concepts.mp4
+qa-video upload -i .qa/core-concepts.mp4
+qa-video upload -i .qa/core-concepts       # auto-detects .mp4
+qa-video upload -i qa/core-concepts.yaml   # resolves to .qa/core-concepts.mp4
 
 # Upload all videos in a directory
-qa-video upload -i output/
+qa-video upload -i .qa/
 
-# Upload all videos in output/ (default when no -i)
+# Upload all videos in .qa/ (default when no -i)
 qa-video upload
 
 # Customize metadata
-qa-video upload -i output/core-concepts.mp4 --privacy public --tags "devops,interview"
+qa-video upload -i .qa/core-concepts.mp4 --privacy public --tags "devops,interview"
 
 # Preview without uploading
 qa-video upload --dry-run
@@ -126,7 +126,7 @@ Before each upload you are prompted to edit the title and description inline (pr
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `-i, --input <path>` | `output/` | Video file, YAML file, or directory |
+| `-i, --input <path>` | `.qa/` | Video file, YAML file, or directory |
 | `-v, --video <path>` | *auto* | Explicit path to video file |
 | `--title <text>` | *auto from YAML* | Video title |
 | `--description <text>` | *auto from YAML* | Video description |
@@ -171,6 +171,7 @@ qa-video serve -i qa/core-concepts.yaml  # serve a single file
 | `-d, --dir <path>` | `qa/` | Directory containing YAML files |
 | `-p, --port <number>` | `3001` | API port |
 | `--web-port <number>` | `5173` | Web UI port |
+| `--output-dir <path>` | *auto-resolved `.qa/`* | Output directory for TTS/slide cache |
 
 ### Clear cached artifacts
 
@@ -184,6 +185,8 @@ qa-video clear -d qa/                 # clear caches for all files in dir
 
 | Option | Default | Description |
 |--------|---------|-------------|
+| `-o, --output <path>` | *auto-resolved* | Output video file path |
+| `--output-dir <path>` | *auto-resolved `.qa/`* | Output directory (overridden by `-o`) |
 | `--voice <name>` | `af_heart` | Kokoro TTS voice |
 | `--question-delay <sec>` | `2` | Silence after question speech |
 | `--answer-delay <sec>` | `3` | Silence after answer speech |
@@ -285,7 +288,7 @@ questions:
 
 ## Caching
 
-Artifacts (WAV audio, PNG slides, MP4 clips) are cached in `output/.tmp/` with SHA-based filenames. If the pipeline is interrupted, re-running reuses all previously generated artifacts. Only changed questions get regenerated. Use `--force` to bypass the cache or `clear` command to remove it.
+Artifacts (WAV audio, PNG slides, MP4 clips) are cached in `.qa/.tmp/` with SHA-based filenames. If the pipeline is interrupted, re-running reuses all previously generated artifacts. Only changed questions get regenerated. Use `--force` to bypass the cache or `clear` command to remove it.
 
 ## Output
 
@@ -294,7 +297,19 @@ Artifacts (WAV audio, PNG slides, MP4 clips) are cached in `output/.tmp/` with S
 - **Audio:** 384kbps stereo, 48kHz
 - **Optimized:** `-movflags +faststart`, `-tune stillimage`
 
-Videos are saved to `output/<filename>.mp4`.
+Videos are saved to `.qa/<filename>.mp4`.
+
+### Output directory resolution
+
+The `.qa` output folder is placed automatically:
+
+| Scenario | Output location |
+|----------|-----------------|
+| Inside a git repository | `<git-root>/.qa/` |
+| `-d <dir>` (no git repo) | sibling of the directory passed — `<dir>/../.qa/` |
+| `-i <file>` (no git repo) | sibling of the file's directory — `<dirname>/../.qa/` |
+
+You can always override with `-o <path>` (single file) or `--output-dir <path>` (batch/update).
 
 ## Architecture
 
