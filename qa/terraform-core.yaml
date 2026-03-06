@@ -1,0 +1,520 @@
+config:
+  name: "DevOps-Interview-Questions: Terraform Core"
+  description: Core Terraform concepts including infrastructure as code fundamentals, HCL syntax, providers, resources,
+    state management, modules, variables, expressions, built-in functions, and the essential CLI workflow.
+  questionDelay: 1
+  answerDelay: 1
+questions:
+  - question: What is Terraform?
+    answer: Terraform is an open-source infrastructure as code tool created by HashiCorp that lets you define, provision,
+      and manage infrastructure using a declarative configuration language called HCL. It supports hundreds of cloud
+      providers and services through a plugin-based provider system, enabling you to describe the desired state of your
+      infrastructure and have Terraform create, update, or destroy resources to match that state. Terraform is now
+      maintained as an open-core product under the BSL license alongside the fully open-source OpenTofu fork.
+  - question: What is Infrastructure as Code?
+    answer: Infrastructure as Code is the practice of defining and managing infrastructure through machine-readable
+      configuration files rather than manual processes or interactive tools. It applies software engineering principles
+      such as version control, code review, testing, and automation to infrastructure management. IaC enables
+      reproducibility so the same configuration always produces the same infrastructure, and provides a single source
+      of truth for what should exist in an environment, making it auditable and collaborative.
+  - question: What problem does Terraform solve?
+    answer: Before IaC tools like Terraform, infrastructure was provisioned manually through cloud consoles or ad-hoc
+      scripts, leading to configuration drift, undocumented changes, and environments that were impossible to reproduce
+      consistently. Terraform solves this by providing a unified workflow to manage infrastructure across multiple cloud
+      providers declaratively. It tracks the current state of infrastructure, shows a preview of what will change before
+      applying, and enables teams to collaborate through version-controlled configuration files.
+  - question: What are the benefits of Terraform over cloud-specific IaC tools?
+    answer: Terraform's provider-agnostic approach means a single tool and workflow manages AWS, Azure, GCP, Kubernetes,
+      databases, DNS, and hundreds of other services simultaneously. Teams only need to learn one language and one
+      workflow rather than separate tools for each provider. Terraform's declarative model means you describe what you
+      want rather than writing imperative scripts, and it automatically handles resource ordering and dependency
+      resolution. The large community and public Terraform Registry provide reusable modules for almost any
+      infrastructure pattern.
+  - question: What is HCL (HashiCorp Configuration Language)?
+    answer: HCL is the domain-specific language used by Terraform and other HashiCorp tools to write configuration files.
+      It is designed to be human-readable and machine-writable, combining the readability of JSON with additional
+      features like comments, references between values, and built-in functions. HCL files use the .tf extension and
+      support resource blocks, variable declarations, expressions, and function calls. An alternative JSON syntax is
+      available using .tf.json files for programmatic generation of Terraform configurations.
+  - question: What is the Terraform workflow?
+    answer: The core Terraform workflow consists of three steps. First, you write configuration files describing the
+      desired infrastructure. Second, you run terraform plan to preview what changes Terraform would make, showing which
+      resources will be created, modified, or destroyed. Third, you run terraform apply to execute those changes and
+      update the state file. Additional steps include terraform init to initialize the working directory and download
+      providers, and terraform destroy to tear down all managed resources.
+  - question: What does terraform init do?
+    answer: terraform init initializes a Terraform working directory by downloading and installing the required provider
+      plugins defined in required_providers blocks, downloading any referenced modules, configuring the backend for
+      remote state storage, and creating the .terraform directory to store downloaded plugins and modules. It must be
+      run before any other Terraform commands in a new directory or after adding new providers or modules. The
+      .terraform.lock.hcl file is created or updated to record the exact provider versions selected.
+  - question: What does terraform plan do?
+    answer: terraform plan reads the current configuration files, queries the configured backend for the current state,
+      and compares the desired state with the actual state of resources in the provider. It outputs a detailed diff
+      showing which resources will be created, updated, or destroyed and what their attributes will be after the
+      change. The plan does not make any changes to real infrastructure—it is a safe preview step. You can save a
+      plan to a file with -out=file.tfplan and pass it to apply to ensure exactly those changes are executed.
+  - question: What does terraform apply do?
+    answer: terraform apply executes the changes described in a Terraform plan, creating, modifying, or destroying
+      infrastructure resources to reach the desired state. When run without a saved plan file it generates a new plan
+      and prompts for confirmation before proceeding. You can skip the confirmation prompt with -auto-approve for
+      automation. After successfully applying, Terraform updates the state file to reflect the new infrastructure
+      state, which is used as the baseline for future plan and apply operations.
+  - question: What does terraform destroy do?
+    answer: terraform destroy creates and executes a plan to delete all resources managed by the current Terraform
+      configuration and removes them from the state file. It is the reverse of terraform apply and requires explicit
+      confirmation before proceeding. It is useful for tearing down temporary environments like staging or development
+      stacks. You can target specific resources with the -target flag. Individual resources can also be destroyed by
+      removing them from configuration and running terraform apply.
+  - question: What does terraform validate do?
+    answer: terraform validate checks the syntax and internal consistency of Terraform configuration files in the current
+      directory. It verifies that the HCL syntax is correct, that all required arguments are provided, that referenced
+      variables exist, and that values have the correct types. It does not contact any provider APIs or access remote
+      state, making it fast and suitable for CI pipelines. Validation does not guarantee that resources will be created
+      successfully, as that depends on provider-specific validation at apply time.
+  - question: What does terraform fmt do?
+    answer: terraform fmt rewrites Terraform configuration files to the canonical format defined by Terraform style
+      conventions, including indentation, spacing, and attribute alignment. Running it with -recursive formats all
+      subdirectories. The -check flag returns a non-zero exit code if any files need formatting, used in CI to enforce
+      standards without modifying files. Consistent formatting improves readability and reduces noise in code reviews
+      by ensuring all contributors write code in the same style.
+  - question: What is a Terraform provider?
+    answer: A Terraform provider is a plugin that enables Terraform to interact with a specific API, platform, or service.
+      Providers expose resources and data sources that Terraform can manage. For example, the AWS provider exposes
+      resources like aws_instance and aws_s3_bucket. Providers are downloaded during terraform init from the Terraform
+      Registry or custom registries and communicate with Terraform core via a gRPC-based plugin protocol. Each provider
+      is maintained separately and has its own versioning and documentation.
+  - question: How do you configure a provider in Terraform?
+    answer: Providers are configured in a provider block specifying the provider name and any required configuration
+      attributes like region, credentials, or API endpoints. Sensitive credentials are better passed through environment
+      variables to avoid storing them in configuration files. You declare provider requirements in a required_providers
+      block within a terraform block, specifying the source address and version constraints. Multiple configurations of
+      the same provider can coexist using provider aliases, enabling multi-region or multi-account deployments.
+  - question: What is a Terraform resource?
+    answer: A resource block describes a piece of infrastructure that Terraform manages, such as a virtual machine, a
+      database instance, a DNS record, or a Kubernetes namespace. Each resource has a type defined by the provider and
+      a local name used to reference it within the module. The resource block contains arguments that configure the
+      resource. Terraform creates, updates, or destroys the real-world object corresponding to the resource block to
+      make it match the declared configuration.
+  - question: What is a data source in Terraform?
+    answer: A data source allows Terraform to read information from external systems or existing resources that Terraform
+      does not manage. Data sources are declared with a data block and are read during the plan phase. Common uses
+      include looking up an existing VPC ID, fetching the latest AMI ID, reading a secret from Vault, or querying
+      account information from a cloud provider. Data sources are read-only and do not create or modify infrastructure,
+      making them essential for referencing pre-existing resources.
+  - question: What is Terraform state?
+    answer: Terraform state is a JSON file that records the mapping between resources defined in configuration and the
+      actual objects provisioned in the real world. It tracks resource metadata, current attribute values, and
+      dependency relationships. Terraform uses state to determine what changes are needed during plan by comparing the
+      desired configuration against the recorded state and the actual infrastructure. Without state, Terraform would have
+      no memory of what it previously created and would attempt to recreate everything on every apply.
+  - question: What is the Terraform state file?
+    answer: The state file is typically named terraform.tfstate and stored in JSON format. It contains a list of all
+      managed resources with provider-assigned IDs, all attribute values, and dependency metadata. The state file should
+      be treated as sensitive because it often contains secret values like passwords and API keys in plaintext. It
+      should never be committed to version control; instead, store it in a remote backend with access controls. The
+      state also contains a serial number that is incremented on every change to detect concurrent modifications.
+  - question: What is a remote backend in Terraform?
+    answer: A remote backend stores the Terraform state file in a shared, remote location rather than on the local
+      filesystem. This is essential for team collaboration because it ensures everyone works from the same state.
+      Popular remote backends include Amazon S3, Azure Blob Storage, Google Cloud Storage, and Terraform Cloud. Remote
+      backends also typically provide state locking to prevent simultaneous operations. The backend is configured in a
+      terraform block's backend stanza and initialized with terraform init.
+  - question: What are the most common Terraform backends?
+    answer: The S3 backend stores state in an S3 bucket and optionally uses DynamoDB for state locking, making it the
+      most popular choice for AWS users. Terraform Cloud provides a managed backend with built-in locking, versioning,
+      access controls, and run history. Azure RM stores state in Azure Blob Storage, and GCS stores it in Google Cloud
+      Storage. The local backend is the default and stores state on the filesystem, suitable only for development and
+      learning environments.
+  - question: What is state locking in Terraform?
+    answer: State locking prevents multiple concurrent Terraform operations from modifying the state file simultaneously,
+      which could cause corruption or conflicts. When enabled, any operation that modifies state acquires a lock before
+      starting and releases it when done. The S3 backend uses DynamoDB for locking, and Terraform Cloud handles locking
+      natively. If a process crashes while holding a lock, you can force-release it with terraform force-unlock using
+      the lock ID shown in the error message. Locking is critical for team environments.
+  - question: What is a Terraform module?
+    answer: A module is a container for a group of related resources that are managed together. Every Terraform
+      configuration is a module—the working directory where you run Terraform is the root module. Child modules are
+      invoked from a root module using a module block and encapsulate reusable infrastructure patterns such as a VPC
+      module or a Kubernetes cluster module. Modules accept input variables, return output values, and can be sourced
+      from local directories, the Terraform Registry, Git repositories, or other version control systems.
+  - question: What is the difference between a root module and a child module?
+    answer: The root module is the main Terraform configuration in the working directory where you run Terraform commands
+      and the entry point into the module tree. Child modules are directories or remote sources referenced by a module
+      block from the root or another module. Child modules encapsulate reusable configuration and expose a defined
+      interface through input variables and output values. A root module orchestrates multiple child modules and wires
+      their inputs and outputs together to build complex infrastructure from composable reusable pieces.
+  - question: How do you call a child module in Terraform?
+    answer: You call a child module using a module block with a name and a source argument pointing to the module
+      location—either a local path like ./modules/vpc, a Terraform Registry address like hashicorp/consul/aws, or a
+      Git URL. Input variables defined by the module are passed as arguments in the block. The module's output values
+      can be referenced as module.name.output_name in the parent configuration. You must run terraform init after
+      adding or changing module sources to download or update them.
+  - question: What are input variables in Terraform?
+    answer: Input variables are parameters that allow a Terraform configuration or module to accept values from outside
+      without modifying the source code. They are declared with a variable block specifying the name and optionally
+      the type, default value, description, and validation rules. Values can be provided via .tfvars files, environment
+      variables prefixed with TF_VAR_, the -var flag on the command line, or interactive prompts. Variables make
+      modules reusable and configurations adaptable to different environments.
+  - question: What are output values in Terraform?
+    answer: Output values are declared with an output block and expose specific values from a module's resources or data
+      sources to the parent module, the command line, or other Terraform configurations via remote state. They are
+      useful for passing information between modules such as a VPC ID from a network module to a compute module.
+      Marking an output as sensitive = true prevents its value from appearing in plan and apply output, though it is
+      still stored in state and readable via terraform output.
+  - question: What are local values in Terraform?
+    answer: Local values are named computed values defined in a locals block that can be referenced throughout a module.
+      They are similar to temporary variables in programming—useful for avoiding repetition, simplifying complex
+      expressions, and giving meaningful names to intermediate computations. Unlike input variables, locals cannot be
+      set from outside the module; they are computed from other expressions within the module. A module can have
+      multiple locals blocks, and they support all Terraform expression types and functions.
+  - question: What is the difference between input variables and local values?
+    answer: Input variables are the public interface of a module—they receive values from outside and make the module
+      configurable by callers. Local values are internal computations within a module and cannot be set from outside.
+      Input variables have type annotations, defaults, and validation rules, while local values are pure computed
+      expressions. Use input variables when a value should be configurable by the caller. Use locals when you want
+      to factor out a repeated expression, compute a derived value, or give a complex expression a readable name.
+  - question: What are the primitive variable types in Terraform?
+    answer: Terraform has three primitive types. string represents text values, number represents numeric values
+      including both integers and floats, and bool represents boolean true or false values. Terraform automatically
+      converts between compatible primitive types in many contexts—for example, the string "true" is converted to
+      the boolean true when a bool is expected. When no type constraint is specified, Terraform infers the type from
+      the assigned value. Type constraints make variable interfaces explicit and self-documenting for module users.
+  - question: What are the collection variable types in Terraform?
+    answer: Terraform has three collection types. list is an ordered sequence of values of the same type, accessed by
+      zero-based index. map is a collection of key-value pairs where values share the same type, accessed by string
+      key. set is an unordered collection of unique values of the same type. These types accept a type argument such
+      as list(string) or map(number). Collection types enforce that all elements have the same type, unlike structural
+      types like object and tuple which allow different types per element.
+  - question: What are structural variable types in Terraform?
+    answer: Structural types allow grouping multiple values of different types. object requires a set of named attributes
+      each with their own type, for example object({name=string, port=number}). tuple is an ordered sequence where
+      each position has its own type, like tuple([string, number, bool]). The any type constraint accepts any type
+      and is useful when writing generic modules. Structural types enable rich, self-documenting variable interfaces
+      that validate complex input structure at plan time, catching misconfigurations before resources are applied.
+  - question: How do you set variable values in Terraform?
+    answer: Variable values can be set in multiple ways with a defined precedence order. Environment variables named
+      TF_VAR_name have the lowest precedence. The terraform.tfvars file is loaded automatically if present. Files
+      named *.auto.tfvars are loaded automatically in alphabetical order. Files specified with -var-file on the
+      command line are applied next. Individual -var flags have the highest precedence. Interactive prompts handle
+      variables with no default and no other value provided. Terraform Cloud also supports workspace variables
+      and variable sets that apply across multiple workspaces.
+  - question: What is terraform.tfvars?
+    answer: terraform.tfvars is a variable definitions file that Terraform automatically loads when present in the
+      working directory. It contains variable assignments in HCL syntax and is commonly used to provide
+      environment-specific values without modifying the main configuration. Files ending in .auto.tfvars are also
+      automatically loaded. Additional .tfvars files can be specified explicitly with the -var-file flag. The .tfvars
+      file should not be committed to version control if it contains sensitive values like passwords or API keys.
+  - question: What is the count meta-argument?
+    answer: The count meta-argument creates multiple copies of a resource or module from a single block by specifying
+      the number of instances to create. Within the block, count.index references the zero-based index of each
+      instance, useful for giving each instance a unique name. Resources created with count are addressed as
+      resource.type.name[index]. count is best used when all instances are nearly identical and the number is fixed
+      and known at plan time. Its limitation is that removing an element from the middle renumbers subsequent
+      instances, triggering unnecessary updates or replacements.
+  - question: What is the for_each meta-argument?
+    answer: for_each creates multiple instances of a resource or module from a map or set of strings, one instance
+      per element. Each instance is keyed by the map key or set value, accessible as each.key and each.value within
+      the block. Resources are addressed as resource.type.name["key"]. for_each is preferred over count because
+      adding or removing elements does not affect other instances—each is identified by a stable key rather than an
+      index. The entire set or map must be known at plan time; for_each cannot use values that depend on apply-time
+      results.
+  - question: What is the difference between count and for_each?
+    answer: count creates instances identified by a sequential integer index, meaning inserting or deleting items in
+      the middle causes all subsequent instances to be reassigned, potentially triggering unexpected updates or
+      replacements. for_each uses stable string keys so the identity of each instance does not change when the
+      collection changes. for_each requires a map or set, giving each instance a meaningful identity. count is
+      simpler for fixed-number replication while for_each is better when managing collections where items have
+      distinct identities or can be added and removed independently.
+  - question: What is the depends_on meta-argument?
+    answer: depends_on adds explicit dependencies between resources or modules when Terraform cannot automatically
+      infer them from configuration references. Terraform normally builds a dependency graph from references between
+      resources, but sometimes a resource depends on the side effects of another—for example, an IAM policy must be
+      attached before a role that requires it is usable. depends_on accepts a list of resource references and forces
+      those to be applied before the current resource. It should be used sparingly as it prevents parallelism and
+      slows execution time.
+  - question: What is the lifecycle block in Terraform?
+    answer: The lifecycle block is a meta-argument that customizes how Terraform manages the lifecycle of a resource.
+      It supports several settings. create_before_destroy changes the default destroy-then-create sequence to
+      minimize downtime. prevent_destroy causes an error if a plan would destroy the resource, protecting critical
+      infrastructure. ignore_changes lists attributes whose real-world changes Terraform should ignore after initial
+      creation. replace_triggered_by specifies other resources that trigger replacement of this one. precondition
+      and postcondition add validation logic before and after resource operations.
+  - question: What is create_before_destroy in Terraform?
+    answer: create_before_destroy is a lifecycle setting that changes the default replacement behavior from destroying
+      the old resource first to creating the replacement before destroying the old one. This minimizes downtime for
+      resources like load balancers, SSL certificates, and DNS records. When enabled, Terraform creates the new
+      resource, updates references to point to it, and then destroys the old one. This may require resources to use
+      unique identifiers separate from names to avoid naming conflicts during the transition period.
+  - question: What is prevent_destroy in Terraform?
+    answer: prevent_destroy is a lifecycle setting that causes Terraform to error if the execution plan would destroy
+      the protected resource. It protects critical resources like production databases, S3 buckets containing
+      important data, or DNS zones from accidental deletion. When set to true, any change that would result in
+      destruction or any explicit terraform destroy command targeting it will fail with a clear error. To actually
+      destroy the resource, you must first remove the prevent_destroy setting and apply, then destroy.
+  - question: What is ignore_changes in Terraform?
+    answer: ignore_changes is a lifecycle setting that tells Terraform to ignore changes to specified attributes when
+      deciding whether to update a resource. After the resource is initially created, Terraform will not detect or
+      report changes to those attributes as drift or plan updates. This is useful for attributes that change outside
+      Terraform control, such as auto-scaling group sizes managed by autoscaling policies, tags added by
+      organizational tools, or passwords rotated by external processes. Using all as the value ignores all attribute
+      changes after initial creation.
+  - question: What are Terraform expressions?
+    answer: Expressions in Terraform compute or reference values within configuration. The simplest expressions are
+      literal values like strings, numbers, and booleans. References like var.name, resource.type.name.attribute,
+      and module.name.output access named values. Template strings use ${} interpolation. Operators perform
+      arithmetic, comparison, and logical operations. Conditional expressions use ternary syntax. For expressions
+      iterate over collections. Splat expressions extract lists of attributes. Function calls invoke built-in
+      functions. Expressions can be composed arbitrarily for complex transformations across any Terraform value type.
+  - question: What is string interpolation in Terraform?
+    answer: String interpolation embeds expressions within a string literal using ${expression} syntax, converting the
+      expression result to a string. For example, "Hello, ${var.name}!" produces a greeting including the variable
+      value. Template directives use %{} syntax for control flow within strings, such as %{for item in list}
+      ${item}%{endfor} to build repeated strings, or %{if condition}text%{endif} for conditional text. Heredoc
+      strings using the <<-EOF syntax allow multi-line strings with full interpolation support.
+  - question: What is a conditional expression in Terraform?
+    answer: A conditional expression evaluates a boolean condition and returns one of two result values using
+      ternary syntax. The condition must evaluate to a bool and both result expressions must be of compatible
+      types. Conditional expressions are commonly used to vary resource arguments based on input variables,
+      for example selecting a large instance type in production and a small one otherwise. They can also
+      conditionally enable optional features, set module count to zero to disable a component, or choose
+      between alternative configurations entirely based on environment or other input values.
+  - question: What is a for expression in Terraform?
+    answer: A for expression transforms a collection by iterating over its elements and producing a new collection.
+      The list form produces a new list by applying an expression to each element. The map form produces a new
+      map by specifying a key expression and value expression for each element of the input. A filter condition
+      can be appended with an if clause to include only matching elements. For expressions are used to transform
+      variables before passing them to resources, compute derived collections, and reshape data structures such
+      as extracting IDs from a list of objects or filtering a map to entries matching a condition.
+  - question: What are Terraform built-in functions?
+    answer: Terraform provides a rich set of built-in functions for transforming and working with values. String
+      functions include format, trimspace, upper, lower, replace, and split. Collection functions include length,
+      concat, flatten, merge, toset, tolist, tomap, lookup, keys, values, zipmap, and element. Encoding functions
+      include jsonencode, jsondecode, yamlencode, and base64encode. Filesystem functions include file, filebase64,
+      and templatefile. Math functions include min, max, abs, and ceil. Functions cannot be user-defined in HCL;
+      providers can contribute additional functions via provider-defined functions in newer Terraform versions.
+  - question: What is the Terraform Registry?
+    answer: The Terraform Registry at registry.terraform.io is the official public repository for Terraform providers
+      and modules. It hosts thousands of providers maintained by HashiCorp and the community, and thousands of
+      reusable modules for common infrastructure patterns. You reference Registry modules directly in module source
+      arguments using the format namespace/module/provider. The Registry displays documentation, input variables,
+      outputs, and usage examples. Terraform Cloud and Enterprise also support a private module registry for internal
+      organization modules that are not published publicly.
+  - question: What is required_providers in Terraform?
+    answer: The required_providers block inside a terraform block declares the providers a module depends on, specifying
+      the source address and version constraints for each. This enables Terraform to download the correct provider
+      versions during init and locks them in the dependency lock file. The source attribute uses the format
+      registry_host/namespace/provider_name, for example registry.terraform.io/hashicorp/aws. Version constraints
+      support operators like =, !=, >=, <=, and the pessimistic constraint ~> which allows only the rightmost version
+      component to increment.
+  - question: What is .terraform.lock.hcl?
+    answer: The dependency lock file .terraform.lock.hcl records the specific provider versions and their checksums
+      selected during terraform init. It ensures that everyone working with the same configuration uses identical
+      provider versions, preventing problems caused by provider updates between developers. The lock file should be
+      committed to version control. When you run terraform init with an existing lock file, Terraform uses the locked
+      versions. You can upgrade provider versions with terraform init -upgrade, which updates the lock file to the
+      newest versions satisfying the version constraints.
+  - question: What are Terraform workspaces?
+    answer: Terraform workspaces allow a single configuration to manage multiple separate state files, each with its
+      own isolated state. This enables the same configuration to manage different environments like dev, staging, and
+      production. The current workspace name is accessible via the terraform.workspace expression. CLI workspaces are
+      created with terraform workspace new and selected with terraform workspace select. Using separate directories
+      or Terraform Cloud workspaces is often preferred over CLI workspaces for environment management because it
+      provides better isolation and clearer separation of concerns.
+  - question: What does terraform output do?
+    answer: terraform output displays the values of output variables defined in the configuration. Running it without
+      arguments shows all non-sensitive outputs defined in the root module. You can retrieve a specific output's
+      value with terraform output name. The -json flag formats all output as JSON for scripting. The -raw flag
+      prints string values directly without quotes, useful for shell scripting. Outputs are stored in state and
+      visible via terraform show. Sensitive outputs are redacted from display unless specifically queried by exact
+      name.
+  - question: What does terraform show do?
+    answer: terraform show displays the current state or a saved plan file in human-readable format. Running it without
+      arguments shows the current state including all managed resources and their attribute values. Running terraform
+      show filename.tfplan displays the saved plan showing proposed changes. The -json flag produces machine-readable
+      JSON output useful for programmatic processing and CI integration. The JSON plan format contains detailed
+      information about resource changes, before and after attribute values, and the action type for each resource.
+  - question: What is terraform import?
+    answer: terraform import brings existing infrastructure created outside Terraform under Terraform management by
+      associating it with a resource block in configuration and creating the corresponding state entry. You specify
+      the resource address and the provider-specific resource ID. After import, you must ensure the configuration
+      matches the actual resource attributes to avoid unintended changes. Terraform 1.5+ supports import blocks in
+      configuration for declarative import, and -generate-config-out can auto-generate resource configuration from
+      an existing resource's current state.
+  - question: What are Terraform provisioners?
+    answer: Provisioners are a mechanism for executing scripts or commands on local or remote machines as part of
+      resource creation or destruction. The local-exec provisioner runs a command on the machine running Terraform.
+      The remote-exec provisioner runs commands on the created resource over SSH or WinRM. The file provisioner
+      copies files to a remote resource. Provisioners are considered a last resort because they introduce imperative
+      logic, make plans less predictable, and can leave resources in inconsistent states if they fail. Cloud-init,
+      user data, or configuration management tools are preferred alternatives.
+  - question: What is the null_resource in Terraform?
+    answer: The null_resource is a resource with no provider-defined behavior that exists only in Terraform state
+      and takes no real-world action itself. Its usefulness comes from provisioners and the triggers argument.
+      When the values in triggers change, the resource is recreated, rerunning any attached provisioners. This
+      enables running scripts in response to configuration changes that would not otherwise trigger resource updates.
+      The terraform_data resource introduced in Terraform 1.4 is the modern replacement for null_resource and does
+      not require the separate hashicorp/null provider.
+  - question: What is the terraform_remote_state data source?
+    answer: The terraform_remote_state data source reads the output values from another Terraform state file stored
+      in a remote backend. This enables cross-stack references where one Terraform deployment reads outputs from
+      another without tightly coupling configurations. You specify the backend type and configuration, then access
+      outputs via data.terraform_remote_state.name.outputs.output_name. This data source requires read access to
+      the remote state backend. For better decoupling, external systems like AWS SSM Parameter Store or Terraform
+      Cloud workspace outputs are sometimes preferred alternatives.
+  - question: What is a sensitive output in Terraform?
+    answer: Marking an output as sensitive = true prevents Terraform from displaying its value in plan and apply
+      output, showing a redacted placeholder instead. It does not encrypt the value—it is still stored in plaintext
+      in the state file and readable via terraform output name. Marking an output sensitive also propagates
+      sensitivity, meaning any resource attribute that references a sensitive output is also treated as sensitive
+      in plan output. This reduces the risk of accidentally exposing secrets in logs and terminal output during CI.
+  - question: What is a resource address in Terraform?
+    answer: A resource address uniquely identifies a specific resource instance within Terraform state. For a simple
+      resource the address is type.name, for example aws_instance.web. With count, instances are addressed as
+      type.name[index] like aws_instance.web[0]. With for_each, instances are addressed as type.name["key"] like
+      aws_instance.web["us-east-1a"]. Module resources are prefixed with module.module_name., for example
+      module.vpc.aws_subnet.public[0]. Resource addresses are used with -target, state commands, moved blocks,
+      and import blocks.
+  - question: What is the moved block in Terraform?
+    answer: The moved block enables safe refactoring of Terraform configurations without destroying and recreating
+      resources. When you rename a resource, move it into a module, or restructure configuration, you add a moved
+      block specifying the from and to addresses. Terraform records the move in state so the resource at the old
+      address is tracked under the new address. This allows refactoring infrastructure code without disrupting
+      running resources. Moved blocks should be kept for one apply cycle to update state and then can be safely
+      removed from configuration.
+  - question: What is terraform graph?
+    answer: terraform graph generates a visual representation of the dependency graph for the current configuration
+      in DOT format, which can be rendered by Graphviz with a command like dot -Tpng. The graph shows each resource
+      as a node and dependencies as directed edges, making it easy to understand the order in which resources will
+      be created and the relationships among them. It can show the destroy graph with -type=destroy. Understanding
+      the dependency graph is helpful for debugging unexpected plan outputs and understanding execution order.
+  - question: What is parallelism in Terraform?
+    answer: Terraform walks the dependency graph and performs operations on independent resources in parallel to speed
+      up execution. By default, Terraform performs up to ten operations simultaneously. You can adjust this with
+      -parallelism=n. Increasing parallelism can speed up large deployments but may trigger API rate limits from
+      cloud providers. Decreasing it helps in rate-limited environments. Dependencies enforce ordering regardless of
+      parallelism—a resource is not applied until all its declared and inferred dependencies complete successfully.
+  - question: What are Terraform state commands?
+    answer: Terraform provides several state manipulation commands for advanced use cases. terraform state list shows
+      all resources tracked in state. terraform state show resource.address displays all attributes of a specific
+      resource. terraform state mv moves a resource to a new address for renaming or restructuring. terraform state rm
+      removes a resource from state without destroying it in the real world. terraform state pull and push read and
+      write state directly. These commands should be used carefully as incorrect usage can corrupt state or cause
+      resource orphaning.
+  - question: What is the difference between terraform apply -replace and terraform taint?
+    answer: terraform taint was the legacy command that marked a resource as needing replacement by flagging it in
+      state, causing the next plan to propose destroying and recreating it. It was deprecated in Terraform 0.15.2
+      in favor of the -replace flag on plan and apply commands. For example, terraform apply -replace="aws_instance.
+      web" plans and applies a replacement in one step. The -replace flag is cleaner because the replacement intent
+      is visible in the plan output reviewed before any state modification occurs.
+  - question: What is terraform console?
+    answer: terraform console opens an interactive REPL for evaluating Terraform expressions. You can test built-in
+      functions, inspect variable values, evaluate expressions referencing existing state, and experiment with
+      complex transformations before embedding them in configuration. It reads the current state and variables so
+      it can reference actual resource attributes and variable values. Expressions are typed interactively and their
+      evaluated results are printed immediately. It is a powerful debugging and exploration tool for complex
+      expressions and data transformations.
+  - question: What is a precondition in Terraform?
+    answer: A precondition is a validation check added to a resource, data source, or output using a lifecycle
+      precondition block. It specifies a condition expression that must be true before the object is used, and an
+      error message displayed when the condition fails. Preconditions are evaluated during the plan phase before the
+      resource is applied. They validate that inputs meet required invariants, such as ensuring a selected instance
+      type is large enough for the workload, providing clear actionable error messages before any changes are made.
+  - question: What is a postcondition in Terraform?
+    answer: A postcondition is a validation check that runs after a resource is applied or a data source is read,
+      verifying the result meets expected conditions. For example, confirming a provisioned database has the required
+      version or a data source lookup returned a non-empty result. Postconditions are declared in a lifecycle
+      postcondition block with a condition and error_message. They detect situations where the provider created the
+      resource but with different attributes than expected, providing early detection of infrastructure misconfiguration.
+  - question: What is the check block in Terraform?
+    answer: The check block, introduced in Terraform 1.5, defines assertions about infrastructure evaluated at the
+      end of every apply that do not fail the plan or apply if they do not pass. Unlike preconditions and
+      postconditions, check blocks issue warnings rather than errors, making them suitable for health checks and
+      configuration validations that should be monitored without blocking deployment. A check block can include a
+      scoped data source used only within the check and one or more assert blocks with conditions and error messages.
+  - question: What is the terraform_data resource?
+    answer: The terraform_data resource, introduced in Terraform 1.4 as part of the built-in terraform provider, is
+      the modern replacement for null_resource. It stores arbitrary values in state and triggers re-execution when
+      the triggers_replace input changes. Unlike null_resource which requires the hashicorp/null provider,
+      terraform_data is built directly into Terraform core and requires no additional provider installation.
+      It is used for running provisioners, creating dependencies on computed data, and triggering side effects based
+      on configuration changes.
+  - question: What are ephemeral resources in Terraform?
+    answer: Ephemeral resources, introduced in Terraform 1.10, represent values available only during a Terraform
+      run and are never stored in state. They are declared with ephemeral blocks and are intended for sensitive data
+      that should not persist—such as short-lived Vault credentials or temporary authentication tokens. The values
+      are available during plan and apply for use in resource configurations but are discarded afterward, never
+      appearing in state files or plan output. This is a significant security improvement for workflows that must
+      avoid persisting secrets in state.
+  - question: What is the import block in Terraform?
+    answer: The import block, introduced in Terraform 1.5, provides a declarative way to bring existing resources
+      under Terraform management. Instead of an imperative terraform import command, you add an import block to
+      configuration specifying the resource address and provider-specific ID. This makes imports reviewable,
+      version-controlled, and automatable as part of the normal plan and apply cycle. When combined with
+      -generate-config-out, Terraform can automatically generate the resource configuration from the existing
+      resource's current state, greatly simplifying adoption of pre-existing infrastructure.
+  - question: What is version pinning in Terraform?
+    answer: Version pinning restricts provider and module versions to specific ranges to ensure consistent and
+      predictable behavior across all environments. In required_providers, you specify constraints like version =
+      "~> 5.0" to allow only patch updates within 5.x, or version = ">= 4.0, < 6.0" for an explicit range. The
+      .terraform.lock.hcl file locks the exact version selected. Pinning prevents unexpected breaking changes from
+      provider major version releases while still allowing security patches within the pinned range.
+  - question: What is the splat expression in Terraform?
+    answer: A splat expression is shorthand for extracting a specific attribute from all elements of a list. The
+      legacy splat [*] syntax accesses all elements of a list, for example aws_instance.web[*].id returns a list
+      of all instance IDs when aws_instance.web uses count or for_each. Splat expressions can traverse nested
+      attributes, like aws_instance.web[*].network_interface[0].private_ip. They are commonly used to collect
+      lists of IDs or other attributes from multiple resource instances to pass to another resource expecting a
+      list.
+  - question: What is the templatefile function in Terraform?
+    answer: The templatefile function renders a file as a template, substituting variables defined in a map passed
+      as the second argument. The template uses the same HCL interpolation syntax. For example, templatefile(
+      "user_data.sh.tpl", { db_host = var.db_host }) renders a shell script template with the database hostname
+      substituted. This is useful for generating user data scripts, configuration files, or any text content
+      needing variable substitution. It is the preferred technique for complex multiline content with dynamic
+      values in Terraform.
+  - question: What is the jsonencode function in Terraform?
+    answer: jsonencode converts a Terraform value to a JSON-formatted string. It supports all Terraform types
+      including objects, maps, lists, and primitive values. The inverse function jsondecode parses a JSON string
+      and returns the corresponding Terraform value. jsonencode is commonly used to generate JSON policy documents,
+      configuration blobs, or resource attributes that expect a JSON string rather than a structured value. Using
+      jsonencode instead of heredoc JSON strings enables IDE completion, type validation, and makes the structure
+      explicit and refactorable.
+  - question: What is the lookup function in Terraform?
+    answer: The lookup function retrieves a value from a map given a key, with an optional default value if the key
+      does not exist. The syntax is lookup(map, key, default). If no default is provided and the key is missing,
+      an error occurs. This is useful for conditional configuration based on environment, such as lookup(local.
+      instance_types, var.environment, "t3.micro") to get an environment-specific instance type with a sensible
+      fallback. The direct subscript syntax map[key] is preferred when the key's existence is guaranteed by the
+      data structure.
+  - question: What is the flatten function in Terraform?
+    answer: The flatten function takes a list potentially containing nested lists and returns a single flat list by
+      merging all nested lists into one level. For example, flatten([[1, 2], [3, 4]]) returns [1, 2, 3, 4]. It is
+      useful when module for_each or resource outputs produce lists of lists that need to be combined for another
+      resource. flatten can handle mixed nesting depths. It is commonly used with for expressions to produce flat
+      collections from complex nested data structures returned by modules.
+  - question: What is the merge function in Terraform?
+    answer: The merge function takes multiple maps and returns a single map containing all key-value pairs from all
+      inputs. If the same key appears in multiple maps, the value from the last map containing that key wins.
+      merge is commonly used to combine a default set of tags with resource-specific tags—for example, merge(
+      local.common_tags, {Name = "web-server"}). It is also used to layer defaults with overrides to build final
+      configuration maps for resource arguments that accept map types.
+  - question: What is the zipmap function in Terraform?
+    answer: The zipmap function constructs a map from a list of keys and a list of values of equal length. For
+      example, zipmap(["a", "b"], [1, 2]) returns {a = 1, b = 2}. It is useful when you have two separate lists
+      that represent keys and values of a desired map, such as a list of subnet names and a list of corresponding
+      subnet IDs. zipmap is commonly paired with for expressions and other collection functions to reshape data
+      structures when building resource configurations.
+  - question: What is the toset function in Terraform?
+    answer: The toset function converts a list to a set, removing duplicate values and losing order information.
+      Sets are required by the for_each meta-argument and some resource arguments. toset is commonly used to
+      deduplicate a list before using it with for_each, ensuring each value appears exactly once. For example,
+      for_each = toset(var.availability_zones) creates one resource instance per unique availability zone. Note
+      that sets are unordered, so you cannot rely on the order of iteration when using sets with for_each.
+  - question: What is required_version in Terraform?
+    answer: The required_version setting inside a terraform block specifies the version range of the Terraform CLI
+      compatible with the configuration. If the running version does not satisfy the constraint, terraform init and
+      plan refuse to proceed with an error. This prevents accidentally running an incompatible version of Terraform
+      against a configuration written for a different release. Setting required_version is best practice in all
+      production configurations to make compatibility requirements explicit and machine-enforced, preventing subtle
+      bugs from version mismatches between environments.

@@ -1,0 +1,521 @@
+config:
+  name: "DevOps-Interview-Questions: Terraform Advanced"
+  description: Advanced Terraform topics including state management strategies, Terraform Cloud, modules patterns,
+    complex expressions, dynamic blocks, policy as code, testing, provider aliases, CI/CD integration, and ecosystem tools.
+  questionDelay: 1
+  answerDelay: 1
+questions:
+  - question: What is state drift in Terraform?
+    answer: State drift occurs when the real-world infrastructure differs from what is recorded in the Terraform state
+      file, typically caused by manual changes made through cloud consoles, CLI tools, or other automation outside
+      Terraform. Running terraform plan detects drift by comparing the current state of resources via provider APIs
+      against the last known state. You can reconcile drift by running terraform apply to enforce the desired
+      configuration, or by updating the configuration to match intentional manual changes and running terraform
+      refresh-only to update state without making infrastructure changes.
+  - question: What is terraform plan -refresh-only?
+    answer: The -refresh-only flag on terraform plan and apply creates a plan that only updates the state file to
+      match the current real-world state of resources, without proposing any configuration-driven changes. This is
+      valuable for importing drift discovered by out-of-band changes that you want to acknowledge rather than revert.
+      It effectively performs the refresh phase of a normal plan and shows you what has changed externally. Running
+      terraform apply -refresh-only updates state to reflect those external changes without modifying infrastructure.
+  - question: How do you move a resource between Terraform state files?
+    answer: Moving a resource between state files requires removing it from the source state and adding it to the
+      destination state. You run terraform state rm on the source to remove the resource without destroying it, then
+      run terraform import in the destination configuration to bring the existing resource under management. The
+      modern approach uses a combination of moved blocks within a configuration refactor. For large-scale migrations,
+      terraform state pull and push can manipulate the raw state JSON, but this is risky and requires careful state
+      version management and locking.
+  - question: What is terraform state mv?
+    answer: terraform state mv moves a resource or module from one address to another within the same state file.
+      It is used when you rename a resource in configuration, restructure configuration into or out of modules, or
+      change count to for_each on a resource. Without state mv, Terraform would plan to destroy the resource at
+      the old address and create a new one at the new address, causing unnecessary disruption. The moved block in
+      configuration is the preferred declarative alternative to terraform state mv for most refactoring scenarios
+      as it can be reviewed and version-controlled.
+  - question: What is terraform state rm?
+    answer: terraform state rm removes one or more resources from the Terraform state file without destroying the
+      actual infrastructure. It is used when you want Terraform to stop managing a resource—for example, when
+      taking over a resource with a different Terraform configuration, deliberately orphaning resources during
+      decommissioning, or recovering from state corruption. After running state rm, Terraform will no longer track
+      or update the resource. You can run terraform import later to bring it back under management in a different
+      configuration if needed.
+  - question: What is partial backend configuration in Terraform?
+    answer: Partial backend configuration allows you to specify some backend configuration in the backend block in
+      code while providing the rest at terraform init time using -backend-config flags or a separate configuration
+      file. This is useful for keeping sensitive values like access keys out of version control, or for reusing
+      the same Terraform configuration across multiple environments where backend parameters differ, such as
+      different S3 buckets or workspace names. The partial configuration must include at least the backend type;
+      all other parameters can be supplied externally.
+  - question: What is the S3 backend configuration for Terraform?
+    answer: The S3 backend stores state in an Amazon S3 bucket. Key configuration parameters include bucket, key
+      (the path within the bucket), and region. Enabling server-side encryption with encrypt = true secures the
+      state at rest. The dynamodb_table parameter specifies a DynamoDB table for state locking and consistency
+      checking—the table must have a partition key named LockID of type String. Versioning should be enabled on
+      the S3 bucket to protect against accidental state deletion. IAM permissions must allow the required S3 and
+      DynamoDB operations for Terraform to function.
+  - question: What is Terraform Cloud?
+    answer: Terraform Cloud is HashiCorp's managed service for Terraform that provides remote state storage, remote
+      plan and apply execution, a private module registry, policy enforcement with Sentinel, team and access
+      management, cost estimation, audit logging, and integrations with version control systems. It enables
+      collaborative Terraform workflows where plans are triggered by code changes, reviewed via pull request
+      integration, and applied in a governed manner. Terraform Cloud also provides workspaces, variable management,
+      and run history. It is available as a free tier and paid plans with advanced features.
+  - question: What is the difference between CLI workspaces and Terraform Cloud workspaces?
+    answer: CLI workspaces are a feature of local and remote backends that create multiple state files from a single
+      configuration, sharing all variables and configuration. They are accessed with the terraform workspace
+      commands. Terraform Cloud workspaces are independent working directories that each have their own
+      configuration, variables, state, team permissions, and execution environment. Terraform Cloud workspaces are
+      much more powerful and isolated, functioning more like separate Terraform projects. CLI workspaces are limited
+      and generally not recommended for managing different environments—separate configurations or Terraform Cloud
+      workspaces are preferred.
+  - question: What is remote execution in Terraform Cloud?
+    answer: Remote execution runs terraform plan and apply on Terraform Cloud's infrastructure rather than on a
+      local machine or CI server. This provides a consistent execution environment, keeps credentials on Cloud
+      rather than local machines, maintains a complete history of runs with logs and state snapshots, and triggers
+      runs from version control system webhooks. Plans can be reviewed and approved before applying. Remote
+      execution also enables policy checks with Sentinel to run automatically as part of the plan and apply
+      pipeline before operators approve changes.
+  - question: What are variable sets in Terraform Cloud?
+    answer: Variable sets in Terraform Cloud are collections of variables that can be applied to multiple workspaces
+      simultaneously. Instead of entering the same credentials or configuration values in each workspace, you
+      define them once in a variable set and assign it to the relevant workspaces. Variable sets can contain
+      Terraform variables and environment variables. They are particularly useful for shared cloud credentials,
+      common tags, or organization-wide configuration. Variable precedence follows a defined order, with workspace-
+      specific variables overriding variable set values.
+  - question: What is a private module registry in Terraform Cloud?
+    answer: The private module registry in Terraform Cloud allows organizations to publish and share Terraform modules
+      internally without making them publicly available on the Terraform Registry. Modules are registered from
+      version control repositories with semantic versioning based on Git tags. Internal users can browse the
+      registry, view documentation generated from variables and outputs, and reference modules by their private
+      registry source address. This enables a service catalog model where platform teams publish approved modules
+      that application teams consume, ensuring organizational standards and best practices.
+  - question: What is Sentinel in Terraform?
+    answer: Sentinel is HashiCorp's policy as code framework integrated into Terraform Cloud and Enterprise. It
+      allows organizations to define policies that are automatically enforced as part of every Terraform run,
+      preventing infrastructure configurations that violate organizational standards. Sentinel policies are written
+      in the Sentinel language and can access the Terraform plan, state, configuration, and run details. Policies
+      can be enforced at different strictness levels—advisory, soft-mandatory, and hard-mandatory—giving operators
+      flexibility in how strictly rules are enforced when exceptions are needed.
+  - question: What are run tasks in Terraform Cloud?
+    answer: Run tasks are integration points that allow external services to participate in the Terraform Cloud run
+      lifecycle. They can run at different stages—before and after planning, and before and after applying—and
+      can either provide information or block runs based on the result. Common use cases include security scanning
+      with tools like Snyk or Aqua, cost estimation, compliance checking, and custom validation logic. Run tasks
+      call an HTTPS endpoint with plan data and receive a status response that determines whether the run proceeds
+      or is blocked.
+  - question: What are run triggers in Terraform Cloud?
+    answer: Run triggers in Terraform Cloud create dependencies between workspaces so that when one workspace
+      successfully completes an apply, it automatically triggers a new run in dependent workspaces. This enables
+      multi-workspace pipelines where infrastructure changes cascade through dependent layers—for example, a
+      network workspace changes trigger compute workspace updates, which then trigger application workspace
+      deployments. Run triggers replace manual coordination between workspace operators and enable fully automated
+      layered infrastructure pipelines in Terraform Cloud.
+  - question: What is Terragrunt?
+    answer: Terragrunt is an open-source wrapper for Terraform that simplifies working with multiple Terraform
+      modules in a large infrastructure codebase. It provides DRY (Don't Repeat Yourself) configuration through
+      a hierarchical terragrunt.hcl file structure, automatic backend configuration generation, module versioning,
+      dependency management between modules with dependency blocks, and hooks for running commands before and after
+      Terraform. Terragrunt is particularly popular for managing large multi-account, multi-region AWS infrastructures
+      where the same modules are deployed to many environments with varying configurations.
+  - question: What is Atlantis?
+    answer: Atlantis is an open-source tool for Terraform pull request automation that runs terraform plan on every
+      pull request and comments the plan output back to the PR, enabling reviewers to see infrastructure changes
+      without local access to credentials. It runs terraform apply when a PR is approved and merged, providing a
+      workflow where infrastructure changes require peer review. Atlantis can be configured with custom workflows,
+      locking, policy enforcement hooks, and integration with GitHub, GitLab, and Bitbucket. It is self-hosted,
+      giving teams full control over their automation without a SaaS dependency.
+  - question: What are dynamic blocks in Terraform?
+    answer: Dynamic blocks allow you to generate repeated nested blocks within a resource, data source, or provider
+      configuration based on a collection. They use a dynamic block wrapping the block type name, with a for_each
+      argument and a content block describing what to generate for each element. For example, a security group
+      resource can generate multiple ingress blocks from a list of rules. Dynamic blocks are essential when the
+      number of nested blocks is not known at design time and must be computed from variables or other resources.
+      The iterator argument can rename the iteration variable from the default block type name.
+  - question: What is the splat expression in Terraform?
+    answer: A splat expression is a shorthand for extracting an attribute from all instances of a resource or all
+      elements of a list. The legacy splat uses [*] on a list before the attribute name, for example
+      aws_instance.web[*].id collects all instance IDs when count is used. The full splat expression traverses
+      nested attributes. Splat expressions simplify collecting lists of IDs or other values from multiple
+      resource instances to pass to another resource expecting a list, replacing verbose for expressions in
+      simple projection scenarios.
+  - question: What are provider aliases in Terraform?
+    answer: Provider aliases allow you to create multiple configurations of the same provider within a single module,
+      enabling multi-region or multi-account deployments. You define additional provider configurations with an
+      alias argument in the provider block. Resources then reference a specific provider configuration using the
+      provider meta-argument with the format providername.aliasname. For example, two aws provider blocks with
+      different regions and aliases allow creating resources in multiple AWS regions from the same Terraform
+      configuration. Child modules receive aliased providers through the providers argument in the module block.
+  - question: What is multi-region deployment with provider aliases?
+    answer: Multi-region deployment uses aliased provider configurations to create infrastructure in multiple cloud
+      regions from a single Terraform configuration. You define multiple provider blocks with different regions
+      and unique alias values, then assign resources to specific provider configurations using the provider
+      meta-argument. When calling modules, you pass the appropriate aliased provider via the providers map in
+      the module block. This pattern is used for global applications, disaster recovery configurations, and
+      region-specific compliance requirements. It requires careful management as the dependency graph spans
+      multiple provider configurations.
+  - question: What is the -target flag in Terraform?
+    answer: The -target flag limits a plan or apply operation to a specific resource or module, ignoring all other
+      resources in the configuration. This is useful for iterative development, applying a subset of changes, or
+      recovering from partial failures. For example, terraform apply -target=aws_instance.web applies only changes
+      to that specific instance. However, -target should be used sparingly in production as it can create
+      inconsistency between configuration and state when other resources have dependencies on the targeted ones.
+      HashiCorp recommends using the full configuration apply in production workflows.
+  - question: What is the -replace flag in Terraform?
+    answer: The -replace flag forces Terraform to plan the destruction and recreation of a specific resource even
+      if its configuration has not changed. This is used to replace a resource that is in a degraded state,
+      trigger re-execution of provisioners, or force adoption of a new resource ID from the provider. The syntax
+      is terraform apply -replace="resource.address". It is the modern replacement for the deprecated terraform
+      taint command and has the advantage of showing the replacement in the plan output before any changes occur,
+      enabling review and confirmation before execution.
+  - question: What is the import block in Terraform 1.5+?
+    answer: The import block, introduced in Terraform 1.5, allows you to declaratively import existing resources
+      in your configuration file rather than using an imperative command. You add an import block with the id of
+      the existing resource and the to address in configuration, and include it in the normal plan and apply cycle.
+      The import appears in the plan output as a new resource being imported, enabling review and approval like
+      any other change. Multiple import blocks can import multiple resources in a single apply. Combined with
+      -generate-config-out, Terraform generates the corresponding resource configuration automatically.
+  - question: What is generated configuration in Terraform?
+    answer: Generated configuration, introduced in Terraform 1.5, is an experimental feature that automatically
+      creates HCL resource blocks for resources being imported. When you run terraform plan -generate-config-out=
+      generated.tf with import blocks defined, Terraform queries the provider for the current state of each
+      imported resource and writes the corresponding resource configuration to the specified file. This dramatically
+      reduces the manual work of writing configuration for existing resources and ensures the generated configuration
+      matches the actual resource state. The generated configuration should be reviewed and cleaned up before
+      committing.
+  - question: What are preconditions and postconditions in Terraform?
+    answer: Preconditions and postconditions are lifecycle validation blocks that add contract assertions to
+      resources, data sources, and outputs. Preconditions run before the resource action and validate that the
+      inputs meet required conditions, providing better error messages than the default provider validation.
+      Postconditions run after the resource action and verify the result meets expectations. Both use a condition
+      expression and error_message. They make the assumptions and guarantees of a module explicit and machine-
+      checked, improving module reliability and making failures understandable to module consumers.
+  - question: What is replace_triggered_by in the lifecycle block?
+    answer: replace_triggered_by is a lifecycle meta-argument that specifies a list of references to resources,
+      resource attributes, or other values that trigger the replacement of the containing resource when they
+      change. This is useful when a resource depends on another in a way that requires full recreation—for example,
+      an EC2 instance that needs to be replaced when its user-data script changes or when the AMI it depends on
+      is updated. Unlike the depends_on meta-argument which only controls ordering, replace_triggered_by actively
+      causes recreation on changes.
+  - question: What is the try function in Terraform?
+    answer: The try function evaluates a sequence of expressions and returns the result of the first one that does
+      not produce an error. It is useful for gracefully handling optional or uncertain data structures, such as
+      when a resource attribute might be null or when a map key might be absent. For example, try(resource.name.
+      attribute, "default") returns the attribute value if it exists or the default string if accessing it would
+      error. try accepts any number of expressions and is commonly used to handle schema differences between
+      provider versions or optional nested attributes in data sources.
+  - question: What is the one function in Terraform?
+    answer: The one function takes a list and returns either the single element if the list has one item, or null
+      if the list is empty. It errors if the list has more than one element. It is used to convert a list that
+      is expected to contain at most one value into a single value or null, which is often needed when a resource
+      attribute like count results in a list. For example, one(aws_instance.web[*].public_ip) returns either
+      the single public IP or null when no instance was created, avoiding awkward index access.
+  - question: What is the toset function in Terraform?
+    answer: The toset function converts a list to a set, removing duplicate values and discarding ordering. Sets
+      are required by the for_each meta-argument and certain resource arguments. toset is used to convert a list
+      variable to a set before using it with for_each to ensure each value appears exactly once. For example,
+      for_each = toset(var.availability_zones) creates one resource instance per unique availability zone. Because
+      sets are unordered, you should not rely on element order when iterating over sets with for_each.
+  - question: What is the contains function in Terraform?
+    answer: The contains function checks whether a given value exists in a given list, set, or tuple, returning
+      true if found and false otherwise. The syntax is contains(list, value). It is commonly used in precondition
+      conditions and conditional expressions to validate that an input variable is one of a set of allowed values,
+      for example contains(["t3.micro", "t3.small", "m5.large"], var.instance_type). It can also be used in for
+      expression filters to select elements that satisfy membership in another collection.
+  - question: What is the coalesce function in Terraform?
+    answer: The coalesce function takes multiple arguments and returns the first non-null, non-empty value. It is
+      useful for implementing fallback logic—for example, coalesce(var.custom_name, local.generated_name) returns
+      the custom name if provided, otherwise the generated one. coalescelist works similarly for lists, returning
+      the first non-empty list from the arguments. These functions simplify optional variable patterns and reduce
+      the need for nested conditional expressions when providing default fallback values.
+  - question: What is an override file in Terraform?
+    answer: Override files are special Terraform configuration files named override.tf, or any file ending in
+      _override.tf, that merge their content on top of regular configuration files rather than being treated as
+      additional files. When two files define the same resource or other block, the override file's definition
+      wins. Override files are primarily used for testing, where you temporarily substitute mock providers or
+      resource configurations, and for CI environments that need slightly different configurations without
+      modifying the main files. They should not be used for regular configuration as they make behavior harder
+      to understand.
+  - question: What is the terraform_data resource?
+    answer: The terraform_data resource is a built-in replacement for null_resource that stores an arbitrary input
+      value in state and uses a triggers_replace argument to control when it should be recreated. When
+      triggers_replace changes, the terraform_data instance is destroyed and recreated, which re-runs any attached
+      provisioners. Unlike null_resource, it does not require the hashicorp/null provider. The input attribute
+      stores a value that is preserved in state across runs, and output exposes that stored value. It is the
+      idiomatic modern way to attach provisioners and track arbitrary values in Terraform state.
+  - question: What is the removed block in Terraform?
+    answer: The removed block, introduced in Terraform 1.7, is the declarative way to remove a resource from
+      Terraform management in configuration while recording the intent in version-controlled code. Unlike running
+      terraform state rm imperatively, the removed block documents that the resource was intentionally
+      decommissioned. It specifies the resource address and a destroy argument, where destroy = true destroys the
+      resource and destroy = false removes it from state without destroying it. The removed block is processed
+      during the next terraform apply and then can be deleted from configuration.
+  - question: What is drift detection in Terraform Cloud?
+    answer: Drift detection in Terraform Cloud automatically runs terraform plan on a schedule across workspaces to
+      detect when real-world infrastructure has diverged from the Terraform state. When drift is detected, it
+      notifies workspace operators via the Terraform Cloud UI and configured notifications so they can investigate
+      and reconcile without waiting for a manual plan. This continuous validation ensures that out-of-band changes
+      are caught quickly, maintaining the principle that Terraform is the authoritative source of truth for
+      managed infrastructure.
+  - question: What are Terraform Cloud agents?
+    answer: Terraform Cloud agents are lightweight processes that run in your own network infrastructure and connect
+      to Terraform Cloud to receive and execute plan and apply requests. They enable remote execution for
+      infrastructure that is not accessible from Terraform Cloud's external network, such as resources in private
+      networks, on-premises data centers, or behind strict firewalls. Agents are organized into agent pools, and
+      workspaces are configured to use a specific pool. Agents connect outbound to Terraform Cloud and poll for
+      work, requiring only outbound HTTPS access from your network.
+  - question: What is OpenTofu?
+    answer: OpenTofu is the open-source fork of Terraform created after HashiCorp changed Terraform's license from
+      MPL-2.0 to the Business Source License (BSL) in August 2023. It is maintained by the Linux Foundation under
+      the OpenTofu project and aims to be a fully compatible drop-in replacement for Terraform. OpenTofu has
+      added features not present in Terraform, including state encryption, provider-defined functions, removed
+      block, and others. Organizations that require a fully open-source IaC tool or want to avoid BSL license
+      restrictions can use OpenTofu as an alternative.
+  - question: What is CDKTF (CDK for Terraform)?
+    answer: CDK for Terraform allows you to define Terraform infrastructure using familiar programming languages like
+      TypeScript, Python, Java, C#, and Go instead of writing HCL directly. You write classes that synthesize
+      into Terraform JSON configuration files, which are then applied using the Terraform CLI. CDKTF leverages
+      the full power of programming languages for abstractions, loops, conditionals, and sharing—without requiring
+      teams to learn HCL. It is particularly attractive for teams with strong software engineering backgrounds
+      who want to apply software design patterns to infrastructure code.
+  - question: What is Pulumi compared to Terraform?
+    answer: Pulumi is an infrastructure as code tool that uses general-purpose programming languages rather than
+      domain-specific languages. Like Terraform, it manages cloud infrastructure through provider APIs and
+      maintains state. Key differences include that Pulumi uses real programming languages with full type safety,
+      IDE completions, and testing frameworks built in. Terraform uses HCL which is simpler for non-programmers
+      but less expressive. Pulumi state is typically managed via Pulumi Cloud while Terraform state can be managed
+      anywhere. Both tools support similar cloud providers and have large communities.
+  - question: What is Crossplane compared to Terraform?
+    answer: Crossplane is a Kubernetes-based infrastructure control plane that manages cloud resources through
+      Kubernetes custom resources rather than CLI-driven plans. Unlike Terraform which is run as a workflow,
+      Crossplane runs continuously in a Kubernetes cluster and continuously reconciles desired state with actual
+      state, similar to how Kubernetes operators work. Crossplane is ideal for GitOps workflows driven by
+      Kubernetes manifests and enables infrastructure provisioning as part of Kubernetes-native application
+      deployment. Terraform is better for standalone infrastructure management and has broader provider support.
+  - question: What is OPA (Open Policy Agent) with Terraform?
+    answer: OPA is a general-purpose policy engine that can evaluate Terraform plan JSON output against policies
+      written in the Rego language. Unlike Sentinel, which is HashiCorp-specific, OPA integrates with CI/CD
+      pipelines as an open-source tool. You run terraform plan -out=plan.tfplan, convert it to JSON with terraform
+      show -json, then evaluate the JSON against OPA policies using the opa eval command. Tools like conftest
+      provide a convenient wrapper for OPA-based Terraform policy evaluation. OPA is commonly used in pipelines
+      that cannot use Terraform Cloud's Sentinel feature.
+  - question: What is tfsec?
+    answer: tfsec is a static analysis tool for Terraform configurations that detects security misconfigurations
+      and policy violations without running terraform plan. It analyzes HCL files directly and checks for common
+      security issues like public S3 buckets, unencrypted storage, open security groups, missing logging
+      configuration, and IAM over-permissioning. tfsec has been superseded by Trivy (by Aqua Security) which
+      incorporates tfsec's rules along with broader infrastructure scanning capabilities. It integrates easily
+      into CI pipelines as a fast pre-check before running Terraform commands.
+  - question: What is Checkov?
+    answer: Checkov is an open-source static code analysis tool for infrastructure as code that supports Terraform,
+      CloudFormation, Kubernetes, Helm, and other formats. It scans Terraform configurations against hundreds of
+      built-in security and compliance policies covering CIS benchmarks, SOC 2, PCI-DSS, and other frameworks.
+      Checkov produces reports showing which checks passed, failed, or were skipped, and supports custom policies
+      in Python or YAML. It integrates with CI pipelines, IDE plugins, and Terraform Cloud run tasks to provide
+      policy-as-code enforcement throughout the IaC development lifecycle.
+  - question: What is infracost?
+    answer: Infracost is an open-source tool that provides cloud cost estimation for Terraform configurations before
+      applying them. It analyzes the Terraform plan and calculates the monthly cost impact of changes, showing
+      which resources will be created, modified, or deleted along with their cost differentials. Infracost
+      integrates with CI/CD pipelines and posts cost estimates as comments on pull requests, enabling developers
+      to see the financial impact of infrastructure changes during code review. It supports AWS, Azure, and GCP,
+      and connects to their pricing APIs to retrieve current rates.
+  - question: What is the terraform test command?
+    answer: The terraform test command, introduced in Terraform 1.6, runs automated tests defined in .tftest.hcl
+      files to validate that modules behave correctly. Tests create real or mocked infrastructure resources,
+      assert that outputs and resource attributes have expected values, and clean up afterward. The test framework
+      supports run blocks that call modules, assert blocks that check conditions, and integration with mock
+      providers to avoid creating real resources for unit-style tests. Terraform test enables module developers
+      to write comprehensive tests that validate module behavior before publishing.
+  - question: What is a .tftest.hcl file?
+    answer: A .tftest.hcl test file defines automated tests for a Terraform module. It contains provider blocks for
+      configuring the providers used in tests, run blocks that invoke the module or configuration under test with
+      specific variable values, and assert blocks within run blocks that check conditions on outputs and resource
+      attributes. Multiple run blocks represent sequential test steps that can build on each other's state.
+      Variables blocks provide input values, and the test framework supports both real infrastructure creation
+      and mock provider substitution for faster, cheaper unit tests.
+  - question: What are mock providers in Terraform tests?
+    answer: Mock providers, available in the terraform test framework, replace real provider implementations with
+      simulated ones during tests. Instead of creating actual cloud resources, mock providers return computed or
+      user-defined attribute values, allowing tests to run quickly without cloud credentials or infrastructure
+      costs. Mock providers are configured in test files using mock_provider blocks that override specific
+      resource types. Module developers can test module logic—variable validation, output computation, and
+      resource configuration—without incurring the time and cost of real resource creation.
+  - question: What is the module composition pattern in Terraform?
+    answer: Module composition is an architectural pattern where complex infrastructure is built from multiple
+      small, focused modules that each do one thing well. A root module composes them by calling each child
+      module and wiring outputs of one module to inputs of another. For example, a network module creates VPC
+      and subnets, a security module creates security groups, a compute module creates EC2 instances using the
+      network and security module outputs. This pattern improves reusability, testability, and separation of
+      concerns, keeping each module small and maintainable rather than building one large monolithic module.
+  - question: What is the workspace-based environment pattern in Terraform?
+    answer: The workspace-based environment pattern uses CLI workspaces to manage multiple environments—dev,
+      staging, production—from a single configuration. Each workspace has its own state, and the configuration
+      uses the terraform.workspace value to vary resource names, sizes, or counts per environment. For example,
+      a production workspace gets three replicas while other workspaces get one. While convenient for simple cases,
+      this pattern has limitations—all environments share the same configuration and variables structure, making it
+      hard to have fundamentally different configurations, and workspaces require manual workspace selection which
+      is error-prone in CI.
+  - question: What is the directory-based environment pattern in Terraform?
+    answer: The directory-based environment pattern gives each environment its own Terraform configuration directory
+      containing environment-specific configurations and .tfvars files, all sourcing shared modules. For example,
+      environments/dev/, environments/staging/, and environments/production/ each have their own main.tf, backend.
+      tf, and terraform.tfvars. This provides strong isolation between environments, allows fundamentally different
+      configurations per environment, and makes it clear where each environment's configuration lives. It requires
+      some duplication but is far more robust and explicit than the workspace-based pattern for complex environments.
+  - question: What is a monorepo pattern for Terraform?
+    answer: A monorepo pattern stores all Terraform configurations in a single source code repository, organized
+      in directories by environment, account, region, or service. Team members work in the same repository,
+      enabling cross-cutting changes and refactoring. The monorepo approach makes it easy to see all
+      infrastructure in one place, share modules without a separate registry, and run CI across all configurations.
+      Tools like Terragrunt, Atlantis, and custom CI scripts handle the complexity of determining which directories
+      need to be planned and applied based on which files changed. This approach is popular in large organizations.
+  - question: What is a polyrepo pattern for Terraform?
+    answer: A polyrepo pattern stores each Terraform configuration or module in its own separate repository. This
+      provides strong boundaries between teams and components, allows independent versioning and access control,
+      and keeps each repository focused and small. Teams reference shared modules from other repositories using
+      version-pinned Git sources or the private module registry. The polyrepo approach requires more repository
+      management overhead and makes cross-cutting refactoring harder, but is preferred in organizations with
+      clear team ownership boundaries and strict access control requirements.
+  - question: What is OIDC dynamic credentials in Terraform Cloud?
+    answer: OIDC (OpenID Connect) dynamic credentials allow Terraform Cloud workspaces to assume cloud provider
+      roles using short-lived tokens rather than storing long-lived access keys as static variables. Terraform
+      Cloud acts as an OIDC identity provider, and you configure cloud providers to trust tokens from Terraform
+      Cloud. During each run, Terraform Cloud generates a one-time token that is exchanged for temporary cloud
+      credentials via the cloud provider's OIDC federation. This eliminates the security risk of storing and
+      rotating static cloud credentials in Terraform Cloud workspaces, implementing a zero-standing-privileges
+      model for Terraform execution.
+  - question: What is workload identity federation in Terraform Cloud?
+    answer: Workload identity federation is the underlying mechanism behind OIDC dynamic credentials. Terraform
+      Cloud presents a signed JWT OIDC token with claims identifying the workspace, organization, run phase, and
+      other metadata. Cloud providers like AWS, Azure, and GCP can be configured to accept these tokens via their
+      federation mechanisms—AWS IAM OIDC provider, Azure AD workload identity, or GCP workload identity pool.
+      The cloud provider validates the token and issues temporary credentials scoped to a specific IAM role or
+      service account. This removes the need to manage any static credentials in Terraform Cloud.
+  - question: What is cost estimation in Terraform Cloud?
+    answer: Cost estimation in Terraform Cloud analyzes a Terraform plan and calculates the estimated monthly cost
+      impact of the proposed infrastructure changes. It shows the cost of resources being created, modified, and
+      destroyed, as well as the net cost delta. Cost estimates are displayed in the Terraform Cloud UI as part of
+      every run and can be used in Sentinel policies to enforce cost budgets—for example, blocking applies that
+      would increase monthly spend by more than a threshold. Cost estimation supports AWS, Azure, and GCP and
+      covers the most common resource types.
+  - question: What is a policy set in Terraform Cloud?
+    answer: A policy set in Terraform Cloud is a collection of Sentinel or OPA policies that can be applied to
+      one or more workspaces or entire organizations. Policy sets are sourced from version control repositories
+      or uploaded directly. When a policy set is associated with workspaces, its policies are evaluated during
+      every run. Policy sets can be applied globally to all workspaces in an organization, to all workspaces in
+      specific projects, or to individually selected workspaces, providing granular policy enforcement. Versioned
+      policy sets support the same GitOps workflows as configuration code.
+  - question: What are Terraform run tasks and how do they differ from Sentinel?
+    answer: Run tasks are integration points that call external HTTPS endpoints at specific stages of a Terraform
+      run and receive pass or fail responses. They are implemented by third-party tools and can check security,
+      cost, compliance, or any custom logic. Sentinel is HashiCorp's built-in policy language that evaluates
+      policies written in the Sentinel language against Terraform plan data natively within Terraform Cloud.
+      Run tasks offer flexibility and third-party integrations while Sentinel provides a powerful domain-specific
+      language deeply integrated with Terraform plan data. Both can block or warn on policy violations.
+  - question: What is the depends_on argument in module blocks?
+    answer: The depends_on argument in a module block creates an explicit dependency from the calling module on
+      specific external resources or modules. This is used when a module's resources depend on prerequisites
+      that are not referenced within the module's configuration—for example, when a compute module needs certain
+      IAM roles to exist before its resources are created, but the module does not directly reference those roles.
+      Like depends_on on resources, it should be used sparingly because it disables Terraform's ability to
+      parallelize all independent resources, potentially slowing execution significantly.
+  - question: What is the providers argument in module blocks?
+    answer: The providers argument in a module block explicitly maps provider configurations from the calling
+      module to the expected providers within a child module. This is required when a child module uses aliased
+      providers or when you want to pass a specific provider configuration to a module rather than the default.
+      For example, when calling a module for a secondary region, you pass the aliased provider for that region
+      via providers = {aws = aws.us-west-2}. Without this, child modules inherit the default provider
+      configurations from their caller, which may not be appropriate for multi-region or multi-account patterns.
+  - question: What is the for_each argument in module blocks?
+    answer: The for_each argument on module blocks creates multiple instances of the same module, each with
+      different input values, using the same map or set syntax as resource for_each. Each module instance gets
+      its own isolated set of resources and state. Module instances are addressed as module.name["key"]. This
+      pattern enables deploying the same infrastructure to multiple environments, regions, or accounts from a
+      single module block. For example, for_each = var.regions creates the module once per region with per-region
+      variable values from the map.
+  - question: What is terraform fmt -recursive?
+    answer: The -recursive flag on terraform fmt formats all .tf files in the current directory and all
+      subdirectories. This is useful when you have a repository with multiple modules organized in subdirectories
+      and want to ensure all code is consistently formatted in one command. Without -recursive, only the .tf
+      files in the current directory are formatted. In CI pipelines, terraform fmt -recursive -check verifies
+      that all files in the repository are properly formatted and returns a non-zero exit code if any need
+      reformatting, enforcing formatting standards across the entire codebase.
+  - question: What is the terraform providers lock command?
+    answer: terraform providers lock records cryptographic checksums for provider packages in the dependency lock
+      file for multiple platforms. By default, terraform init only records checksums for the current platform.
+      When working in teams with a mix of operating systems—macOS for development and Linux for CI—or when
+      deploying Terraform in containers from a different OS, you run terraform providers lock -platform=linux_amd64
+      -platform=darwin_arm64 to record checksums for all required platforms. This ensures init can verify
+      providers on all platforms using the same committed lock file without requiring a separate init per platform.
+  - question: What is filesystem mirroring of Terraform providers?
+    answer: Filesystem mirroring allows you to serve providers from a local directory structure instead of
+      downloading from the internet, using terraform providers mirror to populate the mirror directory. Terraform
+      then references the local mirror via the filesystem_mirror configuration in the provider installation
+      configuration. This is essential in air-gapped environments with no internet access, when internet
+      connectivity is slow or restricted, or in enterprises that require all software to be sourced from
+      internal artifact repositories. The mirror maintains the same directory structure expected by the Terraform
+      plugin installation protocol.
+  - question: What is a plugin cache in Terraform?
+    answer: The Terraform plugin cache stores downloaded provider binaries in a shared local directory so multiple
+      Terraform configurations on the same machine share providers without downloading them repeatedly. You
+      configure it by setting the plugin_cache_dir path in the Terraform CLI configuration file at ~/.terraform.d/
+      terraformrc or via the TF_PLUGIN_CACHE_DIR environment variable. On CI systems where each pipeline run
+      initializes Terraform from scratch, using a plugin cache backed by persistent storage significantly reduces
+      init time and network usage, especially with large providers.
+  - question: What is the terraform state pull and push commands?
+    answer: terraform state pull downloads the current state from the configured backend and prints it as JSON to
+      stdout. terraform state push uploads a local state file to the configured remote backend. These commands
+      provide low-level access to raw state content and are used in emergency situations, migration scenarios, or
+      custom automation. State push overwrites the remote state lock-free, which is extremely dangerous without
+      understanding the current state and lock status. These operations should be reserved for situations where
+      the normal Terraform commands cannot solve the problem.
+  - question: What is terraform force-unlock?
+    answer: terraform force-unlock releases a stuck state lock when the process that acquired it has crashed or
+      been terminated without releasing the lock. You provide the lock ID shown in the error message when trying
+      to run a locked operation. Force-unlock is a recovery operation and should only be used when you are
+      certain no other Terraform process is running against the same state. Using it while another process is
+      running could lead to state corruption. After force-unlocking, verify the current state is consistent
+      before running any Terraform operations.
+  - question: What is the -lock-timeout flag in Terraform?
+    answer: The -lock-timeout flag specifies how long Terraform should wait to acquire a state lock before failing.
+      By default, Terraform fails immediately if the lock is held by another process. Setting -lock-timeout=10m
+      causes Terraform to retry acquiring the lock for up to 10 minutes, waiting for the current holder to
+      release it. This is useful in CI environments where multiple pipelines might try to run against the same
+      workspace concurrently, allowing them to queue up rather than immediately failing. Combined with retry
+      logic, it enables eventually-consistent pipeline queuing.
+  - question: What is the local-exec provisioner in Terraform?
+    answer: The local-exec provisioner runs a shell command on the machine executing Terraform after a resource
+      is created. Typical use cases include generating kubeconfig files, triggering external automation systems,
+      writing resource outputs to local files, or calling APIs that Terraform providers do not cover. The command
+      is run in a shell and receives resource attributes through the self.attribute_name syntax. The working_dir
+      and environment arguments customize the execution context. Because provisioners are not reflected in plans,
+      they reduce predictability and should be replaced by purpose-built Terraform resources or provider
+      resources whenever possible.
+  - question: What is the remote-exec provisioner in Terraform?
+    answer: The remote-exec provisioner runs commands on a newly created remote resource over SSH or WinRM after
+      it is created. It is typically used to bootstrap software on new instances—running package installations,
+      configuration management agents, or application deployments. The connection block within the resource
+      or provisioner configures the SSH or WinRM connection details. Remote-exec is considered a last resort
+      as it requires network connectivity, credentials, and creates non-idempotent behavior. For most use
+      cases, cloud-init, user data, or configuration management tools like Ansible are more appropriate.
+  - question: What is the file provisioner in Terraform?
+    answer: The file provisioner copies files or directories from the machine running Terraform to a newly created
+      remote resource over SSH or WinRM. It is used to upload configuration files, scripts, or certificates
+      to instances before running them. Like remote-exec, it requires a configured connection block and has all
+      the disadvantages of provisioners—non-idempotency, no plan visibility, and potential for partial failures.
+      For production use cases, baking files into custom AMIs with Packer or using cloud-native mechanisms like
+      Systems Manager or S3 to distribute files is recommended over the file provisioner.
+  - question: What is data source dependency in Terraform?
+    answer: Data sources are re-read during every terraform plan and apply to ensure they return current values.
+      A data source can also have dependencies on other resources, causing it to be deferred until those
+      resources are applied. This is the case when the data source's query arguments reference a managed
+      resource attribute that is not known until apply. By default, data sources are read during the planning
+      phase, but those with unknown arguments are read during the apply phase after their dependencies are
+      created. This enables patterns where you create a resource and immediately query additional data about it.
+  - question: What is the external data source in Terraform?
+    answer: The external data source allows you to run an arbitrary external program and use its JSON output as
+      data source attributes in Terraform configuration. The external program receives a JSON object of query
+      arguments on stdin and must return a JSON object on stdout. This is useful for integrating with systems
+      that Terraform providers do not cover—such as querying internal databases, calling custom APIs, or running
+      complex scripts that derive configuration values. However, external data sources are not visible in plans
+      and can introduce security risks if the external program is not trusted or validated.
