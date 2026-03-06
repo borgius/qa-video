@@ -681,7 +681,15 @@ program
         console.log(`\n  ${ok} uploaded, ${skipped} skipped\n`);
       }
     } catch (err: any) {
-      console.error(`\nError: ${err.message}`);
+      const isInvalidGrant =
+        err?.message?.includes('invalid_grant') ||
+        (err as any)?.response?.data?.error === 'invalid_grant';
+      if (isInvalidGrant) {
+        console.error(`\nError: YouTube tokens have expired or been revoked.`);
+        console.error(`  Run "qa-video auth" to re-authenticate.`);
+      } else {
+        console.error(`\nError: ${err.message}`);
+      }
       if (process.env.DEBUG) console.error(err.stack);
       process.exit(1);
     }

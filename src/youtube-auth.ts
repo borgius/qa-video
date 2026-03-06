@@ -13,7 +13,6 @@ const SCOPES = [
   'https://www.googleapis.com/auth/youtube',  // full access: upload, read, update tags
 ];
 const REDIRECT_PORT = 3000;
-const REDIRECT_URI = `http://localhost:${REDIRECT_PORT}`;
 
 async function loadCredentials(credentialsPath?: string): Promise<{ clientId: string; clientSecret: string }> {
   const credsPath = credentialsPath ?? CREDENTIALS_PATH;
@@ -39,15 +38,35 @@ async function loadCredentials(credentialsPath?: string): Promise<{ clientId: st
   return { clientId: creds.client_id, clientSecret: creds.client_secret };
 }
 
-function createOAuth2Client(clientId: string, clientSecret: string): OAuth2Client {
-  return new google.auth.OAuth2(clientId, clientSecret, REDIRECT_URI);
+function createOAuth2Client(clientId: string, clientSecret: string, port: number): OAuth2Client {
+  return new google.auth.OAuth2(clientId, clientSecret, `http://localhost:${port}`);
+}
+
+/** Find a free TCP port starting from the preferred one. */
+function findFreePort(preferred: number): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const server = createServer();
+    server.listen(preferred, () => {
+      const addr = server.address() as { port: number };
+      server.close(() => resolve(addr.port));
+    });
+    server.on('error', () => {
+      // preferred is taken — ask the OS for any free port
+      const fallback = createServer();
+      fallback.listen(0, () => {
+        const addr = fallback.address() as { port: number };
+        fallback.close(() => resolve(addr.port));
+      });
+      fallback.on('error', reject);
+    });
+  });
 }
 
 /** Wait for the OAuth callback on localhost, extract the auth code. */
-function waitForAuthCode(): Promise<string> {
+function waitForAuthCode(port: number): Promise<string> {
   return new Promise((resolve, reject) => {
     const server = createServer((req: IncomingMessage, res: ServerResponse) => {
-      const url = new URL(req.url!, `http://localhost:${REDIRECT_PORT}`);
+      const url = new URL(req.url!, `http://localhost:${port}`);
       const code = url.searchParams.get('code');
       const error = url.searchParams.get('error');
 
@@ -67,21 +86,17 @@ function waitForAuthCode(): Promise<string> {
       }
     });
 
-    server.listen(REDIRECT_PORT, () => {});
-    server.on('error', (err: NodeJS.ErrnoException) => {
-      if (err.code === 'EADDRINUSE') {
-        reject(new Error(`Port ${REDIRECT_PORT} is in use. Close the process using it and try again.`));
-      } else {
-        reject(err);
-      }
-    });
+    server.listen(port, () => {});
+    server.on('error', reject);
   });
 }
 
 /** Run the interactive OAuth2 flow: opens browser, waits for callback, saves tokens. */
 export async function runAuthFlow(credentialsPath?: string): Promise<void> {
   const { clientId, clientSecret } = await loadCredentials(credentialsPath);
-  const oauth2 = createOAuth2Client(clientId, clientSecret);
+
+  const port = await findFreePort(REDIRECT_PORT);
+  const oauth2 = createOAuth2Client(clientId, clientSecret, port);
 
   const authUrl = oauth2.generateAuthUrl({
     access_type: 'offline',
@@ -97,7 +112,7 @@ export async function runAuthFlow(credentialsPath?: string): Promise<void> {
 
   console.log(`  If the browser didn't open, visit:\n  ${authUrl}\n`);
 
-  const code = await waitForAuthCode();
+  const code = await waitForAuthCode(port);
   const { tokens } = await oauth2.getToken(code);
 
   await mkdir(CONFIG_DIR, { recursive: true });
@@ -110,7 +125,7 @@ export async function runAuthFlow(credentialsPath?: string): Promise<void> {
 /** Load saved tokens and return an authenticated OAuth2Client. */
 export async function getAuthenticatedClient(credentialsPath?: string): Promise<OAuth2Client> {
   const { clientId, clientSecret } = await loadCredentials(credentialsPath);
-  const oauth2 = createOAuth2Client(clientId, clientSecret);
+  const oauth2 = createOAuth2Client(clientId, clientSecret, REDIRECT_PORT);
 
   if (!existsSync(TOKENS_PATH)) {
     throw new Error(
@@ -134,6 +149,28 @@ export async function getAuthenticatedClient(credentialsPath?: string): Promise<
   }
 
   oauth2.setCredentials(tokens);
+
+  // Proactively refresh if the access token is missing or expired
+  const expiry = tokens.expiry_date as number | undefined;
+  if (!tokens.access_token || (expiry && expiry < Date.now() + 10_000)) {
+    try {
+      const { credentials } = await oauth2.refreshAccessToken();
+      const merged = { ...tokens, ...credentials };
+      await writeFile(TOKENS_PATH, JSON.stringify(merged, null, 2));
+      oauth2.setCredentials(merged);
+    } catch (err: any) {
+      const isInvalidGrant =
+        err?.message?.includes('invalid_grant') ||
+        err?.response?.data?.error === 'invalid_grant';
+      if (isInvalidGrant) {
+        throw new Error(
+          `YouTube tokens have expired or been revoked.\n` +
+          `  Run "qa-video auth" to re-authenticate.`,
+        );
+      }
+      throw err;
+    }
+  }
 
   // Persist refreshed tokens
   oauth2.on('tokens', async (newTokens: Credentials) => {

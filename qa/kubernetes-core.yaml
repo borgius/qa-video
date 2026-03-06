@@ -1,476 +1,479 @@
 config:
-  name: 'DevOps-Interview-Questions: Kubernetes Core'
+  name: "DevOps-Interview-Questions: Kubernetes Core"
   description: Core Kubernetes concepts including cluster architecture, pods, workloads, services, ingress, storage
     fundamentals, configuration, basic security, and scheduling foundations.
   questionDelay: 1
   answerDelay: 1
+  youtube:
+    videoId: I1UWM6nuGpk
+    url: https://youtu.be/I1UWM6nuGpk
+    uploadedAt: 2026-03-06T17:32:43.635Z
+    privacy: public
+    contentSha: 7d65c8ac
 questions:
-- question: What is Kubernetes?
-  answer: Kubernetes, often abbreviated as K8s, is an open-source container orchestration platform originally developed
-    by Google and now maintained by the CNCF. It automates the deployment, scaling, and management of containerized
-    applications across a cluster of machines, providing self-healing, load balancing, service discovery, storage
-    orchestration, and declarative configuration management.
-- question: What problem does Kubernetes solve?
-  answer: Kubernetes solves the operational challenges of running containers at scale. Before Kubernetes, teams
-    had to manually schedule containers onto servers, handle failures, balance traffic, and manage configuration.
-    Kubernetes automates all of this—it decides where to run containers, restarts failed ones, scales based on load,
-    distributes traffic, and manages secrets and configuration, reducing operational burden dramatically.
-- question: What is a Kubernetes cluster?
-  answer: A Kubernetes cluster is a set of machines, called nodes, that run containerized applications managed by
-    Kubernetes. Every cluster has at least one control plane node that manages the cluster state, and one or more
-    worker nodes that run the actual application workloads. The control plane exposes the Kubernetes API and makes
-    global decisions about the cluster such as scheduling.
-- question: What are the main components of the Kubernetes control plane?
-  answer: The Kubernetes control plane consists of the API server, which is the frontend for all cluster operations;
-    etcd, the distributed key-value store that holds the cluster state; the scheduler, which assigns pods to nodes;
-    the controller manager, which runs controller loops to maintain desired state; and the cloud controller manager,
-    which integrates with cloud provider APIs for features like load balancers and volumes.
-- question: What is the Kubernetes API server?
-  answer: The Kubernetes API server is the central management component that exposes the Kubernetes REST API. All
-    interactions with the cluster go through it, whether from kubectl, internal components, or external tools. It
-    validates and processes API requests, stores the resulting state in etcd, and notifies other components of changes.
-    It is the only component that directly reads from and writes to etcd.
-- question: What is etcd in Kubernetes?
-  answer: etcd is a distributed, consistent key-value store used by Kubernetes as its backing store for all cluster
-    data. It stores the entire cluster state including pod definitions, secrets, config maps, node information,
-    and more. etcd uses the Raft consensus algorithm to provide strong consistency and high availability. Backing
-    up etcd regularly is critical for disaster recovery.
-- question: What is the Kubernetes scheduler?
-  answer: The Kubernetes scheduler watches for newly created pods that have no assigned node and selects the best
-    node for them to run on. It considers factors like resource requirements and availability, node affinity and
-    anti-affinity rules, taints and tolerations, pod topology spread constraints, and data locality. It uses a two-phase
-    process of filtering nodes that can run the pod, then scoring the remaining nodes.
-- question: What is the controller manager in Kubernetes?
-  answer: The kube-controller-manager runs a collection of controller loops that watch the cluster state and work
-    to move the current state toward the desired state. Examples include the replication controller, which ensures
-    the correct number of pod replicas exist; the node controller, which responds when nodes go offline; the endpoints
-    controller, which manages Endpoints objects; and the service account controller.
-- question: What is a Kubernetes node?
-  answer: 'A node is a worker machine in Kubernetes, either a physical or virtual machine, that runs containerized
-    workloads. Each node is managed by the control plane and runs three key components: the kubelet, which communicates
-    with the API server and manages pods on the node; the kube-proxy, which maintains network rules for pod communication;
-    and a container runtime like containerd to run the actual containers.'
-- question: What is the kubelet?
-  answer: The kubelet is an agent that runs on every worker node in the cluster. It receives PodSpec objects from
-    the API server and ensures the containers described in those specs are running and healthy. It reports node
-    and pod status back to the control plane, manages container lifecycle, handles liveness and readiness probes,
-    and interacts with the container runtime through the Container Runtime Interface.
-- question: What is kube-proxy?
-  answer: kube-proxy is a network proxy that runs on each node and implements the Kubernetes Service concept. It
-    maintains network rules—using iptables, IPVS, or eBPF depending on configuration—that allow network communication
-    to pods from inside or outside the cluster. When a Service is created, kube-proxy programs the node's networking
-    to route traffic for the service's virtual IP to the correct backend pods.
-- question: What is a Pod in Kubernetes?
-  answer: A Pod is the smallest deployable unit in Kubernetes and represents a single instance of a running process.
-    It encapsulates one or more containers that share the same network namespace, IP address, and storage volumes.
-    Containers within a Pod can communicate via localhost and share the same lifecycle. Pods are ephemeral—they
-    are created, destroyed, and replaced rather than moved or repaired.
-- question: Why would you run multiple containers in a single Pod?
-  answer: Multiple containers in a Pod are used when containers are tightly coupled and need to share resources.
-    Common patterns include the sidecar pattern, where a helper container enhances the main container—such as a
-    log shipper or proxy; the ambassador pattern, where a proxy handles external communication; and the adapter
-    pattern, where a container transforms the main container's output. All containers in a Pod start together and
-    share the same IP and volumes.
-- question: What is a namespace in Kubernetes?
-  answer: A namespace is a logical partition within a Kubernetes cluster that provides a mechanism to isolate groups
-    of resources. They are useful for dividing cluster resources between multiple teams or applications. Resource
-    names must be unique within a namespace but not across namespaces. Kubernetes starts with default namespaces
-    including default, kube-system for cluster components, kube-public for publicly readable resources, and kube-node-lease
-    for node heartbeats.
-- question: What are Kubernetes labels and selectors?
-  answer: Labels are key-value pairs attached to Kubernetes objects that are used to organize and identify resources.
-    Selectors allow you to filter and select objects based on their labels. Services use label selectors to route
-    traffic to matching pods. Deployments use label selectors to identify which pods they own. Labels and selectors
-    are fundamental to how Kubernetes components discover and interact with each other.
-- question: What are Kubernetes annotations?
-  answer: Annotations are key-value pairs attached to Kubernetes objects, similar to labels, but they are not used
-    for selection. They store arbitrary non-identifying metadata such as build timestamps, git commit hashes, links
-    to runbook URLs, or configuration for tools like ingress controllers and monitoring agents. Unlike labels, annotation
-    values can be large strings containing structured or unstructured data.
-- question: What is the difference between labels and annotations?
-  answer: Labels are intended for identifying and selecting Kubernetes objects and have restrictions on character
-    length and valid characters. Selectors use labels to filter objects, and Kubernetes components rely on them
-    to identify owned resources. Annotations are for storing arbitrary metadata and have much more relaxed constraints
-    on length and content. Annotations cannot be used in label selectors, so they do not affect how Kubernetes groups
-    or selects resources.
-- question: What is a Kubernetes manifest?
-  answer: A Kubernetes manifest is a YAML or JSON file that describes the desired state of a Kubernetes resource.
-    It specifies the apiVersion, kind, metadata including the name and namespace, and spec which defines the resource
-    configuration. You apply manifests with kubectl apply, and Kubernetes works to make the current cluster state
-    match the manifest. Manifests are the foundation of declarative infrastructure management.
-- question: What is the difference between imperative and declarative Kubernetes management?
-  answer: Imperative management uses commands like kubectl run or kubectl create to tell Kubernetes what to do step
-    by step. Declarative management uses manifests with kubectl apply to describe the desired state, and Kubernetes
-    figures out how to achieve it. Declarative management is preferred for production because it enables version
-    control, reproducibility, and idempotency—applying the same manifest repeatedly yields the same result.
-- question: What is kubectl?
-  answer: kubectl is the official command-line tool for interacting with a Kubernetes cluster. It communicates with
-    the Kubernetes API server to create, read, update, and delete resources, view logs, execute commands in containers,
-    manage contexts, and perform cluster operations. It reads its configuration, including cluster credentials and
-    context, from the kubeconfig file, typically located at ~/.kube/config.
-- question: What is a Deployment in Kubernetes?
-  answer: A Deployment is a higher-level abstraction that manages a set of identical Pods. It provides declarative
-    updates, meaning you describe the desired state and the Deployment controller makes it happen. It handles rolling
-    updates with configurable strategies, rollbacks to previous versions, scaling the number of replicas, and self-healing
-    by replacing failed pods. Deployments are the standard way to run stateless applications.
-- question: What is a ReplicaSet?
-  answer: A ReplicaSet ensures that a specified number of pod replicas are running at all times. If a pod fails
-    or is deleted, the ReplicaSet creates a replacement. While ReplicaSets can be used directly, they are typically
-    managed by Deployments, which add rolling update and rollback capabilities on top. You should generally use
-    Deployments instead of ReplicaSets directly.
-- question: What rolling update strategies does a Deployment support?
-  answer: Kubernetes Deployments support two update strategies. RollingUpdate, the default, gradually replaces old
-    pods with new ones. The maxUnavailable parameter controls how many pods can be unavailable during the update,
-    and maxSurge controls how many extra pods can exist above the desired count. Recreate terminates all existing
-    pods before creating new ones, causing downtime but avoiding version mixing. Canary and blue-green patterns
-    are built on top of these primitives.
-- question: How do you perform a rollback of a Deployment?
-  answer: You roll back a Deployment using kubectl rollout undo deployment/name, which reverts to the previous revision.
-    You can roll back to a specific revision with the --to-revision flag after checking the history with kubectl
-    rollout history. Kubernetes stores rollout history up to the revisionHistoryLimit, which defaults to 10. Each
-    rollout, whether forward or backward, is recorded as a new revision.
-- question: What is a StatefulSet in Kubernetes?
-  answer: A StatefulSet manages the deployment and scaling of a set of pods where each pod has a unique, persistent
-    identity. Unlike Deployments, StatefulSets provide stable network identities with predictable pod names like
-    app-0 and app-1, stable storage with PersistentVolumeClaims that are retained if a pod is deleted, and ordered
-    deployment and scaling where pods start and stop in sequence. StatefulSets are used for databases, message queues,
-    and other stateful applications.
-- question: What is a DaemonSet in Kubernetes?
-  answer: A DaemonSet ensures that a copy of a pod runs on all or a subset of nodes in the cluster. As nodes are
-    added to the cluster, pods are automatically added to them. When nodes are removed, those pods are garbage collected.
-    DaemonSets are commonly used for cluster-wide tasks like log collection agents, node monitoring agents, network
-    plugins, and storage daemons that need to run on every node.
-- question: What is a Job in Kubernetes?
-  answer: A Job creates one or more pods and ensures that a specified number of them successfully terminate. When
-    a pod completes successfully, the Job tracks the completion. Jobs are used for batch processing, one-time database
-    migrations, data transformation tasks, and other finite workloads. You can control the level of parallelism
-    with the parallelism field and the number of completions required with the completions field.
-- question: What is a CronJob in Kubernetes?
-  answer: A CronJob creates Jobs on a repeating schedule defined using standard cron syntax. It is the Kubernetes
-    equivalent of a Unix cron job. CronJobs are used for periodic tasks like backups, report generation, or sending
-    notifications. You can control concurrency policy to forbid or allow concurrent job runs, configure the history
-    of successful and failed jobs to retain, and set a starting deadline for missed schedules.
-- question: What is the difference between a Deployment and a StatefulSet?
-  answer: Deployments are for stateless applications where all pods are interchangeable. Pods have random names
-    and no guaranteed storage persistence. StatefulSets are for stateful applications where each pod has a unique
-    identity, a stable hostname, and persistent storage that follows the pod through rescheduling. StatefulSets
-    also provide ordered, sequential deployment and termination, whereas Deployments can create and delete pods
-    in any order.
-- question: What is an init container?
-  answer: An init container is a specialized container that runs to completion before the main application containers
-    in a pod start. Init containers always run to completion, and each must finish successfully before the next
-    one starts. They are used for setup tasks like waiting for a dependent service to be ready, downloading configuration
-    files, performing database migrations before the application starts, or setting up file permissions on shared
-    volumes.
-- question: What are sidecar containers in Kubernetes?
-  answer: Sidecar containers run alongside the main application container within the same pod, sharing its network
-    and storage. They extend or enhance the main container without modifying it. Common sidecar use cases include
-    log forwarding agents that ship logs to a centralized system, service mesh proxies like Envoy that handle traffic
-    encryption and observability, configuration reloaders that watch for config changes, and OAuth proxy containers
-    for authentication.
-- question: What is a Pod Disruption Budget?
-  answer: A Pod Disruption Budget is a Kubernetes object that limits how many pods of an application can be simultaneously
-    disrupted during voluntary operations like node drains, rolling updates, or cluster upgrades. You set either
-    minAvailable, a minimum number or percentage of pods that must remain running, or maxUnavailable, the maximum
-    number that can be unavailable. PDBs protect availability during planned maintenance without affecting involuntary
-    disruptions like node failures.
-- question: What is a Horizontal Pod Autoscaler?
-  answer: A Horizontal Pod Autoscaler automatically scales the number of pod replicas in a Deployment, ReplicaSet,
-    or StatefulSet based on observed metrics. The most common metric is CPU utilization, but you can also scale
-    on memory or custom metrics from external systems. The HPA controller periodically checks the metrics, computes
-    the desired replica count, and adjusts the workload accordingly, with configurable minimum and maximum replica
-    bounds.
-- question: What is a Vertical Pod Autoscaler?
-  answer: A Vertical Pod Autoscaler automatically adjusts the CPU and memory resource requests and limits of containers
-    based on actual usage observed over time. Unlike the HPA which scales horizontally by adding pods, the VPA scales
-    vertically by right-sizing individual pods. It can update pods immediately by evicting and restarting them with
-    new resource settings, or operate in recommendation mode to suggest values without changing anything.
-- question: What are resource requests and limits in Kubernetes?
-  answer: Resource requests are the amount of CPU and memory a container is guaranteed to receive. The scheduler
-    uses requests to decide which node can fit a pod. Resource limits cap the maximum amount a container can consume.
-    If a container exceeds its memory limit, it is killed and restarted. If it exceeds its CPU limit, it is throttled.
-    Setting appropriate requests and limits is essential for fair resource sharing and preventing noisy neighbor
-    problems.
-- question: What is a Quality of Service class in Kubernetes?
-  answer: Kubernetes assigns a Quality of Service class to each pod based on resource requests and limits. Guaranteed
-    pods have identical requests and limits set for all containers and are never evicted unless they exceed their
-    limits. Burstable pods have requests set but limits that are higher or unset, and can be evicted under memory
-    pressure. BestEffort pods have no requests or limits at all and are the first to be evicted under resource pressure.
-- question: What is a Kubernetes Service?
-  answer: A Kubernetes Service is an abstraction that defines a stable network endpoint to access a set of pods.
-    Since pods are ephemeral and their IP addresses change, a Service provides a constant virtual IP address and
-    DNS name that remains the same regardless of pod restarts. The Service uses a label selector to identify its
-    backend pods and distributes traffic among them, enabling reliable intra-cluster and external communication.
-- question: What are the types of Kubernetes Services?
-  answer: Kubernetes has four Service types. ClusterIP, the default, exposes the service on an internal cluster
-    IP only accessible within the cluster. NodePort exposes the service on a static port on each node's IP, making
-    it accessible externally. LoadBalancer provisions an external load balancer from the cloud provider. ExternalName
-    maps the service to a DNS name by returning a CNAME record, useful for accessing external services using internal
-    service names.
-- question: What is a ClusterIP Service?
-  answer: A ClusterIP Service exposes the application on an internal IP address within the cluster. This IP is reachable
-    only from within the cluster, making it suitable for communication between internal services. Kubernetes automatically
-    creates DNS records for ClusterIP services, so pods can reach them by service name. This is the default service
-    type and forms the backbone of internal microservice communication.
-- question: What is a NodePort Service?
-  answer: A NodePort Service exposes the application on a static port, between 30000 and 32767 by default, on every
-    node's IP address. External clients can access the service using any node's IP plus the NodePort. Kubernetes
-    also creates a ClusterIP service automatically. NodePort is simple for development and testing but not recommended
-    for production because it requires clients to know node IPs and uses non-standard ports.
-- question: What is a LoadBalancer Service?
-  answer: A LoadBalancer Service extends NodePort by additionally provisioning a cloud provider's external load
-    balancer, such as an AWS ALB or GCP Cloud Load Balancer, and pointing it at the nodes. The cloud load balancer's
-    external IP is automatically assigned to the service. This is the standard way to expose services to the internet
-    in managed cloud environments, though it creates one load balancer per service, which can be costly at scale.
-- question: What is an Ingress in Kubernetes?
-  answer: An Ingress is a Kubernetes API object that manages external access to services within a cluster, typically
-    HTTP and HTTPS. Unlike Services, an Ingress can route traffic to multiple backend services based on URL paths
-    and hostnames, terminate TLS, and perform name-based virtual hosting—all through a single entry point. An Ingress
-    requires an Ingress controller such as nginx, Traefik, or the cloud-provider-specific controller to function.
-- question: What is an Ingress controller?
-  answer: An Ingress controller is a pod that runs in the cluster and implements the Ingress API by watching for
-    Ingress resources and configuring a load balancer or proxy accordingly. Unlike most Kubernetes controllers,
-    ingress controllers are not started by default—you must deploy one. Popular options include ingress-nginx, Traefik,
-    HAProxy, Kong, and cloud-native options like AWS Load Balancer Controller or GKE Ingress.
-- question: What is a NetworkPolicy in Kubernetes?
-  answer: A NetworkPolicy is a Kubernetes resource that controls traffic flow at the IP and port level between pods
-    or between pods and external endpoints. By default, pods accept traffic from any source. Applying a NetworkPolicy
-    selects specific pods using label selectors and defines which ingress and egress traffic is allowed. NetworkPolicies
-    are implemented by the network plugin (CNI), so the cluster must use a CNI that supports network policies, such
-    as Calico, Cilium, or Weave.
-- question: What is a CNI plugin in Kubernetes?
-  answer: 'A Container Network Interface plugin is software that implements networking for Kubernetes pods according
-    to the CNI specification. Kubernetes uses the CNI to assign IP addresses to pods, set up network interfaces,
-    and configure routing. Different CNI plugins offer different features: Flannel provides basic overlay networking,
-    Calico supports network policies and BGP routing, Cilium offers eBPF-based networking with advanced security
-    and observability, and Weave provides encrypted overlay networking.'
-- question: What is Kubernetes DNS?
-  answer: Kubernetes runs a cluster DNS service, typically CoreDNS, that automatically creates DNS records for Services
-    and Pods. Services get a DNS name in the format service-name.namespace.svc.cluster.local. Pods get records based
-    on their IP. This allows services to discover each other by name instead of hard-coded IP addresses. CoreDNS
-    is configurable and can be extended with plugins for custom DNS behavior.
-- question: What is a headless Service?
-  answer: A headless Service is created by setting the clusterIP field to None, which disables the virtual IP allocation.
-    Instead of a single stable IP, DNS queries for the service return the IP addresses of all matching pods directly.
-    This gives clients direct access to individual pod IPs and is used with StatefulSets so that each pod can be
-    addressed individually, for example pod-0.service.namespace.svc.cluster.local, which is essential for databases
-    and clustered applications.
-- question: What is an ExternalName Service?
-  answer: An ExternalName Service maps a Kubernetes service to an external DNS name by returning a CNAME record
-    when queried. No proxying occurs—the DNS response simply redirects clients to the external hostname. This is
-    useful for abstracting external dependencies like a managed database or third-party API behind an internal service
-    name, allowing you to change the external endpoint without updating application configuration.
-- question: What is the difference between Ingress and a LoadBalancer Service?
-  answer: A LoadBalancer Service provisions one external load balancer per service, which is simple but expensive
-    and wasteful at scale. An Ingress uses a single entry point and routes traffic to multiple backend services
-    based on rules like hostnames and URL paths, making it more efficient and cost-effective for HTTP workloads.
-    Ingress also supports TLS termination and name-based virtual hosting natively. Non-HTTP services generally still
-    require a LoadBalancer type.
-- question: What is an Endpoint in Kubernetes?
-  answer: An Endpoints object is automatically created and managed by Kubernetes for each Service that uses label
-    selectors. It stores the IP addresses and ports of all pods that match the Service's selector and are currently
-    ready. When traffic hits the Service's cluster IP, kube-proxy reads the Endpoints to route the traffic to a
-    healthy backend pod. You can also manually create Endpoints for services without selectors, such as when mapping
-    to external resources.
-- question: What is EndpointSlice in Kubernetes?
-  answer: EndpointSlice is a scalable alternative to the Endpoints API introduced to address performance problems
-    in large clusters. A single Endpoints object can become very large for services with many pods, causing excessive
-    updates and network traffic. EndpointSlice shards the endpoint information into multiple smaller objects with
-    a configurable maximum size, defaulting to 100 endpoints per slice. This significantly reduces the data transmitted
-    to each node when endpoints change.
-- question: What is a Service mesh?
-  answer: A service mesh is an infrastructure layer that handles service-to-service communication within a microservices
-    application. It is typically implemented using sidecar proxies injected alongside each service pod. The mesh
-    provides features like mutual TLS for encrypted and authenticated communication, traffic management with load
-    balancing and circuit breaking, observability with metrics and distributed tracing, and fine-grained access
-    control—all without changing application code. Istio, Linkerd, and Consul Connect are popular options.
-- question: What is a PersistentVolume in Kubernetes?
-  answer: A PersistentVolume is a piece of storage in the cluster that has been provisioned by an administrator
-    or dynamically by a StorageClass. It is a cluster-level resource independent of any specific pod. PersistentVolumes
-    have a lifecycle independent of any pod that uses them—when a pod is deleted, the PV can be retained, recycled,
-    or deleted based on its reclaim policy. They abstract the underlying storage infrastructure from the application.
-- question: What is a PersistentVolumeClaim?
-  answer: A PersistentVolumeClaim is a request for storage by a user. It is analogous to a pod requesting node resources.
-    A PVC specifies the required storage size, access modes, and optionally a StorageClass. Kubernetes binds the
-    PVC to a suitable PersistentVolume that satisfies the requirements. Pods then use the PVC as a volume, and the
-    actual storage is transparent to the pod. PVCs allow users to consume abstract storage without knowing the underlying
-    infrastructure details.
-- question: What are PersistentVolume access modes?
-  answer: Access modes define how a PersistentVolume can be mounted. ReadWriteOnce means the volume can be mounted
-    as read-write by a single node. ReadOnlyMany means the volume can be mounted as read-only by many nodes simultaneously.
-    ReadWriteMany means the volume can be mounted as read-write by many nodes simultaneously. ReadWriteOncePod,
-    added in Kubernetes 1.22, means the volume can be mounted as read-write by only a single pod. Not all storage
-    backends support all access modes.
-- question: What is a StorageClass in Kubernetes?
-  answer: A StorageClass provides a way to describe the types of storage available in a cluster and define how PersistentVolumes
-    are dynamically provisioned. It specifies the provisioner, such as the AWS EBS CSI driver, and parameters like
-    disk type and replication factor. When a PVC requests a specific StorageClass, Kubernetes automatically creates
-    a PV using that class's provisioner. Clusters typically have a default StorageClass used when a PVC does not
-    specify one.
-- question: What is dynamic provisioning of PersistentVolumes?
-  answer: Dynamic provisioning automatically creates PersistentVolumes on demand when a PersistentVolumeClaim is
-    created, eliminating the need for cluster administrators to manually pre-provision storage. It works through
-    StorageClasses, which define the provisioner and parameters. When a PVC referencing a StorageClass is created,
-    the provisioner automatically creates the underlying storage resource—such as an AWS EBS volume or GCP Persistent
-    Disk—and binds it to the PVC.
-- question: What is the PersistentVolume reclaim policy?
-  answer: The reclaim policy determines what happens to a PersistentVolume after its PersistentVolumeClaim is deleted.
-    Retain keeps the PV and its data but marks it as Released, requiring manual cleanup before reuse. Delete automatically
-    deletes both the PV object and the underlying storage asset, which is the default for dynamically provisioned
-    volumes. Recycle is deprecated and should not be used. The reclaim policy is critical for protecting data from
-    accidental deletion.
-- question: What is a ConfigMap?
-  answer: A ConfigMap is a Kubernetes object for storing non-sensitive configuration data as key-value pairs. Applications
-    can consume ConfigMaps as environment variables, command-line arguments, or as files in a mounted volume. ConfigMaps
-    decouple configuration from container images, allowing you to run the same image in different environments with
-    different configurations without rebuilding. They are not encrypted, so they should not be used for sensitive
-    data.
-- question: What is a Secret in Kubernetes?
-  answer: A Secret is a Kubernetes object for storing sensitive data such as passwords, OAuth tokens, and TLS certificates.
-    Secrets are similar to ConfigMaps but are base64-encoded and treated with additional security consideration
-    by the cluster. By default, Kubernetes Secrets are stored unencrypted in etcd, so encryption at rest should
-    be enabled and RBAC should restrict access. Pods can consume Secrets as environment variables or mounted files.
-- question: What is the difference between a ConfigMap and a Secret?
-  answer: Both ConfigMaps and Secrets store key-value data for use by pods, but Secrets are intended for sensitive
-    data. Secrets are base64-encoded, which is not encryption, and the cluster can be configured to encrypt them
-    at rest in etcd. Access to Secrets can be restricted with RBAC, and Kubernetes avoids writing Secret data to
-    logs. ConfigMaps are for non-sensitive configuration and have no such protections. Use Secrets for passwords,
-    tokens, and certificates.
-- question: What is the CSI (Container Storage Interface)?
-  answer: The Container Storage Interface is a standard API for exposing storage systems to containerized workloads
-    on container orchestration platforms like Kubernetes. Storage vendors implement CSI drivers that Kubernetes
-    uses to provision, attach, mount, and unmount volumes. CSI replaced in-tree volume plugins, which were built
-    into the Kubernetes codebase, allowing storage vendors to develop and ship drivers independently of Kubernetes
-    release cycles. Examples include the AWS EBS CSI driver and the GCE PD CSI driver.
-- question: What are emptyDir volumes?
-  answer: An emptyDir volume is created when a pod is assigned to a node and exists as long as the pod runs on that
-    node. Initially empty, all containers in the pod can read from and write to the same emptyDir volume. The volume
-    is deleted permanently when the pod is removed. emptyDir is useful for scratch space, sharing files between
-    containers in the same pod, caching, and checkpointing long computations. It can optionally use memory as its
-    backing medium.
-- question: What are hostPath volumes?
-  answer: A hostPath volume mounts a file or directory from the host node's filesystem into a pod. It is useful
-    for applications that need access to Docker internals or node-level monitoring tools. However, hostPath volumes
-    are a security risk because they can expose sensitive host directories to pods, and pods with hostPath volumes
-    are bound to specific nodes, breaking portability. They should be avoided in production and replaced with proper
-    storage solutions where possible.
-- question: What is volume snapshot in Kubernetes?
-  answer: Volume snapshots are a standard API for creating point-in-time copies of persistent volumes, similar to
-    how PersistentVolumes and PersistentVolumeClaims work for storage provisioning. VolumeSnapshot resources represent
-    a snapshot taken from a PVC. VolumeSnapshotContent is the actual snapshot. VolumeSnapshotClass defines the snapshot
-    provisioner. Snapshots can be used for backups and to provision new volumes pre-populated with snapshot data
-    using a dataSource in a PVC.
-- question: What is RBAC in Kubernetes?
-  answer: Role-Based Access Control is a mechanism for regulating access to Kubernetes resources based on the roles
-    of individual users or service accounts. RBAC uses four main objects. Roles and ClusterRoles define a set of
-    permissions. RoleBindings and ClusterRoleBindings grant those permissions to users, groups, or service accounts.
-    Roles are namespace-scoped while ClusterRoles apply across the entire cluster. RBAC is the recommended authorization
-    mechanism for Kubernetes.
-- question: What is the difference between a Role and a ClusterRole?
-  answer: A Role is namespace-scoped and grants permissions to resources within a specific namespace. A ClusterRole
-    is cluster-scoped and can grant permissions to cluster-wide resources like nodes, namespaces, and PersistentVolumes,
-    as well as namespaced resources across all namespaces. You can bind a ClusterRole to a namespace using a RoleBinding,
-    which grants the permissions of the ClusterRole but only within that namespace. ClusterRoles are also used to
-    define reusable roles that apply across multiple namespaces.
-- question: What is a ServiceAccount in Kubernetes?
-  answer: A ServiceAccount provides an identity for processes running in pods to interact with the Kubernetes API.
-    Every namespace has a default ServiceAccount, and pods are automatically assigned to it unless specified otherwise.
-    Kubernetes automatically mounts a ServiceAccount token into pods, allowing them to authenticate with the API
-    server. You should create dedicated ServiceAccounts for your applications with minimal permissions following
-    the principle of least privilege.
-- question: What are Pod Security Standards in Kubernetes?
-  answer: Pod Security Standards define three security policy levels for pods. Privileged applies no restrictions
-    and is suitable for system-level workloads. Baseline prevents known privilege escalations and is a good starting
-    point for most workloads. Restricted heavily restricts pod access and follows security best practices, requiring
-    pods to run as non-root and use read-only root filesystems. These standards replaced the deprecated PodSecurityPolicy
-    and are enforced through the Pod Security Admission controller.
-- question: What is a Pod Security Admission controller?
-  answer: The Pod Security Admission controller enforces Pod Security Standards at the namespace level. You label
-    namespaces to specify which security standard to apply and the enforcement mode. Enforce mode rejects pods that
-    violate the policy. Audit mode logs violations but allows pods to run. Warn mode generates warning messages
-    but allows pods to run. A namespace can have different modes for different standards, allowing gradual policy
-    enforcement during migration.
-- question: What is the principle of least privilege in Kubernetes?
-  answer: The principle of least privilege means granting only the minimum permissions necessary for a subject to
-    perform its function. In Kubernetes, this means creating dedicated ServiceAccounts for each application with
-    only the RBAC permissions they need, avoiding the use of the default ServiceAccount, not mounting ServiceAccount
-    tokens if the application does not use the API, running containers as non-root users, using read-only root filesystems,
-    and minimizing Linux capabilities.
-- question: How do you secure communication in a Kubernetes cluster?
-  answer: Kubernetes secures communication through TLS certificates for all control plane component communication
-    and between the API server and kubelets. etcd should use client certificate authentication and encrypt data
-    at rest. RBAC should restrict API access. Network policies enforce pod-to-pod traffic restrictions. Service
-    meshes can add mutual TLS between application services. Secrets should be encrypted at rest, and image scanning
-    should ensure container images are free of vulnerabilities.
-- question: What is OPA Gatekeeper in Kubernetes?
-  answer: OPA Gatekeeper is a policy controller for Kubernetes that uses Open Policy Agent to enforce custom policies
-    on API requests. It runs as an admission webhook and evaluates incoming API requests against user-defined constraint
-    templates and constraints written in Rego. Gatekeeper allows you to enforce policies like requiring specific
-    labels, limiting container images to approved registries, enforcing resource limits, or requiring security contexts,
-    beyond what built-in admission controllers support.
-- question: What are admission controllers in Kubernetes?
-  answer: Admission controllers are plugins that intercept API requests to the Kubernetes API server after authentication
-    and authorization but before the object is persisted to etcd. They can validate requests and reject them, or
-    mutate them to set default values. Examples include LimitRanger, which enforces default resource limits; NamespaceLifecycle,
-    which prevents creating resources in terminating namespaces; and PodSecurity, which enforces Pod Security Standards.
-    There are also dynamic admission controllers implemented as webhooks.
-- question: What are mutating and validating admission webhooks?
-  answer: Mutating admission webhooks are called early in the admission chain and can modify objects as they are
-    created or updated, for example to inject sidecar containers or set default fields. Validating admission webhooks
-    are called later and can only accept or reject requests without modifying them. Both are configured through
-    MutatingWebhookConfiguration and ValidatingWebhookConfiguration resources, specifying which API resources and
-    operations trigger the webhook call to an external HTTPS endpoint.
-- question: What is Kubernetes secret encryption at rest?
-  answer: By default, Kubernetes stores secrets in etcd unencrypted, protected only by RBAC. To enable encryption
-    at rest, you configure an EncryptionConfiguration file for the API server that specifies encryption providers
-    and keys. Providers include AES-CBC, AES-GCM, and KMS for using external key management systems like AWS KMS,
-    Azure Key Vault, or HashiCorp Vault. After enabling encryption, you must re-encrypt existing secrets by re-running
-    kubectl get secrets --all-namespaces and updating them.
-- question: What are image pull secrets in Kubernetes?
-  answer: Image pull secrets are Kubernetes Secrets containing credentials to authenticate with private container
-    registries when pulling images. You create a Secret of type kubernetes.io/dockerconfigjson containing the registry
-    credentials, then reference it in a pod's imagePullSecrets field or in the ServiceAccount used by the pod. Without
-    the correct pull secret, image pulls from private registries will fail with an authorization error.
-- question: How does the Kubernetes scheduler work?
-  answer: The Kubernetes scheduler watches for unscheduled pods and selects a suitable node for each. It uses a
-    two-phase process. In the filtering phase, it eliminates nodes that cannot run the pod based on resource availability,
-    node selectors, affinity rules, taints, and topology constraints. In the scoring phase, it ranks the remaining
-    nodes using scoring functions and assigns the pod to the highest-scoring node. You can extend the scheduler
-    with custom plugins or run additional schedulers alongside the default one.
-- question: What are taints and tolerations?
-  answer: 'Taints are applied to nodes to repel pods. A node with a taint will not accept pods unless the pod has
-    a matching toleration. Tolerations are applied to pods to allow them to be scheduled on tainted nodes. Taints
-    have three effects: NoSchedule prevents new pods without a toleration from being scheduled there; PreferNoSchedule
-    tries to avoid scheduling there but does not guarantee it; and NoExecute evicts existing pods that do not tolerate
-    the taint. Taints and tolerations are used to dedicate nodes or handle node conditions.
-
-    '
-- question: What is node affinity in Kubernetes?
-  answer: Node affinity is a set of rules used by the scheduler to determine which nodes a pod can be placed on,
-    based on node labels. requiredDuringSchedulingIgnoredDuringExecution is a hard requirement—the pod will not
-    be scheduled if no matching nodes exist. preferredDuringSchedulingIgnoredDuringExecution is a soft preference—the
-    scheduler tries to find a matching node but still schedules the pod elsewhere if it cannot. Node affinity is
-    more expressive than the older nodeSelector field.
-- question: What is pod affinity and anti-affinity?
-  answer: Pod affinity and anti-affinity are rules that control how pods are scheduled relative to other pods based
-    on their labels. Pod affinity attracts pods to nodes where certain other pods are already running—for example,
-    co-locating a web application and its cache on the same node. Pod anti-affinity repels pods from nodes where
-    certain other pods run—for example, spreading replicas of the same application across different nodes or availability
-    zones for high availability.
-- question: What are topology spread constraints?
-  answer: Topology spread constraints control how pods are spread across failure domains such as zones, regions,
-    and nodes. You specify the topologyKey, like topology.kubernetes.io/zone, and the maxSkew, which is the maximum
-    allowed difference in the number of matching pods between any two topology domains. This ensures high availability
-    by preventing all replicas from landing in a single zone or node without using the more complex pod anti-affinity
-    rules.
-- question: What is a PriorityClass in Kubernetes?
-  answer: A PriorityClass defines a mapping between priority names and their integer values. Pods reference a PriorityClass
-    to indicate their scheduling and eviction priority. Higher priority pods are scheduled before lower priority
-    ones when resources are limited. If insufficient resources exist, the scheduler may preempt, or evict, lower
-    priority pods to make room for higher priority ones. Built-in system classes like system-cluster-critical and
-    system-node-critical protect critical cluster components.
-- question: What is nodeSelector in Kubernetes?
-  answer: nodeSelector is the simplest form of node selection constraint. You add labels to nodes and then specify
-    the same labels in a pod's nodeSelector field. The scheduler only places the pod on nodes that have all the
-    specified labels. While simple and easy to use, nodeSelector only supports exact equality matching. For more
-    expressive rules including OR conditions and inequality, node affinity should be used instead.
+  - question: What is Kubernetes?
+    answer: Kubernetes, often abbreviated as K8s, is an open-source container orchestration platform originally developed by
+      Google and now maintained by the CNCF. It automates the deployment, scaling, and management of containerized
+      applications across a cluster of machines, providing self-healing, load balancing, service discovery, storage
+      orchestration, and declarative configuration management.
+  - question: What problem does Kubernetes solve?
+    answer: Kubernetes solves the operational challenges of running containers at scale. Before Kubernetes, teams had to
+      manually schedule containers onto servers, handle failures, balance traffic, and manage configuration. Kubernetes
+      automates all of this—it decides where to run containers, restarts failed ones, scales based on load, distributes
+      traffic, and manages secrets and configuration, reducing operational burden dramatically.
+  - question: What is a Kubernetes cluster?
+    answer: A Kubernetes cluster is a set of machines, called nodes, that run containerized applications managed by
+      Kubernetes. Every cluster has at least one control plane node that manages the cluster state, and one or more
+      worker nodes that run the actual application workloads. The control plane exposes the Kubernetes API and makes
+      global decisions about the cluster such as scheduling.
+  - question: What are the main components of the Kubernetes control plane?
+    answer: The Kubernetes control plane consists of the API server, which is the frontend for all cluster operations; etcd,
+      the distributed key-value store that holds the cluster state; the scheduler, which assigns pods to nodes; the
+      controller manager, which runs controller loops to maintain desired state; and the cloud controller manager, which
+      integrates with cloud provider APIs for features like load balancers and volumes.
+  - question: What is the Kubernetes API server?
+    answer: The Kubernetes API server is the central management component that exposes the Kubernetes REST API. All
+      interactions with the cluster go through it, whether from kubectl, internal components, or external tools. It
+      validates and processes API requests, stores the resulting state in etcd, and notifies other components of
+      changes. It is the only component that directly reads from and writes to etcd.
+  - question: What is etcd in Kubernetes?
+    answer: etcd is a distributed, consistent key-value store used by Kubernetes as its backing store for all cluster data.
+      It stores the entire cluster state including pod definitions, secrets, config maps, node information, and more.
+      etcd uses the Raft consensus algorithm to provide strong consistency and high availability. Backing up etcd
+      regularly is critical for disaster recovery.
+  - question: What is the Kubernetes scheduler?
+    answer: The Kubernetes scheduler watches for newly created pods that have no assigned node and selects the best node for
+      them to run on. It considers factors like resource requirements and availability, node affinity and anti-affinity
+      rules, taints and tolerations, pod topology spread constraints, and data locality. It uses a two-phase process of
+      filtering nodes that can run the pod, then scoring the remaining nodes.
+  - question: What is the controller manager in Kubernetes?
+    answer: The kube-controller-manager runs a collection of controller loops that watch the cluster state and work to move
+      the current state toward the desired state. Examples include the replication controller, which ensures the correct
+      number of pod replicas exist; the node controller, which responds when nodes go offline; the endpoints controller,
+      which manages Endpoints objects; and the service account controller.
+  - question: What is a Kubernetes node?
+    answer: "A node is a worker machine in Kubernetes, either a physical or virtual machine, that runs containerized
+      workloads. Each node is managed by the control plane and runs three key components: the kubelet, which
+      communicates with the API server and manages pods on the node; the kube-proxy, which maintains network rules for
+      pod communication; and a container runtime like containerd to run the actual containers."
+  - question: What is the kubelet?
+    answer: The kubelet is an agent that runs on every worker node in the cluster. It receives PodSpec objects from the API
+      server and ensures the containers described in those specs are running and healthy. It reports node and pod status
+      back to the control plane, manages container lifecycle, handles liveness and readiness probes, and interacts with
+      the container runtime through the Container Runtime Interface.
+  - question: What is kube-proxy?
+    answer: kube-proxy is a network proxy that runs on each node and implements the Kubernetes Service concept. It maintains
+      network rules—using iptables, IPVS, or eBPF depending on configuration—that allow network communication to pods
+      from inside or outside the cluster. When a Service is created, kube-proxy programs the node's networking to route
+      traffic for the service's virtual IP to the correct backend pods.
+  - question: What is a Pod in Kubernetes?
+    answer: A Pod is the smallest deployable unit in Kubernetes and represents a single instance of a running process. It
+      encapsulates one or more containers that share the same network namespace, IP address, and storage volumes.
+      Containers within a Pod can communicate via localhost and share the same lifecycle. Pods are ephemeral—they are
+      created, destroyed, and replaced rather than moved or repaired.
+  - question: Why would you run multiple containers in a single Pod?
+    answer: Multiple containers in a Pod are used when containers are tightly coupled and need to share resources. Common
+      patterns include the sidecar pattern, where a helper container enhances the main container—such as a log shipper
+      or proxy; the ambassador pattern, where a proxy handles external communication; and the adapter pattern, where a
+      container transforms the main container's output. All containers in a Pod start together and share the same IP and
+      volumes.
+  - question: What is a namespace in Kubernetes?
+    answer: A namespace is a logical partition within a Kubernetes cluster that provides a mechanism to isolate groups of
+      resources. They are useful for dividing cluster resources between multiple teams or applications. Resource names
+      must be unique within a namespace but not across namespaces. Kubernetes starts with default namespaces including
+      default, kube-system for cluster components, kube-public for publicly readable resources, and kube-node-lease for
+      node heartbeats.
+  - question: What are Kubernetes labels and selectors?
+    answer: Labels are key-value pairs attached to Kubernetes objects that are used to organize and identify resources.
+      Selectors allow you to filter and select objects based on their labels. Services use label selectors to route
+      traffic to matching pods. Deployments use label selectors to identify which pods they own. Labels and selectors
+      are fundamental to how Kubernetes components discover and interact with each other.
+  - question: What are Kubernetes annotations?
+    answer: Annotations are key-value pairs attached to Kubernetes objects, similar to labels, but they are not used for
+      selection. They store arbitrary non-identifying metadata such as build timestamps, git commit hashes, links to
+      runbook URLs, or configuration for tools like ingress controllers and monitoring agents. Unlike labels, annotation
+      values can be large strings containing structured or unstructured data.
+  - question: What is the difference between labels and annotations?
+    answer: Labels are intended for identifying and selecting Kubernetes objects and have restrictions on character length
+      and valid characters. Selectors use labels to filter objects, and Kubernetes components rely on them to identify
+      owned resources. Annotations are for storing arbitrary metadata and have much more relaxed constraints on length
+      and content. Annotations cannot be used in label selectors, so they do not affect how Kubernetes groups or selects
+      resources.
+  - question: What is a Kubernetes manifest?
+    answer: A Kubernetes manifest is a YAML or JSON file that describes the desired state of a Kubernetes resource. It
+      specifies the apiVersion, kind, metadata including the name and namespace, and spec which defines the resource
+      configuration. You apply manifests with kubectl apply, and Kubernetes works to make the current cluster state
+      match the manifest. Manifests are the foundation of declarative infrastructure management.
+  - question: What is the difference between imperative and declarative Kubernetes management?
+    answer: Imperative management uses commands like kubectl run or kubectl create to tell Kubernetes what to do step by
+      step. Declarative management uses manifests with kubectl apply to describe the desired state, and Kubernetes
+      figures out how to achieve it. Declarative management is preferred for production because it enables version
+      control, reproducibility, and idempotency—applying the same manifest repeatedly yields the same result.
+  - question: What is kubectl?
+    answer: kubectl is the official command-line tool for interacting with a Kubernetes cluster. It communicates with the
+      Kubernetes API server to create, read, update, and delete resources, view logs, execute commands in containers,
+      manage contexts, and perform cluster operations. It reads its configuration, including cluster credentials and
+      context, from the kubeconfig file, typically located at ~/.kube/config.
+  - question: What is a Deployment in Kubernetes?
+    answer: A Deployment is a higher-level abstraction that manages a set of identical Pods. It provides declarative
+      updates, meaning you describe the desired state and the Deployment controller makes it happen. It handles rolling
+      updates with configurable strategies, rollbacks to previous versions, scaling the number of replicas, and
+      self-healing by replacing failed pods. Deployments are the standard way to run stateless applications.
+  - question: What is a ReplicaSet?
+    answer: A ReplicaSet ensures that a specified number of pod replicas are running at all times. If a pod fails or is
+      deleted, the ReplicaSet creates a replacement. While ReplicaSets can be used directly, they are typically managed
+      by Deployments, which add rolling update and rollback capabilities on top. You should generally use Deployments
+      instead of ReplicaSets directly.
+  - question: What rolling update strategies does a Deployment support?
+    answer: Kubernetes Deployments support two update strategies. RollingUpdate, the default, gradually replaces old pods
+      with new ones. The maxUnavailable parameter controls how many pods can be unavailable during the update, and
+      maxSurge controls how many extra pods can exist above the desired count. Recreate terminates all existing pods
+      before creating new ones, causing downtime but avoiding version mixing. Canary and blue-green patterns are built
+      on top of these primitives.
+  - question: How do you perform a rollback of a Deployment?
+    answer: You roll back a Deployment using kubectl rollout undo deployment/name, which reverts to the previous revision.
+      You can roll back to a specific revision with the --to-revision flag after checking the history with kubectl
+      rollout history. Kubernetes stores rollout history up to the revisionHistoryLimit, which defaults to 10. Each
+      rollout, whether forward or backward, is recorded as a new revision.
+  - question: What is a StatefulSet in Kubernetes?
+    answer: A StatefulSet manages the deployment and scaling of a set of pods where each pod has a unique, persistent
+      identity. Unlike Deployments, StatefulSets provide stable network identities with predictable pod names like app-0
+      and app-1, stable storage with PersistentVolumeClaims that are retained if a pod is deleted, and ordered
+      deployment and scaling where pods start and stop in sequence. StatefulSets are used for databases, message queues,
+      and other stateful applications.
+  - question: What is a DaemonSet in Kubernetes?
+    answer: A DaemonSet ensures that a copy of a pod runs on all or a subset of nodes in the cluster. As nodes are added to
+      the cluster, pods are automatically added to them. When nodes are removed, those pods are garbage collected.
+      DaemonSets are commonly used for cluster-wide tasks like log collection agents, node monitoring agents, network
+      plugins, and storage daemons that need to run on every node.
+  - question: What is a Job in Kubernetes?
+    answer: A Job creates one or more pods and ensures that a specified number of them successfully terminate. When a pod
+      completes successfully, the Job tracks the completion. Jobs are used for batch processing, one-time database
+      migrations, data transformation tasks, and other finite workloads. You can control the level of parallelism with
+      the parallelism field and the number of completions required with the completions field.
+  - question: What is a CronJob in Kubernetes?
+    answer: A CronJob creates Jobs on a repeating schedule defined using standard cron syntax. It is the Kubernetes
+      equivalent of a Unix cron job. CronJobs are used for periodic tasks like backups, report generation, or sending
+      notifications. You can control concurrency policy to forbid or allow concurrent job runs, configure the history of
+      successful and failed jobs to retain, and set a starting deadline for missed schedules.
+  - question: What is the difference between a Deployment and a StatefulSet?
+    answer: Deployments are for stateless applications where all pods are interchangeable. Pods have random names and no
+      guaranteed storage persistence. StatefulSets are for stateful applications where each pod has a unique identity, a
+      stable hostname, and persistent storage that follows the pod through rescheduling. StatefulSets also provide
+      ordered, sequential deployment and termination, whereas Deployments can create and delete pods in any order.
+  - question: What is an init container?
+    answer: An init container is a specialized container that runs to completion before the main application containers in a
+      pod start. Init containers always run to completion, and each must finish successfully before the next one starts.
+      They are used for setup tasks like waiting for a dependent service to be ready, downloading configuration files,
+      performing database migrations before the application starts, or setting up file permissions on shared volumes.
+  - question: What are sidecar containers in Kubernetes?
+    answer: Sidecar containers run alongside the main application container within the same pod, sharing its network and
+      storage. They extend or enhance the main container without modifying it. Common sidecar use cases include log
+      forwarding agents that ship logs to a centralized system, service mesh proxies like Envoy that handle traffic
+      encryption and observability, configuration reloaders that watch for config changes, and OAuth proxy containers
+      for authentication.
+  - question: What is a Pod Disruption Budget?
+    answer: A Pod Disruption Budget is a Kubernetes object that limits how many pods of an application can be simultaneously
+      disrupted during voluntary operations like node drains, rolling updates, or cluster upgrades. You set either
+      minAvailable, a minimum number or percentage of pods that must remain running, or maxUnavailable, the maximum
+      number that can be unavailable. PDBs protect availability during planned maintenance without affecting involuntary
+      disruptions like node failures.
+  - question: What is a Horizontal Pod Autoscaler?
+    answer: A Horizontal Pod Autoscaler automatically scales the number of pod replicas in a Deployment, ReplicaSet, or
+      StatefulSet based on observed metrics. The most common metric is CPU utilization, but you can also scale on memory
+      or custom metrics from external systems. The HPA controller periodically checks the metrics, computes the desired
+      replica count, and adjusts the workload accordingly, with configurable minimum and maximum replica bounds.
+  - question: What is a Vertical Pod Autoscaler?
+    answer: A Vertical Pod Autoscaler automatically adjusts the CPU and memory resource requests and limits of containers
+      based on actual usage observed over time. Unlike the HPA which scales horizontally by adding pods, the VPA scales
+      vertically by right-sizing individual pods. It can update pods immediately by evicting and restarting them with
+      new resource settings, or operate in recommendation mode to suggest values without changing anything.
+  - question: What are resource requests and limits in Kubernetes?
+    answer: Resource requests are the amount of CPU and memory a container is guaranteed to receive. The scheduler uses
+      requests to decide which node can fit a pod. Resource limits cap the maximum amount a container can consume. If a
+      container exceeds its memory limit, it is killed and restarted. If it exceeds its CPU limit, it is throttled.
+      Setting appropriate requests and limits is essential for fair resource sharing and preventing noisy neighbor
+      problems.
+  - question: What is a Quality of Service class in Kubernetes?
+    answer: Kubernetes assigns a Quality of Service class to each pod based on resource requests and limits. Guaranteed pods
+      have identical requests and limits set for all containers and are never evicted unless they exceed their limits.
+      Burstable pods have requests set but limits that are higher or unset, and can be evicted under memory pressure.
+      BestEffort pods have no requests or limits at all and are the first to be evicted under resource pressure.
+  - question: What is a Kubernetes Service?
+    answer: A Kubernetes Service is an abstraction that defines a stable network endpoint to access a set of pods. Since
+      pods are ephemeral and their IP addresses change, a Service provides a constant virtual IP address and DNS name
+      that remains the same regardless of pod restarts. The Service uses a label selector to identify its backend pods
+      and distributes traffic among them, enabling reliable intra-cluster and external communication.
+  - question: What are the types of Kubernetes Services?
+    answer: Kubernetes has four Service types. ClusterIP, the default, exposes the service on an internal cluster IP only
+      accessible within the cluster. NodePort exposes the service on a static port on each node's IP, making it
+      accessible externally. LoadBalancer provisions an external load balancer from the cloud provider. ExternalName
+      maps the service to a DNS name by returning a CNAME record, useful for accessing external services using internal
+      service names.
+  - question: What is a ClusterIP Service?
+    answer: A ClusterIP Service exposes the application on an internal IP address within the cluster. This IP is reachable
+      only from within the cluster, making it suitable for communication between internal services. Kubernetes
+      automatically creates DNS records for ClusterIP services, so pods can reach them by service name. This is the
+      default service type and forms the backbone of internal microservice communication.
+  - question: What is a NodePort Service?
+    answer: A NodePort Service exposes the application on a static port, between 30000 and 32767 by default, on every node's
+      IP address. External clients can access the service using any node's IP plus the NodePort. Kubernetes also creates
+      a ClusterIP service automatically. NodePort is simple for development and testing but not recommended for
+      production because it requires clients to know node IPs and uses non-standard ports.
+  - question: What is a LoadBalancer Service?
+    answer: A LoadBalancer Service extends NodePort by additionally provisioning a cloud provider's external load balancer,
+      such as an AWS ALB or GCP Cloud Load Balancer, and pointing it at the nodes. The cloud load balancer's external IP
+      is automatically assigned to the service. This is the standard way to expose services to the internet in managed
+      cloud environments, though it creates one load balancer per service, which can be costly at scale.
+  - question: What is an Ingress in Kubernetes?
+    answer: An Ingress is a Kubernetes API object that manages external access to services within a cluster, typically HTTP
+      and HTTPS. Unlike Services, an Ingress can route traffic to multiple backend services based on URL paths and
+      hostnames, terminate TLS, and perform name-based virtual hosting—all through a single entry point. An Ingress
+      requires an Ingress controller such as nginx, Traefik, or the cloud-provider-specific controller to function.
+  - question: What is an Ingress controller?
+    answer: An Ingress controller is a pod that runs in the cluster and implements the Ingress API by watching for Ingress
+      resources and configuring a load balancer or proxy accordingly. Unlike most Kubernetes controllers, ingress
+      controllers are not started by default—you must deploy one. Popular options include ingress-nginx, Traefik,
+      HAProxy, Kong, and cloud-native options like AWS Load Balancer Controller or GKE Ingress.
+  - question: What is a NetworkPolicy in Kubernetes?
+    answer: A NetworkPolicy is a Kubernetes resource that controls traffic flow at the IP and port level between pods or
+      between pods and external endpoints. By default, pods accept traffic from any source. Applying a NetworkPolicy
+      selects specific pods using label selectors and defines which ingress and egress traffic is allowed.
+      NetworkPolicies are implemented by the network plugin (CNI), so the cluster must use a CNI that supports network
+      policies, such as Calico, Cilium, or Weave.
+  - question: What is a CNI plugin in Kubernetes?
+    answer: "A Container Network Interface plugin is software that implements networking for Kubernetes pods according to
+      the CNI specification. Kubernetes uses the CNI to assign IP addresses to pods, set up network interfaces, and
+      configure routing. Different CNI plugins offer different features: Flannel provides basic overlay networking,
+      Calico supports network policies and BGP routing, Cilium offers eBPF-based networking with advanced security and
+      observability, and Weave provides encrypted overlay networking."
+  - question: What is Kubernetes DNS?
+    answer: Kubernetes runs a cluster DNS service, typically CoreDNS, that automatically creates DNS records for Services
+      and Pods. Services get a DNS name in the format service-name.namespace.svc.cluster.local. Pods get records based
+      on their IP. This allows services to discover each other by name instead of hard-coded IP addresses. CoreDNS is
+      configurable and can be extended with plugins for custom DNS behavior.
+  - question: What is a headless Service?
+    answer: A headless Service is created by setting the clusterIP field to None, which disables the virtual IP allocation.
+      Instead of a single stable IP, DNS queries for the service return the IP addresses of all matching pods directly.
+      This gives clients direct access to individual pod IPs and is used with StatefulSets so that each pod can be
+      addressed individually, for example pod-0.service.namespace.svc.cluster.local, which is essential for databases
+      and clustered applications.
+  - question: What is an ExternalName Service?
+    answer: An ExternalName Service maps a Kubernetes service to an external DNS name by returning a CNAME record when
+      queried. No proxying occurs—the DNS response simply redirects clients to the external hostname. This is useful for
+      abstracting external dependencies like a managed database or third-party API behind an internal service name,
+      allowing you to change the external endpoint without updating application configuration.
+  - question: What is the difference between Ingress and a LoadBalancer Service?
+    answer: A LoadBalancer Service provisions one external load balancer per service, which is simple but expensive and
+      wasteful at scale. An Ingress uses a single entry point and routes traffic to multiple backend services based on
+      rules like hostnames and URL paths, making it more efficient and cost-effective for HTTP workloads. Ingress also
+      supports TLS termination and name-based virtual hosting natively. Non-HTTP services generally still require a
+      LoadBalancer type.
+  - question: What is an Endpoint in Kubernetes?
+    answer: An Endpoints object is automatically created and managed by Kubernetes for each Service that uses label
+      selectors. It stores the IP addresses and ports of all pods that match the Service's selector and are currently
+      ready. When traffic hits the Service's cluster IP, kube-proxy reads the Endpoints to route the traffic to a
+      healthy backend pod. You can also manually create Endpoints for services without selectors, such as when mapping
+      to external resources.
+  - question: What is EndpointSlice in Kubernetes?
+    answer: EndpointSlice is a scalable alternative to the Endpoints API introduced to address performance problems in large
+      clusters. A single Endpoints object can become very large for services with many pods, causing excessive updates
+      and network traffic. EndpointSlice shards the endpoint information into multiple smaller objects with a
+      configurable maximum size, defaulting to 100 endpoints per slice. This significantly reduces the data transmitted
+      to each node when endpoints change.
+  - question: What is a Service mesh?
+    answer: A service mesh is an infrastructure layer that handles service-to-service communication within a microservices
+      application. It is typically implemented using sidecar proxies injected alongside each service pod. The mesh
+      provides features like mutual TLS for encrypted and authenticated communication, traffic management with load
+      balancing and circuit breaking, observability with metrics and distributed tracing, and fine-grained access
+      control—all without changing application code. Istio, Linkerd, and Consul Connect are popular options.
+  - question: What is a PersistentVolume in Kubernetes?
+    answer: A PersistentVolume is a piece of storage in the cluster that has been provisioned by an administrator or
+      dynamically by a StorageClass. It is a cluster-level resource independent of any specific pod. PersistentVolumes
+      have a lifecycle independent of any pod that uses them—when a pod is deleted, the PV can be retained, recycled, or
+      deleted based on its reclaim policy. They abstract the underlying storage infrastructure from the application.
+  - question: What is a PersistentVolumeClaim?
+    answer: A PersistentVolumeClaim is a request for storage by a user. It is analogous to a pod requesting node resources.
+      A PVC specifies the required storage size, access modes, and optionally a StorageClass. Kubernetes binds the PVC
+      to a suitable PersistentVolume that satisfies the requirements. Pods then use the PVC as a volume, and the actual
+      storage is transparent to the pod. PVCs allow users to consume abstract storage without knowing the underlying
+      infrastructure details.
+  - question: What are PersistentVolume access modes?
+    answer: Access modes define how a PersistentVolume can be mounted. ReadWriteOnce means the volume can be mounted as
+      read-write by a single node. ReadOnlyMany means the volume can be mounted as read-only by many nodes
+      simultaneously. ReadWriteMany means the volume can be mounted as read-write by many nodes simultaneously.
+      ReadWriteOncePod, added in Kubernetes 1.22, means the volume can be mounted as read-write by only a single pod.
+      Not all storage backends support all access modes.
+  - question: What is a StorageClass in Kubernetes?
+    answer: A StorageClass provides a way to describe the types of storage available in a cluster and define how
+      PersistentVolumes are dynamically provisioned. It specifies the provisioner, such as the AWS EBS CSI driver, and
+      parameters like disk type and replication factor. When a PVC requests a specific StorageClass, Kubernetes
+      automatically creates a PV using that class's provisioner. Clusters typically have a default StorageClass used
+      when a PVC does not specify one.
+  - question: What is dynamic provisioning of PersistentVolumes?
+    answer: Dynamic provisioning automatically creates PersistentVolumes on demand when a PersistentVolumeClaim is created,
+      eliminating the need for cluster administrators to manually pre-provision storage. It works through
+      StorageClasses, which define the provisioner and parameters. When a PVC referencing a StorageClass is created, the
+      provisioner automatically creates the underlying storage resource—such as an AWS EBS volume or GCP Persistent
+      Disk—and binds it to the PVC.
+  - question: What is the PersistentVolume reclaim policy?
+    answer: The reclaim policy determines what happens to a PersistentVolume after its PersistentVolumeClaim is deleted.
+      Retain keeps the PV and its data but marks it as Released, requiring manual cleanup before reuse. Delete
+      automatically deletes both the PV object and the underlying storage asset, which is the default for dynamically
+      provisioned volumes. Recycle is deprecated and should not be used. The reclaim policy is critical for protecting
+      data from accidental deletion.
+  - question: What is a ConfigMap?
+    answer: A ConfigMap is a Kubernetes object for storing non-sensitive configuration data as key-value pairs. Applications
+      can consume ConfigMaps as environment variables, command-line arguments, or as files in a mounted volume.
+      ConfigMaps decouple configuration from container images, allowing you to run the same image in different
+      environments with different configurations without rebuilding. They are not encrypted, so they should not be used
+      for sensitive data.
+  - question: What is a Secret in Kubernetes?
+    answer: A Secret is a Kubernetes object for storing sensitive data such as passwords, OAuth tokens, and TLS
+      certificates. Secrets are similar to ConfigMaps but are base64-encoded and treated with additional security
+      consideration by the cluster. By default, Kubernetes Secrets are stored unencrypted in etcd, so encryption at rest
+      should be enabled and RBAC should restrict access. Pods can consume Secrets as environment variables or mounted
+      files.
+  - question: What is the difference between a ConfigMap and a Secret?
+    answer: Both ConfigMaps and Secrets store key-value data for use by pods, but Secrets are intended for sensitive data.
+      Secrets are base64-encoded, which is not encryption, and the cluster can be configured to encrypt them at rest in
+      etcd. Access to Secrets can be restricted with RBAC, and Kubernetes avoids writing Secret data to logs. ConfigMaps
+      are for non-sensitive configuration and have no such protections. Use Secrets for passwords, tokens, and
+      certificates.
+  - question: What is the CSI (Container Storage Interface)?
+    answer: The Container Storage Interface is a standard API for exposing storage systems to containerized workloads on
+      container orchestration platforms like Kubernetes. Storage vendors implement CSI drivers that Kubernetes uses to
+      provision, attach, mount, and unmount volumes. CSI replaced in-tree volume plugins, which were built into the
+      Kubernetes codebase, allowing storage vendors to develop and ship drivers independently of Kubernetes release
+      cycles. Examples include the AWS EBS CSI driver and the GCE PD CSI driver.
+  - question: What are emptyDir volumes?
+    answer: An emptyDir volume is created when a pod is assigned to a node and exists as long as the pod runs on that node.
+      Initially empty, all containers in the pod can read from and write to the same emptyDir volume. The volume is
+      deleted permanently when the pod is removed. emptyDir is useful for scratch space, sharing files between
+      containers in the same pod, caching, and checkpointing long computations. It can optionally use memory as its
+      backing medium.
+  - question: What are hostPath volumes?
+    answer: A hostPath volume mounts a file or directory from the host node's filesystem into a pod. It is useful for
+      applications that need access to Docker internals or node-level monitoring tools. However, hostPath volumes are a
+      security risk because they can expose sensitive host directories to pods, and pods with hostPath volumes are bound
+      to specific nodes, breaking portability. They should be avoided in production and replaced with proper storage
+      solutions where possible.
+  - question: What is volume snapshot in Kubernetes?
+    answer: Volume snapshots are a standard API for creating point-in-time copies of persistent volumes, similar to how
+      PersistentVolumes and PersistentVolumeClaims work for storage provisioning. VolumeSnapshot resources represent a
+      snapshot taken from a PVC. VolumeSnapshotContent is the actual snapshot. VolumeSnapshotClass defines the snapshot
+      provisioner. Snapshots can be used for backups and to provision new volumes pre-populated with snapshot data using
+      a dataSource in a PVC.
+  - question: What is RBAC in Kubernetes?
+    answer: Role-Based Access Control is a mechanism for regulating access to Kubernetes resources based on the roles of
+      individual users or service accounts. RBAC uses four main objects. Roles and ClusterRoles define a set of
+      permissions. RoleBindings and ClusterRoleBindings grant those permissions to users, groups, or service accounts.
+      Roles are namespace-scoped while ClusterRoles apply across the entire cluster. RBAC is the recommended
+      authorization mechanism for Kubernetes.
+  - question: What is the difference between a Role and a ClusterRole?
+    answer: A Role is namespace-scoped and grants permissions to resources within a specific namespace. A ClusterRole is
+      cluster-scoped and can grant permissions to cluster-wide resources like nodes, namespaces, and PersistentVolumes,
+      as well as namespaced resources across all namespaces. You can bind a ClusterRole to a namespace using a
+      RoleBinding, which grants the permissions of the ClusterRole but only within that namespace. ClusterRoles are also
+      used to define reusable roles that apply across multiple namespaces.
+  - question: What is a ServiceAccount in Kubernetes?
+    answer: A ServiceAccount provides an identity for processes running in pods to interact with the Kubernetes API. Every
+      namespace has a default ServiceAccount, and pods are automatically assigned to it unless specified otherwise.
+      Kubernetes automatically mounts a ServiceAccount token into pods, allowing them to authenticate with the API
+      server. You should create dedicated ServiceAccounts for your applications with minimal permissions following the
+      principle of least privilege.
+  - question: What are Pod Security Standards in Kubernetes?
+    answer: Pod Security Standards define three security policy levels for pods. Privileged applies no restrictions and is
+      suitable for system-level workloads. Baseline prevents known privilege escalations and is a good starting point
+      for most workloads. Restricted heavily restricts pod access and follows security best practices, requiring pods to
+      run as non-root and use read-only root filesystems. These standards replaced the deprecated PodSecurityPolicy and
+      are enforced through the Pod Security Admission controller.
+  - question: What is a Pod Security Admission controller?
+    answer: The Pod Security Admission controller enforces Pod Security Standards at the namespace level. You label
+      namespaces to specify which security standard to apply and the enforcement mode. Enforce mode rejects pods that
+      violate the policy. Audit mode logs violations but allows pods to run. Warn mode generates warning messages but
+      allows pods to run. A namespace can have different modes for different standards, allowing gradual policy
+      enforcement during migration.
+  - question: What is the principle of least privilege in Kubernetes?
+    answer: The principle of least privilege means granting only the minimum permissions necessary for a subject to perform
+      its function. In Kubernetes, this means creating dedicated ServiceAccounts for each application with only the RBAC
+      permissions they need, avoiding the use of the default ServiceAccount, not mounting ServiceAccount tokens if the
+      application does not use the API, running containers as non-root users, using read-only root filesystems, and
+      minimizing Linux capabilities.
+  - question: How do you secure communication in a Kubernetes cluster?
+    answer: Kubernetes secures communication through TLS certificates for all control plane component communication and
+      between the API server and kubelets. etcd should use client certificate authentication and encrypt data at rest.
+      RBAC should restrict API access. Network policies enforce pod-to-pod traffic restrictions. Service meshes can add
+      mutual TLS between application services. Secrets should be encrypted at rest, and image scanning should ensure
+      container images are free of vulnerabilities.
+  - question: What is OPA Gatekeeper in Kubernetes?
+    answer: OPA Gatekeeper is a policy controller for Kubernetes that uses Open Policy Agent to enforce custom policies on
+      API requests. It runs as an admission webhook and evaluates incoming API requests against user-defined constraint
+      templates and constraints written in Rego. Gatekeeper allows you to enforce policies like requiring specific
+      labels, limiting container images to approved registries, enforcing resource limits, or requiring security
+      contexts, beyond what built-in admission controllers support.
+  - question: What are admission controllers in Kubernetes?
+    answer: Admission controllers are plugins that intercept API requests to the Kubernetes API server after authentication
+      and authorization but before the object is persisted to etcd. They can validate requests and reject them, or
+      mutate them to set default values. Examples include LimitRanger, which enforces default resource limits;
+      NamespaceLifecycle, which prevents creating resources in terminating namespaces; and PodSecurity, which enforces
+      Pod Security Standards. There are also dynamic admission controllers implemented as webhooks.
+  - question: What are mutating and validating admission webhooks?
+    answer: Mutating admission webhooks are called early in the admission chain and can modify objects as they are created
+      or updated, for example to inject sidecar containers or set default fields. Validating admission webhooks are
+      called later and can only accept or reject requests without modifying them. Both are configured through
+      MutatingWebhookConfiguration and ValidatingWebhookConfiguration resources, specifying which API resources and
+      operations trigger the webhook call to an external HTTPS endpoint.
+  - question: What is Kubernetes secret encryption at rest?
+    answer: By default, Kubernetes stores secrets in etcd unencrypted, protected only by RBAC. To enable encryption at rest,
+      you configure an EncryptionConfiguration file for the API server that specifies encryption providers and keys.
+      Providers include AES-CBC, AES-GCM, and KMS for using external key management systems like AWS KMS, Azure Key
+      Vault, or HashiCorp Vault. After enabling encryption, you must re-encrypt existing secrets by re-running kubectl
+      get secrets --all-namespaces and updating them.
+  - question: What are image pull secrets in Kubernetes?
+    answer: Image pull secrets are Kubernetes Secrets containing credentials to authenticate with private container
+      registries when pulling images. You create a Secret of type kubernetes.io/dockerconfigjson containing the registry
+      credentials, then reference it in a pod's imagePullSecrets field or in the ServiceAccount used by the pod. Without
+      the correct pull secret, image pulls from private registries will fail with an authorization error.
+  - question: How does the Kubernetes scheduler work?
+    answer: The Kubernetes scheduler watches for unscheduled pods and selects a suitable node for each. It uses a two-phase
+      process. In the filtering phase, it eliminates nodes that cannot run the pod based on resource availability, node
+      selectors, affinity rules, taints, and topology constraints. In the scoring phase, it ranks the remaining nodes
+      using scoring functions and assigns the pod to the highest-scoring node. You can extend the scheduler with custom
+      plugins or run additional schedulers alongside the default one.
+  - question: What are taints and tolerations?
+    answer: >
+      Taints are applied to nodes to repel pods. A node with a taint will not accept pods unless the pod has a matching
+      toleration. Tolerations are applied to pods to allow them to be scheduled on tainted nodes. Taints have three
+      effects: NoSchedule prevents new pods without a toleration from being scheduled there; PreferNoSchedule tries to
+      avoid scheduling there but does not guarantee it; and NoExecute evicts existing pods that do not tolerate the
+      taint. Taints and tolerations are used to dedicate nodes or handle node conditions.
+  - question: What is node affinity in Kubernetes?
+    answer: Node affinity is a set of rules used by the scheduler to determine which nodes a pod can be placed on, based on
+      node labels. requiredDuringSchedulingIgnoredDuringExecution is a hard requirement—the pod will not be scheduled if
+      no matching nodes exist. preferredDuringSchedulingIgnoredDuringExecution is a soft preference—the scheduler tries
+      to find a matching node but still schedules the pod elsewhere if it cannot. Node affinity is more expressive than
+      the older nodeSelector field.
+  - question: What is pod affinity and anti-affinity?
+    answer: Pod affinity and anti-affinity are rules that control how pods are scheduled relative to other pods based on
+      their labels. Pod affinity attracts pods to nodes where certain other pods are already running—for example,
+      co-locating a web application and its cache on the same node. Pod anti-affinity repels pods from nodes where
+      certain other pods run—for example, spreading replicas of the same application across different nodes or
+      availability zones for high availability.
+  - question: What are topology spread constraints?
+    answer: Topology spread constraints control how pods are spread across failure domains such as zones, regions, and
+      nodes. You specify the topologyKey, like topology.kubernetes.io/zone, and the maxSkew, which is the maximum
+      allowed difference in the number of matching pods between any two topology domains. This ensures high availability
+      by preventing all replicas from landing in a single zone or node without using the more complex pod anti-affinity
+      rules.
+  - question: What is a PriorityClass in Kubernetes?
+    answer: A PriorityClass defines a mapping between priority names and their integer values. Pods reference a
+      PriorityClass to indicate their scheduling and eviction priority. Higher priority pods are scheduled before lower
+      priority ones when resources are limited. If insufficient resources exist, the scheduler may preempt, or evict,
+      lower priority pods to make room for higher priority ones. Built-in system classes like system-cluster-critical
+      and system-node-critical protect critical cluster components.
+  - question: What is nodeSelector in Kubernetes?
+    answer: nodeSelector is the simplest form of node selection constraint. You add labels to nodes and then specify the
+      same labels in a pod's nodeSelector field. The scheduler only places the pod on nodes that have all the specified
+      labels. While simple and easy to use, nodeSelector only supports exact equality matching. For more expressive
+      rules including OR conditions and inequality, node affinity should be used instead.

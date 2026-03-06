@@ -1,650 +1,651 @@
 config:
-  name: 'DevOps-Interview-Questions: Kubernetes Expert'
+  name: "DevOps-Interview-Questions: Kubernetes Expert"
   description: Expert Kubernetes internals and specialized topics including deep networking, advanced storage, API
     machinery, controller patterns, security hardening, runtime isolation, identity, and operational edge cases.
   questionDelay: 1
   answerDelay: 1
+  youtube:
+    videoId: SkYH7b0J044
+    url: https://youtu.be/SkYH7b0J044
+    uploadedAt: 2026-03-06T17:33:50.697Z
+    privacy: public
+    contentSha: ae52a61c
 questions:
-- question: What is kube-state-metrics?
-  answer: kube-state-metrics is a service that listens to the Kubernetes API server and generates metrics about
-    the state of Kubernetes objects. Unlike the Metrics Server, which reports resource usage, kube-state-metrics
-    reports on the health and state of objects—for example, the number of desired versus available replicas in a
-    Deployment, the phase of pods, the status of PersistentVolumeClaims, and node conditions. These metrics are
-    scraped by Prometheus and used for alerting on Kubernetes object state.
-- question: What are common Kubernetes monitoring metrics to watch?
-  answer: Critical Kubernetes metrics to monitor include node CPU and memory utilization and node conditions like
-    Ready, DiskPressure, and MemoryPressure. Pod-level metrics include restart counts, OOM kill counts, and CPU
-    and memory utilization versus limits. Deployment-level metrics include desired versus available replicas, rolling
-    update status, and HPA scaling events. API server metrics include request error rates and latency. etcd metrics
-    include DB size, leader changes, and slow operations. Custom application metrics exposed through the Kubernetes
-    Metrics API are also important.
-- question: What is kubecost?
-  answer: Kubecost is a cost monitoring and optimization tool for Kubernetes that provides visibility into spending
-    by namespace, deployment, pod, label, and team. It integrates with cloud provider billing APIs to provide accurate
-    cost allocation and integrates with Prometheus for resource usage data. Kubecost provides recommendations for
-    right-sizing workloads, identifying idle resources, and potential savings from reserved instances or committed
-    use discounts. It also supports chargebacks and showbacks for multi-team clusters.
-- question: What is the difference between IPVS and iptables in kube-proxy?
-  answer: kube-proxy can use iptables or IPVS to implement Service load balancing. iptables is the default and uses
-    a chain of rules that are traversed linearly, which has O(n) performance that degrades with thousands of services.
-    IPVS uses Linux kernel hash tables for O(1) lookup regardless of cluster size and supports more load balancing
-    algorithms including round-robin, least connections, and source hashing. For clusters with many services, IPVS
-    mode significantly improves kube-proxy performance.
-- question: What is a Kubernetes Service topology-aware routing?
-  answer: Topology-aware routing, previously called topology-aware hints, allows kube-proxy to prefer routing Service
-    traffic to endpoints in the same zone or region as the client pod rather than routing arbitrarily across zones.
-    This reduces cross-zone data transfer costs and latency. EndpointSlices are annotated with topology hints by
-    the EndpointSlice controller, and kube-proxy reads these hints to make local-first routing decisions. This feature
-    is particularly valuable in multi-zone clusters on cloud providers that charge for cross-zone traffic.
-- question: What is the difference between overlay and underlay networking in Kubernetes?
-  answer: Overlay networking encapsulates pod traffic inside another network protocol, typically VXLAN or Geneve,
-    to create a virtual network on top of the physical network. It is simpler to set up because it does not require
-    changes to the physical network but adds overhead from encapsulation. Underlay networking uses the physical
-    network directly, often with BGP routing, to route pod traffic without encapsulation. It has lower overhead
-    and better performance but requires changes to the network infrastructure. Calico supports both modes.
-- question: What is BGP in the context of Kubernetes networking?
-  answer: Border Gateway Protocol can be used by CNI plugins like Calico in BGP mode to advertise pod CIDR routes
-    directly to the physical network fabric. Instead of overlay encapsulation, each node announces the pod CIDRs
-    it hosts using BGP peering with top-of-rack switches or routers. Traffic flows directly between nodes using
-    the native network without encapsulation overhead. This is preferred in data center environments where operators
-    control the network infrastructure and want optimal performance.
-- question: What is dual-stack networking in Kubernetes?
-  answer: Dual-stack networking allows Kubernetes clusters to support both IPv4 and IPv6 addresses simultaneously.
-    Pods and Services can have both an IPv4 and an IPv6 address. This is configured at the cluster level with podCIDR
-    and serviceClusterIPRange settings for both address families. Dual-stack support requires a CNI plugin and kube-proxy
-    that support it. It enables gradual IPv6 migration and allows applications to be accessed over either protocol.
-- question: What is a LoadBalancer Service source IP preservation?
-  answer: By default, when traffic enters through a LoadBalancer Service, the source IP is replaced by the node
-    IP due to SNAT, hiding the original client IP. Setting externalTrafficPolicy to Local preserves the original
-    client source IP by skipping SNAT, but it only routes traffic to pods on the same node as the entry point, which
-    can cause uneven load distribution. For Services where client IP is important—such as for IP-based allow lists
-    or geo-routing—setting externalTrafficPolicy Local is necessary despite the trade-off.
-- question: How does Kubernetes handle DNS for StatefulSets?
-  answer: Kubernetes creates stable DNS records for StatefulSet pods in the form pod-name.service-name.namespace.svc.cluster.local.
-    Each pod in a StatefulSet has a predictable, stable DNS name based on its ordinal index, such as mysql-0.mysql.default.svc.cluster.local.
-    This requires a headless Service that acts as the governing service for the StatefulSet. These stable DNS names
-    allow StatefulSet pods to discover each other reliably, which is essential for forming clusters and replication
-    groups in databases and distributed systems.
-- question: What is CoreDNS and how does it work in Kubernetes?
-  answer: CoreDNS is the default DNS server in Kubernetes clusters, running as a Deployment in the kube-system namespace.
-    It is configured via a Corefile, a configuration file using the CoreDNS plugin chain syntax. The kubernetes
-    plugin reads Service and Pod information from the Kubernetes API and answers DNS queries for the cluster domain.
-    Other plugins handle caching, health checks, metrics, upstream forwarding for external DNS, and custom overrides.
-    CoreDNS is extensible through its plugin architecture.
-- question: What is the Kubernetes network model guarantee?
-  answer: The Kubernetes network model provides three fundamental guarantees. All pods can communicate with all
-    other pods without NAT. Nodes can communicate with all pods without NAT. The IP a pod sees as its own is the
-    same IP other pods see when communicating with it. This flat model simplifies application communication but
-    requires the CNI plugin to implement it correctly. It contrasts with Docker's default isolated bridge network
-    model where containers on different hosts cannot communicate without explicit configuration.
-- question: What is multus CNI?
-  answer: Multus CNI is a meta-plugin that enables attaching multiple network interfaces to pods. By default, Kubernetes
-    pods have only one network interface from the CNI plugin. Multus allows attaching additional interfaces from
-    other CNI plugins, for example adding an SR-IOV interface for high-performance networking alongside the main
-    overlay interface for regular traffic. This is used in telecommunications and network function virtualization
-    where pods need multiple network paths for different types of traffic.
-- question: What is the difference between static and dynamic PersistentVolume provisioning?
-  answer: Static provisioning requires a cluster administrator to manually create PersistentVolume objects representing
-    pre-provisioned storage before users can claim them. Users create PVCs and Kubernetes binds them to matching
-    pre-existing PVs. Dynamic provisioning uses StorageClasses to automatically create PVs on demand when a PVC
-    is created. The provisioner creates the storage resource in the cloud provider or storage system and creates
-    the PV object automatically, eliminating the manual step and allowing self-service storage for application teams.
-- question: What are volume modes in Kubernetes PersistentVolumes?
-  answer: Volume modes define how a PersistentVolume is accessed by pods. Filesystem mode, the default, formats
-    the volume with a filesystem and mounts it as a directory in the container. Block mode exposes the raw block
-    device to the container without a filesystem, used by applications like databases that perform their own I/O
-    management for better performance. The volumeMode must be specified in both the PVC and the PV, and they must
-    match for binding to occur.
-- question: What is a local PersistentVolume?
-  answer: A local PersistentVolume uses a local disk or partition on a specific node rather than network storage.
-    Local volumes provide better I/O performance since there is no network overhead, making them suitable for latency-sensitive
-    workloads like databases. However, local volumes tie pods to specific nodes—if the node fails, the data is inaccessible.
-    They require explicit topology information via nodeAffinity to ensure pods are always scheduled on the correct
-    node. They are appropriate when you can tolerate reduced availability for performance.
-- question: What is storage tiering in Kubernetes?
-  answer: Storage tiering involves defining multiple StorageClasses representing different performance and cost
-    characteristics. For example, you might have a premium StorageClass backed by NVMe SSDs for databases, a standard
-    StorageClass backed by regular SSDs for most applications, and a slow StorageClass backed by HDDs for archival
-    data. Teams choose the appropriate StorageClass in their PVCs based on application needs and cost sensitivity.
-    StorageClasses are the mechanism for implementing tiered storage in Kubernetes.
-- question: How do you expand a PersistentVolumeClaim in Kubernetes?
-  answer: You can expand a PVC by editing its resource request and increasing the storage size, provided the StorageClass
-    has allowVolumeExpansion set to true. Kubernetes then resizes the underlying volume. For filesystem volumes,
-    the resize typically requires the pod to be restarted to run the filesystem resize operation (resize2fs for
-    ext4). For block volumes, expansion is often online. Not all storage backends support volume expansion, so check
-    the CSI driver documentation for your storage provider.
-- question: What are Kubernetes storage best practices?
-  answer: Storage best practices include using dynamic provisioning with StorageClasses instead of manually managing
-    PVs, setting appropriate reclaim policies (Retain for stateful workloads, Delete for temporary ones), using
-    volume snapshots for backups before upgrades, choosing access modes carefully based on actual concurrency needs,
-    setting resource limits for storage with LimitRange, using local volumes only when performance requirements
-    justify the availability trade-off, regularly backing up stateful data with tools like Velero, and monitoring
-    PVC usage to prevent running out of space.
-- question: What is kubectl diff?
-  answer: kubectl diff shows the differences between the current cluster state and a manifest you are about to apply,
-    similar to a dry run with a visual diff output. It uses kubectl apply --dry-run=server to compute what changes
-    would be made and then displays the diff. This is invaluable for reviewing what a kubectl apply will change
-    before committing it, especially in production environments. It is commonly used in CI/CD pipelines to show
-    reviewers exactly what will change in a pull request.
-- question: What is kubectl kustomize?
-  answer: kubectl kustomize renders a Kustomize configuration into Kubernetes manifests without applying them, printing
-    the result to stdout. It is equivalent to running kustomize build. kubectl apply -k applies a Kustomize directory
-    directly. These built-in commands eliminate the need to install the separate kustomize binary for basic use.
-    kubectl kustomize is useful for verifying what manifests will be generated before applying them.
-- question: How do you use kubectl jsonpath?
-  answer: kubectl supports JSONPath expressions as an output format for extracting specific fields from Kubernetes
-    resources. For example, kubectl get pods -o jsonpath='{.items[*].metadata.name}' lists all pod names. You can
-    filter, project, and format fields from any Kubernetes resource. JSONPath is more powerful than the simple --field-selector
-    but requires knowing the resource structure. Combined with kubectl get, it enables scripting against Kubernetes
-    resources without parsing the full YAML output.
-- question: What is kubectl get --watch?
-  answer: The --watch or -w flag on kubectl get establishes a watch connection to the Kubernetes API and streams
-    updates as resources change in real time. This is more efficient than repeatedly running kubectl get because
-    it uses the Kubernetes watch mechanism instead of polling. For example, kubectl get pods -w shows pod status
-    changes in real time as they start up or crash. The --watch-only flag prints only changes without the initial
-    state listing.
-- question: How do you use kubectl rollout commands?
-  answer: kubectl rollout manages rolling updates for Deployments, StatefulSets, and DaemonSets. rollout status
-    watches and reports the progress of a rollout. rollout history lists previous revisions with optional details.
-    rollout undo reverts to the previous or a specific revision. rollout pause stops an in-progress rolling update,
-    and rollout resume continues it. rollout restart triggers a rolling restart of all pods, useful for reloading
-    mounted ConfigMaps or rotating ServiceAccount tokens without changing the workload spec.
-- question: What is kubectl top?
-  answer: kubectl top displays real-time resource consumption metrics for nodes and pods. kubectl top node shows
-    CPU and memory usage for each node and the percentage of allocatable capacity being used. kubectl top pod shows
-    CPU and memory usage for each pod and optionally per container. These commands require the Metrics Server to
-    be installed. They are useful for quick operational checks but for historical trends and alerting you need Prometheus
-    and Grafana.
-- question: What does kubectl get -o wide show?
-  answer: The -o wide output format for kubectl get adds additional columns beyond the default. For pods, it adds
-    the pod IP, the node the pod runs on, and the nominated node and readiness gates. For nodes, it adds the internal
-    and external IP, the OS image, the kernel version, and the container runtime. The wide output is useful for
-    quickly correlating pods with their nodes or checking pod IPs without running kubectl describe.
-- question: How do you label and annotate Kubernetes resources with kubectl?
-  answer: kubectl label adds, modifies, or removes labels on existing resources. For example, kubectl label pod
-    my-pod env=production adds a label, and kubectl label pod my-pod env- removes it. kubectl annotate works identically
-    for annotations. The --overwrite flag is required to change an existing label value. Labels and annotations
-    can be added to any resource type, and changes take effect immediately, affecting selector-based operations
-    and tool integrations that rely on annotations.
-- question: What is kubectl config?
-  answer: kubectl config manages the kubeconfig file. kubectl config get-contexts lists all available contexts.
-    kubectl config use-context switches the active context. kubectl config set-cluster, set-credentials, and set-context
-    add or modify configuration entries. kubectl config current-context shows the active context. kubectl config
-    view displays the merged kubeconfig from all configured sources. These commands allow managing multiple cluster
-    configurations without manually editing the kubeconfig YAML file.
-- question: What is the --dry-run flag in kubectl?
-  answer: The --dry-run flag simulates an operation without making actual changes. --dry-run=client validates the
-    manifest locally without sending it to the API server, which is fast but does not catch server-side validation
-    errors. --dry-run=server sends the request to the API server for full validation, including admission controller
-    checks, but still does not persist anything. Using --dry-run=server -o yaml is a common pattern for generating
-    a full manifest with server-computed defaults applied.
-- question: How does Kubernetes handle node failures?
-  answer: When a node fails, its Lease object in kube-node-lease is no longer renewed. After the node heartbeat
-    timeout, default 40 seconds, the node controller marks the node as NotReady. After the pod eviction timeout,
-    default 5 minutes, the node controller adds a NoExecute taint to the node, triggering eviction of pods that
-    do not tolerate it. Pods managed by controllers like Deployments and ReplicaSets are automatically rescheduled
-    on healthy nodes. StatefulSet pods are rescheduled but retain their PVCs.
-- question: What is the difference between graceful termination and forceful deletion of a pod?
-  answer: When a pod is deleted, Kubernetes sends SIGTERM to all containers and starts the termination grace period,
-    default 30 seconds. Containers should finish processing and exit. If they do not exit within the grace period,
-    Kubernetes sends SIGKILL. This graceful termination allows applications to complete in-flight requests and clean
-    up. Forceful deletion with kubectl delete pod --force --grace-period=0 skips the grace period and immediately
-    removes the pod API object, but the container processes on the node may still be running briefly.
-- question: What is the container lifecycle hook in Kubernetes?
-  answer: Kubernetes provides lifecycle hooks for containers. The PostStart hook executes immediately after a container
-    starts, before the main process but not guaranteed before it—it runs concurrently with the container start.
-    The PreStop hook executes before a container is terminated, running to completion before SIGTERM is sent. Hooks
-    can run a command in the container or make an HTTP request. PreStop hooks are critical for applications that
-    need cleanup time, such as draining connections, beyond what SIGTERM handling provides.
-- question: What is pod grace period and how do you configure it?
-  answer: The pod terminationGracePeriodSeconds field controls how long Kubernetes waits after sending SIGTERM before
-    sending SIGKILL. The default is 30 seconds. You can increase it for applications that need more time to drain
-    connections or finish processing, for example a message consumer finishing its current batch. Set it too high
-    and pod updates will be slow. Set it too low and in-flight requests may be interrupted. The PreStop lifecycle
-    hook time counts against this grace period.
-- question: How does the Kubernetes scheduler handle resource fragmentation?
-  answer: Resource fragmentation occurs when nodes have small remaining capacity that is insufficient for any pending
-    pod individually, even though total cluster capacity seems sufficient. The scheduler's scoring phase uses functions
-    like LeastAllocated or MostAllocated to prefer distributing pods evenly or packing them densely. Descheduler,
-    a separate tool, can evict and reschedule pods to reduce fragmentation. Bin-packing strategies with the MostAllocated
-    scorer help consolidate workloads and reduce the number of nodes needed.
-- question: What is the difference between ResourceQuota and LimitRange?
-  answer: ResourceQuota sets aggregate limits for a namespace—total CPU, memory, number of objects, and storage
-    across all resources in the namespace. It prevents a namespace from consuming more than its allocated share.
-    LimitRange sets per-pod and per-container defaults and constraints within a namespace—minimum, maximum, and
-    default values for individual resource specifications. They complement each other. LimitRange ensures every
-    pod has resource specs set, while ResourceQuota ensures the total of those specs does not exceed the namespace
-    budget.
-- question: What are Kubernetes events and how long do they persist?
-  answer: Kubernetes events record state changes, errors, warnings, and informational messages about resources in
-    the cluster. They are created by the API server, kubelet, controllers, and other components. By default events
-    are retained for one hour. They are stored in etcd and can consume significant space in active clusters. Events
-    can be forwarded to external systems using event exporters. The Event API was extended with richer fields in
-    newer versions. For debugging, kubectl get events --sort-by=.lastTimestamp is invaluable.
-- question: What is the API priority and fairness feature in Kubernetes?
-  answer: API Priority and Fairness (APF) is a Kubernetes feature that controls how the API server handles concurrent
-    requests, preventing API server overload during traffic spikes. It introduces PriorityLevelConfiguration objects
-    that define request queuing and concurrency limits, and FlowSchema objects that classify incoming requests into
-    priority levels. System-critical requests from controllers and the kubelet get higher priority than user requests.
-    APF replaced the older max-inflight request limiting and provides much finer-grained control.
-- question: What is the Kubernetes informer pattern?
-  answer: The informer pattern is how Kubernetes controllers efficiently watch for resource changes without overwhelming
-    the API server. An informer maintains a local in-memory cache of resources synced with the API server. It uses
-    list-and-watch to initially populate the cache and then receive change events. When the cache state differs
-    from a newly received event, the informer calls registered event handlers. This pattern reduces API server load
-    by having controllers read from the local cache rather than making API calls for every reconciliation.
-- question: What is leader election in Kubernetes controllers?
-  answer: Leader election ensures only one instance of a controller is active in a cluster at a time, preventing
-    duplicate and conflicting actions when running multiple replicas for high availability. Kubernetes implements
-    leader election using Lease or ConfigMap objects. Each controller replica tries to acquire the Lease by writing
-    itself as the holder and renewing it regularly. Other replicas watch the Lease and take over if the holder fails
-    to renew within the lease duration. Controller manager and scheduler use built-in leader election with separate
-    Lease objects.
-- question: What is the watch cache in the Kubernetes API server?
-  answer: The API server maintains an in-memory watch cache of recent resource history to efficiently serve watch
-    requests without querying etcd for every change. When a client opens a watch connection, the API server delivers
-    cached events from the watch cache before streaming live events, eliminating the need for a list followed by
-    a watch. The watch cache size can be configured per resource type. This significantly reduces load on etcd for
-    clusters with many watch clients like operators and controllers.
-- question: What is Kubernetes audit logging?
-  answer: Audit logging records all requests made to the Kubernetes API server with metadata about who made the
-    request, what resource was accessed, and what action was taken. Audit policy files define which events to log
-    and at what detail level. The four levels are None, Metadata (only request metadata), Request (metadata plus
-    request body), and RequestResponse (full request and response). Audit logs are essential for compliance, security
-    investigations, and detecting unauthorized access or policy violations.
-- question: What is Pod Security Policy and why was it deprecated?
-  answer: PodSecurityPolicy was a cluster-wide admission controller that defined conditions pods must meet to be
-    admitted. It controlled things like running as root, using host networking, and allowed volume types. It was
-    deprecated in Kubernetes 1.21 and removed in 1.25 due to its problematic authorization model, where granting
-    a ServiceAccount the use verb on a PSP was required but non-obvious, leading to security misconfigurations.
-    It was replaced by the Pod Security Admission controller that enforces Pod Security Standards, which is simpler
-    and safer.
-- question: What is workload identity in Kubernetes?
-  answer: Workload identity allows Kubernetes pods to authenticate to cloud provider services using their Kubernetes
-    ServiceAccount identity rather than long-lived credentials. This is implemented through OIDC federation between
-    the Kubernetes cluster and the cloud provider's IAM system. For example, AWS IAM Roles for Service Accounts
-    (IRSA) and GKE Workload Identity allow pods with a specific ServiceAccount to assume a cloud IAM role, accessing
-    S3 buckets or Cloud Storage without any credentials stored in the cluster.
-- question: What is IRSA (IAM Roles for Service Accounts) in AWS EKS?
-  answer: IRSA allows pods in EKS to assume AWS IAM roles using their Kubernetes ServiceAccount as the identity.
-    The EKS cluster acts as an OIDC provider. You create an IAM role with a trust policy that allows the ServiceAccount
-    to assume it. The pod's ServiceAccount is annotated with the IAM role ARN. The pod receives a projected ServiceAccount
-    token with the OIDC audience, which it exchanges with AWS STS for temporary credentials. This eliminates the
-    need for storing AWS credentials as Kubernetes secrets.
-- question: What is Kubernetes secret rotation?
-  answer: Secret rotation is the practice of regularly changing secret values—passwords, API keys, TLS certificates—to
-    limit the impact of credential compromise. In Kubernetes, rotation involves updating the Secret object with
-    a new value. If the secret is mounted as a volume, Kubernetes automatically updates the mounted file within
-    a few seconds. If injected as an environment variable, the pod must be restarted to get the new value. Tools
-    like the External Secrets Operator can automate rotation by syncing from external secret managers that support
-    automatic rotation.
-- question: What is Kubernetes network policy default deny?
-  answer: By default, Kubernetes pods accept traffic from any source. A network policy default deny posture selects
-    all pods with an empty podSelector and allows no ingress or egress traffic, then additional policies grant specific
-    exceptions. Applying a default deny ingress policy means pods only receive traffic explicitly allowed by other
-    NetworkPolicy rules. Similarly for egress. This zero-trust networking approach is a security best practice but
-    requires careful planning to avoid accidentally blocking necessary traffic like DNS and Kubernetes API server
-    communication.
-- question: What is container privilege escalation and how is it prevented?
-  answer: 'Privilege escalation occurs when a process inside a container gains higher privileges, for example by
-    exploiting a setuid binary or Linux capabilities. In Kubernetes, privilege escalation is prevented by setting
-    allowPrivilegeEscalation to false in the container''s securityContext, which sets the no_new_privs flag on the
-    container process. The Restricted Pod Security Standard requires this. You should also drop all Linux capabilities
-    with capabilities.drop: [ALL] and only add back specific ones required by the application.
-
-    '
-- question: What are Linux capabilities in the context of Kubernetes?
-  answer: 'Linux capabilities divide root privileges into smaller units that can be granted independently. Containers
-    running as root have all capabilities by default, which is dangerous. In Kubernetes, you can add or drop specific
-    capabilities in the container securityContext. The security best practice is to drop all capabilities with drop:
-    [ALL] and add back only what the application needs—for example NET_BIND_SERVICE to bind to ports below 1024
-    without being root. Avoiding privileged containers and minimizing capabilities significantly reduces the container
-    attack surface.
-
-    '
-- question: What is a seccomp profile in Kubernetes?
-  answer: seccomp (secure computing mode) restricts the system calls a container can make to the Linux kernel. A
-    seccomp profile defines an allow list or deny list of system calls. In Kubernetes, you apply a seccomp profile
-    via the pod's securityContext with seccompProfile field. The RuntimeDefault profile uses the container runtime's
-    default profile, which blocks many dangerous syscalls. Localhost profiles allow custom profiles. The Restricted
-    Pod Security Standard requires RuntimeDefault seccomp. seccomp significantly reduces the kernel attack surface
-    for containers.
-- question: What is AppArmor in Kubernetes?
-  answer: 'AppArmor is a Linux security module that implements mandatory access control, restricting what resources
-    programs can access. AppArmor profiles define what files, capabilities, and network access a program is allowed.
-    In Kubernetes, you apply AppArmor profiles to containers using pod annotations with the format container.apparmor.security.beta.kubernetes.io/container-name:
-    profile. The profiles must be loaded on the node where the pod runs. AppArmor provides an additional layer of
-    defense against container escapes and privilege escalation.
-
-    '
-- question: What is Kubernetes RBAC aggregation?
-  answer: ClusterRole aggregation allows you to combine multiple ClusterRoles into one aggregate role using label
-    selectors. You define an aggregated ClusterRole with an aggregationRule and label selectors, and Kubernetes
-    automatically merges the rules from all ClusterRoles matching those selectors. This is used by the built-in
-    admin, edit, and view roles, which aggregate rules from ClusterRoles matching specific labels. When you install
-    a CRD operator that creates ClusterRoles with matching labels, the aggregate roles automatically gain the new
-    permissions.
-- question: What is the sidecar pattern in Kubernetes?
-  answer: The sidecar pattern runs a helper container alongside the main application container in the same pod,
-    enhancing or extending the main container's functionality without modifying it. Common sidecar use cases include
-    log shippers like Fluentd forwarding logs to Elasticsearch, service mesh proxies like Envoy handling network
-    communication, configuration reloaders watching for ConfigMap changes, OAuth proxies adding authentication,
-    and git-sync containers keeping a volume updated with the latest repository content.
-- question: What is the ambassador pattern in Kubernetes?
-  answer: The ambassador pattern uses a proxy container in the same pod as the main application to represent the
-    application in communicating with external services. The main application always connects to localhost, and
-    the ambassador container proxies those connections to the appropriate external service. This abstracts network
-    complexity from the main application—for example, an ambassador container could handle service discovery, retry
-    logic, and circuit breaking while the application simply connects to localhost on a fixed port.
-- question: What is the adapter pattern in Kubernetes?
-  answer: The adapter pattern uses a container in the same pod to transform the output or interface of the main
-    container to match a standard format expected by other system components. A common example is an adapter that
-    translates an application's custom metrics format into the Prometheus exposition format, allowing Prometheus
-    to scrape metrics without modifying the application. Another example is converting a legacy application's log
-    format into structured JSON for a log aggregation system.
-- question: What is an init container use case for database migrations?
-  answer: Init containers are ideal for running database migrations before the main application starts. The init
-    container runs the migration tool, applying pending schema changes, and exits with a zero code when migrations
-    succeed. Only then does the main application container start, guaranteed to find the database schema in the
-    expected state. If migration fails, the init container exits with a non-zero code and Kubernetes keeps retrying
-    according to the pod's restart policy, preventing the application from starting against an incompatible schema.
-- question: What is the strangler fig pattern in Kubernetes?
-  answer: The strangler fig pattern is used to gradually migrate a monolithic application to microservices by routing
-    requests to new services while keeping the monolith running for unmitigated functionality. In Kubernetes, this
-    is implemented using Ingress routing rules that direct specific URL paths or hostnames to new microservice deployments
-    while the rest of the traffic continues to reach the monolith. As more functionality is migrated, Ingress rules
-    are updated to route more traffic away from the monolith until it can be decommissioned.
-- question: What is twelve-factor app methodology in the context of Kubernetes?
-  answer: The twelve-factor app methodology principles align well with Kubernetes. Codebase means one app per container
-    image tracked in version control. Configuration means using ConfigMaps and Secrets instead of hard-coded values.
-    Backing services means using Kubernetes Services to abstract dependencies. Build, release, run separates image
-    building from configuration and deployment. Processes means running stateless pods. Port binding means containerized
-    apps that expose a port. Concurrency means scaling using Kubernetes replicas. Disposability means pods that
-    start fast and handle SIGTERM gracefully.
-- question: What is service discovery in Kubernetes?
-  answer: Service discovery in Kubernetes happens primarily through DNS. When a Service is created, CoreDNS automatically
-    creates a DNS record service-name.namespace.svc.cluster.local. Pods can discover services simply by their service
-    name if in the same namespace, or using the fully qualified name across namespaces. Environment variables containing
-    service IPs and ports are also injected into pods at startup. DNS-based discovery is preferred over environment
-    variables because it works for services created after the pod starts.
-- question: What is a sidecar injection webhook?
-  answer: A sidecar injection webhook is a mutating admission webhook that automatically adds a sidecar container
-    to pods matching certain criteria. Service meshes like Istio use namespace labels to trigger the webhook for
-    all pods in the namespace, injecting the Envoy proxy sidecar automatically without developers modifying their
-    pod specs. Similarly, logging agents, security scanners, and monitoring tools can be injected cluster-wide using
-    this pattern. Injection is transparent to application developers.
-- question: What is a multi-container pod design consideration?
-  answer: When deciding whether to use multiple containers in a pod, consider whether they genuinely need to share
-    the same network namespace and volumes. Tight coupling like a log shipper that reads files written by the main
-    container or a proxy that intercepts all traffic justifies co-location. If containers are loosely coupled and
-    can communicate over the network, they should be separate pods. Multiple containers in a pod share lifecycle—if
-    one crashes repeatedly, the entire pod is restarted. Design multi-container pods carefully to avoid coupling
-    that makes troubleshooting harder.
-- question: What is namespace-per-team vs. namespace-per-application in Kubernetes?
-  answer: Namespace-per-team gives each team one namespace where they deploy all their applications, simplifying
-    administration but reducing isolation between applications. Namespace-per-application gives each application
-    its own namespace, providing better isolation, more granular RBAC, and preventing naming conflicts. Namespace-per-application
-    is generally preferred for production as it allows precise resource quotas per application and cleaner NetworkPolicies.
-    Some organizations use a hybrid approach with team-level namespaces for development and application-level namespaces
-    for production.
-- question: What is the Kubernetes version skew policy?
-  answer: Kubernetes supports a specific version skew between components. The kube-apiserver must be at a higher
-    or equal version than kube-controller-manager and kube-scheduler. The kubelet can be at most two minor versions
-    behind the apiserver. kubectl can be one minor version ahead or behind the apiserver. This policy allows live
-    upgrades of the control plane before upgrading worker nodes. Following the skew policy ensures components can
-    communicate correctly during rolling upgrades.
-- question: What is a pod disruption during a node upgrade?
-  answer: During a node upgrade, you drain the node with kubectl drain, which cordons the node and evicts all pods
-    respecting PodDisruptionBudgets. Pods managed by controllers reschedule on other nodes. After upgrading the
-    node's kubelet and container runtime, you uncordon the node to allow scheduling again. PodDisruptionBudgets
-    ensure that application availability is maintained during the drain by preventing too many replicas from being
-    evicted simultaneously. Without PDBs, draining could cause brief outages for applications with few replicas.
-- question: How do you handle deprecated API versions during Kubernetes upgrades?
-  answer: When upgrading Kubernetes versions, check the release notes for deprecated and removed API versions. Use
-    kubectl convert to convert manifests from old API versions to new ones. Run kubectl get all -o yaml to identify
-    resources using deprecated versions. Update your Helm charts and operator CRDs for the new API versions before
-    upgrading. Tools like pluto scan clusters and deployment manifests for deprecated API usage. Failing to migrate
-    deprecated APIs before removing them results in resources failing to deploy after the upgrade.
-- question: What is Kubernetes cluster backup and disaster recovery?
-  answer: Cluster backup and disaster recovery covers two scenarios. For etcd loss, restore from an etcd snapshot
-    to recover cluster state. For broader disasters, Velero backs up both Kubernetes resource definitions and persistent
-    volume data. It can restore a complete cluster or individual namespaces to the same or a different cluster.
-    Best practices include regular automated etcd backups to offsite storage, regular Velero backups of critical
-    namespaces, documenting the cluster configuration as code in Git, and regularly testing the restore procedure.
-- question: What is rolling restart and when do you use it?
-  answer: A rolling restart triggers a rolling update of all pods in a Deployment, StatefulSet, or DaemonSet without
-    changing the pod template spec. kubectl rollout restart deployment/name sets an annotation on the pod template
-    with the current timestamp, causing the Deployment controller to perform a rolling update. Use it when you need
-    to reload configuration from updated volume-mounted ConfigMaps, rotate ServiceAccount tokens, apply node-level
-    changes affecting containers, or simply restart pods that have become unhealthy without changing the application
-    version.
-- question: What is node image upgrade in managed Kubernetes?
-  answer: Managed Kubernetes services like EKS, GKE, and AKS regularly release updated node images with security
-    patches, OS updates, and newer container runtime versions. Upgrading node images typically involves draining
-    nodes and replacing them with instances running the new image. Managed services support automatic node upgrades
-    within maintenance windows or through node pool recreation. Using managed node groups or node pools with surge
-    upgrades minimizes downtime by adding new nodes before removing old ones.
-- question: What is the Kubernetes release cycle?
-  answer: Kubernetes follows a three-times-per-year release cadence, producing a new minor version approximately
-    every four months. Each release goes through alpha, beta, and stable phases for new features. The Kubernetes
-    project maintains the three most recent minor versions with bug fixes and security patches. After that, versions
-    reach end-of-life and no longer receive patches. Organizations should upgrade clusters regularly, staying within
-    the supported versions, to avoid security vulnerabilities and maintain access to patches.
-- question: What is Platform Engineering in the context of Kubernetes?
-  answer: Platform Engineering builds internal developer platforms on top of Kubernetes that abstract away infrastructure
-    complexity and provide self-service capabilities for development teams. Instead of developers needing to understand
-    YAML manifests, RBAC, and networking, they interact with higher-level abstractions tailored to the organization.
-    The platform team builds and maintains these abstractions, golden paths for common use cases, guardrails through
-    policy, and tooling that accelerates application delivery while enforcing security and operational standards.
-- question: What is an Internal Developer Platform?
-  answer: An Internal Developer Platform (IDP) is a self-service layer built on top of infrastructure that gives
-    developers the capabilities they need to build, test, deploy, and run applications without depending on the
-    platform team for every operation. In the Kubernetes context, an IDP typically provides namespace provisioning,
-    application deployment workflows, secrets management, observability setup, and environment promotion pipelines.
-    Tools like Backstage, Humanitec, and Port are used to build IDPs on top of Kubernetes infrastructure.
-- question: What is Backstage?
-  answer: Backstage is an open-source developer portal platform built by Spotify that serves as the frontend for
-    Internal Developer Platforms. It provides a software catalog, TechDocs for internal documentation, and a plugin
-    ecosystem. Kubernetes plugins in Backstage visualize the state of applications deployed in clusters, show logs,
-    and surface alerts, giving developers a single place to understand their services without needing kubectl access.
-    Backstage helps organizations build golden paths and self-service capabilities on top of Kubernetes.
-- question: What is a golden path in platform engineering?
-  answer: A golden path is a supported, opinionated way for developers to create and deploy applications that incorporates
-    organizational best practices, security requirements, and operational standards. In Kubernetes, a golden path
-    might be a Helm chart template or Kustomize base that pre-configures resource limits, health probes, security
-    contexts, monitoring annotations, and NetworkPolicies correctly. Teams that follow the golden path get these
-    best practices for free without needing to understand every Kubernetes detail.
-- question: What is policy-as-code in Kubernetes?
-  answer: Policy-as-code means defining cluster governance rules as machine-readable code that can be version-controlled,
-    reviewed, tested, and automatically enforced. In Kubernetes, tools like OPA Gatekeeper, Kyverno, and JsPolicy
-    implement policy-as-code through admission controllers. Policies can require specific labels, block untrusted
-    image registries, enforce resource limits, mandate security contexts, and prevent risky configurations. Policy-as-code
-    replaces ad-hoc manual reviews with automated, consistent enforcement at admission time.
-- question: What is a service catalog in the context of Kubernetes?
-  answer: A service catalog provides a way for developers to discover and provision backing services like databases,
-    message queues, and caches through the Kubernetes API. The Kubernetes Service Catalog project, now superseded
-    by tools like Crossplane and AWS Controllers for Kubernetes, allowed provisioning cloud-managed services using
-    Kubernetes custom resources. This lets developers provision a managed RDS database or Cloud SQL instance using
-    the same kubectl and GitOps tools used for application deployment, with the service appearing as Kubernetes
-    resources.
-- question: What is Argo CD ApplicationSet?
-  answer: ApplicationSet is an ArgoCD controller that automates the creation of multiple ArgoCD Applications using
-    template patterns. It supports generators that produce application parameters from cluster lists, Git directory
-    structures, or external data. For example, a cluster generator creates one application per managed cluster,
-    deploying the same application configuration everywhere. A Git generator creates an application for each directory
-    in a repository. ApplicationSets power multi-cluster deployment patterns and environment management in GitOps
-    workflows.
-- question: What is the difference between GitOps and Infrastructure as Code?
-  answer: Infrastructure as Code is a practice of managing infrastructure using code and version control, typically
-    with tools like Terraform or CloudFormation that apply changes imperatively or through plan-apply cycles. GitOps
-    applies IaC principles to Kubernetes specifically, using Git as the desired state source and requiring a Kubernetes
-    operator to continuously reconcile the cluster to match Git. The key addition of GitOps is the continuous reconciliation
-    agent and the closed-loop feedback. IaC can be used for provisioning the Kubernetes cluster itself while GitOps
-    manages what runs inside it.
-- question: What is Renovate or Dependabot in the context of Kubernetes?
-  answer: Renovate and Dependabot are dependency update tools that can automatically create pull requests when new
-    versions of Helm charts, container images, and Kubernetes manifests are available. In a GitOps workflow where
-    manifests are in Git, these tools scan for outdated image tags, Helm chart versions, and CRD versions, then
-    open PRs with the updates. This automates the operational task of keeping dependencies current for security
-    patches, reducing the risk of running outdated and vulnerable software.
-- question: What is observability-as-code in Kubernetes?
-  answer: Observability-as-code defines monitoring configuration—dashboards, alert rules, recording rules, and SLOs—as
-    version-controlled code deployed alongside application manifests. The Prometheus Operator uses PrometheusRule
-    and ServiceMonitor custom resources to configure Prometheus monitoring through Kubernetes objects. Grafana Operator
-    manages dashboards as Kubernetes resources. This allows application teams to own their monitoring configuration
-    and deploy it alongside their services, keeping monitoring synchronized with application changes.
-- question: What is the difference between a sidecar and an init container for pre-flight checks?
-  answer: Init containers run to completion before the main container starts and are ideal for sequential setup
-    tasks like waiting for a database to be ready or running migrations. They must succeed before the application
-    starts. Sidecars run alongside the main container for the lifetime of the pod, providing ongoing services like
-    log forwarding or proxy. For pre-flight checks, init containers are preferred because they block the application
-    from starting until the check passes, whereas a sidecar would run concurrently and could not guarantee the check
-    completes before the main container starts.
-- question: What is the difference between kubectl apply and kubectl replace?
-  answer: kubectl apply is a declarative command that performs a three-way merge between the last-applied configuration,
-    the current cluster state, and the new configuration, updating only changed fields. kubectl replace deletes
-    the existing resource and recreates it from the manifest, which can cause brief downtime and loses fields not
-    present in the manifest. kubectl apply is idempotent and safe to run repeatedly, making it ideal for CI/CD pipelines.
-    kubectl replace should only be used when you need to force a clean replacement.
-- question: What is the Kubernetes object ownership model?
-  answer: Every Kubernetes object can reference one or more owner objects through the ownerReferences field in metadata.
-    This creates a directed acyclic graph of ownership. When an owner is deleted, Kubernetes garbage collects all
-    objects it owns, cascading through the ownership chain. Deployments own ReplicaSets which own Pods. This model
-    allows controllers to identify which objects they are responsible for and drives automatic cleanup. The blockOwnerDeletion
-    flag in ownerReferences can block owner deletion until all dependents are removed.
-- question: What is a Kubernetes Lease object?
-  answer: A Lease is a Kubernetes object in the coordination.k8s.io API group that represents a distributed lock
-    or a resource reservation for a bounded time period. It has fields for the holder identity, the duration of
-    the lease, the last time it was renewed, and the number of transitions. Leases are used for node heartbeats
-    in the kube-node-lease namespace and for leader election among controller replicas. They are lightweight compared
-    to using ConfigMaps or Secrets for the same purpose.
-- question: What is the Kubernetes TokenRequest API?
-  answer: The TokenRequest API, part of the ServiceAccount API, generates time-limited, audience-bound tokens for
-    use by pods instead of the long-lived, non-expiring tokens traditionally auto-mounted by Kubernetes. Tokens
-    are bound to a specific audience, expiration time, and optionally to a specific pod or secret. Projected volumes
-    use the TokenRequest API to inject short-lived tokens that Kubernetes automatically rotates before expiry. This
-    is more secure than the legacy mechanism and is required by workload identity patterns.
-- question: What is a Kubernetes SubResource?
-  answer: SubResources are special endpoints within the Kubernetes API that allow specific operations on a resource
-    beyond standard CRUD. Examples include the status subresource, which separates status updates from spec updates
-    and is typically only writable by controllers; the scale subresource, which provides a standard way to read
-    and modify replica counts; the log subresource on pods for streaming logs; the exec subresource for running
-    commands; and the portforward subresource for port forwarding. RBAC can grant access to specific subresources
-    independently.
-- question: What is a fieldSelector in Kubernetes?
-  answer: A field selector filters Kubernetes resources based on the value of specific resource fields using equality
-    or inequality operators. Unlike label selectors, field selectors work on actual resource fields rather than
-    metadata labels. For example, kubectl get pods --field-selector status.phase=Running filters for running pods,
-    and --field-selector spec.nodeName=node1 filters pods on a specific node. Field selectors are supported on most
-    resource types but only on a limited set of fields, unlike label selectors which work on any label.
-- question: What are Kubernetes API groups?
-  answer: API groups organize related Kubernetes API resources together. The core group, with an empty group name
-    accessed at /api/v1, contains fundamental resources like Pods, Services, ConfigMaps, and Secrets. Named groups
-    like apps, batch, networking.k8s.io, and rbac.authorization.k8s.io are accessed at /apis/group/version. Custom
-    Resource Definitions create new API groups. The grouping allows versioning different resource families independently
-    and makes it clear which project or feature area owns each resource.
-- question: What is the difference between a Job completion mode Indexed and NonIndexed?
-  answer: NonIndexed Jobs, the default, count completions without identifying which specific work items were completed,
-    suitable for homogeneous work where any pod can do any job. Indexed Jobs, introduced in Kubernetes 1.21, assign
-    a unique completion index starting from zero to each pod via the JOB_COMPLETION_INDEX environment variable and
-    a pod annotation. This allows distributing specific work items to specific pods based on their index—for example,
-    sharding a dataset or running a matrix of test cases—making the pod's role explicit and deterministic.
-- question: What is a TTL controller for finished resources?
-  answer: The TTL controller for finished resources automatically cleans up finished Jobs and their Pods after a
-    specified time-to-live duration. By setting the ttlSecondsAfterFinished field on a Job, the TTL controller deletes
-    the Job and its pods a set number of seconds after the Job finishes, whether it succeeded or failed. Without
-    this, finished Jobs accumulate indefinitely, consuming API server storage and cluttering list views. This replaces
-    the need for external cleanup scripts for batch workloads.
-- question: What is the Kubernetes garbage collector?
-  answer: 'The garbage collector is a controller that deletes objects that are owned by objects that no longer exist.
-    It watches for orphaned objects whose owner references point to deleted owners. It supports two deletion modes:
-    background deletion, where the owner is deleted immediately and the garbage collector cleans up dependents asynchronously;
-    and foreground deletion, where the owner enters a terminating state and dependents are deleted first before
-    the owner is removed. The propagationPolicy in a delete request controls which mode is used.
-
-    '
-- question: What is kubectl debug?
-  answer: kubectl debug is a command for troubleshooting pods and nodes using ephemeral debug containers or copies
-    of pods. kubectl debug pod/name -it --image=busybox attaches an ephemeral container to a running pod for debugging.
-    kubectl debug node/name -it --image=ubuntu mounts the node's filesystem and runs a privileged debug pod on that
-    node. You can also create a copy of a failing pod with a different image using kubectl debug pod/name --copy-to=debug-pod,
-    which is useful when the original pod's image lacks debugging tools.
-- question: What is the Kubernetes object status condition pattern?
-  answer: The conditions pattern is a standard way Kubernetes resources expose their status. A condition has a type
-    like Ready or Available, a status of True, False, or Unknown, a reason code, a human-readable message, and timestamps.
-    Multiple conditions can be true simultaneously, allowing resources to express complex state. For example, a
-    Deployment shows conditions for Available, Progressing, and ReplicaFailure. Controllers and operators should
-    implement conditions for their custom resources to make status machine-readable and compatible with standard
-    tooling.
-- question: What is a Kubernetes EndpointSlice controller?
-  answer: The EndpointSlice controller watches Services with selectors and the pods matching those selectors. It
-    creates and manages EndpointSlice objects that reflect the set of ready pod endpoints for each service, sharded
-    into slices of up to 100 endpoints by default. When pods come and go, the controller updates the appropriate
-    EndpointSlice, and kube-proxy reads these slices to configure routing rules. The controller optimizes updates
-    to minimize the amount of data transmitted when a small number of endpoints change in a large service.
-- question: What is the difference between kubectl get and kubectl describe?
-  answer: kubectl get retrieves the raw resource data and formats it for display, defaulting to a brief table view
-    with key fields. kubectl describe generates a human-friendly summary by combining the resource's data with related
-    events and computed information. describe shows the events associated with the resource, which is the most useful
-    part for debugging—events reveal why a pod is pending, why a container is restarting, or why a deployment is
-    not progressing. For automation and scripting, kubectl get with JSON or YAML output is preferred.
-- question: What is a static pod in Kubernetes?
-  answer: A static pod is a pod managed directly by the kubelet on a specific node rather than through the Kubernetes
-    API server. Static pods are defined as manifest files in a directory watched by the kubelet, typically /etc/kubernetes/manifests.
-    The kubelet monitors this directory and creates, updates, or deletes pods accordingly. Control plane components
-    like the API server, scheduler, and controller manager run as static pods in kubeadm clusters. Static pods are
-    visible through the API server as mirror pods but cannot be managed through kubectl in the normal way.
-- question: What are Node conditions in Kubernetes?
-  answer: Node conditions are status fields that report the health of a node. Ready indicates the node is healthy
-    and ready to accept pods. MemoryPressure indicates the node is running low on memory. DiskPressure indicates
-    disk usage is too high on the node. PIDPressure indicates too many processes are running on the node. NetworkUnavailable
-    indicates the node's network is not correctly configured. The node controller monitors these conditions and
-    taints nodes based on them, causing the scheduler to avoid tainted nodes and existing pods to be evicted.
-- question: What is a taint-based eviction?
-  answer: Taint-based eviction automatically removes pods from nodes when certain conditions occur. When the node
-    controller detects a problem like NotReady or Unreachable, it adds NoExecute taints to the node. Pods without
-    matching tolerations are evicted immediately. Pods with tolerations that specify a tolerationSeconds value are
-    evicted after that duration. This mechanism ensures that misbehaving or unreachable nodes do not permanently
-    hold running pod objects that should be rescheduled. System pods often have long or infinite tolerations to
-    remain on troubled nodes for debugging.
-- question: What is OpenTelemetry and its role in Kubernetes?
-  answer: OpenTelemetry is a CNCF project providing a unified, vendor-neutral framework for collecting traces, metrics,
-    and logs from applications. In Kubernetes, the OpenTelemetry Collector runs as a Deployment or DaemonSet to
-    receive telemetry from applications, process it, and export it to backends like Jaeger, Prometheus, or commercial
-    observability platforms. The OpenTelemetry Operator automates the deployment and configuration of collectors
-    and handles automatic instrumentation injection into application pods, simplifying observability setup for application
-    teams.
-- question: What is Kubernetes node pressure eviction?
-  answer: Node pressure eviction is the kubelet's mechanism for reclaiming resources on a node that is under memory
-    or disk pressure. When a node exceeds configured thresholds for memory, disk, or inodes, the kubelet begins
-    evicting pods to reclaim resources. It evaluates pods using their QoS class and resource consumption relative
-    to requests. BestEffort pods are evicted first, then Burstable, then Guaranteed. evictionHard and evictionSoft
-    thresholds control when eviction starts. This prevents the node from running out of resources entirely and becoming
-    unhealthy.
-- question: What is Kubernetes CPU management policy?
-  answer: The kubelet CPU management policy controls how CPU resources are allocated to containers on a node. The
-    default None policy uses CFS (Completely Fair Scheduler) quotas for all containers. The static policy allows
-    Guaranteed pods with integer CPU requests to exclusively own specific CPU cores, preventing CPU sharing and
-    reducing latency variability from context switching. This is important for latency-sensitive workloads like
-    real-time processing and telecommunications. The CPU manager policy must be configured at the kubelet level
-    on each node.
-- question: What is the difference between a ClusterRoleBinding and a RoleBinding?
-  answer: A RoleBinding grants the permissions of a Role or ClusterRole within a specific namespace. Even if a ClusterRole
-    is referenced, the RoleBinding restricts the permissions to only that namespace. A ClusterRoleBinding grants
-    the permissions of a ClusterRole across the entire cluster, including cluster-scoped resources and all namespaces.
-    Use RoleBinding with a namespace-scoped Role for typical application permissions, ClusterRoleBinding only when
-    cluster-wide access is genuinely needed, and RoleBinding with a ClusterRole for reusing role definitions across
-    multiple namespaces.
-- question: What is kubectl patch?
-  answer: kubectl patch updates specific fields of a Kubernetes resource without replacing the entire object. It
-    supports three patch types. Strategic merge patch is the default for Kubernetes resources and understands the
-    schema—it merges lists like containers intelligently. Merge patch does a JSON merge, replacing entire lists.
-    JSON patch specifies explicit operations like add, remove, and replace on specific paths. Patch is useful for
-    making small updates in scripts or CI/CD pipelines without re-applying the full manifest.
-- question: What are resource limits best practices for Java applications in Kubernetes?
-  answer: Java applications have unique resource considerations. The JVM historically did not respect Linux cgroup
-    memory limits, detecting host memory instead of container limits, leading to OOM kills. Java 10 and later with
-    UseContainerSupport enabled, the default in modern JDKs, correctly detects container memory limits. Set heap
-    size explicitly with -Xmx or -XX:MaxRAMPercentage to keep it below the container memory limit, leaving headroom
-    for off-heap memory. CPU limits can cause severe throttling for JVM due to JIT compilation bursts, so some teams
-    set requests without CPU limits for Java workloads.
+  - question: What is kube-state-metrics?
+    answer: kube-state-metrics is a service that listens to the Kubernetes API server and generates metrics about the state
+      of Kubernetes objects. Unlike the Metrics Server, which reports resource usage, kube-state-metrics reports on the
+      health and state of objects—for example, the number of desired versus available replicas in a Deployment, the
+      phase of pods, the status of PersistentVolumeClaims, and node conditions. These metrics are scraped by Prometheus
+      and used for alerting on Kubernetes object state.
+  - question: What are common Kubernetes monitoring metrics to watch?
+    answer: Critical Kubernetes metrics to monitor include node CPU and memory utilization and node conditions like Ready,
+      DiskPressure, and MemoryPressure. Pod-level metrics include restart counts, OOM kill counts, and CPU and memory
+      utilization versus limits. Deployment-level metrics include desired versus available replicas, rolling update
+      status, and HPA scaling events. API server metrics include request error rates and latency. etcd metrics include
+      DB size, leader changes, and slow operations. Custom application metrics exposed through the Kubernetes Metrics
+      API are also important.
+  - question: What is kubecost?
+    answer: Kubecost is a cost monitoring and optimization tool for Kubernetes that provides visibility into spending by
+      namespace, deployment, pod, label, and team. It integrates with cloud provider billing APIs to provide accurate
+      cost allocation and integrates with Prometheus for resource usage data. Kubecost provides recommendations for
+      right-sizing workloads, identifying idle resources, and potential savings from reserved instances or committed use
+      discounts. It also supports chargebacks and showbacks for multi-team clusters.
+  - question: What is the difference between IPVS and iptables in kube-proxy?
+    answer: kube-proxy can use iptables or IPVS to implement Service load balancing. iptables is the default and uses a
+      chain of rules that are traversed linearly, which has O(n) performance that degrades with thousands of services.
+      IPVS uses Linux kernel hash tables for O(1) lookup regardless of cluster size and supports more load balancing
+      algorithms including round-robin, least connections, and source hashing. For clusters with many services, IPVS
+      mode significantly improves kube-proxy performance.
+  - question: What is a Kubernetes Service topology-aware routing?
+    answer: Topology-aware routing, previously called topology-aware hints, allows kube-proxy to prefer routing Service
+      traffic to endpoints in the same zone or region as the client pod rather than routing arbitrarily across zones.
+      This reduces cross-zone data transfer costs and latency. EndpointSlices are annotated with topology hints by the
+      EndpointSlice controller, and kube-proxy reads these hints to make local-first routing decisions. This feature is
+      particularly valuable in multi-zone clusters on cloud providers that charge for cross-zone traffic.
+  - question: What is the difference between overlay and underlay networking in Kubernetes?
+    answer: Overlay networking encapsulates pod traffic inside another network protocol, typically VXLAN or Geneve, to
+      create a virtual network on top of the physical network. It is simpler to set up because it does not require
+      changes to the physical network but adds overhead from encapsulation. Underlay networking uses the physical
+      network directly, often with BGP routing, to route pod traffic without encapsulation. It has lower overhead and
+      better performance but requires changes to the network infrastructure. Calico supports both modes.
+  - question: What is BGP in the context of Kubernetes networking?
+    answer: Border Gateway Protocol can be used by CNI plugins like Calico in BGP mode to advertise pod CIDR routes directly
+      to the physical network fabric. Instead of overlay encapsulation, each node announces the pod CIDRs it hosts using
+      BGP peering with top-of-rack switches or routers. Traffic flows directly between nodes using the native network
+      without encapsulation overhead. This is preferred in data center environments where operators control the network
+      infrastructure and want optimal performance.
+  - question: What is dual-stack networking in Kubernetes?
+    answer: Dual-stack networking allows Kubernetes clusters to support both IPv4 and IPv6 addresses simultaneously. Pods
+      and Services can have both an IPv4 and an IPv6 address. This is configured at the cluster level with podCIDR and
+      serviceClusterIPRange settings for both address families. Dual-stack support requires a CNI plugin and kube-proxy
+      that support it. It enables gradual IPv6 migration and allows applications to be accessed over either protocol.
+  - question: What is a LoadBalancer Service source IP preservation?
+    answer: By default, when traffic enters through a LoadBalancer Service, the source IP is replaced by the node IP due to
+      SNAT, hiding the original client IP. Setting externalTrafficPolicy to Local preserves the original client source
+      IP by skipping SNAT, but it only routes traffic to pods on the same node as the entry point, which can cause
+      uneven load distribution. For Services where client IP is important—such as for IP-based allow lists or
+      geo-routing—setting externalTrafficPolicy Local is necessary despite the trade-off.
+  - question: How does Kubernetes handle DNS for StatefulSets?
+    answer: Kubernetes creates stable DNS records for StatefulSet pods in the form
+      pod-name.service-name.namespace.svc.cluster.local. Each pod in a StatefulSet has a predictable, stable DNS name
+      based on its ordinal index, such as mysql-0.mysql.default.svc.cluster.local. This requires a headless Service that
+      acts as the governing service for the StatefulSet. These stable DNS names allow StatefulSet pods to discover each
+      other reliably, which is essential for forming clusters and replication groups in databases and distributed
+      systems.
+  - question: What is CoreDNS and how does it work in Kubernetes?
+    answer: CoreDNS is the default DNS server in Kubernetes clusters, running as a Deployment in the kube-system namespace.
+      It is configured via a Corefile, a configuration file using the CoreDNS plugin chain syntax. The kubernetes plugin
+      reads Service and Pod information from the Kubernetes API and answers DNS queries for the cluster domain. Other
+      plugins handle caching, health checks, metrics, upstream forwarding for external DNS, and custom overrides.
+      CoreDNS is extensible through its plugin architecture.
+  - question: What is the Kubernetes network model guarantee?
+    answer: The Kubernetes network model provides three fundamental guarantees. All pods can communicate with all other pods
+      without NAT. Nodes can communicate with all pods without NAT. The IP a pod sees as its own is the same IP other
+      pods see when communicating with it. This flat model simplifies application communication but requires the CNI
+      plugin to implement it correctly. It contrasts with Docker's default isolated bridge network model where
+      containers on different hosts cannot communicate without explicit configuration.
+  - question: What is multus CNI?
+    answer: Multus CNI is a meta-plugin that enables attaching multiple network interfaces to pods. By default, Kubernetes
+      pods have only one network interface from the CNI plugin. Multus allows attaching additional interfaces from other
+      CNI plugins, for example adding an SR-IOV interface for high-performance networking alongside the main overlay
+      interface for regular traffic. This is used in telecommunications and network function virtualization where pods
+      need multiple network paths for different types of traffic.
+  - question: What is the difference between static and dynamic PersistentVolume provisioning?
+    answer: Static provisioning requires a cluster administrator to manually create PersistentVolume objects representing
+      pre-provisioned storage before users can claim them. Users create PVCs and Kubernetes binds them to matching
+      pre-existing PVs. Dynamic provisioning uses StorageClasses to automatically create PVs on demand when a PVC is
+      created. The provisioner creates the storage resource in the cloud provider or storage system and creates the PV
+      object automatically, eliminating the manual step and allowing self-service storage for application teams.
+  - question: What are volume modes in Kubernetes PersistentVolumes?
+    answer: Volume modes define how a PersistentVolume is accessed by pods. Filesystem mode, the default, formats the volume
+      with a filesystem and mounts it as a directory in the container. Block mode exposes the raw block device to the
+      container without a filesystem, used by applications like databases that perform their own I/O management for
+      better performance. The volumeMode must be specified in both the PVC and the PV, and they must match for binding
+      to occur.
+  - question: What is a local PersistentVolume?
+    answer: A local PersistentVolume uses a local disk or partition on a specific node rather than network storage. Local
+      volumes provide better I/O performance since there is no network overhead, making them suitable for
+      latency-sensitive workloads like databases. However, local volumes tie pods to specific nodes—if the node fails,
+      the data is inaccessible. They require explicit topology information via nodeAffinity to ensure pods are always
+      scheduled on the correct node. They are appropriate when you can tolerate reduced availability for performance.
+  - question: What is storage tiering in Kubernetes?
+    answer: Storage tiering involves defining multiple StorageClasses representing different performance and cost
+      characteristics. For example, you might have a premium StorageClass backed by NVMe SSDs for databases, a standard
+      StorageClass backed by regular SSDs for most applications, and a slow StorageClass backed by HDDs for archival
+      data. Teams choose the appropriate StorageClass in their PVCs based on application needs and cost sensitivity.
+      StorageClasses are the mechanism for implementing tiered storage in Kubernetes.
+  - question: How do you expand a PersistentVolumeClaim in Kubernetes?
+    answer: You can expand a PVC by editing its resource request and increasing the storage size, provided the StorageClass
+      has allowVolumeExpansion set to true. Kubernetes then resizes the underlying volume. For filesystem volumes, the
+      resize typically requires the pod to be restarted to run the filesystem resize operation (resize2fs for ext4). For
+      block volumes, expansion is often online. Not all storage backends support volume expansion, so check the CSI
+      driver documentation for your storage provider.
+  - question: What are Kubernetes storage best practices?
+    answer: Storage best practices include using dynamic provisioning with StorageClasses instead of manually managing PVs,
+      setting appropriate reclaim policies (Retain for stateful workloads, Delete for temporary ones), using volume
+      snapshots for backups before upgrades, choosing access modes carefully based on actual concurrency needs, setting
+      resource limits for storage with LimitRange, using local volumes only when performance requirements justify the
+      availability trade-off, regularly backing up stateful data with tools like Velero, and monitoring PVC usage to
+      prevent running out of space.
+  - question: What is kubectl diff?
+    answer: kubectl diff shows the differences between the current cluster state and a manifest you are about to apply,
+      similar to a dry run with a visual diff output. It uses kubectl apply --dry-run=server to compute what changes
+      would be made and then displays the diff. This is invaluable for reviewing what a kubectl apply will change before
+      committing it, especially in production environments. It is commonly used in CI/CD pipelines to show reviewers
+      exactly what will change in a pull request.
+  - question: What is kubectl kustomize?
+    answer: kubectl kustomize renders a Kustomize configuration into Kubernetes manifests without applying them, printing
+      the result to stdout. It is equivalent to running kustomize build. kubectl apply -k applies a Kustomize directory
+      directly. These built-in commands eliminate the need to install the separate kustomize binary for basic use.
+      kubectl kustomize is useful for verifying what manifests will be generated before applying them.
+  - question: How do you use kubectl jsonpath?
+    answer: kubectl supports JSONPath expressions as an output format for extracting specific fields from Kubernetes
+      resources. For example, kubectl get pods -o jsonpath='{.items[*].metadata.name}' lists all pod names. You can
+      filter, project, and format fields from any Kubernetes resource. JSONPath is more powerful than the simple
+      --field-selector but requires knowing the resource structure. Combined with kubectl get, it enables scripting
+      against Kubernetes resources without parsing the full YAML output.
+  - question: What is kubectl get --watch?
+    answer: The --watch or -w flag on kubectl get establishes a watch connection to the Kubernetes API and streams updates
+      as resources change in real time. This is more efficient than repeatedly running kubectl get because it uses the
+      Kubernetes watch mechanism instead of polling. For example, kubectl get pods -w shows pod status changes in real
+      time as they start up or crash. The --watch-only flag prints only changes without the initial state listing.
+  - question: How do you use kubectl rollout commands?
+    answer: kubectl rollout manages rolling updates for Deployments, StatefulSets, and DaemonSets. rollout status watches
+      and reports the progress of a rollout. rollout history lists previous revisions with optional details. rollout
+      undo reverts to the previous or a specific revision. rollout pause stops an in-progress rolling update, and
+      rollout resume continues it. rollout restart triggers a rolling restart of all pods, useful for reloading mounted
+      ConfigMaps or rotating ServiceAccount tokens without changing the workload spec.
+  - question: What is kubectl top?
+    answer: kubectl top displays real-time resource consumption metrics for nodes and pods. kubectl top node shows CPU and
+      memory usage for each node and the percentage of allocatable capacity being used. kubectl top pod shows CPU and
+      memory usage for each pod and optionally per container. These commands require the Metrics Server to be installed.
+      They are useful for quick operational checks but for historical trends and alerting you need Prometheus and
+      Grafana.
+  - question: What does kubectl get -o wide show?
+    answer: The -o wide output format for kubectl get adds additional columns beyond the default. For pods, it adds the pod
+      IP, the node the pod runs on, and the nominated node and readiness gates. For nodes, it adds the internal and
+      external IP, the OS image, the kernel version, and the container runtime. The wide output is useful for quickly
+      correlating pods with their nodes or checking pod IPs without running kubectl describe.
+  - question: How do you label and annotate Kubernetes resources with kubectl?
+    answer: kubectl label adds, modifies, or removes labels on existing resources. For example, kubectl label pod my-pod
+      env=production adds a label, and kubectl label pod my-pod env- removes it. kubectl annotate works identically for
+      annotations. The --overwrite flag is required to change an existing label value. Labels and annotations can be
+      added to any resource type, and changes take effect immediately, affecting selector-based operations and tool
+      integrations that rely on annotations.
+  - question: What is kubectl config?
+    answer: kubectl config manages the kubeconfig file. kubectl config get-contexts lists all available contexts. kubectl
+      config use-context switches the active context. kubectl config set-cluster, set-credentials, and set-context add
+      or modify configuration entries. kubectl config current-context shows the active context. kubectl config view
+      displays the merged kubeconfig from all configured sources. These commands allow managing multiple cluster
+      configurations without manually editing the kubeconfig YAML file.
+  - question: What is the --dry-run flag in kubectl?
+    answer: The --dry-run flag simulates an operation without making actual changes. --dry-run=client validates the manifest
+      locally without sending it to the API server, which is fast but does not catch server-side validation errors.
+      --dry-run=server sends the request to the API server for full validation, including admission controller checks,
+      but still does not persist anything. Using --dry-run=server -o yaml is a common pattern for generating a full
+      manifest with server-computed defaults applied.
+  - question: How does Kubernetes handle node failures?
+    answer: When a node fails, its Lease object in kube-node-lease is no longer renewed. After the node heartbeat timeout,
+      default 40 seconds, the node controller marks the node as NotReady. After the pod eviction timeout, default 5
+      minutes, the node controller adds a NoExecute taint to the node, triggering eviction of pods that do not tolerate
+      it. Pods managed by controllers like Deployments and ReplicaSets are automatically rescheduled on healthy nodes.
+      StatefulSet pods are rescheduled but retain their PVCs.
+  - question: What is the difference between graceful termination and forceful deletion of a pod?
+    answer: When a pod is deleted, Kubernetes sends SIGTERM to all containers and starts the termination grace period,
+      default 30 seconds. Containers should finish processing and exit. If they do not exit within the grace period,
+      Kubernetes sends SIGKILL. This graceful termination allows applications to complete in-flight requests and clean
+      up. Forceful deletion with kubectl delete pod --force --grace-period=0 skips the grace period and immediately
+      removes the pod API object, but the container processes on the node may still be running briefly.
+  - question: What is the container lifecycle hook in Kubernetes?
+    answer: Kubernetes provides lifecycle hooks for containers. The PostStart hook executes immediately after a container
+      starts, before the main process but not guaranteed before it—it runs concurrently with the container start. The
+      PreStop hook executes before a container is terminated, running to completion before SIGTERM is sent. Hooks can
+      run a command in the container or make an HTTP request. PreStop hooks are critical for applications that need
+      cleanup time, such as draining connections, beyond what SIGTERM handling provides.
+  - question: What is pod grace period and how do you configure it?
+    answer: The pod terminationGracePeriodSeconds field controls how long Kubernetes waits after sending SIGTERM before
+      sending SIGKILL. The default is 30 seconds. You can increase it for applications that need more time to drain
+      connections or finish processing, for example a message consumer finishing its current batch. Set it too high and
+      pod updates will be slow. Set it too low and in-flight requests may be interrupted. The PreStop lifecycle hook
+      time counts against this grace period.
+  - question: How does the Kubernetes scheduler handle resource fragmentation?
+    answer: Resource fragmentation occurs when nodes have small remaining capacity that is insufficient for any pending pod
+      individually, even though total cluster capacity seems sufficient. The scheduler's scoring phase uses functions
+      like LeastAllocated or MostAllocated to prefer distributing pods evenly or packing them densely. Descheduler, a
+      separate tool, can evict and reschedule pods to reduce fragmentation. Bin-packing strategies with the
+      MostAllocated scorer help consolidate workloads and reduce the number of nodes needed.
+  - question: What is the difference between ResourceQuota and LimitRange?
+    answer: ResourceQuota sets aggregate limits for a namespace—total CPU, memory, number of objects, and storage across all
+      resources in the namespace. It prevents a namespace from consuming more than its allocated share. LimitRange sets
+      per-pod and per-container defaults and constraints within a namespace—minimum, maximum, and default values for
+      individual resource specifications. They complement each other. LimitRange ensures every pod has resource specs
+      set, while ResourceQuota ensures the total of those specs does not exceed the namespace budget.
+  - question: What are Kubernetes events and how long do they persist?
+    answer: Kubernetes events record state changes, errors, warnings, and informational messages about resources in the
+      cluster. They are created by the API server, kubelet, controllers, and other components. By default events are
+      retained for one hour. They are stored in etcd and can consume significant space in active clusters. Events can be
+      forwarded to external systems using event exporters. The Event API was extended with richer fields in newer
+      versions. For debugging, kubectl get events --sort-by=.lastTimestamp is invaluable.
+  - question: What is the API priority and fairness feature in Kubernetes?
+    answer: API Priority and Fairness (APF) is a Kubernetes feature that controls how the API server handles concurrent
+      requests, preventing API server overload during traffic spikes. It introduces PriorityLevelConfiguration objects
+      that define request queuing and concurrency limits, and FlowSchema objects that classify incoming requests into
+      priority levels. System-critical requests from controllers and the kubelet get higher priority than user requests.
+      APF replaced the older max-inflight request limiting and provides much finer-grained control.
+  - question: What is the Kubernetes informer pattern?
+    answer: The informer pattern is how Kubernetes controllers efficiently watch for resource changes without overwhelming
+      the API server. An informer maintains a local in-memory cache of resources synced with the API server. It uses
+      list-and-watch to initially populate the cache and then receive change events. When the cache state differs from a
+      newly received event, the informer calls registered event handlers. This pattern reduces API server load by having
+      controllers read from the local cache rather than making API calls for every reconciliation.
+  - question: What is leader election in Kubernetes controllers?
+    answer: Leader election ensures only one instance of a controller is active in a cluster at a time, preventing duplicate
+      and conflicting actions when running multiple replicas for high availability. Kubernetes implements leader
+      election using Lease or ConfigMap objects. Each controller replica tries to acquire the Lease by writing itself as
+      the holder and renewing it regularly. Other replicas watch the Lease and take over if the holder fails to renew
+      within the lease duration. Controller manager and scheduler use built-in leader election with separate Lease
+      objects.
+  - question: What is the watch cache in the Kubernetes API server?
+    answer: The API server maintains an in-memory watch cache of recent resource history to efficiently serve watch requests
+      without querying etcd for every change. When a client opens a watch connection, the API server delivers cached
+      events from the watch cache before streaming live events, eliminating the need for a list followed by a watch. The
+      watch cache size can be configured per resource type. This significantly reduces load on etcd for clusters with
+      many watch clients like operators and controllers.
+  - question: What is Kubernetes audit logging?
+    answer: Audit logging records all requests made to the Kubernetes API server with metadata about who made the request,
+      what resource was accessed, and what action was taken. Audit policy files define which events to log and at what
+      detail level. The four levels are None, Metadata (only request metadata), Request (metadata plus request body),
+      and RequestResponse (full request and response). Audit logs are essential for compliance, security investigations,
+      and detecting unauthorized access or policy violations.
+  - question: What is Pod Security Policy and why was it deprecated?
+    answer: PodSecurityPolicy was a cluster-wide admission controller that defined conditions pods must meet to be admitted.
+      It controlled things like running as root, using host networking, and allowed volume types. It was deprecated in
+      Kubernetes 1.21 and removed in 1.25 due to its problematic authorization model, where granting a ServiceAccount
+      the use verb on a PSP was required but non-obvious, leading to security misconfigurations. It was replaced by the
+      Pod Security Admission controller that enforces Pod Security Standards, which is simpler and safer.
+  - question: What is workload identity in Kubernetes?
+    answer: Workload identity allows Kubernetes pods to authenticate to cloud provider services using their Kubernetes
+      ServiceAccount identity rather than long-lived credentials. This is implemented through OIDC federation between
+      the Kubernetes cluster and the cloud provider's IAM system. For example, AWS IAM Roles for Service Accounts (IRSA)
+      and GKE Workload Identity allow pods with a specific ServiceAccount to assume a cloud IAM role, accessing S3
+      buckets or Cloud Storage without any credentials stored in the cluster.
+  - question: What is IRSA (IAM Roles for Service Accounts) in AWS EKS?
+    answer: IRSA allows pods in EKS to assume AWS IAM roles using their Kubernetes ServiceAccount as the identity. The EKS
+      cluster acts as an OIDC provider. You create an IAM role with a trust policy that allows the ServiceAccount to
+      assume it. The pod's ServiceAccount is annotated with the IAM role ARN. The pod receives a projected
+      ServiceAccount token with the OIDC audience, which it exchanges with AWS STS for temporary credentials. This
+      eliminates the need for storing AWS credentials as Kubernetes secrets.
+  - question: What is Kubernetes secret rotation?
+    answer: Secret rotation is the practice of regularly changing secret values—passwords, API keys, TLS certificates—to
+      limit the impact of credential compromise. In Kubernetes, rotation involves updating the Secret object with a new
+      value. If the secret is mounted as a volume, Kubernetes automatically updates the mounted file within a few
+      seconds. If injected as an environment variable, the pod must be restarted to get the new value. Tools like the
+      External Secrets Operator can automate rotation by syncing from external secret managers that support automatic
+      rotation.
+  - question: What is Kubernetes network policy default deny?
+    answer: By default, Kubernetes pods accept traffic from any source. A network policy default deny posture selects all
+      pods with an empty podSelector and allows no ingress or egress traffic, then additional policies grant specific
+      exceptions. Applying a default deny ingress policy means pods only receive traffic explicitly allowed by other
+      NetworkPolicy rules. Similarly for egress. This zero-trust networking approach is a security best practice but
+      requires careful planning to avoid accidentally blocking necessary traffic like DNS and Kubernetes API server
+      communication.
+  - question: What is container privilege escalation and how is it prevented?
+    answer: >
+      Privilege escalation occurs when a process inside a container gains higher privileges, for example by exploiting a
+      setuid binary or Linux capabilities. In Kubernetes, privilege escalation is prevented by setting
+      allowPrivilegeEscalation to false in the container's securityContext, which sets the no_new_privs flag on the
+      container process. The Restricted Pod Security Standard requires this. You should also drop all Linux capabilities
+      with capabilities.drop: [ALL] and only add back specific ones required by the application.
+  - question: What are Linux capabilities in the context of Kubernetes?
+    answer: >
+      Linux capabilities divide root privileges into smaller units that can be granted independently. Containers running
+      as root have all capabilities by default, which is dangerous. In Kubernetes, you can add or drop specific
+      capabilities in the container securityContext. The security best practice is to drop all capabilities with drop:
+      [ALL] and add back only what the application needs—for example NET_BIND_SERVICE to bind to ports below 1024
+      without being root. Avoiding privileged containers and minimizing capabilities significantly reduces the container
+      attack surface.
+  - question: What is a seccomp profile in Kubernetes?
+    answer: seccomp (secure computing mode) restricts the system calls a container can make to the Linux kernel. A seccomp
+      profile defines an allow list or deny list of system calls. In Kubernetes, you apply a seccomp profile via the
+      pod's securityContext with seccompProfile field. The RuntimeDefault profile uses the container runtime's default
+      profile, which blocks many dangerous syscalls. Localhost profiles allow custom profiles. The Restricted Pod
+      Security Standard requires RuntimeDefault seccomp. seccomp significantly reduces the kernel attack surface for
+      containers.
+  - question: What is AppArmor in Kubernetes?
+    answer: >
+      AppArmor is a Linux security module that implements mandatory access control, restricting what resources programs
+      can access. AppArmor profiles define what files, capabilities, and network access a program is allowed. In
+      Kubernetes, you apply AppArmor profiles to containers using pod annotations with the format
+      container.apparmor.security.beta.kubernetes.io/container-name: profile. The profiles must be loaded on the node
+      where the pod runs. AppArmor provides an additional layer of defense against container escapes and privilege
+      escalation.
+  - question: What is Kubernetes RBAC aggregation?
+    answer: ClusterRole aggregation allows you to combine multiple ClusterRoles into one aggregate role using label
+      selectors. You define an aggregated ClusterRole with an aggregationRule and label selectors, and Kubernetes
+      automatically merges the rules from all ClusterRoles matching those selectors. This is used by the built-in admin,
+      edit, and view roles, which aggregate rules from ClusterRoles matching specific labels. When you install a CRD
+      operator that creates ClusterRoles with matching labels, the aggregate roles automatically gain the new
+      permissions.
+  - question: What is the sidecar pattern in Kubernetes?
+    answer: The sidecar pattern runs a helper container alongside the main application container in the same pod, enhancing
+      or extending the main container's functionality without modifying it. Common sidecar use cases include log
+      shippers like Fluentd forwarding logs to Elasticsearch, service mesh proxies like Envoy handling network
+      communication, configuration reloaders watching for ConfigMap changes, OAuth proxies adding authentication, and
+      git-sync containers keeping a volume updated with the latest repository content.
+  - question: What is the ambassador pattern in Kubernetes?
+    answer: The ambassador pattern uses a proxy container in the same pod as the main application to represent the
+      application in communicating with external services. The main application always connects to localhost, and the
+      ambassador container proxies those connections to the appropriate external service. This abstracts network
+      complexity from the main application—for example, an ambassador container could handle service discovery, retry
+      logic, and circuit breaking while the application simply connects to localhost on a fixed port.
+  - question: What is the adapter pattern in Kubernetes?
+    answer: The adapter pattern uses a container in the same pod to transform the output or interface of the main container
+      to match a standard format expected by other system components. A common example is an adapter that translates an
+      application's custom metrics format into the Prometheus exposition format, allowing Prometheus to scrape metrics
+      without modifying the application. Another example is converting a legacy application's log format into structured
+      JSON for a log aggregation system.
+  - question: What is an init container use case for database migrations?
+    answer: Init containers are ideal for running database migrations before the main application starts. The init container
+      runs the migration tool, applying pending schema changes, and exits with a zero code when migrations succeed. Only
+      then does the main application container start, guaranteed to find the database schema in the expected state. If
+      migration fails, the init container exits with a non-zero code and Kubernetes keeps retrying according to the
+      pod's restart policy, preventing the application from starting against an incompatible schema.
+  - question: What is the strangler fig pattern in Kubernetes?
+    answer: The strangler fig pattern is used to gradually migrate a monolithic application to microservices by routing
+      requests to new services while keeping the monolith running for unmitigated functionality. In Kubernetes, this is
+      implemented using Ingress routing rules that direct specific URL paths or hostnames to new microservice
+      deployments while the rest of the traffic continues to reach the monolith. As more functionality is migrated,
+      Ingress rules are updated to route more traffic away from the monolith until it can be decommissioned.
+  - question: What is twelve-factor app methodology in the context of Kubernetes?
+    answer: The twelve-factor app methodology principles align well with Kubernetes. Codebase means one app per container
+      image tracked in version control. Configuration means using ConfigMaps and Secrets instead of hard-coded values.
+      Backing services means using Kubernetes Services to abstract dependencies. Build, release, run separates image
+      building from configuration and deployment. Processes means running stateless pods. Port binding means
+      containerized apps that expose a port. Concurrency means scaling using Kubernetes replicas. Disposability means
+      pods that start fast and handle SIGTERM gracefully.
+  - question: What is service discovery in Kubernetes?
+    answer: Service discovery in Kubernetes happens primarily through DNS. When a Service is created, CoreDNS automatically
+      creates a DNS record service-name.namespace.svc.cluster.local. Pods can discover services simply by their service
+      name if in the same namespace, or using the fully qualified name across namespaces. Environment variables
+      containing service IPs and ports are also injected into pods at startup. DNS-based discovery is preferred over
+      environment variables because it works for services created after the pod starts.
+  - question: What is a sidecar injection webhook?
+    answer: A sidecar injection webhook is a mutating admission webhook that automatically adds a sidecar container to pods
+      matching certain criteria. Service meshes like Istio use namespace labels to trigger the webhook for all pods in
+      the namespace, injecting the Envoy proxy sidecar automatically without developers modifying their pod specs.
+      Similarly, logging agents, security scanners, and monitoring tools can be injected cluster-wide using this
+      pattern. Injection is transparent to application developers.
+  - question: What is a multi-container pod design consideration?
+    answer: When deciding whether to use multiple containers in a pod, consider whether they genuinely need to share the
+      same network namespace and volumes. Tight coupling like a log shipper that reads files written by the main
+      container or a proxy that intercepts all traffic justifies co-location. If containers are loosely coupled and can
+      communicate over the network, they should be separate pods. Multiple containers in a pod share lifecycle—if one
+      crashes repeatedly, the entire pod is restarted. Design multi-container pods carefully to avoid coupling that
+      makes troubleshooting harder.
+  - question: What is namespace-per-team vs. namespace-per-application in Kubernetes?
+    answer: Namespace-per-team gives each team one namespace where they deploy all their applications, simplifying
+      administration but reducing isolation between applications. Namespace-per-application gives each application its
+      own namespace, providing better isolation, more granular RBAC, and preventing naming conflicts.
+      Namespace-per-application is generally preferred for production as it allows precise resource quotas per
+      application and cleaner NetworkPolicies. Some organizations use a hybrid approach with team-level namespaces for
+      development and application-level namespaces for production.
+  - question: What is the Kubernetes version skew policy?
+    answer: Kubernetes supports a specific version skew between components. The kube-apiserver must be at a higher or equal
+      version than kube-controller-manager and kube-scheduler. The kubelet can be at most two minor versions behind the
+      apiserver. kubectl can be one minor version ahead or behind the apiserver. This policy allows live upgrades of the
+      control plane before upgrading worker nodes. Following the skew policy ensures components can communicate
+      correctly during rolling upgrades.
+  - question: What is a pod disruption during a node upgrade?
+    answer: During a node upgrade, you drain the node with kubectl drain, which cordons the node and evicts all pods
+      respecting PodDisruptionBudgets. Pods managed by controllers reschedule on other nodes. After upgrading the node's
+      kubelet and container runtime, you uncordon the node to allow scheduling again. PodDisruptionBudgets ensure that
+      application availability is maintained during the drain by preventing too many replicas from being evicted
+      simultaneously. Without PDBs, draining could cause brief outages for applications with few replicas.
+  - question: How do you handle deprecated API versions during Kubernetes upgrades?
+    answer: When upgrading Kubernetes versions, check the release notes for deprecated and removed API versions. Use kubectl
+      convert to convert manifests from old API versions to new ones. Run kubectl get all -o yaml to identify resources
+      using deprecated versions. Update your Helm charts and operator CRDs for the new API versions before upgrading.
+      Tools like pluto scan clusters and deployment manifests for deprecated API usage. Failing to migrate deprecated
+      APIs before removing them results in resources failing to deploy after the upgrade.
+  - question: What is Kubernetes cluster backup and disaster recovery?
+    answer: Cluster backup and disaster recovery covers two scenarios. For etcd loss, restore from an etcd snapshot to
+      recover cluster state. For broader disasters, Velero backs up both Kubernetes resource definitions and persistent
+      volume data. It can restore a complete cluster or individual namespaces to the same or a different cluster. Best
+      practices include regular automated etcd backups to offsite storage, regular Velero backups of critical
+      namespaces, documenting the cluster configuration as code in Git, and regularly testing the restore procedure.
+  - question: What is rolling restart and when do you use it?
+    answer: A rolling restart triggers a rolling update of all pods in a Deployment, StatefulSet, or DaemonSet without
+      changing the pod template spec. kubectl rollout restart deployment/name sets an annotation on the pod template
+      with the current timestamp, causing the Deployment controller to perform a rolling update. Use it when you need to
+      reload configuration from updated volume-mounted ConfigMaps, rotate ServiceAccount tokens, apply node-level
+      changes affecting containers, or simply restart pods that have become unhealthy without changing the application
+      version.
+  - question: What is node image upgrade in managed Kubernetes?
+    answer: Managed Kubernetes services like EKS, GKE, and AKS regularly release updated node images with security patches,
+      OS updates, and newer container runtime versions. Upgrading node images typically involves draining nodes and
+      replacing them with instances running the new image. Managed services support automatic node upgrades within
+      maintenance windows or through node pool recreation. Using managed node groups or node pools with surge upgrades
+      minimizes downtime by adding new nodes before removing old ones.
+  - question: What is the Kubernetes release cycle?
+    answer: Kubernetes follows a three-times-per-year release cadence, producing a new minor version approximately every
+      four months. Each release goes through alpha, beta, and stable phases for new features. The Kubernetes project
+      maintains the three most recent minor versions with bug fixes and security patches. After that, versions reach
+      end-of-life and no longer receive patches. Organizations should upgrade clusters regularly, staying within the
+      supported versions, to avoid security vulnerabilities and maintain access to patches.
+  - question: What is Platform Engineering in the context of Kubernetes?
+    answer: Platform Engineering builds internal developer platforms on top of Kubernetes that abstract away infrastructure
+      complexity and provide self-service capabilities for development teams. Instead of developers needing to
+      understand YAML manifests, RBAC, and networking, they interact with higher-level abstractions tailored to the
+      organization. The platform team builds and maintains these abstractions, golden paths for common use cases,
+      guardrails through policy, and tooling that accelerates application delivery while enforcing security and
+      operational standards.
+  - question: What is an Internal Developer Platform?
+    answer: An Internal Developer Platform (IDP) is a self-service layer built on top of infrastructure that gives
+      developers the capabilities they need to build, test, deploy, and run applications without depending on the
+      platform team for every operation. In the Kubernetes context, an IDP typically provides namespace provisioning,
+      application deployment workflows, secrets management, observability setup, and environment promotion pipelines.
+      Tools like Backstage, Humanitec, and Port are used to build IDPs on top of Kubernetes infrastructure.
+  - question: What is Backstage?
+    answer: Backstage is an open-source developer portal platform built by Spotify that serves as the frontend for Internal
+      Developer Platforms. It provides a software catalog, TechDocs for internal documentation, and a plugin ecosystem.
+      Kubernetes plugins in Backstage visualize the state of applications deployed in clusters, show logs, and surface
+      alerts, giving developers a single place to understand their services without needing kubectl access. Backstage
+      helps organizations build golden paths and self-service capabilities on top of Kubernetes.
+  - question: What is a golden path in platform engineering?
+    answer: A golden path is a supported, opinionated way for developers to create and deploy applications that incorporates
+      organizational best practices, security requirements, and operational standards. In Kubernetes, a golden path
+      might be a Helm chart template or Kustomize base that pre-configures resource limits, health probes, security
+      contexts, monitoring annotations, and NetworkPolicies correctly. Teams that follow the golden path get these best
+      practices for free without needing to understand every Kubernetes detail.
+  - question: What is policy-as-code in Kubernetes?
+    answer: Policy-as-code means defining cluster governance rules as machine-readable code that can be version-controlled,
+      reviewed, tested, and automatically enforced. In Kubernetes, tools like OPA Gatekeeper, Kyverno, and JsPolicy
+      implement policy-as-code through admission controllers. Policies can require specific labels, block untrusted
+      image registries, enforce resource limits, mandate security contexts, and prevent risky configurations.
+      Policy-as-code replaces ad-hoc manual reviews with automated, consistent enforcement at admission time.
+  - question: What is a service catalog in the context of Kubernetes?
+    answer: A service catalog provides a way for developers to discover and provision backing services like databases,
+      message queues, and caches through the Kubernetes API. The Kubernetes Service Catalog project, now superseded by
+      tools like Crossplane and AWS Controllers for Kubernetes, allowed provisioning cloud-managed services using
+      Kubernetes custom resources. This lets developers provision a managed RDS database or Cloud SQL instance using the
+      same kubectl and GitOps tools used for application deployment, with the service appearing as Kubernetes resources.
+  - question: What is Argo CD ApplicationSet?
+    answer: ApplicationSet is an ArgoCD controller that automates the creation of multiple ArgoCD Applications using
+      template patterns. It supports generators that produce application parameters from cluster lists, Git directory
+      structures, or external data. For example, a cluster generator creates one application per managed cluster,
+      deploying the same application configuration everywhere. A Git generator creates an application for each directory
+      in a repository. ApplicationSets power multi-cluster deployment patterns and environment management in GitOps
+      workflows.
+  - question: What is the difference between GitOps and Infrastructure as Code?
+    answer: Infrastructure as Code is a practice of managing infrastructure using code and version control, typically with
+      tools like Terraform or CloudFormation that apply changes imperatively or through plan-apply cycles. GitOps
+      applies IaC principles to Kubernetes specifically, using Git as the desired state source and requiring a
+      Kubernetes operator to continuously reconcile the cluster to match Git. The key addition of GitOps is the
+      continuous reconciliation agent and the closed-loop feedback. IaC can be used for provisioning the Kubernetes
+      cluster itself while GitOps manages what runs inside it.
+  - question: What is Renovate or Dependabot in the context of Kubernetes?
+    answer: Renovate and Dependabot are dependency update tools that can automatically create pull requests when new
+      versions of Helm charts, container images, and Kubernetes manifests are available. In a GitOps workflow where
+      manifests are in Git, these tools scan for outdated image tags, Helm chart versions, and CRD versions, then open
+      PRs with the updates. This automates the operational task of keeping dependencies current for security patches,
+      reducing the risk of running outdated and vulnerable software.
+  - question: What is observability-as-code in Kubernetes?
+    answer: Observability-as-code defines monitoring configuration—dashboards, alert rules, recording rules, and SLOs—as
+      version-controlled code deployed alongside application manifests. The Prometheus Operator uses PrometheusRule and
+      ServiceMonitor custom resources to configure Prometheus monitoring through Kubernetes objects. Grafana Operator
+      manages dashboards as Kubernetes resources. This allows application teams to own their monitoring configuration
+      and deploy it alongside their services, keeping monitoring synchronized with application changes.
+  - question: What is the difference between a sidecar and an init container for pre-flight checks?
+    answer: Init containers run to completion before the main container starts and are ideal for sequential setup tasks like
+      waiting for a database to be ready or running migrations. They must succeed before the application starts.
+      Sidecars run alongside the main container for the lifetime of the pod, providing ongoing services like log
+      forwarding or proxy. For pre-flight checks, init containers are preferred because they block the application from
+      starting until the check passes, whereas a sidecar would run concurrently and could not guarantee the check
+      completes before the main container starts.
+  - question: What is the difference between kubectl apply and kubectl replace?
+    answer: kubectl apply is a declarative command that performs a three-way merge between the last-applied configuration,
+      the current cluster state, and the new configuration, updating only changed fields. kubectl replace deletes the
+      existing resource and recreates it from the manifest, which can cause brief downtime and loses fields not present
+      in the manifest. kubectl apply is idempotent and safe to run repeatedly, making it ideal for CI/CD pipelines.
+      kubectl replace should only be used when you need to force a clean replacement.
+  - question: What is the Kubernetes object ownership model?
+    answer: Every Kubernetes object can reference one or more owner objects through the ownerReferences field in metadata.
+      This creates a directed acyclic graph of ownership. When an owner is deleted, Kubernetes garbage collects all
+      objects it owns, cascading through the ownership chain. Deployments own ReplicaSets which own Pods. This model
+      allows controllers to identify which objects they are responsible for and drives automatic cleanup. The
+      blockOwnerDeletion flag in ownerReferences can block owner deletion until all dependents are removed.
+  - question: What is a Kubernetes Lease object?
+    answer: A Lease is a Kubernetes object in the coordination.k8s.io API group that represents a distributed lock or a
+      resource reservation for a bounded time period. It has fields for the holder identity, the duration of the lease,
+      the last time it was renewed, and the number of transitions. Leases are used for node heartbeats in the
+      kube-node-lease namespace and for leader election among controller replicas. They are lightweight compared to
+      using ConfigMaps or Secrets for the same purpose.
+  - question: What is the Kubernetes TokenRequest API?
+    answer: The TokenRequest API, part of the ServiceAccount API, generates time-limited, audience-bound tokens for use by
+      pods instead of the long-lived, non-expiring tokens traditionally auto-mounted by Kubernetes. Tokens are bound to
+      a specific audience, expiration time, and optionally to a specific pod or secret. Projected volumes use the
+      TokenRequest API to inject short-lived tokens that Kubernetes automatically rotates before expiry. This is more
+      secure than the legacy mechanism and is required by workload identity patterns.
+  - question: What is a Kubernetes SubResource?
+    answer: SubResources are special endpoints within the Kubernetes API that allow specific operations on a resource beyond
+      standard CRUD. Examples include the status subresource, which separates status updates from spec updates and is
+      typically only writable by controllers; the scale subresource, which provides a standard way to read and modify
+      replica counts; the log subresource on pods for streaming logs; the exec subresource for running commands; and the
+      portforward subresource for port forwarding. RBAC can grant access to specific subresources independently.
+  - question: What is a fieldSelector in Kubernetes?
+    answer: A field selector filters Kubernetes resources based on the value of specific resource fields using equality or
+      inequality operators. Unlike label selectors, field selectors work on actual resource fields rather than metadata
+      labels. For example, kubectl get pods --field-selector status.phase=Running filters for running pods, and
+      --field-selector spec.nodeName=node1 filters pods on a specific node. Field selectors are supported on most
+      resource types but only on a limited set of fields, unlike label selectors which work on any label.
+  - question: What are Kubernetes API groups?
+    answer: API groups organize related Kubernetes API resources together. The core group, with an empty group name accessed
+      at /api/v1, contains fundamental resources like Pods, Services, ConfigMaps, and Secrets. Named groups like apps,
+      batch, networking.k8s.io, and rbac.authorization.k8s.io are accessed at /apis/group/version. Custom Resource
+      Definitions create new API groups. The grouping allows versioning different resource families independently and
+      makes it clear which project or feature area owns each resource.
+  - question: What is the difference between a Job completion mode Indexed and NonIndexed?
+    answer: NonIndexed Jobs, the default, count completions without identifying which specific work items were completed,
+      suitable for homogeneous work where any pod can do any job. Indexed Jobs, introduced in Kubernetes 1.21, assign a
+      unique completion index starting from zero to each pod via the JOB_COMPLETION_INDEX environment variable and a pod
+      annotation. This allows distributing specific work items to specific pods based on their index—for example,
+      sharding a dataset or running a matrix of test cases—making the pod's role explicit and deterministic.
+  - question: What is a TTL controller for finished resources?
+    answer: The TTL controller for finished resources automatically cleans up finished Jobs and their Pods after a specified
+      time-to-live duration. By setting the ttlSecondsAfterFinished field on a Job, the TTL controller deletes the Job
+      and its pods a set number of seconds after the Job finishes, whether it succeeded or failed. Without this,
+      finished Jobs accumulate indefinitely, consuming API server storage and cluttering list views. This replaces the
+      need for external cleanup scripts for batch workloads.
+  - question: What is the Kubernetes garbage collector?
+    answer: >
+      The garbage collector is a controller that deletes objects that are owned by objects that no longer exist. It
+      watches for orphaned objects whose owner references point to deleted owners. It supports two deletion modes:
+      background deletion, where the owner is deleted immediately and the garbage collector cleans up dependents
+      asynchronously; and foreground deletion, where the owner enters a terminating state and dependents are deleted
+      first before the owner is removed. The propagationPolicy in a delete request controls which mode is used.
+  - question: What is kubectl debug?
+    answer: kubectl debug is a command for troubleshooting pods and nodes using ephemeral debug containers or copies of
+      pods. kubectl debug pod/name -it --image=busybox attaches an ephemeral container to a running pod for debugging.
+      kubectl debug node/name -it --image=ubuntu mounts the node's filesystem and runs a privileged debug pod on that
+      node. You can also create a copy of a failing pod with a different image using kubectl debug pod/name
+      --copy-to=debug-pod, which is useful when the original pod's image lacks debugging tools.
+  - question: What is the Kubernetes object status condition pattern?
+    answer: The conditions pattern is a standard way Kubernetes resources expose their status. A condition has a type like
+      Ready or Available, a status of True, False, or Unknown, a reason code, a human-readable message, and timestamps.
+      Multiple conditions can be true simultaneously, allowing resources to express complex state. For example, a
+      Deployment shows conditions for Available, Progressing, and ReplicaFailure. Controllers and operators should
+      implement conditions for their custom resources to make status machine-readable and compatible with standard
+      tooling.
+  - question: What is a Kubernetes EndpointSlice controller?
+    answer: The EndpointSlice controller watches Services with selectors and the pods matching those selectors. It creates
+      and manages EndpointSlice objects that reflect the set of ready pod endpoints for each service, sharded into
+      slices of up to 100 endpoints by default. When pods come and go, the controller updates the appropriate
+      EndpointSlice, and kube-proxy reads these slices to configure routing rules. The controller optimizes updates to
+      minimize the amount of data transmitted when a small number of endpoints change in a large service.
+  - question: What is the difference between kubectl get and kubectl describe?
+    answer: kubectl get retrieves the raw resource data and formats it for display, defaulting to a brief table view with
+      key fields. kubectl describe generates a human-friendly summary by combining the resource's data with related
+      events and computed information. describe shows the events associated with the resource, which is the most useful
+      part for debugging—events reveal why a pod is pending, why a container is restarting, or why a deployment is not
+      progressing. For automation and scripting, kubectl get with JSON or YAML output is preferred.
+  - question: What is a static pod in Kubernetes?
+    answer: A static pod is a pod managed directly by the kubelet on a specific node rather than through the Kubernetes API
+      server. Static pods are defined as manifest files in a directory watched by the kubelet, typically
+      /etc/kubernetes/manifests. The kubelet monitors this directory and creates, updates, or deletes pods accordingly.
+      Control plane components like the API server, scheduler, and controller manager run as static pods in kubeadm
+      clusters. Static pods are visible through the API server as mirror pods but cannot be managed through kubectl in
+      the normal way.
+  - question: What are Node conditions in Kubernetes?
+    answer: Node conditions are status fields that report the health of a node. Ready indicates the node is healthy and
+      ready to accept pods. MemoryPressure indicates the node is running low on memory. DiskPressure indicates disk
+      usage is too high on the node. PIDPressure indicates too many processes are running on the node.
+      NetworkUnavailable indicates the node's network is not correctly configured. The node controller monitors these
+      conditions and taints nodes based on them, causing the scheduler to avoid tainted nodes and existing pods to be
+      evicted.
+  - question: What is a taint-based eviction?
+    answer: Taint-based eviction automatically removes pods from nodes when certain conditions occur. When the node
+      controller detects a problem like NotReady or Unreachable, it adds NoExecute taints to the node. Pods without
+      matching tolerations are evicted immediately. Pods with tolerations that specify a tolerationSeconds value are
+      evicted after that duration. This mechanism ensures that misbehaving or unreachable nodes do not permanently hold
+      running pod objects that should be rescheduled. System pods often have long or infinite tolerations to remain on
+      troubled nodes for debugging.
+  - question: What is OpenTelemetry and its role in Kubernetes?
+    answer: OpenTelemetry is a CNCF project providing a unified, vendor-neutral framework for collecting traces, metrics,
+      and logs from applications. In Kubernetes, the OpenTelemetry Collector runs as a Deployment or DaemonSet to
+      receive telemetry from applications, process it, and export it to backends like Jaeger, Prometheus, or commercial
+      observability platforms. The OpenTelemetry Operator automates the deployment and configuration of collectors and
+      handles automatic instrumentation injection into application pods, simplifying observability setup for application
+      teams.
+  - question: What is Kubernetes node pressure eviction?
+    answer: Node pressure eviction is the kubelet's mechanism for reclaiming resources on a node that is under memory or
+      disk pressure. When a node exceeds configured thresholds for memory, disk, or inodes, the kubelet begins evicting
+      pods to reclaim resources. It evaluates pods using their QoS class and resource consumption relative to requests.
+      BestEffort pods are evicted first, then Burstable, then Guaranteed. evictionHard and evictionSoft thresholds
+      control when eviction starts. This prevents the node from running out of resources entirely and becoming
+      unhealthy.
+  - question: What is Kubernetes CPU management policy?
+    answer: The kubelet CPU management policy controls how CPU resources are allocated to containers on a node. The default
+      None policy uses CFS (Completely Fair Scheduler) quotas for all containers. The static policy allows Guaranteed
+      pods with integer CPU requests to exclusively own specific CPU cores, preventing CPU sharing and reducing latency
+      variability from context switching. This is important for latency-sensitive workloads like real-time processing
+      and telecommunications. The CPU manager policy must be configured at the kubelet level on each node.
+  - question: What is the difference between a ClusterRoleBinding and a RoleBinding?
+    answer: A RoleBinding grants the permissions of a Role or ClusterRole within a specific namespace. Even if a ClusterRole
+      is referenced, the RoleBinding restricts the permissions to only that namespace. A ClusterRoleBinding grants the
+      permissions of a ClusterRole across the entire cluster, including cluster-scoped resources and all namespaces. Use
+      RoleBinding with a namespace-scoped Role for typical application permissions, ClusterRoleBinding only when
+      cluster-wide access is genuinely needed, and RoleBinding with a ClusterRole for reusing role definitions across
+      multiple namespaces.
+  - question: What is kubectl patch?
+    answer: kubectl patch updates specific fields of a Kubernetes resource without replacing the entire object. It supports
+      three patch types. Strategic merge patch is the default for Kubernetes resources and understands the schema—it
+      merges lists like containers intelligently. Merge patch does a JSON merge, replacing entire lists. JSON patch
+      specifies explicit operations like add, remove, and replace on specific paths. Patch is useful for making small
+      updates in scripts or CI/CD pipelines without re-applying the full manifest.
+  - question: What are resource limits best practices for Java applications in Kubernetes?
+    answer: Java applications have unique resource considerations. The JVM historically did not respect Linux cgroup memory
+      limits, detecting host memory instead of container limits, leading to OOM kills. Java 10 and later with
+      UseContainerSupport enabled, the default in modern JDKs, correctly detects container memory limits. Set heap size
+      explicitly with -Xmx or -XX:MaxRAMPercentage to keep it below the container memory limit, leaving headroom for
+      off-heap memory. CPU limits can cause severe throttling for JVM due to JIT compilation bursts, so some teams set
+      requests without CPU limits for Java workloads.
