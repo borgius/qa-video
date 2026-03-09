@@ -20,6 +20,7 @@ export interface YamlCard {
 export interface FileInfo {
   name: string;
   filename: string;
+  subfolder?: string;
   title: string;
   description: string;
   questionCount: number;

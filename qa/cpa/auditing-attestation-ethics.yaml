@@ -1,0 +1,543 @@
+config:
+  name: "CPA AUD: Auditing & Attestation — Ethics, Independence, and General Principles"
+  description: AICPA ethics and independence, SEC/PCAOB and GAO/DOL concepts, professional skepticism, engagement
+    acceptance, engagement letters, audit documentation, and governance communications for CPA AUD prep.
+  questionDelay: 1
+  answerDelay: 1
+  youtube:
+    videoId: 94PscA-fQ0g
+    url: https://youtu.be/94PscA-fQ0g
+    uploadedAt: 2026-03-08T13:48:20.128Z
+    privacy: unlisted
+    contentSha: 5c788831
+questions:
+  - question: What are the core ethical principles in the AICPA Code of Professional Conduct most relevant to AUD?
+    answer: >-
+      The AICPA Code emphasizes principles such as:
+
+
+      - **responsibilities**
+
+      - **the public interest**
+
+      - **integrity**
+
+      - **objectivity and independence**
+
+      - **due care**
+
+      - **scope and nature of services**
+
+
+      For CPA exam purposes, the most tested practical themes are **integrity, objectivity, independence,
+      confidentiality, and due professional care**. If one of those is impaired, the whole engagement can wobble like a
+      three-legged stool.
+  - question: What is integrity in the context of the AICPA Code?
+    answer: >-
+      **Integrity** requires a CPA to be honest and candid within the constraints of client confidentiality. It means
+      the CPA should not knowingly misrepresent facts, subordinate judgment to others, or be associated with misleading
+      information.
+
+
+      On the exam, integrity is often tested when a client pressures the auditor to ignore misstatements or manipulate
+      presentation.
+  - question: What is objectivity and how is it different from independence?
+    answer: >-
+      **Objectivity** is a state of mind requiring impartiality, intellectual honesty, and freedom from conflicts of
+      interest. **Independence** applies more specifically to certain attest engagements and requires both:
+
+
+      - **independence in fact** — actual mental independence
+
+      - **independence in appearance** — how a reasonable third party would view the relationship
+
+
+      A person may try to be objective, but if a financial or close personal relationship exists, independence in
+      appearance may still be impaired.
+  - question: What are threats and safeguards under the AICPA conceptual framework for independence?
+    answer: >-
+      The conceptual framework identifies threats that could impair independence or objectivity, such as:
+
+
+      - self-review threat
+
+      - advocacy threat
+
+      - familiarity threat
+
+      - undue influence threat
+
+      - self-interest threat
+
+      - management participation threat
+
+
+      The CPA evaluates whether safeguards can reduce threats to an acceptable level. Safeguards may include firm-level
+      policies, separate review, staff rotation, or declining the engagement if the threat cannot be mitigated.
+  - question: What is a self-review threat and why is it important?
+    answer: >-
+      A **self-review threat** arises when the auditor may need to evaluate evidence or work product that the auditor or
+      auditor's firm prepared. This is dangerous because people are notoriously bad at enthusiastically criticizing
+      their own prior work.
+
+
+      Examples include:
+
+
+      - preparing accounting records that will later be audited
+
+      - designing systems or controls that become part of audit evidence
+
+      - valuing amounts that the auditor will later test
+  - question: What is management participation threat?
+    answer: >-
+      A **management participation threat** exists when the CPA assumes responsibilities that belong to management, such
+      as authorizing transactions, deciding journal entries, directing employees, or making strategic decisions.
+
+
+      Auditors may assist management with certain administrative tasks, but they cannot function as management. If they
+      do, independence is impaired.
+  - question: How does confidentiality apply to CPAs?
+    answer: >-
+      CPAs generally may not disclose confidential client information without the client's specific consent, except in
+      limited situations such as:
+
+
+      - compliance with a valid subpoena or summons
+
+      - peer review
+
+      - ethics investigations
+
+      - responding to actual or threatened litigation involving the CPA
+
+
+      Confidentiality does not permit a CPA to conceal fraud or make misleading statements; it simply restricts
+      unauthorized disclosure.
+  - question: How should CPAs think about AI tools under ethics and confidentiality rules?
+    answer: >-
+      If AI tools are used in audit work, the CPA must still protect:
+
+
+      - confidentiality of client data
+
+      - data security
+
+      - professional competence
+
+      - due care
+
+      - professional judgment
+
+
+      A CPA cannot blindly rely on AI-generated analysis. Outputs must be evaluated for reliability, bias, completeness,
+      and consistency with professional standards. If client data is uploaded to external systems without proper
+      safeguards, ethical and confidentiality issues may arise.
+  - question: What is professional skepticism?
+    answer: >-
+      **Professional skepticism** is an attitude that includes a questioning mind and a critical assessment of audit
+      evidence. It means the auditor neither assumes management is dishonest nor assumes unquestioned honesty.
+
+
+      In practice, the auditor should:
+
+
+      - probe inconsistent explanations
+
+      - remain alert for contradictory evidence
+
+      - challenge assumptions underlying estimates
+
+      - consider the possibility of fraud
+
+
+      AUD loves testing situations where the auditor becomes too trusting or too anchored to management's narrative.
+  - question: What are common judgment biases auditors should guard against?
+    answer: |-
+      Common biases include:
+
+      - **confirmation bias** — favoring evidence that supports an initial belief
+      - **anchoring** — relying too heavily on the first information received
+      - **overconfidence** — excessive faith in one's judgment
+      - **groupthink** — conforming to team views without sufficient challenge
+      - **availability bias** — overweighting recent or memorable information
+
+      Professional skepticism helps counter these biases by forcing the auditor to seek disconfirming evidence.
+  - question: What engagement types should a CPA candidate know in AUD?
+    answer: |-
+      Major engagement types include:
+
+      - **audit** — provides reasonable assurance
+      - **review** — provides limited assurance
+      - **compilation** — no assurance
+      - **preparation engagement** — no report, no assurance
+      - **attestation engagements** such as examinations, reviews, and agreed-upon procedures
+
+      Candidates should understand the level of assurance, applicable standards, and report wording differences.
+  - question: What are preconditions for an audit engagement?
+    answer: |-
+      Before accepting an audit, the auditor should determine whether:
+
+      - the financial reporting framework is acceptable
+      - management acknowledges responsibility for preparing the financial statements
+      - management acknowledges responsibility for internal control relevant to the preparation of the statements
+      - management will provide access to information, records, and personnel
+
+      If these preconditions are not met, the auditor normally should not accept the engagement.
+  - question: What is the purpose of an engagement letter?
+    answer: >-
+      The engagement letter documents the understanding between the auditor and the client. It helps prevent disputes by
+      clearly stating the nature and scope of services.
+
+
+      Typical contents include:
+
+
+      - objective and scope of the engagement
+
+      - responsibilities of the auditor
+
+      - responsibilities of management
+
+      - applicable financial reporting framework
+
+      - expected form and content of reports
+
+      - inherent limitations of an audit and internal control
+  - question: What matters should be documented in audit documentation?
+    answer: >-
+      Audit documentation should be sufficient to enable an experienced auditor, having no previous connection with the
+      engagement, to understand:
+
+
+      - the nature, timing, and extent of procedures performed
+
+      - results of procedures and evidence obtained
+
+      - significant findings and issues
+
+      - conclusions reached and professional judgments made
+
+
+      If it is not documented, the auditor may struggle to prove it was actually done. The exam is not subtle about
+      this.
+  - question: What is the difference between permanent and current audit files?
+    answer: >-
+      The **permanent file** contains information of continuing relevance, such as:
+
+
+      - organizational documents
+
+      - long-term contracts
+
+      - debt agreements
+
+      - accounting manuals and key policies
+
+
+      The **current file** contains documentation specific to the current year's engagement, such as current testing,
+      trial balances, confirmations, lead schedules, adjusting entries, and current correspondence.
+  - question: What is the purpose of communicating with those charged with governance?
+    answer: >-
+      The auditor communicates with those charged with governance, such as the audit committee, to discuss significant
+      engagement matters including:
+
+
+      - auditor responsibilities
+
+      - planned scope and timing
+
+      - significant accounting policies and estimates
+
+      - significant difficulties encountered
+
+      - corrected and uncorrected misstatements
+
+      - significant deficiencies and material weaknesses
+
+
+      Governance communication supports oversight and helps maintain auditor independence and transparency.
+  - question: What is the difference between a material weakness and a significant deficiency?
+    answer: >-
+      Both relate to internal control deficiencies, but a **material weakness** is more severe.
+
+
+      - A **material weakness** is a deficiency, or combination of deficiencies, such that there is a reasonable
+      possibility a material misstatement will not be prevented or detected and corrected on a timely basis.
+
+      - A **significant deficiency** is less severe than a material weakness but still important enough to merit
+      attention by those charged with governance.
+  - question: How do SEC and PCAOB independence rules generally compare to AICPA rules?
+    answer: >-
+      SEC and PCAOB independence rules for issuers are generally **stricter** and more prescriptive than the AICPA rules
+      for nonissuers. They focus heavily on avoiding financial, employment, business, and certain nonattest service
+      relationships that could place the auditor in the role of management or create self-review threats.
+
+
+      For exam questions, if the client is a public company, think **stricter independence** first.
+  - question: Why are GAO independence rules important?
+    answer: >-
+      GAO standards apply to government audits and attestation engagements under Government Auditing Standards. They
+      include independence requirements and a conceptual framework for identifying, evaluating, and applying safeguards
+      to threats.
+
+
+      AUD may test that government-related engagements can involve additional requirements beyond ordinary AICPA audit
+      standards.
+  - question: What is due professional care?
+    answer: >-
+      **Due professional care** requires the auditor to act with the skill and diligence expected of a reasonably
+      prudent auditor. It includes:
+
+
+      - proper planning and supervision
+
+      - critical evaluation of evidence
+
+      - adequate technical competence
+
+      - appropriate professional judgment
+
+
+      It does not require infallibility, but it does require real effort, attention, and competent performance.
+  - question: How does independence in fact differ from independence in appearance?
+    answer: Independence in fact is the auditor's actual state of mind. Independence in appearance is whether a reasonable
+      informed third party would conclude the auditor is unbiased. Both matter in attest work.
+  - question: What is a covered member for independence purposes?
+    answer: A covered member generally includes the engagement team, persons in a position to influence the engagement,
+      certain partners or managers in the office of the lead attest partner, and the firm itself. Independence rules are
+      often applied by asking first whether the person is a covered member.
+  - question: How do immediate family relationships affect auditor independence?
+    answer: Immediate family members, such as a spouse or dependent, are treated very strictly. Their financial interests or
+      key client employment can impair the auditor's independence.
+  - question: How can close relatives affect independence?
+    answer: Close relatives are usually evaluated less strictly than immediate family, but independence may still be
+      impaired if the relative has a key position at the client or a material financial interest the auditor knows
+      about.
+  - question: Why does a direct financial interest in an attest client impair independence?
+    answer: A direct financial interest creates a self-interest threat because the auditor could benefit personally from the
+      client's reported results. Even a small direct ownership interest typically impairs independence.
+  - question: When can an indirect financial interest impair independence?
+    answer: An indirect financial interest impairs independence when it is material to the auditor. The exam often contrasts
+      direct interests, which are usually prohibited, with indirect interests, which turn on materiality.
+  - question: How do joint closely held investments with a client affect independence?
+    answer: A joint closely held investment with the client, client officers, directors, or principal owners can create a
+      serious self-interest and business relationship threat. If material, independence is typically impaired.
+  - question: How can loans between the auditor and the client impair independence?
+    answer: Loans can create self-interest threats. Certain normal lending relationships with financial institution clients
+      may be allowed if made under ordinary terms, but many other loan relationships impair independence.
+  - question: Are normal credit card balances with a client always prohibited?
+    answer: Not always. Normal consumer credit arrangements may be permissible if balances are current and within ordinary
+      terms, but large overdue balances can impair independence.
+  - question: How do overdue fees affect auditor independence?
+    answer: Significant unpaid fees from prior years can create a self-interest threat because they resemble a loan to the
+      client. If overdue for an extended period, independence may be impaired.
+  - question: Why are contingent fees generally prohibited for attest clients?
+    answer: Contingent fees tie the CPA's compensation to a desired result, which directly threatens objectivity and
+      independence. For attest clients, they are generally prohibited.
+  - question: How are commissions treated when the CPA also performs an audit or review for the client?
+    answer: Commissions are generally not allowed when the CPA performs an audit, review, or certain other attest services
+      for the client. The financial incentive creates an unacceptable threat to independence.
+  - question: What should a CPA do when receiving or paying a referral fee?
+    answer: Referral fees may require disclosure to the client or other affected parties. The CPA should be transparent so
+      the fee does not create a hidden conflict of interest.
+  - question: Can an auditor prepare source documents for an attest client?
+    answer: No. Preparing source documents is a management responsibility. Performing that function would create a
+      management participation threat and impair independence.
+  - question: When may bookkeeping services be provided to a nonissuer attest client?
+    answer: Limited bookkeeping assistance may be allowed for some nonissuer clients if management accepts responsibility,
+      designates a competent individual, and the CPA does not assume management functions.
+  - question: Why are management decisions always off-limits for the auditor?
+    answer: Making management decisions places the auditor in the role of management rather than an independent evaluator.
+      Once that line is crossed, independence is gone.
+  - question: How do employment negotiations with an audit client affect independence?
+    answer: If a member of the engagement team is discussing employment with the client, independence is threatened
+      immediately. The individual usually must be removed from the engagement and the situation evaluated promptly.
+  - question: What happens when a former partner joins an audit client in a key position?
+    answer: The firm evaluates whether relationships remain that could impair independence, such as unpaid capital balances,
+      continuing influence, or close ties with the engagement team. Public-company rules are especially strict.
+  - question: Why is partner rotation important in issuer audits?
+    answer: Rotation helps reduce familiarity threats and keeps the audit fresh. PCAOB and SEC-related rules require
+      rotation for certain lead partners on issuer engagements.
+  - question: How do gifts or hospitality from clients affect independence?
+    answer: Trivial and inconsequential items may be acceptable, but significant gifts or lavish entertainment create
+      self-interest or familiarity threats and can impair independence.
+  - question: How can litigation between the client and auditor affect independence?
+    answer: Actual or threatened litigation can create an adverse interest threat. If the dispute is significant, a
+      reasonable third party may doubt the auditor's objectivity.
+  - question: What is an advocacy threat?
+    answer: An advocacy threat exists when the CPA promotes a client's interests so strongly that objectivity may be lost,
+      such as acting as a client's champion in a dispute or marketing securities.
+  - question: What is a familiarity threat?
+    answer: A familiarity threat arises when a long or close relationship with the client causes the CPA to become too
+      sympathetic, trusting, or accepting of the client's views.
+  - question: What is an undue influence threat?
+    answer: An undue influence threat occurs when a client or other party pressures the CPA to reach a certain conclusion or
+      to reduce work. Pressure from powerful executives is a classic example.
+  - question: What is a self-interest threat?
+    answer: A self-interest threat exists when the CPA could benefit financially or otherwise from the client relationship.
+      Examples include ownership interests, significant unpaid fees, or contingent compensation.
+  - question: What is an adverse interest threat?
+    answer: An adverse interest threat arises when the CPA's interests are opposed to the client's interests, such as when
+      the CPA is in litigation with the client. That conflict can impair objectivity.
+  - question: How can an engagement quality review help safeguard independence and quality?
+    answer: An independent reviewer can challenge significant judgments, review conclusions, and identify threats the
+      engagement team may have missed. It is a strong safeguard when risks are high.
+  - question: When should a CPA decline or discontinue an engagement?
+    answer: The CPA should decline or withdraw when threats cannot be reduced to an acceptable level, client integrity is in
+      doubt, preconditions are missing, or management refuses necessary access or representations.
+  - question: What is professional judgment in auditing?
+    answer: Professional judgment is the application of relevant training, knowledge, and experience to make informed
+      decisions about audit actions, evidence, and conclusions. It must be grounded in standards, not guesswork.
+  - question: Why is professional competence an ethical requirement?
+    answer: A CPA should undertake only those services that can be completed with appropriate competence. Accepting work
+      beyond one's ability without proper assistance violates due care.
+  - question: How does due care affect staffing decisions on an audit?
+    answer: Due care requires assigning personnel with the right skill level and supervising them appropriately. Complex
+      areas should not be handed off casually to inexperienced staff without oversight.
+  - question: Why must assistants be properly supervised?
+    answer: Supervision helps ensure procedures are performed correctly, issues are escalated, and conclusions are
+      supported. Poor supervision increases the risk of material audit failure.
+  - question: What is scope creep and why should engagement changes be documented?
+    answer: Scope creep occurs when services expand beyond the original agreement. Changes should be documented so
+      responsibilities, fees, timing, and independence implications remain clear.
+  - question: When should an engagement letter be updated?
+    answer: It should be updated when terms change, services expand, management changes significantly, the reporting
+      framework changes, or misunderstandings about the engagement arise.
+  - question: What is the purpose of predecessor-successor auditor communication?
+    answer: It helps the successor auditor assess client acceptance risks, including disputes with management, integrity
+      concerns, fraud issues, and reasons for the auditor change.
+  - question: What should a successor auditor ask the predecessor auditor?
+    answer: The successor should ask about management integrity, disagreements over accounting or auditing matters,
+      communications with governance, fraud or illegal acts, and reasons for the change in auditors.
+  - question: What if the client refuses to allow communication with the predecessor auditor?
+    answer: The refusal is itself a red flag. The successor should consider that limitation in deciding whether to accept
+      the engagement, and often should decline.
+  - question: What factors matter in client acceptance decisions?
+    answer: Important factors include management integrity, independence, firm competence, staffing availability, engagement
+      risk, and whether the reporting framework and engagement terms are acceptable.
+  - question: What factors matter in client continuance decisions?
+    answer: The firm reassesses whether independence remains intact, management remains trustworthy, the relationship is
+      still appropriate, and the engagement can be performed with quality.
+  - question: Why is management integrity so important to acceptance and continuance?
+    answer: Audits rely heavily on management representations and access to information. If management lacks integrity,
+      audit risk rises sharply and evidence may become less reliable.
+  - question: Why does tone at the top matter before accepting an engagement?
+    answer: Tone at the top influences the control environment and the likelihood of honest financial reporting. A weak
+      ethical culture raises fraud risk before the audit even begins.
+  - question: Who owns the audit documentation?
+    answer: Audit working papers are generally the property of the auditor, not the client, even though they contain client
+      information. That ownership does not override confidentiality obligations.
+  - question: Can a client demand all working papers from the auditor?
+    answer: Not generally. The auditor may provide certain documents where appropriate, but working papers are normally the
+      auditor's property and are not automatically turned over on demand.
+  - question: Why is working paper retention important?
+    answer: Retention supports quality control, inspections, legal defense, and compliance with professional standards and
+      firm policy. Destroying documentation too early can create serious problems.
+  - question: What is the experienced auditor standard in documentation?
+    answer: Documentation should allow an experienced auditor with no prior connection to understand the procedures
+      performed, evidence obtained, issues identified, and conclusions reached.
+  - question: What kinds of matters are considered significant findings in an audit file?
+    answer: Significant findings include unusual transactions, major misstatements, difficult judgments, fraud indicators,
+      significant deficiencies, and issues requiring consultation or governance communication.
+  - question: What is the final assembly period for audit documentation?
+    answer: The final audit file should be assembled on a timely basis after the report release date, commonly within a
+      limited period set by standards or firm policy. After that, changes are restricted and must be documented.
+  - question: Can audit documentation be deleted after the report release date?
+    answer: Routine deletion after the documentation completion date is generally not appropriate. If information must be
+      added, the auditor documents what was changed, when, by whom, and why.
+  - question: Why distinguish between duplicate documents and key evidence in the audit file?
+    answer: Duplicate or administrative material may be removed during final assembly, but evidence supporting conclusions
+      must remain. The file should be complete, not cluttered and not stripped bare.
+  - question: Why must the auditor date documentation appropriately?
+    answer: Dating helps establish timing, responsibility, review status, and whether work was performed before the report
+      was issued. It also supports accountability.
+  - question: What independence matters should be communicated to those charged with governance?
+    answer: The auditor typically communicates independence relationships and safeguards applied so governance understands
+      the auditor's objectivity and can challenge concerns early.
+  - question: Why communicate significant accounting policies to governance?
+    answer: Governance should understand important accounting choices, contentious policy areas, and whether management's
+      selections are appropriate and consistent with the reporting framework.
+  - question: Why must uncorrected misstatements be communicated to governance?
+    answer: Governance needs to know about uncorrected misstatements so it can evaluate whether management's decisions are
+      appropriate and whether the aggregate effect may be material.
+  - question: When should fraud involving management be communicated to governance?
+    answer: Fraud involving senior management or material fraud should be communicated promptly because it directly affects
+      the reliability of financial reporting and oversight responsibilities.
+  - question: What is meant by two-way communication with those charged with governance?
+    answer: Communication is not just the auditor delivering information. The auditor also listens to governance's views,
+      concerns, knowledge of fraud risks, and oversight observations.
+  - question: What if those charged with governance refuse meaningful communication?
+    answer: That may signal a governance problem and increase audit risk. The auditor should reconsider the relationship,
+      modify procedures, and evaluate whether withdrawal is necessary.
+  - question: What is an engagement quality review?
+    answer: It is an objective evaluation of significant judgments and conclusions performed by an experienced reviewer
+      before the report is released, usually on higher-risk engagements.
+  - question: When is firm consultation advisable during an audit?
+    answer: Consultation is advisable for difficult accounting issues, independence concerns, unusual reporting questions,
+      suspected fraud, and other matters involving significant judgment or risk.
+  - question: What is a firm's system of quality management?
+    answer: A system of quality management is the set of policies and procedures a firm uses to provide reasonable assurance
+      it performs engagements in accordance with professional standards and legal requirements.
+  - question: What elements are commonly included in firm quality management?
+    answer: Common elements include governance and leadership, relevant ethical requirements, client acceptance and
+      continuance, engagement performance, resources, information and communication, and monitoring with remediation.
+  - question: Why do leadership responsibilities matter in quality management?
+    answer: If firm leadership does not emphasize quality, staff may prioritize fees or speed over standards. Quality
+      culture starts at the top.
+  - question: Why is ethics training important at the firm level?
+    answer: Regular training helps personnel recognize threats, apply safeguards correctly, and stay current with
+      independence and confidentiality requirements.
+  - question: How do client acceptance policies support audit quality?
+    answer: They help the firm avoid clients with integrity problems, unmanageable risk, or independence conflicts before
+      those issues damage audit quality.
+  - question: Why are monitoring and remediation important in quality management?
+    answer: Monitoring identifies weaknesses in the firm's system, and remediation addresses root causes so the same
+      failures do not keep repeating like a bad audit sequel.
+  - question: What is the difference between a hot review and a cold review?
+    answer: A hot review occurs before report release and can affect current engagement conclusions. A cold review occurs
+      after completion and is used for inspection, monitoring, and future improvement.
+  - question: What is peer review in public practice?
+    answer: Peer review is an external evaluation of a firm's accounting and auditing practice to assess compliance with
+      professional standards and quality control or quality management requirements.
+  - question: Why is independence required for reviews and examinations but not for compilations?
+    answer: Reviews and examinations provide assurance, so users rely on the practitioner's objectivity. A compilation does
+      not provide assurance, so independence is not required, though lack of independence is disclosed.
+  - question: What if the auditor lacks expertise in the client's industry?
+    answer: The auditor should obtain the needed knowledge through training, consultation, or specialists before accepting
+      or continuing the engagement. Competence cannot be faked into existence.
+  - question: How should an auditor respond to suspected illegal acts discovered during planning?
+    answer: The auditor should understand the matter, discuss it with appropriate management if appropriate, consider legal
+      advice, assess reporting implications, and evaluate effects on the audit strategy.
+  - question: Why is it risky to use confidential client data to train an external AI model?
+    answer: Doing so may violate confidentiality, privacy, and contractual obligations and may expose sensitive data beyond
+      the client's control. Safeguards and client permission are critical.
+  - question: Why do secure data retention and destruction policies matter ethically?
+    answer: They help protect confidential information from unauthorized access, misuse, or accidental disclosure long after
+      an engagement ends.
+  - question: Why must management designate a competent person when nonattest services are provided?
+    answer: The client must take responsibility for decisions and oversee the service. Without a competent designated
+      person, the CPA may effectively be acting as management.
+  - question: What is an informed management individual in the context of nonattest services?
+    answer: It is a person at the client who understands the objectives of the service, can evaluate the adequacy of the
+      work, and accepts responsibility for the results and decisions.
+  - question: Can a CPA authorize transactions for an attest client?
+    answer: No. Authorizing transactions is a management responsibility and would impair independence.
+  - question: Can a CPA take custody of client assets during an attest engagement?
+    answer: Custody of client assets can create serious threats to independence and objectivity and is generally not
+      compatible with the auditor's independent role.
+  - question: Why is the subordination of judgment rule important?
+    answer: A CPA must not knowingly subordinate professional judgment to a supervisor, client, or colleague when the result
+      would be misleading or improper. Integrity outranks convenience.
+  - question: When may a CPA depart from a professional standard?
+    answer: Departure may be justified only in rare circumstances when compliance would produce a misleading result. The CPA
+      should be prepared to justify and document the departure thoroughly.
+  - question: What are acts discreditable to the profession?
+    answer: Acts discreditable include conduct that harms the profession's reputation, such as withholding client records
+      improperly, discrimination or harassment in certain contexts, or failure to follow legal and professional duties.
+  - question: When must client-provided records generally be returned?
+    answer: Client-provided records ordinarily must be returned upon request, even if fees are unpaid, because those records
+      belong to the client rather than the CPA.
+  - question: How do client records differ from CPA-created work product?
+    answer: Client records are the client's original information. CPA work product consists of the firm's analyses,
+      memoranda, schedules, and documentation created during the engagement and is generally the firm's property.

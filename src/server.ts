@@ -30,28 +30,51 @@ app.get('/api/health', (_req, res) => {
 
 // ── Files ──
 
+/** Scan qaDir for YAML files at root level and one level of subdirectories. */
+function scanYamlFiles(dir: string, filterFilename?: string) {
+  const results: { relPath: string; subfolder: string | undefined; filename: string }[] = [];
+  const entries = readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    if (entry.isDirectory() && !entry.name.startsWith('.')) {
+      try {
+        readdirSync(join(dir, entry.name))
+          .filter(f => f.endsWith('.yaml') || f.endsWith('.yml'))
+          .sort()
+          .forEach(f => {
+            if (!filterFilename || filterFilename === f) {
+              results.push({ relPath: `${entry.name}/${f}`, subfolder: entry.name, filename: f });
+            }
+          });
+      } catch { /* skip unreadable subdirs */ }
+    } else if (entry.isFile() && (entry.name.endsWith('.yaml') || entry.name.endsWith('.yml'))) {
+      if (!filterFilename || filterFilename === entry.name) {
+        results.push({ relPath: entry.name, subfolder: undefined, filename: entry.name });
+      }
+    }
+  }
+  return results.sort((a, b) => a.relPath.localeCompare(b.relPath));
+}
+
 app.get('/api/files', async (_req, res, next) => {
   try {
-    let yamlFiles = readdirSync(qaDir)
-      .filter(f => f.endsWith('.yaml') || f.endsWith('.yml'))
-      .sort();
-    if (filterFile) yamlFiles = yamlFiles.filter(f => f === filterFile);
+    const allFiles = scanYamlFiles(qaDir, filterFile);
 
     const files = await Promise.all(
-      yamlFiles.map(async (filename) => {
-        const filePath = join(qaDir, filename);
-        const name = filename.replace(/\.(yaml|yml)$/, '');
+      allFiles.map(async ({ relPath, subfolder, filename }) => {
+        const filePath = join(qaDir, relPath);
+        const name = relPath.replace(/\.(yaml|yml)$/, '');
         try {
           const data = await parseYamlFile(filePath);
           return {
             name,
             filename,
+            subfolder,
             title: generateTitle(filePath, data),
             description: data.config.description || '',
             questionCount: data.questions.length,
           };
         } catch {
-          return { name, filename, title: topicFromFilename(filePath), description: '', questionCount: 0 };
+          return { name, filename, subfolder, title: topicFromFilename(filePath), description: '', questionCount: 0 };
         }
       })
     );

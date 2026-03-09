@@ -1,0 +1,312 @@
+config:
+  name: "CPA REG/TCP: Federal Taxation of Individuals"
+  description: High-yield CPA REG and TCP deck covering gross income, exclusions, AGI adjustments, deductions, credits, filing status, passive activity and at-risk rules, estimated taxes, gift tax, and personal financial planning topics.
+  questionDelay: 1
+  answerDelay: 1
+questions:
+  - question: What is gross income for federal income tax purposes?
+    answer: >-
+      Gross income generally means all income from whatever source derived unless a specific exclusion applies.
+  - question: Why is the gross income definition important on the CPA exam?
+    answer: >-
+      The exam often starts with the presumption that an economic benefit is taxable unless the Code expressly excludes it.
+  - question: What is the difference between gross income and adjusted gross income?
+    answer: >-
+      Gross income includes all taxable income items before above-the-line adjustments, while adjusted gross income equals gross income minus permitted adjustments.
+  - question: What types of compensation are generally included in gross income?
+    answer: >-
+      Wages, salaries, bonuses, commissions, fees, fringe benefits unless excluded, and most other compensation for services are generally taxable.
+  - question: What is a fringe benefit?
+    answer: >-
+      A fringe benefit is noncash compensation provided by an employer, which is taxable unless a specific exclusion applies.
+  - question: What is a de minimis fringe benefit?
+    answer: >-
+      It is a small, infrequent benefit with such minimal value that accounting for it would be unreasonable or administratively impracticable.
+  - question: What is a no-additional-cost service fringe benefit?
+    answer: >-
+      It is an employer-provided service offered to employees at no substantial extra cost when the employer already sells that service in the ordinary course of business.
+  - question: What is a qualified employee discount?
+    answer: >-
+      It is an employer-provided discount on property or services sold to customers in the ordinary course of business, subject to statutory limits.
+  - question: What is a working condition fringe?
+    answer: >-
+      It is property or services provided by an employer that would have been deductible by the employee as a business expense if the employee had paid for them personally.
+  - question: What is the convenience-of-the-employer rule for meals and lodging?
+    answer: >-
+      Certain meals and lodging furnished for the employer's convenience may be excluded if statutory requirements are met.
+  - question: How is employer-provided health insurance generally treated?
+    answer: >-
+      Employer-provided health coverage is generally excluded from the employee's gross income.
+  - question: How are death benefits from life insurance generally treated?
+    answer: >-
+      Amounts paid by reason of the insured's death are generally excluded from gross income, subject to exceptions.
+  - question: How are qualified scholarships generally treated?
+    answer: >-
+      Qualified scholarships used for tuition and required fees, books, and supplies are generally excluded if statutory conditions are met.
+  - question: Are punitive damages excludable from gross income?
+    answer: >-
+      No; punitive damages are generally taxable even if the underlying claim involved physical injury.
+  - question: How are damages for personal physical injuries generally treated?
+    answer: >-
+      Damages received on account of personal physical injuries or physical sickness are generally excluded, except to the extent of prior tax benefit or punitive damages.
+  - question: How is interest income generally taxed?
+    answer: >-
+      Interest income is generally taxable unless a specific exclusion applies.
+  - question: How is municipal bond interest generally treated?
+    answer: >-
+      Interest on qualifying state and local bonds is generally excluded from federal gross income.
+  - question: How are dividends generally taxed to individuals?
+    answer: >-
+      Dividends are generally included in gross income, and some may qualify for preferential tax rates if the requirements for qualified dividends are met.
+  - question: What is a qualified dividend?
+    answer: >-
+      A qualified dividend is a dividend meeting statutory holding period and other requirements so that it may be taxed at favorable long-term capital gain rates.
+  - question: How are annuity payments generally taxed?
+    answer: >-
+      Each payment is generally divided between a tax-free recovery of investment and taxable income using the exclusion ratio rules.
+  - question: How is Social Security income generally treated?
+    answer: >-
+      Social Security benefits may be partially taxable depending on the taxpayer's provisional income.
+  - question: How is unemployment compensation generally treated?
+    answer: >-
+      Unemployment compensation is generally taxable unless a temporary statutory exclusion applies for a specific year.
+  - question: How is cancellation of debt income generally treated?
+    answer: >-
+      Discharge of indebtedness generally creates taxable income unless an exclusion such as bankruptcy or insolvency applies.
+  - question: What is the insolvency exclusion for cancellation of debt?
+    answer: >-
+      Income from cancellation of debt may be excluded to the extent the taxpayer was insolvent immediately before the discharge.
+  - question: Are illegal gains taxable?
+    answer: >-
+      Yes; illegal income is generally taxable.
+  - question: Are bartering transactions taxable?
+    answer: >-
+      Yes; the fair market value of goods or services received in barter is generally taxable income.
+  - question: How is rental income generally treated?
+    answer: >-
+      Rent received is generally included in gross income, while related deductible expenses may reduce taxable rental income.
+  - question: How are prizes and awards generally treated?
+    answer: >-
+      Prizes and awards are generally taxable unless a specific exclusion applies.
+  - question: Are gifts included in the recipient's gross income?
+    answer: >-
+      No; true detached and disinterested gifts are generally excluded from the recipient's gross income.
+  - question: Is inherited property itself gross income to the recipient?
+    answer: >-
+      No; inheritances are generally excluded from gross income, though income earned from inherited property is taxable.
+  - question: What are adjustments for AGI?
+    answer: >-
+      Adjustments for AGI are above-the-line deductions that reduce gross income to arrive at adjusted gross income.
+  - question: Why is AGI important?
+    answer: >-
+      AGI is used as a threshold or limitation base for many deductions, credits, and other tax computations.
+  - question: How are traditional IRA contributions generally treated?
+    answer: >-
+      They may be deductible subject to income limits and retirement plan participation rules.
+  - question: How is student loan interest generally treated?
+    answer: >-
+      It may be deducted as an adjustment for AGI subject to statutory requirements and income limitations.
+  - question: How are health savings account contributions generally treated?
+    answer: >-
+      Qualified HSA contributions are generally deductible or excluded and may be distributed tax-free for qualified medical expenses.
+  - question: How is self-employed health insurance generally treated?
+    answer: >-
+      Eligible self-employed taxpayers may generally deduct health insurance premiums as an adjustment for AGI, subject to limitations.
+  - question: What is the standard deduction?
+    answer: >-
+      The standard deduction is a statutory deduction amount allowed instead of itemizing deductions.
+  - question: What are itemized deductions?
+    answer: >-
+      Itemized deductions are specific personal deductions claimed in place of the standard deduction if they produce a larger total benefit.
+  - question: How are medical expenses generally deducted?
+    answer: >-
+      Qualified unreimbursed medical expenses are deductible only to the extent they exceed the applicable AGI floor.
+  - question: How are state and local taxes generally treated for itemized deduction purposes?
+    answer: >-
+      State and local taxes may be deductible as itemized deductions subject to statutory limits and restrictions.
+  - question: How is home mortgage interest generally treated?
+    answer: >-
+      Interest on qualified residence debt may be deductible as an itemized deduction if statutory requirements are met.
+  - question: How are cash charitable contributions generally substantiated?
+    answer: >-
+      Taxpayers generally need a bank record, receipt, or other reliable written record, and larger gifts may require additional documentation.
+  - question: How are noncash charitable contributions generally substantiated?
+    answer: >-
+      Taxpayers generally need records of the property's description, value, and donee acknowledgment, and larger contributions may require a qualified appraisal.
+  - question: How are personal casualty losses generally treated?
+    answer: >-
+      They are deductible only in limited circumstances, such as when attributable to a federally declared disaster, and are subject to statutory reductions and limits.
+  - question: What is the difference between above-the-line and below-the-line deductions?
+    answer: >-
+      Above-the-line deductions reduce AGI, while below-the-line deductions are taken after AGI, such as itemized deductions.
+  - question: What is a qualifying child for dependency purposes?
+    answer: >-
+      A qualifying child generally must satisfy relationship, age, residency, support, and joint return tests.
+  - question: What is a qualifying relative?
+    answer: >-
+      A qualifying relative generally must meet relationship or household, gross income, support, and not-a-qualifying-child tests.
+  - question: Why are dependency rules important?
+    answer: >-
+      Dependency status affects credits, filing status, and certain deductions and benefits.
+  - question: What is filing status?
+    answer: >-
+      Filing status is the taxpayer's tax classification for the year, such as single, married filing jointly, married filing separately, head of household, or qualifying surviving spouse.
+  - question: What is the general advantage of married filing jointly?
+    answer: >-
+      Joint filing often produces lower overall tax rates and wider tax benefits, but both spouses generally become jointly and severally liable.
+  - question: What is married filing separately often associated with?
+    answer: >-
+      Married filing separately often limits or reduces credits, deductions, and other tax benefits.
+  - question: What is head of household status?
+    answer: >-
+      Head of household status generally applies to an unmarried taxpayer who pays more than half the cost of maintaining a household for a qualifying person.
+  - question: What is qualifying surviving spouse status?
+    answer: >-
+      It is a temporary filing status available to certain surviving spouses with a dependent child, allowing favorable joint-return rates for a limited period.
+  - question: How is taxable income generally computed for an individual?
+    answer: >-
+      Taxable income generally equals gross income minus adjustments for AGI, minus the greater of standard or itemized deductions, subject to other applicable rules.
+  - question: What is the difference between a deduction and a credit?
+    answer: >-
+      A deduction reduces taxable income, while a credit directly reduces tax liability.
+  - question: Why are credits often more valuable than deductions?
+    answer: >-
+      Because a dollar of credit generally reduces tax by a full dollar, while a deduction saves tax only at the taxpayer's marginal rate.
+  - question: What is the child tax credit in broad terms?
+    answer: >-
+      It is a credit for qualifying children, subject to age, relationship, support, residency, and income phaseout rules.
+  - question: What is the American opportunity tax credit?
+    answer: >-
+      It is an education credit for qualifying undergraduate expenses and is generally more generous but more limited than the lifetime learning credit.
+  - question: What is the lifetime learning credit?
+    answer: >-
+      It is an education credit for qualified tuition and related expenses that is broader in course eligibility but generally less valuable per student than the American opportunity credit.
+  - question: What is the child and dependent care credit?
+    answer: >-
+      It is a credit for qualifying care expenses that enable the taxpayer to work or look for work, subject to earned income and other limits.
+  - question: What is the foreign tax credit?
+    answer: >-
+      It helps prevent double taxation by allowing a credit for certain foreign income taxes paid or accrued.
+  - question: What is the earned income credit in broad terms?
+    answer: >-
+      It is a refundable credit for eligible low-to-moderate-income taxpayers, especially those with qualifying children, subject to strict eligibility rules.
+  - question: What is passive activity income or loss?
+    answer: >-
+      Passive activity income or loss arises from business activities in which the taxpayer does not materially participate and from many rental activities.
+  - question: What is the general passive activity loss rule?
+    answer: >-
+      Passive losses generally may offset passive income but not active or portfolio income, with limited exceptions.
+  - question: What is material participation?
+    answer: >-
+      Material participation means the taxpayer is sufficiently involved in the operations of the activity under one of several regulatory tests.
+  - question: Why are rental activities usually treated as passive?
+    answer: >-
+      The Code generally classifies rental activities as passive regardless of participation, unless a specific exception applies.
+  - question: What happens to suspended passive losses?
+    answer: >-
+      They carry forward and may be used against future passive income or upon disposition of the entire activity in a qualifying taxable transaction.
+  - question: What are at-risk rules?
+    answer: >-
+      At-risk rules limit loss deductions to the amount the taxpayer actually has at economic risk in the activity.
+  - question: How do at-risk rules interact with passive loss rules?
+    answer: >-
+      The at-risk limits are applied before passive activity loss limitations, so a loss must first be allowed at the at-risk level before passive rules are considered.
+  - question: What is hobby loss treatment in general terms?
+    answer: >-
+      If an activity is not engaged in for profit, related deductions are limited and cannot generally create a tax loss.
+  - question: What is the qualified business income deduction?
+    answer: >-
+      The QBI deduction allows eligible noncorporate taxpayers to deduct a percentage of qualified business income from certain pass-through businesses, subject to complex limitations.
+  - question: What is a specified service trade or business for QBI purposes?
+    answer: >-
+      It is a business in fields such as health, law, accounting, consulting, and similar services that may face limitations when taxable income exceeds thresholds.
+  - question: Why is the QBI deduction tested heavily?
+    answer: >-
+      Because it is a major benefit for pass-through owners and includes threshold, wage, basis, and service-business limitations.
+  - question: How are capital gains generally treated for individuals?
+    answer: >-
+      Net long-term capital gains often receive preferential tax rates, while net short-term capital gains are generally taxed at ordinary rates.
+  - question: How are capital losses generally treated for individuals?
+    answer: >-
+      Capital losses first offset capital gains, and any excess net capital loss is deductible only up to the annual limit, with the remainder carried forward.
+  - question: What is the difference between marginal and effective tax rate?
+    answer: >-
+      The marginal rate applies to the next dollar of taxable income, while the effective rate reflects total tax divided by a broader income measure.
+  - question: What is the alternative minimum tax in broad terms?
+    answer: >-
+      AMT is a parallel tax system intended to ensure some taxpayers pay at least a minimum amount of tax after certain adjustments and preference items.
+  - question: What is withholding?
+    answer: >-
+      Withholding is tax collected during the year from wages and certain payments and credited against final tax liability.
+  - question: What are estimated tax payments?
+    answer: >-
+      They are periodic payments made during the year by taxpayers who do not have enough withholding to cover expected liability.
+  - question: Why can estimated tax penalties apply even when a refund or small balance exists at year-end?
+    answer: >-
+      Because estimated tax penalties focus on the timing of payments during the year, not just the final amount due with the return.
+  - question: What is a safe harbor for estimated taxes?
+    answer: >-
+      A safe harbor is a statutory payment level that generally protects the taxpayer from underpayment penalties even if the final tax is higher.
+  - question: What is a traditional IRA?
+    answer: >-
+      A traditional IRA is a retirement account that may allow deductible contributions and tax-deferred growth, with taxation on distributions.
+  - question: What is a Roth IRA?
+    answer: >-
+      A Roth IRA generally uses after-tax contributions, but qualified distributions can be tax-free.
+  - question: What is a 401(k) plan in broad terms?
+    answer: >-
+      A 401(k) is an employer-sponsored defined contribution retirement plan that generally allows elective deferrals and tax-favored growth.
+  - question: What is a defined contribution plan?
+    answer: >-
+      It is a retirement plan in which contributions are specified, but the ultimate benefit depends on investment performance and account balance.
+  - question: What is a defined benefit plan?
+    answer: >-
+      It is a retirement plan designed to provide a stated benefit at retirement, with the employer generally bearing the funding and investment risk.
+  - question: What are required minimum distributions in general terms?
+    answer: >-
+      Required minimum distributions are the minimum amounts that must be withdrawn from certain retirement accounts after reaching the applicable triggering age or event.
+  - question: What is the general tax issue with early retirement distributions?
+    answer: >-
+      Early distributions may be taxable and also subject to an additional penalty unless an exception applies.
+  - question: What is a health savings account used for?
+    answer: >-
+      An HSA is used to save for qualified medical expenses with favorable tax treatment when paired with a qualifying high-deductible health plan.
+  - question: What is a flexible spending arrangement in broad terms?
+    answer: >-
+      An FSA allows employees to pay certain expenses with pre-tax dollars, subject to plan rules and potential use-it-or-lose-it limits.
+  - question: What is a 529 plan?
+    answer: >-
+      A 529 plan is a tax-advantaged education savings arrangement in which qualified distributions for education expenses are generally tax-free.
+  - question: What is a Coverdell education savings account?
+    answer: >-
+      A Coverdell ESA is a tax-advantaged account for education expenses with contribution and eligibility limits.
+  - question: What is gift tax in broad terms?
+    answer: >-
+      Gift tax applies to certain transfers of property for less than full and adequate consideration during life.
+  - question: Who is generally liable for gift tax?
+    answer: >-
+      The donor is generally liable for gift tax, not the donee.
+  - question: What is the annual exclusion for gift tax purposes?
+    answer: >-
+      It is a per-donee amount of present-interest gifts that can be transferred each year without using lifetime exemption.
+  - question: What is the unified credit or lifetime exemption concept?
+    answer: >-
+      It is the cumulative exemption amount that coordinates federal gift and estate tax transfers over a lifetime and at death.
+  - question: Why do future interests matter in gift tax?
+    answer: >-
+      Future-interest gifts generally do not qualify for the annual exclusion.
+  - question: What is gift splitting?
+    answer: >-
+      Gift splitting allows spouses to elect to treat a gift made by one spouse as made one-half by each spouse for gift tax purposes.
+  - question: How is basis of gifted property generally determined to the donee?
+    answer: >-
+      The donee generally takes a carryover basis from the donor, subject to the dual-basis rule if fair market value is lower than donor basis.
+  - question: Why are life insurance topics relevant in personal financial planning?
+    answer: >-
+      The exam may test how life insurance provides liquidity, income replacement, estate planning benefits, and generally tax-favored death proceeds.
+  - question: How are disability insurance benefits generally taxed?
+    answer: >-
+      Tax treatment depends largely on who paid the premiums; benefits are often tax-free when the taxpayer paid with after-tax dollars.
+  - question: What is the best exam approach to individual taxation questions?
+    answer: >-
+      Ask whether the item is income, excluded, deductible for AGI, deductible from AGI, creditable, limited by AGI or passive rules, and whether a filing status or timing rule changes the result.

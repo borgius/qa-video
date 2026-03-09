@@ -494,6 +494,7 @@ program
   .command('upload')
   .description('Upload generated video(s) to YouTube')
   .option('-i, --input <path>', 'Video file, YAML file, or directory (default: output/)')
+  .option('-d, --dir <path>', 'Directory of YAML/video files to upload')
   .option('-v, --video <path>', 'Path to video file (default: output/<name>.mp4)')
   .option('--title <text>', 'Video title (default: auto-generated from YAML)')
   .option('--description <text>', 'Video description (default: auto-generated)')
@@ -507,24 +508,33 @@ program
   .action(async (opts) => {
     try {
       // Determine list of videos to upload
-      const inputArg = opts.input ?? resolveOutputDir(process.cwd());
+      const inputArg = opts.dir ?? opts.input ?? resolveOutputDir(process.cwd());
       const resolvedInput = resolve(inputArg);
       let targets: { videoPath: string; yamlPath?: string }[];
 
       if (existsSync(resolvedInput) && statSync(resolvedInput).isDirectory()) {
-        const videos = collectVideosFromDir(resolvedInput);
-        if (videos.length === 0) {
-          console.error(`Error: No .mp4 files found in: ${resolvedInput}`);
-          process.exit(1);
+        // If -d points to a YAML source directory, enumerate YAML files and resolve video paths
+        const yamlFiles = readdirSync(resolvedInput)
+          .filter(f => f.endsWith('.yaml') || f.endsWith('.yml'))
+          .sort();
+        if (yamlFiles.length > 0) {
+          targets = yamlFiles.map(f => resolveUploadTarget(join(resolvedInput, f)));
+        } else {
+          // Fall back to collecting mp4 files directly from the directory
+          const videos = collectVideosFromDir(resolvedInput);
+          if (videos.length === 0) {
+            console.error(`Error: No .mp4 or YAML files found in: ${resolvedInput}`);
+            process.exit(1);
+          }
+          targets = videos.map(v => {
+            const videoName = basename(v, '.mp4');
+            const yamlPath = [
+              join(process.cwd(), 'qa', `${videoName}.yaml`),
+              join(process.cwd(), 'qa', `${videoName}.yml`),
+            ].find(p => existsSync(p));
+            return { videoPath: v, yamlPath };
+          });
         }
-        targets = videos.map(v => {
-          const videoName = basename(v, '.mp4');
-          const yamlPath = [
-            join(process.cwd(), 'qa', `${videoName}.yaml`),
-            join(process.cwd(), 'qa', `${videoName}.yml`),
-          ].find(p => existsSync(p));
-          return { videoPath: v, yamlPath };
-        });
       } else {
         const target = opts.video
           ? { ...resolveUploadTarget(inputArg), videoPath: resolve(opts.video) }
@@ -824,8 +834,15 @@ program
         process.exit(1);
       }
 
-      let yamlFiles = readdirSync(serveDir)
+      const rootYaml = readdirSync(serveDir)
         .filter(f => f.endsWith('.yaml') || f.endsWith('.yml'));
+      const subYaml = readdirSync(serveDir, { withFileTypes: true })
+        .filter(e => e.isDirectory() && !e.name.startsWith('.'))
+        .flatMap(e => {
+          try { return readdirSync(join(serveDir, e.name)).filter(f => f.endsWith('.yaml') || f.endsWith('.yml')); }
+          catch { return []; }
+        });
+      let yamlFiles = [...rootYaml, ...subYaml];
       if (filterFile) yamlFiles = yamlFiles.filter(f => f === filterFile);
 
       if (yamlFiles.length === 0) {

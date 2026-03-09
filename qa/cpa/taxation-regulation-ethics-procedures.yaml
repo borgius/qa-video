@@ -1,0 +1,327 @@
+config:
+  name: "CPA REG/TCP: Ethics, Professional Responsibilities & Federal Tax Procedures"
+  description: High-yield CPA REG and TCP review deck covering Circular 230, preparer standards, IRS practice and procedure, penalties, confidentiality, substantiation, collections, appeals, and professional discipline.
+  questionDelay: 1
+  answerDelay: 1
+questions:
+  - question: What is Circular 230?
+    answer: >-
+      Circular 230 is the Treasury Department's body of rules governing practice before the IRS by attorneys, CPAs, enrolled agents, and other covered practitioners.
+  - question: What does practice before the IRS include?
+    answer: >-
+      Practice before the IRS includes preparing and filing documents, corresponding and communicating with the IRS, and representing taxpayers at conferences, hearings, and meetings.
+  - question: Who enforces Circular 230?
+    answer: >-
+      The IRS Office of Professional Responsibility enforces Circular 230 and may investigate misconduct by practitioners who practice before the IRS.
+  - question: What basic ethical duty of competence applies to a tax practitioner?
+    answer: >-
+      A practitioner must have the knowledge, skill, thoroughness, and preparation reasonably necessary for the engagement or obtain competent assistance before acting.
+  - question: What does due diligence mean under Circular 230?
+    answer: >-
+      Due diligence means making reasonable efforts to determine the correctness of representations made to the IRS or to a client and the correctness of oral or written tax advice.
+  - question: May a practitioner rely on information furnished by a client?
+    answer: >-
+      Yes, but not blindly; the practitioner may generally rely on client information unless it appears incorrect, incomplete, or inconsistent.
+  - question: What should a practitioner do when client information appears incomplete or inconsistent?
+    answer: >-
+      The practitioner should make reasonable inquiries to resolve the issue before signing a return, giving advice, or presenting the information to the IRS.
+  - question: What is a conflict of interest under Circular 230?
+    answer: >-
+      A conflict exists when representation of one client is directly adverse to another or when there is a significant risk that representation will be materially limited by other responsibilities or interests.
+  - question: When may a practitioner represent a client despite a conflict of interest?
+    answer: >-
+      Only if the practitioner reasonably believes competent and diligent representation can still be provided, the representation is not prohibited by law, and each affected client gives informed written consent.
+  - question: Are contingent fees generally permitted in tax practice?
+    answer: >-
+      Generally no, except in limited circumstances such as certain refund claims, some examinations, or judicial proceedings where the rules specifically allow them.
+  - question: What is the general rule on charging unconscionable fees?
+    answer: >-
+      A practitioner may not charge a fee that is clearly excessive or unconscionable in relation to the services performed.
+  - question: What is the PTIN requirement?
+    answer: >-
+      Paid tax return preparers generally must obtain and use a valid Preparer Tax Identification Number on returns they prepare for compensation.
+  - question: What duty does a practitioner have regarding a client's noncompliance or error?
+    answer: >-
+      The practitioner must promptly advise the client of the error or omission and explain the potential consequences under the tax law.
+  - question: Must a practitioner inform the IRS directly when a client previously made an error?
+    answer: >-
+      Not automatically; the duty is generally to advise the client, while the decision whether to correct the matter belongs to the client unless another law requires disclosure.
+  - question: May a practitioner ignore the consequences of a position that lacks legal support?
+    answer: >-
+      No; a practitioner must evaluate whether the position has sufficient authority and whether disclosure is needed to reduce penalty exposure.
+  - question: What is a reasonable basis tax position?
+    answer: >-
+      Reasonable basis is a relatively low but meaningful standard requiring objective support in the tax law and more than a merely arguable position.
+  - question: What is substantial authority?
+    answer: >-
+      Substantial authority exists when the weight of supporting authorities is substantial in relation to the weight of contrary authorities.
+  - question: What does more-likely-than-not mean in tax practice?
+    answer: >-
+      It means there is a greater than 50 percent likelihood that the position would be sustained if challenged.
+  - question: Why is the level of authority important for return positions?
+    answer: >-
+      The level of authority affects whether the position is ethically supportable, whether disclosure is needed, and whether preparer or taxpayer penalties may apply.
+  - question: What is the AICPA Statements on Standards for Tax Services?
+    answer: >-
+      The SSTS are professional tax practice standards that guide members on return positions, estimates, procedural aspects, use of client information, and other ethical issues in tax work.
+  - question: What does confidentiality generally require in tax practice?
+    answer: >-
+      Confidentiality generally requires a practitioner not to disclose client tax information without the client's permission unless disclosure is authorized or required by law.
+  - question: What is IRC section 7216 broadly concerned with?
+    answer: >-
+      It restricts unauthorized disclosure or use of tax return information by tax return preparers and may impose criminal and civil penalties.
+  - question: What is the general rule for disclosing client tax information to third parties?
+    answer: >-
+      A practitioner generally needs specific client consent unless a statute, regulation, court order, or other legal exception permits the disclosure.
+  - question: Does the tax practitioner privilege equal the attorney-client privilege in every situation?
+    answer: >-
+      No; the federally authorized tax practitioner privilege is narrower, generally applies only to noncriminal federal tax matters, and has important exceptions.
+  - question: Who owns a tax practitioner's workpapers?
+    answer: >-
+      The practitioner generally owns the workpapers, while the client is entitled to the client's own records and documents that must be returned under applicable rules.
+  - question: What are client records in a tax engagement?
+    answer: >-
+      Client records are materials the client provided or previously had, plus items that belong to the client under professional rules, not the practitioner's internal analyses.
+  - question: May a practitioner withhold all client records until fees are paid?
+    answer: >-
+      No; the answer depends on governing law and professional standards, and many jurisdictions require return of essential client records even when fees are unpaid.
+  - question: What is the purpose of substantiation in federal tax?
+    answer: >-
+      Substantiation provides the records and evidence needed to support income, deductions, credits, basis, and other positions taken on a return.
+  - question: Why are contemporaneous records important?
+    answer: >-
+      Records created at or near the time of the event are generally more persuasive and often specifically required for items such as travel, entertainment-related rules, and charitable contributions.
+  - question: What types of items often require strict substantiation?
+    answer: >-
+      Travel, meals when allowed, listed property, business use of vehicles, and some charitable contributions often require detailed records of amount, time, place, business purpose, and relationship.
+  - question: What is the general federal statute of limitations for assessment?
+    answer: >-
+      The IRS generally has three years from the date a return is filed to assess additional tax, subject to several important exceptions.
+  - question: When can the assessment statute extend beyond three years because of omitted income?
+    answer: >-
+      A substantial omission of gross income can extend the assessment period to six years.
+  - question: Is there a statute of limitations for a fraudulent return?
+    answer: >-
+      No; when a false or fraudulent return is filed with intent to evade tax, the IRS may assess tax at any time.
+  - question: Is there a statute of limitations when no return is filed?
+    answer: >-
+      No; if no return is filed, the statute for assessment generally never begins to run.
+  - question: What is the general period for filing a claim for refund?
+    answer: >-
+      A refund claim is generally timely if filed within the later of three years from filing the return or two years from payment of the tax.
+  - question: What is an IRS correspondence examination?
+    answer: >-
+      It is an audit handled primarily by mail, usually focused on a limited number of issues supported by requested documents.
+  - question: What is an office examination?
+    answer: >-
+      It is an IRS audit conducted at an IRS office and is typically broader than a correspondence exam but less extensive than a field examination.
+  - question: What is a field examination?
+    answer: >-
+      A field examination is conducted at the taxpayer's home, business, or representative's office and is usually used for more complex or substantial matters.
+  - question: What is an Information Document Request?
+    answer: >-
+      An IDR is a formal IRS request for documents, explanations, or records during an examination.
+  - question: What is an IRS summons?
+    answer: >-
+      A summons is a compulsory legal demand issued by the IRS to obtain testimony, records, or other information when voluntary cooperation is insufficient.
+  - question: What rights does a taxpayer generally have during an audit?
+    answer: >-
+      Taxpayers generally have rights to courteous treatment, representation, appeal, confidentiality, challenge the IRS position, and be informed of the examination process.
+  - question: What is a Notice of Deficiency?
+    answer: >-
+      It is the IRS's formal notice proposing additional tax that gives the taxpayer the right to petition the U.S. Tax Court before paying the disputed amount.
+  - question: Why is the Notice of Deficiency called the 90-day letter?
+    answer: >-
+      Because the taxpayer generally has 90 days to file a Tax Court petition after the notice is mailed.
+  - question: What is the key advantage of the U.S. Tax Court?
+    answer: >-
+      The taxpayer can litigate the deficiency without paying the disputed tax first.
+  - question: What is the key feature of refund litigation in district court or the Court of Federal Claims?
+    answer: >-
+      The taxpayer generally must pay the tax first, file a refund claim, and then sue for a refund if the claim is denied or not acted on.
+  - question: What is the role of the IRS Independent Office of Appeals?
+    answer: >-
+      Appeals seeks to resolve tax disputes impartially without litigation by weighing the hazards of litigation and encouraging settlement.
+  - question: What is collection due process?
+    answer: >-
+      Collection due process gives taxpayers a right to a hearing after certain lien filings or before certain levies, allowing them to raise procedural and collection alternatives.
+  - question: What is a federal tax lien?
+    answer: >-
+      A federal tax lien is the government's legal claim against a taxpayer's property and rights to property when tax is assessed and not paid after notice and demand.
+  - question: What is a tax levy?
+    answer: >-
+      A levy is the administrative seizure of property or rights to property to satisfy a tax debt.
+  - question: What is the difference between a lien and a levy?
+    answer: >-
+      A lien is a claim against property, while a levy is the actual taking of property.
+  - question: What is an installment agreement?
+    answer: >-
+      An installment agreement is a payment arrangement that allows a taxpayer to satisfy a tax liability over time.
+  - question: What is an offer in compromise?
+    answer: >-
+      An offer in compromise is a settlement in which the IRS agrees to accept less than the full tax due when statutory grounds are met, such as doubt as to collectibility.
+  - question: What does currently not collectible status mean?
+    answer: >-
+      It means the IRS has temporarily suspended active collection because the taxpayer presently lacks the ability to pay.
+  - question: What is the general collection statute of limitations?
+    answer: >-
+      The IRS generally has ten years from assessment to collect tax, subject to suspensions and extensions in certain situations.
+  - question: What is the failure-to-file penalty generally intended to address?
+    answer: >-
+      It penalizes taxpayers who do not timely file required returns unless they can show reasonable cause and not willful neglect.
+  - question: What is the failure-to-pay penalty generally intended to address?
+    answer: >-
+      It penalizes taxpayers who fail to timely pay tax shown on a return unless relief applies.
+  - question: What is the accuracy-related penalty?
+    answer: >-
+      It is a civil penalty that may apply to underpayments caused by negligence, disregard of rules, substantial understatements, or other specified grounds.
+  - question: What is the civil fraud penalty?
+    answer: >-
+      It is a severe civil penalty imposed when part of an underpayment is due to fraud.
+  - question: What is preparer penalty exposure for an unreasonable position?
+    answer: >-
+      A paid preparer may be penalized for preparing a return with a position that lacks the required authority or disclosure standard.
+  - question: What increases preparer penalty exposure from ordinary error to harsher sanctions?
+    answer: >-
+      Willful, reckless, intentional, or fraudulent conduct can trigger more severe penalties and disciplinary action.
+  - question: What is reasonable cause in penalty relief?
+    answer: >-
+      Reasonable cause means the taxpayer exercised ordinary business care and prudence but was still unable to comply.
+  - question: Why is good faith important in penalty abatement?
+    answer: >-
+      Good faith can help show that the taxpayer made an honest effort to comply and did not intentionally disregard the law.
+  - question: What is the general purpose of estimated tax payments?
+    answer: >-
+      Estimated tax rules require taxpayers with insufficient withholding to pay tax during the year rather than waiting until the return is filed.
+  - question: What is a safe harbor concept for estimated taxes?
+    answer: >-
+      A safe harbor allows a taxpayer to avoid or reduce estimated tax penalties by paying enough tax during the year under prescribed rules even if a balance is later due.
+  - question: Does an extension of time to file also extend time to pay?
+    answer: >-
+      No; an extension generally extends only the filing deadline, not the payment deadline.
+  - question: What is an amended return?
+    answer: >-
+      An amended return is a corrected return filed after the original return to fix errors, omissions, or changed tax positions.
+  - question: What is innocent spouse relief in broad terms?
+    answer: >-
+      Innocent spouse relief may protect one spouse from joint liability for certain understatements or underpayments attributable to the other spouse if statutory conditions are met.
+  - question: What does joint and several liability mean for a joint return?
+    answer: >-
+      Each spouse is generally fully liable for the entire tax due on a joint return, not merely for half.
+  - question: What is the difference between innocent spouse relief and injured spouse treatment?
+    answer: >-
+      Innocent spouse relief addresses liability for tax, while injured spouse treatment seeks allocation of an overpayment that would otherwise be applied to the other spouse's debts.
+  - question: What is a power of attorney in IRS practice?
+    answer: >-
+      A power of attorney authorizes a representative to act for the taxpayer before the IRS, including receiving information and advocating positions within the scope granted.
+  - question: What is an information authorization?
+    answer: >-
+      It allows a designated person to inspect or receive tax information but does not authorize full representation before the IRS.
+  - question: What is the Taxpayer Advocate Service?
+    answer: >-
+      It is an independent organization within the IRS that assists taxpayers facing significant hardship or systemic administrative problems.
+  - question: What is audit reconsideration?
+    answer: >-
+      Audit reconsideration is an administrative process in which the IRS reviews a prior assessment when the taxpayer has new information or believes the assessment was incorrect.
+  - question: What is backup withholding in general terms?
+    answer: >-
+      Backup withholding is withholding required in certain situations, such as missing or incorrect taxpayer identification numbers or reportable payment issues.
+  - question: What is an Identity Protection PIN?
+    answer: >-
+      It is a special number issued to help protect taxpayers from identity theft and fraudulent tax return filings.
+  - question: What is the practitioner's duty when signing a return?
+    answer: >-
+      The practitioner should review the return carefully, ensure reasonable inquiry has been made where needed, and avoid signing a return that contains an unsupportable position.
+  - question: Why is the burden of proof important in tax disputes?
+    answer: >-
+      The burden of proof affects which party must establish facts or legal entitlement, and taxpayers usually bear much of that burden unless a statutory shift applies.
+  - question: What does burden of proof usually require from the taxpayer?
+    answer: >-
+      It usually requires adequate records, credible evidence, and support for deductions, credits, basis, and other claimed tax treatment.
+  - question: Why are deductions often described as a matter of legislative grace?
+    answer: >-
+      Because taxpayers must point to a statute allowing the deduction and then satisfy all requirements to claim it.
+  - question: What are primary sources of federal tax authority?
+    answer: >-
+      Primary authorities include the Internal Revenue Code, Treasury Regulations, court decisions, tax treaties, and official administrative guidance with authoritative weight.
+  - question: Why are Treasury Regulations important?
+    answer: >-
+      Regulations interpret and implement the Code and are often a major authority for how statutory provisions apply in practice.
+  - question: What is a Revenue Ruling?
+    answer: >-
+      A Revenue Ruling is IRS published guidance explaining how the law applies to a specific factual pattern and is useful authority, though generally less weighty than the Code or regulations.
+  - question: What is a Revenue Procedure?
+    answer: >-
+      A Revenue Procedure provides procedural guidance, safe harbors, and administrative instructions for taxpayers and practitioners.
+  - question: What is a Private Letter Ruling?
+    answer: >-
+      A Private Letter Ruling is written guidance issued to a specific taxpayer for that taxpayer's facts and is not precedential authority for other taxpayers.
+  - question: How should conflicting tax authorities generally be evaluated?
+    answer: >-
+      Practitioners compare the hierarchy, relevance, factual similarity, jurisdiction, and recency of the authorities to determine the strongest position.
+  - question: What is tax research?
+    answer: >-
+      Tax research is the process of identifying facts, locating relevant authority, analyzing competing interpretations, and documenting a supportable conclusion.
+  - question: Why is documentation important in tax research?
+    answer: >-
+      Documentation supports the practitioner's conclusion, helps defend the position, and shows that due diligence was exercised.
+  - question: What is the general rule regarding tax return retention by preparers?
+    answer: >-
+      Preparers should retain required copies, records, and due diligence documentation for the periods required by law and professional standards.
+  - question: Why is due diligence especially important for refundable credits?
+    answer: >-
+      Refundable credits are susceptible to abuse, so preparers face heightened requirements to ask questions, document eligibility, and avoid reckless claims.
+  - question: What is a frivolous tax position?
+    answer: >-
+      It is a position that has no basis in law or fact and is typically advanced to impede administration of the tax system rather than make a genuine legal argument.
+  - question: What are possible sanctions under Circular 230?
+    answer: >-
+      Sanctions can include censure, suspension, disbarment from practice before the IRS, monetary penalties, and other disciplinary measures.
+  - question: What conduct can lead to discipline by the Office of Professional Responsibility?
+    answer: >-
+      Incompetence, disreputable conduct, conflicts, misleading information, improper fees, failure to exercise due diligence, and aiding abusive conduct can all trigger discipline.
+  - question: What is disreputable conduct in tax practice?
+    answer: >-
+      Disreputable conduct includes dishonest acts, false statements, willful failures, criminal conduct affecting fitness, and other behavior showing unfitness to practice before the IRS.
+  - question: What is the general role of a state board of accountancy?
+    answer: >-
+      A state board licenses CPAs, regulates professional conduct, enforces education and experience rules, and can discipline licensees for violations.
+  - question: What types of conduct may lead to state board discipline?
+    answer: >-
+      Fraud, dishonesty, professional negligence, breach of confidentiality, criminal convictions, failure to meet CPE requirements, and conduct discreditable to the profession may lead to discipline.
+  - question: Why is continuing professional education important for CPAs?
+    answer: >-
+      CPE helps practitioners maintain competence and satisfy licensure renewal requirements imposed by state boards.
+  - question: What is the difference between ethical duties and technical tax rules?
+    answer: >-
+      Technical rules determine the tax result, while ethical duties govern how the practitioner researches, advises, communicates, documents, and represents the client.
+  - question: What should a practitioner do if a client asks for an unsupported deduction?
+    answer: >-
+      The practitioner should refuse to claim the deduction unless adequate legal and factual support exists and should explain the risks and consequences to the client.
+  - question: May a practitioner negotiate a tax refund check?
+    answer: >-
+      No; practitioners generally may not endorse or otherwise negotiate government checks issued to clients.
+  - question: What is solicitation in the context of tax practice?
+    answer: >-
+      Solicitation involves advertising or seeking clients, which must not be false, fraudulent, coercive, or misleading under professional conduct rules.
+  - question: Why must written tax advice avoid overstatements and boilerplate disclaimers?
+    answer: >-
+      Written advice should be tailored to the facts, address significant issues, and not mislead the client into thinking weak positions are stronger than they are.
+  - question: What should a practitioner do before withdrawing from a tax engagement?
+    answer: >-
+      The practitioner should consider ethical duties, protect the client's interests as required, document the reasons, and avoid misleading the IRS or harming the client unnecessarily.
+  - question: Why is professional skepticism useful in tax work?
+    answer: >-
+      Professional skepticism helps the practitioner recognize red flags, ask follow-up questions, and avoid relying on improbable or contradictory information.
+  - question: What is willfulness in a tax compliance context?
+    answer: >-
+      Willfulness generally refers to a voluntary, intentional violation of a known legal duty and can support civil or criminal sanctions.
+  - question: What is the difference between negligence and fraud?
+    answer: >-
+      Negligence involves lack of reasonable care, while fraud involves intentional wrongdoing designed to evade tax.
+  - question: Why is taxpayer communication important in tax procedures?
+    answer: >-
+      Clear communication helps the client understand filing obligations, documentation needs, dispute options, deadlines, and the risks of various tax positions.
+  - question: What is the best exam approach to ethics and procedure questions?
+    answer: >-
+      Focus on competence, due diligence, documentation, truthful communication, client confidentiality, timely action, and the distinction between advising the client and deciding for the client.

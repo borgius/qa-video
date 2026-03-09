@@ -1,0 +1,358 @@
+config:
+  name: CPA Business Concepts — IT Systems, Controls, Data Analytics & ISC Security
+  description: High-yield CPA prep for IT systems, internal controls, databases, analytics, cybersecurity, privacy, SOC
+    reporting, and ISC discipline topics.
+  questionDelay: 1
+  answerDelay: 1
+  youtube:
+    videoId: GbuYYSVeIEs
+    url: https://youtu.be/GbuYYSVeIEs
+    uploadedAt: 2026-03-08T13:48:56.972Z
+    privacy: unlisted
+    contentSha: 90939e3e
+questions:
+  - question: What is an information system in a business environment?
+    answer: An information system is the combination of people, processes, data, software, and infrastructure used to
+      collect, process, store, and report information. On the CPA exam, remember that reliable reporting depends on both
+      the technology and the controls around it.
+  - question: What are general IT controls?
+    answer: General IT controls are broad controls that support the reliability of systems and data across the organization.
+      Common categories include access controls, change management, program development controls, backup and recovery,
+      and computer operations.
+  - question: What are application controls?
+    answer: Application controls are controls built into specific business processes or systems to ensure transactions are
+      authorized, complete, accurate, and valid. Examples include edit checks, three-way match, reasonableness checks,
+      and automated approval workflows.
+  - question: What is the difference between preventive, detective, and corrective controls?
+    answer: Preventive controls stop errors or fraud before they occur, detective controls identify problems after they
+      occur, and corrective controls fix the issue and restore operations. A strong control environment usually uses all
+      three, because relying on detective controls alone is like locking the door after the raccoon already got into the
+      trash.
+  - question: What is IT governance?
+    answer: IT governance is the framework used to align technology decisions with business strategy, risk tolerance, and
+      performance objectives. It helps management ensure that IT investments support operations, compliance, security,
+      and value creation.
+  - question: What are the main cloud service models a CPA candidate should know?
+    answer: The three classic models are Infrastructure as a Service, Platform as a Service, and Software as a Service.
+      Responsibility for managing servers, applications, and security shifts depending on the model, so exam questions
+      often test who controls what.
+  - question: What are public, private, hybrid, and community cloud deployment models?
+    answer: A public cloud is shared infrastructure operated by a third party, a private cloud is dedicated to one
+      organization, a hybrid cloud combines multiple environments, and a community cloud is shared by organizations with
+      common needs. The key trade-offs are cost, control, security, and flexibility.
+  - question: What is an ERP system?
+    answer: An Enterprise Resource Planning system integrates core business processes such as purchasing, inventory,
+      production, payroll, and financial reporting into one platform. ERPs improve consistency and visibility, but poor
+      configuration can spread bad data at enterprise speed.
+  - question: What is master data and why is it important?
+    answer: Master data is relatively stable reference data used across processes, such as customer records, vendor files,
+      item numbers, chart of accounts, and employee IDs. If master data is inaccurate, downstream transactions and
+      reports become unreliable.
+  - question: What is the systems development life cycle?
+    answer: The systems development life cycle covers planning, analysis, design, development, testing, implementation, and
+      maintenance. CPA questions often focus on whether controls were built in early enough and whether changes were
+      properly approved and tested.
+  - question: Why is change management a critical IT control area?
+    answer: Change management helps ensure that system changes are authorized, tested, approved, documented, and migrated in
+      a controlled way. Weak change management increases the risk of outages, security gaps, bad code, and inaccurate
+      reporting.
+  - question: Why is segregation of duties important in IT?
+    answer: Segregation of duties reduces the risk that one person can introduce, approve, and conceal an improper change or
+      transaction. In IT, key duties to separate include development, testing, migration, system administration, and
+      security monitoring.
+  - question: What is the role of version control in system changes?
+    answer: Version control tracks code changes, supports approval workflows, preserves history, and allows rollback if a
+      deployment fails. It strengthens accountability because changes are attributable to specific users and timestamps.
+  - question: What is the purpose of backups?
+    answer: Backups preserve data so the organization can recover from accidental deletion, corruption, ransomware, or
+      system failure. Good backup design includes frequency, retention, secure storage, and periodic restoration
+      testing.
+  - question: What is the difference between a business continuity plan and a disaster recovery plan?
+    answer: A business continuity plan focuses on keeping critical operations running during disruption, while a disaster
+      recovery plan focuses on restoring systems and data after the disruption. Think continuity equals operate,
+      recovery equals rebuild.
+  - question: What do RPO and RTO mean?
+    answer: Recovery Point Objective is the maximum acceptable amount of data loss measured in time, and Recovery Time
+      Objective is the maximum acceptable downtime before operations must be restored. The smaller the RPO and RTO, the
+      more costly the recovery design usually becomes.
+  - question: What is a relational database?
+    answer: A relational database stores data in tables with rows and columns and links related data through defined keys.
+      It is widely used because it supports structured data, efficient queries, and data integrity rules.
+  - question: What is a primary key?
+    answer: A primary key is a field or combination of fields that uniquely identifies each row in a table. It prevents
+      duplicates and supports reliable linking to other tables.
+  - question: What is a foreign key?
+    answer: A foreign key is a field in one table that references the primary key of another table. It creates relationships
+      between tables and supports referential integrity.
+  - question: What is database normalization?
+    answer: Normalization is the process of organizing data to reduce redundancy and improve consistency. In plain English,
+      it helps avoid storing the same fact in too many places, where it can drift into conflicting versions.
+  - question: What is the purpose of a SQL SELECT query?
+    answer: A SQL SELECT query retrieves data from one or more tables based on defined criteria. CPA candidates do not need
+      to become database engineers, but they should understand that querying data is central to analytics and audit
+      testing.
+  - question: What does a JOIN do in SQL?
+    answer: A JOIN combines rows from two or more tables based on a related key. This is important in analytics because
+      useful business information often lives in separate tables, such as customer, invoice, and payment records.
+  - question: What is ETL?
+    answer: ETL stands for extract, transform, and load. It describes the process of pulling data from source systems,
+      standardizing or reshaping it, and loading it into a database or warehouse for reporting and analysis.
+  - question: What is a data warehouse?
+    answer: A data warehouse is a centralized repository designed for reporting and analysis, often containing cleansed and
+      structured historical data from multiple source systems. It supports dashboards, trend analysis, and management
+      reporting.
+  - question: What is a data lake?
+    answer: A data lake stores large amounts of raw data in its native format, including structured, semi-structured, and
+      unstructured data. It offers flexibility, but poor governance can create a messy swamp of unusable data.
+  - question: What is the difference between structured and unstructured data?
+    answer: Structured data fits a defined model such as rows and columns, while unstructured data includes items like
+      emails, PDFs, audio, video, and free text. Both can be useful in analytics, but unstructured data is harder to
+      organize and analyze consistently.
+  - question: What is a completeness check?
+    answer: A completeness check verifies that all required fields are present before a transaction is accepted for
+      processing. For example, a sales order might require customer ID, product ID, quantity, and price.
+  - question: What is a validity check?
+    answer: A validity check confirms that entered data matches acceptable values or formats. Examples include verifying
+      that a department code exists or that a date is in a valid format.
+  - question: What is a batch total?
+    answer: A batch total is a control total created before processing and compared after processing to confirm
+      completeness. A common example is the total dollar amount of transactions in a batch.
+  - question: What is a hash total?
+    answer: A hash total uses a field that normally has no arithmetic meaning, such as employee numbers or invoice numbers,
+      and totals it to detect missing or duplicate records. It is useful because an unauthorized change can disturb the
+      expected total.
+  - question: What is a sequence check?
+    answer: A sequence check verifies that documents or transactions are accounted for in numerical order. Missing or
+      duplicate numbers may indicate incomplete processing, errors, or possible fraud.
+  - question: What are edit checks?
+    answer: Edit checks are automated input controls that review data for reasonableness, format, completeness, range, or
+      consistency before processing. Examples include limit checks, field checks, and check-digit verification.
+  - question: What are processing controls?
+    answer: Processing controls ensure that data is processed as intended after entry. Examples include run-to-run totals,
+      reasonableness comparisons, error logs, and reconciliation of input to output.
+  - question: What are output controls?
+    answer: Output controls ensure that reports and files are accurate, complete, and distributed only to authorized users.
+      Sensitive reports should be reviewed, secured, and retained according to policy.
+  - question: What is the difference between authentication and authorization?
+    answer: Authentication verifies who the user is, while authorization determines what that user is allowed to do. Getting
+      those backward is a classic security blooper and a classic exam trap.
+  - question: What is multi-factor authentication?
+    answer: Multi-factor authentication requires two or more independent factors such as something you know, something you
+      have, or something you are. It reduces the risk that a stolen password alone can compromise an account.
+  - question: What is the principle of least privilege?
+    answer: Least privilege means giving users only the access needed to perform their job responsibilities and nothing
+      more. It limits damage from mistakes, abuse, or compromised accounts.
+  - question: What is a zero-trust security model?
+    answer: Zero trust assumes that no user, device, or connection should be trusted automatically, even inside the network.
+      Access decisions are based on continuous verification, context, and minimum necessary permissions.
+  - question: What is the difference between encryption at rest and encryption in transit?
+    answer: Encryption at rest protects stored data, while encryption in transit protects data moving across a network.
+      Together they reduce the chance that stolen files or intercepted communications can be read by unauthorized
+      parties.
+  - question: What is hashing and how does it differ from encryption?
+    answer: Hashing converts data into a fixed-length value and is generally designed to be one-way, while encryption is
+      meant to be reversible with a key. Hashing is commonly used for integrity checks and password verification.
+  - question: What is a digital signature?
+    answer: A digital signature uses cryptography to help verify message integrity and the sender's identity. If the signed
+      content changes after signing, the signature validation should fail.
+  - question: What does a firewall do?
+    answer: A firewall filters network traffic based on defined rules, helping block unauthorized connections while
+      permitting approved traffic. It is a foundational control, but not a magical force field that solves everything by
+      itself.
+  - question: What is the difference between an IDS and an IPS?
+    answer: An Intrusion Detection System monitors and alerts on suspicious activity, while an Intrusion Prevention System
+      can also take automated action to block or stop the activity. Detection warns; prevention swats.
+  - question: What is SIEM?
+    answer: Security Information and Event Management technology aggregates and analyzes logs from multiple systems to
+      identify suspicious patterns, support alerting, and aid investigations. It is especially useful for centralized
+      monitoring.
+  - question: What is phishing?
+    answer: Phishing is a social engineering attack that tricks users into revealing credentials, opening malware, or
+      sending sensitive information. It exploits human judgment more than technical weakness.
+  - question: What is ransomware?
+    answer: Ransomware is malware that encrypts or locks data and demands payment for recovery. Strong backups, patching,
+      access controls, and user training are key defenses.
+  - question: What is a distributed denial-of-service attack?
+    answer: A DDoS attack floods a service with traffic from many sources to make it unavailable to legitimate users. The
+      main risk is service disruption rather than direct theft of data.
+  - question: What is the difference between a vulnerability and an exploit?
+    answer: A vulnerability is a weakness in design, code, configuration, or process, while an exploit is the method used to
+      take advantage of that weakness. One is the unlocked window; the other is the burglar climbing through it.
+  - question: Why is patch management important?
+    answer: Patch management helps close known security weaknesses and correct software defects before attackers or errors
+      cause damage. Delayed patching increases exposure, especially for internet-facing systems.
+  - question: What is penetration testing?
+    answer: Penetration testing is an authorized attempt to exploit weaknesses in systems to assess security effectiveness.
+      It is different from ordinary vulnerability scanning because it actively tests whether weaknesses can be
+      exploited.
+  - question: What are the five functions of the NIST Cybersecurity Framework?
+    answer: The five functions are Identify, Protect, Detect, Respond, and Recover. This framework is highly testable
+      because it provides an easy way to organize cybersecurity responsibilities and maturity discussions.
+  - question: What are the main phases of incident response?
+    answer: The usual phases are preparation, identification, containment, eradication, recovery, and lessons learned.
+      Candidates should know that fast containment matters, but post-incident review matters too because repeated pain
+      is not a control objective.
+  - question: Why is log monitoring important?
+    answer: Log monitoring helps organizations detect unauthorized access, system failures, policy violations, and
+      suspicious patterns. Logs are often vital evidence when investigating control issues or security incidents.
+  - question: What is the purpose of a SOC 1 report?
+    answer: A SOC 1 report addresses controls at a service organization that are relevant to user entities' internal control
+      over financial reporting. Think payroll processors, hosting providers, or outsourced services that can affect the
+      audit trail.
+  - question: What is the purpose of a SOC 2 report?
+    answer: A SOC 2 report addresses controls related to trust services criteria such as security, availability, processing
+      integrity, confidentiality, and privacy. It is more operations and security focused than financial-reporting
+      focused.
+  - question: What is the difference between a Type 1 and a Type 2 SOC report?
+    answer: A Type 1 report covers the design of controls at a point in time, while a Type 2 report covers both design and
+      operating effectiveness over a period of time. Type 2 generally provides stronger evidence because it shows how
+      controls performed over time.
+  - question: What are complementary user entity controls?
+    answer: Complementary user entity controls are controls the service organization assumes the user organization will
+      perform for the system of controls to be effective. If the user entity ignores them, the control picture may have
+      a very awkward hole in it.
+  - question: What is the difference between the carve-out and inclusive methods for subservice organizations?
+    answer: Under the carve-out method, controls at the subservice organization are excluded from the service auditor's
+      scope, while under the inclusive method they are included. The exam focus is usually on scope and who is covered
+      by the report.
+  - question: What does HIPAA primarily protect?
+    answer: HIPAA primarily protects certain health information and governs privacy and security obligations in healthcare
+      settings. For CPA purposes, know it as a major U.S. privacy and security framework for protected health
+      information.
+  - question: What is the core idea behind GDPR?
+    answer: GDPR is a European Union data protection regulation that emphasizes lawful processing, transparency, data
+      subject rights, accountability, and security of personal data. It has broad reach and can apply outside the EU
+      when EU residents' data is involved.
+  - question: What does PCI DSS apply to?
+    answer: PCI DSS applies to entities that store, process, or transmit payment card data. It focuses on protecting
+      cardholder information through network security, access controls, monitoring, and related safeguards.
+  - question: What is the difference between privacy and confidentiality?
+    answer: Privacy focuses on the rights and proper use of personal information, while confidentiality focuses on
+      restricting access to information to authorized parties. Information can be confidential without being personal,
+      and personal data usually requires both privacy and confidentiality controls.
+  - question: What is data classification?
+    answer: Data classification is the process of categorizing data by sensitivity and handling requirements, such as
+      public, internal, confidential, or restricted. Classification helps determine access rules, encryption needs, and
+      retention requirements.
+  - question: Why is a data retention policy important?
+    answer: A data retention policy defines how long information should be kept and when it should be archived or destroyed.
+      Keeping data too briefly can hurt compliance and operations, while keeping it forever can increase legal and
+      security risk.
+  - question: What is a secure software development life cycle?
+    answer: A secure SDLC integrates security requirements, reviews, testing, and remediation throughout system development
+      rather than bolting them on at the end. The exam often rewards the idea that security should be designed in, not
+      taped on later.
+  - question: Why should changes require formal approval?
+    answer: Formal approval helps confirm that changes are necessary, assessed for risk, tested, and authorized by the right
+      people before deployment. It supports accountability and reduces unauthorized or poorly designed changes.
+  - question: Why should development, test, and production environments be separated?
+    answer: Separation reduces the risk that untested code or sample data affects live operations and protects production
+      data from unnecessary exposure. It also supports reliable testing and controlled migration.
+  - question: Why is database access logging important?
+    answer: Database access logging provides an audit trail of who accessed or changed sensitive data and when. It supports
+      monitoring, investigations, and accountability for privileged activity.
+  - question: What is an exception report?
+    answer: An exception report highlights transactions or conditions that fall outside expected parameters, such as
+      duplicate payments, negative inventory, or manual overrides. It is a detective control that helps management focus
+      on higher risk items.
+  - question: What makes a dashboard effective for management reporting?
+    answer: An effective dashboard highlights the most relevant metrics, uses clear visuals, shows trends or thresholds, and
+      avoids clutter that obscures decision-making. Good dashboards tell the story without making users dig through a
+      swamp of colorful nonsense.
+  - question: What is descriptive analytics?
+    answer: Descriptive analytics summarizes what happened, such as monthly sales, defect rates, or overdue receivables. It
+      is the foundation for deeper analysis because you must know the facts before asking why they occurred.
+  - question: What is diagnostic analytics?
+    answer: Diagnostic analytics examines why something happened by comparing trends, segments, relationships, or root
+      causes. Examples include analyzing why gross margin declined or why a control failure spiked in one location.
+  - question: What is predictive analytics?
+    answer: Predictive analytics uses historical data and statistical methods to estimate what is likely to happen next.
+      Examples include forecasting demand, defaults, churn, or expected losses.
+  - question: What is prescriptive analytics?
+    answer: Prescriptive analytics recommends actions based on likely outcomes and constraints, such as pricing choices,
+      inventory levels, or staffing plans. It goes beyond prediction and asks what the organization should do.
+  - question: What are key data visualization best practices?
+    answer: Use appropriate chart types, label clearly, avoid misleading scales, reduce unnecessary decoration, and focus
+      the viewer on meaningful comparisons. A beautiful chart that hides the truth is still a bad chart.
+  - question: What is an outlier?
+    answer: An outlier is an observation that is unusually far from most other observations. It may signal error, fraud,
+      unusual conditions, or a real business change that deserves investigation.
+  - question: Why is correlation not the same as causation?
+    answer: Correlation shows that variables move together, but it does not prove that one causes the other. A common exam
+      mistake is jumping from association to cause without considering other explanations.
+  - question: What is the difference between a population and a sample?
+    answer: A population is the full set of items of interest, while a sample is a subset used to draw conclusions about
+      that population. The CPA exam often tests whether the sample is representative enough for a reliable conclusion.
+  - question: What do mean, median, and mode tell you?
+    answer: The mean is the arithmetic average, the median is the middle value, and the mode is the most frequent value.
+      Median is often more informative than mean when data is skewed by extreme values.
+  - question: What does standard deviation measure?
+    answer: Standard deviation measures how spread out observations are around the mean. Higher standard deviation generally
+      means greater variability and uncertainty.
+  - question: What is a confidence interval?
+    answer: A confidence interval gives a range of plausible values for a population parameter based on sample data.
+      Narrower intervals suggest more precision, usually from larger samples or lower variability.
+  - question: What is regression analysis used for?
+    answer: Regression analysis estimates the relationship between a dependent variable and one or more independent
+      variables. In business, it can be used for forecasting, cost behavior analysis, and identifying drivers of
+      performance.
+  - question: What is a KPI?
+    answer: A Key Performance Indicator is a metric used to measure progress toward an objective. Good KPIs are aligned to
+      strategy, clearly defined, and hard to game without improving real performance.
+  - question: What dimensions define data quality?
+    answer: Important dimensions include accuracy, completeness, consistency, timeliness, validity, and uniqueness. Poor
+      data quality weakens analytics, controls testing, and management decisions.
+  - question: Why are duplicate records a control risk?
+    answer: Duplicate records can cause overpayments, misstated balances, duplicate customers or vendors, and unreliable
+      analysis. Strong master-data governance and matching rules help reduce this risk.
+  - question: What risks and controls are common with robotic process automation?
+    answer: RPA can improve consistency and speed, but risks include bad bot logic, excessive access, poor change control,
+      and failure handling problems. Bots should be governed like other production systems, not treated as magical
+      office elves.
+  - question: What is AI governance?
+    answer: AI governance is the framework for overseeing how models are developed, approved, monitored, documented, and
+      used. Key concerns include bias, explainability, data quality, security, compliance, and human accountability.
+  - question: What is model drift?
+    answer: Model drift occurs when a model's performance degrades because relationships in the real world change over time.
+      Ongoing monitoring and retraining may be needed to keep predictive models reliable.
+  - question: What internal control implication does blockchain have?
+    answer: Blockchain can improve transparency and immutability of recorded transactions, but it does not eliminate the
+      need for controls over authorization, data input, governance, or interfaces to off-chain systems. Garbage data can
+      still be recorded permanently, which is a very efficient way to preserve a mistake forever.
+  - question: What are key API control risks?
+    answer: Common API risks include weak authentication, excessive data exposure, poor rate limiting, insecure endpoints,
+      and inadequate logging. Since APIs connect systems directly, failures can spread quickly across processes.
+  - question: What is tokenization?
+    answer: Tokenization replaces sensitive data with a surrogate value that has little or no exploitable meaning outside
+      the system. It is commonly used to reduce exposure of payment or personal data.
+  - question: What is a walkthrough in internal control evaluation?
+    answer: A walkthrough traces a transaction from initiation through recording and reporting to confirm understanding of
+      the process and identify where controls operate. It helps determine whether controls are designed appropriately.
+  - question: What is a three-way match?
+    answer: A three-way match compares the purchase order, receiving report, and vendor invoice before payment is approved.
+      It helps prevent overpayments, duplicate payments, and unauthorized purchases.
+  - question: What is a maker-checker control?
+    answer: A maker-checker control requires one person to prepare an item and another person to review or approve it. This
+      is a practical segregation-of-duties control for payments, journal entries, and master-data changes.
+  - question: Why is report testing important in an audit or SOC context?
+    answer: If a key control relies on a system-generated report, the auditor must understand whether the report is complete
+      and accurate. A polished report is not reliable just because it emerged from a computer wearing a serious face.
+  - question: What is data lineage?
+    answer: Data lineage traces data from its source through transformations, storage, and reporting outputs. It helps users
+      validate where numbers came from and whether key controls operate along the path.
+  - question: What is access recertification?
+    answer: Access recertification is the periodic review of user permissions to confirm they remain appropriate. It helps
+      remove excessive, outdated, or orphaned access rights.
+  - question: Why is vendor risk management important?
+    answer: Organizations often depend on third parties for hosting, payroll, payment processing, software, and data
+      handling. Vendor risk management helps assess security, resilience, compliance, and control gaps before they
+      become the organization's problem too.
+  - question: What is a cybersecurity maturity assessment?
+    answer: A cybersecurity maturity assessment evaluates how developed and consistently implemented an organization's
+      security practices are across governance, protection, detection, response, and recovery. On the CPA exam, maturity
+      matters because better-designed and repeatable processes generally reduce risk more effectively than ad hoc
+      controls.
+  - question: What is the best overall mindset for ISC questions on IT systems and security?
+    answer: Focus on whether controls protect confidentiality, integrity, availability, and reliable reporting while
+      aligning with governance and business objectives. When in doubt, choose the answer that improves authorization,
+      monitoring, change discipline, and evidence quality rather than the one that just sounds flashy.

@@ -1,0 +1,439 @@
+config:
+  name: "CPA AUD: Auditing & Attestation — Conclusions, Reports, and Other Services"
+  description: Audit opinions, modified reports, attestation engagements, compilations, reviews, preparation services,
+    compliance reporting, and special-purpose reporting for CPA AUD prep.
+  questionDelay: 1
+  answerDelay: 1
+  youtube:
+    videoId: UpCX2G__mQg
+    url: https://youtu.be/UpCX2G__mQg
+    uploadedAt: 2026-03-08T13:48:36.285Z
+    privacy: unlisted
+    contentSha: 97eb7f87
+questions:
+  - question: When does the auditor issue an unmodified opinion?
+    answer: >-
+      An **unmodified opinion** is issued when the auditor concludes the financial statements are presented fairly, in
+      all material respects, in accordance with the applicable financial reporting framework.
+
+
+      This requires sufficient appropriate evidence and no material departures from the framework requiring
+      modification.
+  - question: What are the four basic types of audit opinions?
+    answer: >-
+      The four basic opinion outcomes are:
+
+
+      - **unmodified**
+
+      - **qualified**
+
+      - **adverse**
+
+      - **disclaimer of opinion**
+
+
+      AUD questions often hinge on whether the issue is **GAAP departure vs. scope limitation** and whether it is
+      **material vs. pervasive**.
+  - question: When is a qualified opinion appropriate?
+    answer: |-
+      A **qualified opinion** is appropriate when the matter is material but not pervasive. This can arise from either:
+
+      - a material misstatement in the financial statements, or
+      - a scope limitation preventing the auditor from obtaining sufficient appropriate evidence
+
+      Think of qualified as the "mostly okay, but not fully okay" opinion.
+  - question: When is an adverse opinion appropriate?
+    answer: >-
+      An **adverse opinion** is issued when the financial statements are materially misstated and the misstatement is
+      **pervasive** to the financial statements.
+
+
+      This is used when the statements as a whole are not fairly presented in conformity with the applicable framework.
+  - question: When is a disclaimer of opinion appropriate?
+    answer: >-
+      A **disclaimer of opinion** is issued when the auditor cannot obtain sufficient appropriate evidence and the
+      possible effects are both material and pervasive, or when the auditor lacks independence.
+
+
+      In a disclaimer, the auditor does **not express an opinion**.
+  - question: How do you distinguish a GAAP departure from a scope limitation in reporting questions?
+    answer: >-
+      A **GAAP departure** means the financial statements are not presented according to the applicable framework. That
+      points toward a **qualified or adverse** opinion depending on materiality and pervasiveness.
+
+
+      A **scope limitation** means the auditor could not obtain enough evidence. That points toward a **qualified or
+      disclaimer** opinion depending on materiality and pervasiveness.
+  - question: What is an emphasis-of-matter paragraph?
+    answer: >-
+      An **emphasis-of-matter** paragraph highlights a matter appropriately presented or disclosed in the financial
+      statements that is fundamental to users' understanding, without modifying the opinion.
+
+
+      Examples may include substantial doubt about going concern, major uncertainties, or significant subsequent events
+      depending on the standards applied.
+  - question: What is an other-matter paragraph?
+    answer: >-
+      An **other-matter** paragraph refers to a matter other than those presented or disclosed in the financial
+      statements that is relevant to users' understanding of the audit, the auditor's responsibilities, or the auditor's
+      report.
+
+
+      For example, it might address prior-period auditors or restrictions on the use of the report.
+  - question: What is the purpose of key audit matters or critical audit matters in public company reporting?
+    answer: >-
+      For PCAOB issuer audits, **critical audit matters (CAMs)** communicate matters arising from the audit of the
+      financial statements that were communicated or required to be communicated to the audit committee and that relate
+      to material accounts or disclosures involving especially challenging, subjective, or complex auditor judgment.
+
+
+      This is a public-company reporting concept candidates should recognize even if detailed wording is not always
+      tested as heavily as private-company reporting.
+  - question: What level of assurance is provided in a review engagement?
+    answer: >-
+      A review provides **limited assurance**, typically expressed in negative form such as the accountant is not aware
+      of any material modifications that should be made for the financial statements to be in accordance with the
+      applicable framework.
+
+
+      A review primarily uses inquiry and analytical procedures and does not provide the same level of assurance as an
+      audit.
+  - question: What level of assurance is provided in a compilation engagement?
+    answer: >-
+      A compilation provides **no assurance**. The accountant assists management in presenting financial information in
+      the form of financial statements, but does not undertake to obtain or provide assurance.
+
+
+      Independence is not required for a compilation, but lack of independence must be disclosed if the accountant is
+      not independent.
+  - question: What is a preparation engagement?
+    answer: >-
+      In a preparation engagement, the accountant prepares financial statements but does **not** issue a report and does
+      **not** provide assurance.
+
+
+      Each page of the financial statements should include a legend such as "no assurance is provided," or a disclaimer
+      should otherwise be made clear.
+  - question: What is the difference between an examination, a review, and agreed-upon procedures in attestation?
+    answer: >-
+      - **Examination** — provides reasonable assurance and results in a positive opinion
+
+      - **Review** — provides limited assurance and uses mainly inquiry and analytics
+
+      - **Agreed-upon procedures (AUP)** — no assurance; the practitioner reports findings from procedures specifically
+      agreed to by the engaging parties
+
+
+      Candidates should not confuse AUP findings with assurance. AUP is factual reporting, not a conclusion.
+  - question: What are agreed-upon procedures engagements?
+    answer: >-
+      In an agreed-upon procedures engagement, the practitioner performs specific procedures on subject matter
+      identified by the engaging parties and reports the findings.
+
+
+      The practitioner does not provide an opinion or conclusion because the sufficiency of procedures is determined by
+      the specified parties, not by the practitioner.
+  - question: How are compilations, reviews, and audits different in terms of work performed?
+    answer: >-
+      - **Audit** — risk assessment, tests of controls as needed, substantive procedures, and sufficient evidence to
+      support reasonable assurance
+
+      - **Review** — primarily inquiry and analytical procedures for limited assurance
+
+      - **Compilation** — presents information without assurance
+
+
+      This is one of the most tested comparison areas in AUD.
+  - question: What is special-purpose reporting?
+    answer: >-
+      Special-purpose reporting involves financial statements prepared using a special-purpose framework such as:
+
+
+      - cash basis
+
+      - tax basis
+
+      - regulatory basis
+
+      - contractual basis
+
+
+      The auditor modifies the report appropriately to identify the framework and may emphasize that the framework is a
+      special-purpose framework.
+  - question: What is compliance reporting?
+    answer: >-
+      Compliance reporting addresses whether an entity complied with laws, regulations, contracts, or grant agreements.
+      It often arises in government or grant-related engagements and may be performed under specific standards or
+      regulatory frameworks.
+
+
+      Candidates should recognize that compliance reporting can exist alongside a financial statement audit but has a
+      distinct objective.
+  - question: What happens to the report when the auditor is not independent?
+    answer: >-
+      For an audit, review, or examination requiring independence, lack of independence generally means the practitioner
+      cannot perform the engagement in the normal form or must disclaim an opinion where applicable.
+
+
+      For a compilation, independence is not required, but the lack of independence should be disclosed in the report.
+  - question: What is the purpose of comparative financial statement reporting when prior periods are presented?
+    answer: >-
+      When prior-period financial statements are presented comparatively, the auditor considers whether to report on one
+      period or all periods presented and addresses prior auditor involvement, prior opinions, and any changes affecting
+      comparability.
+
+
+      AUD questions often test whether the current auditor should refer to the predecessor auditor.
+  - question: What is supplementary information and how does it affect the auditor's report?
+    answer: >-
+      Supplementary information accompanies the basic financial statements and may be required by the framework or other
+      standards. The auditor may need to perform procedures to determine whether the information is fairly stated in
+      relation to the financial statements as a whole.
+
+
+      The reporting treatment depends on whether the information is required or merely presented voluntarily.
+  - question: How do review reports differ from audit reports in wording?
+    answer: >-
+      Review reports use **negative assurance** wording, such as the accountant is not aware of any material
+      modifications needed. Audit reports use a **positive opinion** that the financial statements are presented fairly,
+      in all material respects.
+
+
+      If you see negative assurance, your AUD radar should start flashing "review."
+  - question: What does material but not pervasive mean in opinion selection?
+    answer: It means the problem matters to users but is limited to specific elements or areas rather than undermining the
+      financial statements as a whole. That usually points to a qualified opinion.
+  - question: What does pervasive mean in audit reporting?
+    answer: Pervasive means the issue is not confined to specific items or is so fundamental that it affects the overall
+      reliability of the financial statements.
+  - question: What are common examples of scope limitations?
+    answer: Examples include inability to observe inventory, refusal to allow confirmations, missing records, or
+      management's denial of access to important information.
+  - question: What are common examples of GAAP departures?
+    answer: Examples include improper revenue recognition, failure to consolidate, omitted disclosures, incorrect inventory
+      valuation, or leaving out a required cash flow statement.
+  - question: What is the purpose of the basis for opinion section?
+    answer: It explains that the audit was conducted under applicable standards, states that the auditor is independent when
+      required, and describes the basis for the opinion expressed.
+  - question: What is the purpose of the auditor responsibilities section in the report?
+    answer: It explains what an audit is designed to do, the concept of reasonable assurance, and the auditor's key
+      responsibilities in obtaining evidence and evaluating the statements.
+  - question: What is the purpose of the management responsibilities section in the report?
+    answer: It clarifies that management, not the auditor, is responsible for preparing the financial statements and for the
+      relevant internal control.
+  - question: Why is the report date important?
+    answer: The report date tells users the last date through which the auditor considered subsequent events and gathered
+      audit evidence.
+  - question: How is reporting affected when part of the audit is performed by another auditor?
+    answer: The principal auditor may assume responsibility without reference or may refer to the component auditor in the
+      report, depending on the circumstances and chosen reporting approach.
+  - question: When might the current auditor refer to a predecessor auditor?
+    answer: In comparative statements, the current auditor may include an other-matter paragraph describing that the prior
+      period was audited by a predecessor and summarizing the predecessor's report.
+  - question: What happens when prior-period statements are reissued with current statements?
+    answer: The auditor considers the prior report, whether the prior opinion still stands, and whether later facts require
+      any update or reference.
+  - question: How does a change in accounting principle affect the auditor's report?
+    answer: If the change is justified and properly accounted for and disclosed, the opinion may remain unmodified, often
+      with an emphasis-of-matter paragraph regarding consistency.
+  - question: What is the difference between consistency and comparability in reporting?
+    answer: Consistency concerns the use of the same accounting principles from period to period. Comparability is broader
+      and concerns whether statements can be meaningfully compared across periods or entities.
+  - question: Does a change in estimate normally require a consistency modification?
+    answer: No. A normal change in estimate is generally handled through disclosure in the financial statements but does not
+      usually require a consistency paragraph in the audit report.
+  - question: How is going concern presented in a nonissuer audit report when disclosure is adequate?
+    answer: The auditor generally issues an unmodified opinion and adds an emphasis-of-matter paragraph drawing attention to
+      the going concern note.
+  - question: Why might the auditor emphasize a special-purpose framework?
+    answer: Users should understand that the statements are prepared on a special-purpose basis such as cash or tax basis,
+      not full GAAP.
+  - question: What happens if required disclosures are omitted from GAAP financial statements?
+    answer: Omitted required disclosures are usually a GAAP departure. The auditor evaluates whether the omission is
+      material and pervasive in deciding between qualified and adverse opinions.
+  - question: What happens if a required statement of cash flows is omitted from GAAP financial statements?
+    answer: Omission of a required statement of cash flows is generally a GAAP departure and may require a qualified or
+      adverse opinion depending on materiality and pervasiveness.
+  - question: Does an emphasis-of-matter paragraph replace a report modification when GAAP is violated?
+    answer: No. An emphasis-of-matter paragraph does not fix a material misstatement or scope limitation. It highlights a
+      matter but does not substitute for the correct modified opinion.
+  - question: How does a disclaimer due to lack of independence differ from a disclaimer due to scope limitation?
+    answer: In both cases no opinion is expressed, but lack of independence is an ethical issue, while a scope limitation is
+      an inability to obtain sufficient appropriate evidence.
+  - question: What is a simple way to distinguish adverse and disclaimer opinions?
+    answer: Adverse means the auditor has enough evidence and concludes the statements are materially and pervasively wrong.
+      Disclaimer means the auditor lacks enough evidence or independence to give an opinion.
+  - question: How is unaudited supplementary information handled in reporting?
+    answer: The auditor may state that the supplementary information was not audited and does not express an opinion on it,
+      depending on the circumstances and standards.
+  - question: What is required supplementary information?
+    answer: Required supplementary information is information required by the applicable framework outside the basic
+      financial statements, such as certain governmental schedules. The auditor performs limited procedures on it.
+  - question: What if required supplementary information is omitted?
+    answer: The auditor ordinarily includes an other-matter paragraph describing the omission, because the information is
+      not part of the basic audited financial statements.
+  - question: What is other information in an annual report?
+    answer: Other information is non-financial-statement material included with audited statements, such as management's
+      discussion or operational data. The auditor reads it for material inconsistencies.
+  - question: What if the auditor finds a material inconsistency in other information?
+    answer: The auditor discusses the matter with management and determines whether the financial statements, the audit
+      report, or the other information needs revision.
+  - question: What is the effect of dual dating the report?
+    answer: Dual dating limits the auditor's responsibility for subsequent events to a specific later event while keeping
+      the original report date for all other matters.
+  - question: Can compiled financial statements omit substantially all disclosures?
+    answer: Yes, if the omission is not undertaken to mislead users and the compilation report or statements indicate the
+      omission appropriately.
+  - question: What does a compilation report say about independence?
+    answer: If the accountant is not independent, that lack of independence is disclosed in the compilation report.
+  - question: What procedures dominate a review engagement?
+    answer: Inquiry and analytical procedures dominate a review. The accountant does not obtain the depth of evidence
+      required in an audit.
+  - question: Does a review require the same understanding of internal control as an audit?
+    answer: No. A review does not require the same detailed internal control understanding or control testing performed in
+      an audit.
+  - question: Why is a review engagement letter important?
+    answer: It documents the scope, responsibilities, framework, expected report, and limited-assurance nature of the service.
+  - question: What if the accountant becomes aware of a material misstatement during a review?
+    answer: The accountant performs additional procedures as needed. If the matter is not resolved, the report may need to
+      be modified or the engagement withdrawn.
+  - question: Why is a compilation engagement letter important?
+    answer: It documents that the service provides no assurance and clarifies management's responsibility for the financial
+      statements.
+  - question: Why must prepared financial statements show that no assurance is provided?
+    answer: Users should not mistake a preparation service for an audit, review, or compilation. The legend makes the
+      service level clear.
+  - question: Under which standards are audits, reviews, compilations, and attestation services generally performed?
+    answer: Audits of nonissuers generally follow SASs, compilations and reviews of historical financial statements follow
+      SSARS, and attestation engagements generally follow SSAEs.
+  - question: What wording is typical in an examination report?
+    answer: An examination gives positive assurance, such as stating that the subject matter is presented in accordance with
+      the criteria in all material respects.
+  - question: What wording is typical in an attestation review report?
+    answer: It uses negative assurance, stating the practitioner is not aware of material modifications needed for the
+      subject matter to be in accordance with the criteria.
+  - question: What is reported in an agreed-upon procedures engagement?
+    answer: The practitioner reports findings from the agreed procedures performed, not an opinion or conclusion.
+  - question: Why does an agreed-upon procedures engagement not provide assurance?
+    answer: Because the practitioner does not determine that the procedures are sufficient for all users' purposes and does
+      not express a conclusion.
+  - question: What are prospective financial statements in attestation?
+    answer: They are forward-looking statements such as forecasts or projections. The practitioner may examine or perform
+      other services on them under appropriate standards.
+  - question: What is pro forma financial information?
+    answer: Pro forma information shows what historical financial data might have looked like under hypothetical transaction
+      assumptions, such as a merger or disposal.
+  - question: What is the purpose of a compliance audit report?
+    answer: It reports whether the entity complied, in all material respects, with requirements from laws, regulations,
+      contracts, or grant agreements.
+  - question: What is a report on summarized financial statements?
+    answer: It allows the auditor to report on condensed statements derived from audited financial statements, subject to
+      conditions and appropriate reference to the audited statements.
+  - question: Can the auditor report on a single financial statement or specific element?
+    answer: Yes. The auditor may report on a single statement, account, or specific element if the engagement is properly
+      structured and reporting is appropriate.
+  - question: What is a SOC 1 report designed to address?
+    answer: It addresses controls at a service organization relevant to user entities' internal control over financial
+      reporting.
+  - question: What is a SOC 2 report designed to address?
+    answer: It addresses controls related to the trust services criteria such as security, availability, processing
+      integrity, confidentiality, and privacy.
+  - question: What is a comfort letter?
+    answer: A comfort letter is a letter from the auditor to underwriters in a securities offering providing negative
+      assurance on certain financial information and changes since the last audited statements.
+  - question: How does a comfort letter differ from an audit opinion?
+    answer: A comfort letter is addressed to underwriters for a securities transaction and covers specified matters. It is
+      not a general opinion on the full financial statements for all users.
+  - question: What is an integrated audit in the public-company environment?
+    answer: It is an audit of both the financial statements and internal control over financial reporting performed together
+      under PCAOB standards.
+  - question: How does a material weakness affect the ICFR report in an integrated audit?
+    answer: If a material weakness exists at year-end, the auditor expresses an adverse opinion on internal control over
+      financial reporting.
+  - question: What if there is a scope limitation in the ICFR audit?
+    answer: The auditor may disclaim an opinion on internal control over financial reporting if sufficient evidence cannot
+      be obtained.
+  - question: Can the financial statement opinion and ICFR opinion differ in an integrated audit?
+    answer: Yes. The financial statements may receive one opinion while ICFR receives another, depending on the evidence and
+      identified deficiencies.
+  - question: When may the auditor refer to a component auditor in the report?
+    answer: The auditor may refer when not assuming full responsibility for the component auditor's work and when doing so
+      is appropriate under the standards.
+  - question: Why might an other-matter paragraph mention a predecessor auditor?
+    answer: It informs users that another auditor reported on the prior period and describes the date and type of opinion
+      that predecessor issued.
+  - question: Does every inconsistency require a modified opinion?
+    answer: No. Some consistency matters are properly disclosed and may only require emphasis. Opinion modification is
+      reserved for material misstatement or scope limitation.
+  - question: How is a correction of a prior-period error reflected in reporting?
+    answer: If the restatement is appropriate and disclosed, the opinion may still be unmodified, though the auditor may add
+      an emphasis-of-matter paragraph about the restatement.
+  - question: What if the current auditor's opinion on a prior period differs from a predecessor's opinion?
+    answer: The current report should explain the change and the reasons for it so users understand why the prior reporting
+      conclusion changed.
+  - question: Why is an emphasis-of-matter paragraph used sparingly?
+    answer: Overuse weakens its usefulness. It should highlight only matters fundamental to users' understanding, not every
+      interesting footnote.
+  - question: What extra report language is common for special-purpose frameworks?
+    answer: The report identifies the framework, refers to the note describing it, and may emphasize that the basis is a
+      special-purpose framework.
+  - question: What is a restricted-use report?
+    answer: It is a report intended only for specified parties because the criteria, procedures, or subject matter are not
+      suitable for general use.
+  - question: How are omitted disclosures handled in a compilation?
+    answer: Omission may be allowed if not intended to mislead and if the compilation report or statements indicate that
+      substantially all disclosures are omitted.
+  - question: What is a review of interim financial information for a public company?
+    answer: It is a limited-assurance engagement typically performed on interim statements using inquiry and analytical
+      procedures under applicable review standards.
+  - question: What is the difference between compliance reporting under Government Auditing Standards and a normal GAAS opinion?
+    answer: The financial statement opinion addresses fair presentation, while the compliance or internal control report
+      under government standards addresses additional governmental reporting objectives.
+  - question: What is a single audit in broad terms?
+    answer: A single audit combines a financial statement audit with an audit of compliance for major federal programs when
+      an entity expends sufficient federal awards.
+  - question: Can the auditor express piecemeal opinions when disclaiming or issuing an adverse opinion on the financial
+      statements as a whole?
+    answer: Generally no. Piecemeal opinions can be misleading when the overall statements are unreliable or not audited
+      sufficiently.
+  - question: How are comparative statements handled when the prior period was unaudited?
+    answer: The report should clearly indicate that the prior-period statements were not audited, reviewed, or compiled if
+      that is the case.
+  - question: How does the auditor report on condensed financial statements?
+    answer: The report references the audited financial statements from which the condensed statements were derived and
+      states whether the condensed information is consistent with them.
+  - question: Should the auditor mention a specialist in an unmodified report?
+    answer: Usually no, because doing so may imply a division of responsibility. Mention is more common only if needed to
+      explain a modification.
+  - question: Can a major subsequent catastrophe be emphasized in the report if properly disclosed?
+    answer: Yes. If fundamental to users' understanding and properly disclosed, the auditor may use an emphasis-of-matter
+      paragraph without modifying the opinion.
+  - question: When might an other-matter paragraph restrict use of the report?
+    answer: It may restrict use when the report is prepared for specified parties, such as in agreed-upon procedures or
+      other engagements not intended for general distribution.
+  - question: How can the auditor report on supplementary information presented in relation to the financial statements as a
+      whole?
+    answer: After appropriate procedures, the auditor may report whether the supplementary information is fairly stated, in
+      all material respects, in relation to the audited financial statements as a whole.
+  - question: Why is opinion selection such a high-yield AUD topic?
+    answer: "Because many exam questions reduce to a few core choices: GAAP departure or scope limitation, material or
+      pervasive, and independence or not. Once that logic is clear, many reporting questions become much easier."
+  - question: What is the effect of inadequate going concern disclosure on the audit opinion?
+    answer: Inadequate disclosure of substantial doubt is a GAAP departure, so the auditor considers a qualified or adverse
+      opinion depending on how pervasive the problem is.
+  - question: What if management refuses to revise materially misstated financial statements?
+    answer: The auditor modifies the opinion rather than silently accepting the misstatement. The choice between qualified
+      and adverse depends on pervasiveness.
+  - question: Can the auditor withdraw from an engagement instead of issuing a modified report?
+    answer: In some circumstances, especially when management integrity is in serious doubt and withdrawal is permitted, the
+      auditor may withdraw. Otherwise the auditor reports appropriately.
+  - question: What is the purpose of dating a review report?
+    answer: The date indicates the last day the accountant performed review procedures and considered matters affecting the
+      limited-assurance conclusion.
+  - question: Why must criteria be suitable in an attestation engagement?
+    answer: Suitable criteria give users a consistent basis for measuring or evaluating the subject matter. Without them,
+      any conclusion would be vague and unreliable.
+  - question: What is a direct examination engagement in attestation?
+    answer: In a direct examination, the practitioner measures or evaluates the subject matter against the criteria rather
+      than examining another party's written assertion.

@@ -1,0 +1,340 @@
+config:
+  name: CPA Business Concepts — Economics, Finance, Statistics & Business Analysis
+  description: High-yield CPA prep for business analysis, valuation, capital structure, planning, budgeting, statistics,
+    economics, COSO ERM, and BAR-style finance topics.
+  questionDelay: 1
+  answerDelay: 1
+  youtube:
+    videoId: wqpgGyMtk2U
+    url: https://youtu.be/wqpgGyMtk2U
+    uploadedAt: 2026-03-08T13:48:46.526Z
+    privacy: unlisted
+    contentSha: 5e1aaa94
+questions:
+  - question: What is the time value of money?
+    answer: The time value of money means a dollar today is worth more than a dollar received in the future because today's
+      dollar can be invested to earn a return. This concept sits underneath present value, future value, bonds, leases,
+      capital budgeting, and plenty of exam mischief.
+  - question: What is net present value?
+    answer: Net present value is the present value of expected cash inflows minus the present value of expected cash
+      outflows. A positive NPV generally means the project is expected to add value after considering the required
+      return.
+  - question: What is the internal rate of return?
+    answer: Internal rate of return is the discount rate that makes a project's net present value equal zero. It is compared
+      to the hurdle rate to decide whether the project is financially attractive.
+  - question: What is the payback period?
+    answer: The payback period measures how long it takes to recover the initial investment from cash inflows. It is easy to
+      compute but ignores the time value of money and cash flows after payback.
+  - question: What is the discounted payback period?
+    answer: Discounted payback is the time needed to recover the initial investment using discounted cash inflows rather
+      than nominal cash inflows. It improves on simple payback by recognizing the time value of money.
+  - question: What is the profitability index?
+    answer: The profitability index equals the present value of future cash inflows divided by the initial investment. A
+      value above 1.0 generally indicates a positive NPV project.
+  - question: What is cost of capital?
+    answer: Cost of capital is the rate of return a company must earn to satisfy providers of capital and maintain firm
+      value. It is used as a discount rate in capital budgeting and as a benchmark in performance evaluation.
+  - question: What is the weighted-average cost of capital?
+    answer: Weighted-average cost of capital combines the costs of debt, preferred stock, and common equity based on their
+      proportions in the target capital structure. It represents the blended required return for the firm as a whole.
+  - question: What is CAPM?
+    answer: The Capital Asset Pricing Model estimates the required return on equity as the risk-free rate plus beta times
+      the market risk premium. It links expected return to systematic risk rather than total risk.
+  - question: What does beta measure?
+    answer: Beta measures how sensitive a stock's returns are to movements in the overall market. A beta above 1.0 suggests
+      the stock is more volatile than the market, while a beta below 1.0 suggests lower sensitivity.
+  - question: How do you calculate the after-tax cost of debt?
+    answer: The after-tax cost of debt equals the before-tax interest rate times one minus the tax rate. Because interest is
+      usually tax-deductible, debt financing often has a lower effective cost than equity.
+  - question: How is the cost of preferred stock generally computed?
+    answer: The cost of preferred stock is usually the annual preferred dividend divided by the net proceeds from issuance.
+      Since preferred dividends are not tax-deductible, there is no tax shield adjustment like there is with debt.
+  - question: What is an optimal capital structure?
+    answer: An optimal capital structure is the mix of debt and equity that minimizes overall cost of capital and maximizes
+      firm value. Too little debt may miss tax benefits, while too much debt increases financial distress risk.
+  - question: What is operating leverage?
+    answer: Operating leverage reflects how much fixed operating cost a company has relative to variable cost. Higher
+      operating leverage means profits are more sensitive to changes in sales volume.
+  - question: What is financial leverage?
+    answer: Financial leverage arises from using debt or other fixed financing charges. It can magnify returns to owners
+      when results are strong, but it can also magnify losses and default risk when results weaken.
+  - question: What is combined leverage?
+    answer: Combined leverage captures the total sensitivity of earnings per share or net income to changes in sales by
+      considering both operating leverage and financial leverage together. More leverage means more upside and more
+      drama.
+  - question: How do you compute break-even units?
+    answer: Break-even units equal total fixed costs divided by contribution margin per unit. At break-even, total revenue
+      equals total cost and operating income is zero.
+  - question: What is contribution margin?
+    answer: Contribution margin is sales minus variable costs. It shows how much revenue remains to cover fixed costs and
+      then generate profit.
+  - question: What is margin of safety?
+    answer: Margin of safety is the excess of expected or actual sales over break-even sales. A larger margin of safety
+      means the company has more room before it starts losing money.
+  - question: What is the relevant range?
+    answer: The relevant range is the level of activity over which cost behavior assumptions are expected to remain valid.
+      Fixed costs are fixed and variable cost per unit is stable only within that range.
+  - question: What is the difference between variable and fixed costs?
+    answer: Variable costs change in total with activity, while fixed costs remain constant in total within the relevant
+      range. Per-unit behavior moves in the opposite direction for fixed costs, which is a favorite exam twist.
+  - question: What is a mixed cost?
+    answer: A mixed cost includes both fixed and variable components, such as a utility bill with a base charge plus usage
+      charges. Analysts often separate mixed costs to improve budgeting and decision-making.
+  - question: What is the difference between absorption costing and variable costing?
+    answer: Absorption costing includes fixed manufacturing overhead in inventory cost, while variable costing treats fixed
+      manufacturing overhead as a period expense. When inventory changes, the two methods can produce different income.
+  - question: What is activity-based costing?
+    answer: Activity-based costing assigns overhead based on activities that drive cost consumption rather than broad volume
+      measures alone. It can produce more accurate product or service costs in complex environments.
+  - question: What is a standard cost system?
+    answer: A standard cost system uses predetermined cost expectations for materials, labor, and overhead to support
+      planning, control, and variance analysis. Variances then show where actual performance differed from plan.
+  - question: What is the materials price variance?
+    answer: The materials price variance measures the effect of paying a different price than expected for the quantity of
+      material purchased or used, depending on the company's approach. It helps isolate purchasing performance from
+      usage efficiency.
+  - question: What is the materials quantity variance?
+    answer: The materials quantity variance measures the effect of using more or less material than the standard allows for
+      the actual output achieved. It focuses on efficiency of usage rather than purchase price.
+  - question: What is the labor rate variance?
+    answer: The labor rate variance measures the effect of paying a wage rate different from the standard rate for the
+      actual hours worked. Causes may include overtime, skill mix changes, or staffing choices.
+  - question: What is the labor efficiency variance?
+    answer: The labor efficiency variance measures the effect of using more or fewer labor hours than the standard allows
+      for actual output. It often reflects training, supervision, scheduling, process quality, or machine issues.
+  - question: What do variable overhead variances generally measure?
+    answer: Variable overhead variances generally measure differences in spending rates and efficiency relative to standard.
+      They help determine whether overhead costs changed because of price factors, usage, or both.
+  - question: What is the fixed overhead volume variance?
+    answer: The fixed overhead volume variance measures the effect of producing at a level different from the denominator
+      level used to set the fixed overhead application rate. It reflects capacity utilization rather than spending.
+  - question: What is a static budget?
+    answer: A static budget is prepared for one planned level of activity and is not adjusted for actual volume. It is
+      useful for planning, but not ideal for evaluating performance when output differs meaningfully from plan.
+  - question: What is a flexible budget?
+    answer: A flexible budget adjusts expected revenues and variable costs to the actual level of activity. It provides a
+      fairer basis for performance evaluation because it separates volume effects from operating performance.
+  - question: What is a rolling forecast?
+    answer: A rolling forecast is updated continuously by adding a new future period as the current period ends. It helps
+      keep planning current instead of waiting for the next annual budget cycle.
+  - question: What is sensitivity analysis?
+    answer: Sensitivity analysis tests how a change in one assumption affects an outcome, holding other assumptions
+      constant. It helps management identify the variables that matter most to risk and value.
+  - question: What is scenario analysis?
+    answer: Scenario analysis evaluates outcomes under a coordinated set of assumptions, such as base, best, and worst case.
+      It is broader than single-variable sensitivity analysis.
+  - question: What is the main limitation of what-if modeling?
+    answer: What-if models are only as good as their assumptions, inputs, and logic. Slick spreadsheets can create very
+      confident nonsense if the underlying drivers are unrealistic.
+  - question: What is a common-size financial statement?
+    answer: A common-size statement expresses each line item as a percentage of a base amount, such as sales on the income
+      statement or total assets on the balance sheet. It helps compare companies of different sizes.
+  - question: What is horizontal or trend analysis?
+    answer: Horizontal analysis evaluates changes in amounts or percentages over time. It helps identify growth patterns,
+      unusual swings, and areas requiring investigation.
+  - question: What is free cash flow?
+    answer: Free cash flow is the cash available after funding operating needs and capital expenditures. Analysts use it to
+      assess financial flexibility, debt capacity, and valuation.
+  - question: Why can EBITDA be misleading?
+    answer: EBITDA excludes interest, taxes, depreciation, and amortization, which can make operating performance easier to
+      compare, but it ignores capital intensity, working capital needs, and real financing burdens. It is a tool, not a
+      truth serum.
+  - question: What is earnings quality?
+    answer: Earnings quality refers to how sustainable, repeatable, and cash-supported reported earnings are. High-quality
+      earnings generally come from core operations rather than one-time gains, aggressive estimates, or accounting
+      noise.
+  - question: What should a CPA candidate remember about non-GAAP measures?
+    answer: Non-GAAP measures can provide useful supplemental insight, but they should not be misleading, selectively
+      adjusted, or presented more prominently than GAAP results where rules restrict that presentation. Always ask what
+      was excluded and why.
+  - question: What do liquidity ratios measure?
+    answer: Liquidity ratios measure a company's ability to meet short-term obligations as they come due. Common examples
+      include the current ratio and quick ratio.
+  - question: How does paying a current liability with cash affect the current ratio when the ratio is above 1?
+    answer: If the current ratio is above 1, using cash to pay a current liability generally increases the current ratio
+      because both numerator and denominator fall, but the denominator falls proportionally more. This is a beloved
+      directional analysis question.
+  - question: What is the quick ratio?
+    answer: The quick ratio equals quick assets divided by current liabilities, where quick assets usually include cash,
+      marketable securities, and receivables. It is more conservative than the current ratio because it excludes
+      inventory and other less liquid current assets.
+  - question: Why is working capital management important?
+    answer: Working capital management affects liquidity, operating efficiency, financing needs, and profitability. Too
+      little working capital strains operations, while too much can trap cash in low-return assets.
+  - question: What is the cash conversion cycle?
+    answer: The cash conversion cycle measures the time between paying for inventory and collecting cash from customers. It
+      is commonly calculated as days inventory outstanding plus days sales outstanding minus days payables outstanding.
+  - question: What does inventory turnover tell you?
+    answer: Inventory turnover measures how quickly inventory is sold relative to its average balance. Higher turnover can
+      signal efficiency, but an extremely high rate may also indicate stockouts or insufficient inventory levels.
+  - question: What does receivables turnover or days sales outstanding indicate?
+    answer: Receivables turnover and days sales outstanding indicate how quickly a company collects credit sales. Slower
+      collections may signal weaker credit policy, customer stress, or issues in billing and collections.
+  - question: What is the trade-off in stretching payables?
+    answer: Delaying vendor payments can improve short-term cash flow, but it may damage supplier relationships, cause lost
+      discounts, or signal liquidity stress. Good working capital management is not just about squeezing the calendar.
+  - question: What is the interest coverage ratio?
+    answer: Interest coverage measures a firm's ability to cover interest expense from operating earnings, often using EBIT
+      or EBITDA depending on context. Higher coverage generally means lower default risk.
+  - question: What is the debt service coverage ratio?
+    answer: Debt service coverage compares available cash flow to required principal and interest payments. Lenders watch it
+      closely because surviving on optimism is not considered a repayment strategy.
+  - question: What is DuPont analysis?
+    answer: DuPont analysis breaks return on equity into profit margin, asset turnover, and financial leverage. It helps
+      identify whether ROE is driven by operations, efficiency, or leverage.
+  - question: What is the difference between return on assets and return on equity?
+    answer: Return on assets measures profitability relative to all assets employed, while return on equity measures
+      profitability relative to owners' equity. ROE is typically more sensitive to leverage.
+  - question: What is economic value added?
+    answer: Economic value added measures whether a company generated operating profit above the cost of capital employed. A
+      positive EVA suggests value creation rather than merely accounting profit.
+  - question: What is discounted cash flow valuation?
+    answer: Discounted cash flow valuation estimates value by forecasting future cash flows and discounting them at an
+      appropriate required return. It is conceptually powerful but highly sensitive to assumptions.
+  - question: Why is terminal value important in DCF analysis?
+    answer: Terminal value captures the value of cash flows beyond the explicit forecast period and often makes up a large
+      portion of total estimated value. That means tiny assumption changes can have giant effects.
+  - question: What is comparable company analysis?
+    answer: Comparable company analysis estimates value using market multiples from similar publicly traded companies. Its
+      usefulness depends on choosing truly comparable peers and understanding differences in growth, risk, and margin.
+  - question: What are precedent transactions?
+    answer: Precedent transactions use pricing multiples from actual acquisitions of similar companies to estimate value.
+      These multiples often include control premiums, so they may exceed public trading multiples.
+  - question: What is the difference between book value and market value?
+    answer: Book value reflects recorded accounting amounts, while market value reflects what investors are currently
+      willing to pay. The gap can be large because accounting statements are not built to measure real-time market
+      sentiment.
+  - question: What is the law of demand?
+    answer: The law of demand states that, all else equal, quantity demanded tends to fall when price rises and rise when
+      price falls. It reflects consumer substitution and purchasing behavior.
+  - question: What is the law of supply?
+    answer: The law of supply states that, all else equal, quantity supplied tends to rise when price rises and fall when
+      price falls. Higher prices create greater incentive for producers to supply goods or services.
+  - question: What is price elasticity of demand?
+    answer: Price elasticity of demand measures how sensitive quantity demanded is to a change in price. Demand is more
+      elastic when customers have substitutes or the purchase is easier to delay.
+  - question: What is cross-price elasticity?
+    answer: Cross-price elasticity measures how the demand for one good changes when the price of another good changes.
+      Positive cross-elasticity often indicates substitute goods, while negative values often indicate complementary
+      goods.
+  - question: What is income elasticity of demand?
+    answer: Income elasticity measures how demand changes as consumer income changes. It helps distinguish normal goods from
+      inferior goods and supports forecasting in changing economic conditions.
+  - question: What is a price ceiling?
+    answer: A price ceiling is a legal maximum price. If set below market equilibrium, it can create shortages because
+      quantity demanded exceeds quantity supplied.
+  - question: What is a price floor?
+    answer: A price floor is a legal minimum price. If set above market equilibrium, it can create surpluses because
+      quantity supplied exceeds quantity demanded.
+  - question: What is perfect competition?
+    answer: Perfect competition is a market structure with many buyers and sellers, homogeneous products, free entry and
+      exit, and no single participant able to influence price. It is mainly a benchmark model rather than everyday
+      reality.
+  - question: What is a monopoly?
+    answer: A monopoly exists when one seller dominates the market with substantial barriers to entry. Monopolies have
+      pricing power, but they may also face regulation and public scrutiny.
+  - question: What is monopolistic competition?
+    answer: Monopolistic competition features many sellers offering differentiated products. Firms have some pricing power,
+      but competition remains active because substitutes still exist.
+  - question: What is an oligopoly?
+    answer: An oligopoly is a market dominated by a small number of large firms whose decisions affect one another. Pricing,
+      output, and strategy are often interdependent.
+  - question: What is gross domestic product?
+    answer: Gross domestic product is the total market value of final goods and services produced within a country's borders
+      during a period. It is a primary measure of economic output.
+  - question: What is inflation?
+    answer: Inflation is a sustained increase in the general price level over time, which reduces purchasing power. Moderate
+      inflation may be manageable, but high or volatile inflation complicates planning, valuation, and financing.
+  - question: What is the difference between CPI and the GDP deflator?
+    answer: The Consumer Price Index tracks prices of a basket of consumer goods and services, while the GDP deflator
+      reflects prices of domestically produced final goods and services in the economy. They measure inflation
+      differently because their baskets and coverage differ.
+  - question: What are the main types of unemployment?
+    answer: Common types include frictional unemployment from normal job transitions, structural unemployment from skill or
+      industry mismatch, and cyclical unemployment tied to economic downturns. The type helps explain the likely policy
+      response.
+  - question: What is fiscal policy?
+    answer: Fiscal policy uses government spending and taxation to influence the economy. Expansionary fiscal policy tends
+      to stimulate demand, while contractionary policy tends to cool it.
+  - question: What is monetary policy?
+    answer: Monetary policy uses central bank tools such as interest rates and money supply management to influence
+      inflation, employment, and economic activity. Lower rates generally encourage borrowing and spending, while higher
+      rates do the opposite.
+  - question: What is the relationship between bond prices and interest rates?
+    answer: Bond prices and market interest rates generally move in opposite directions. When rates rise, existing bonds
+      with lower coupons become less attractive and their prices fall.
+  - question: What does the yield curve show?
+    answer: The yield curve shows interest rates across bonds of different maturities at a point in time. Its shape can
+      signal market expectations about growth, inflation, and recession risk.
+  - question: What is foreign exchange transaction exposure?
+    answer: Transaction exposure is the risk that exchange rate changes will affect the value of specific foreign-currency
+      denominated receivables, payables, or commitments before settlement. It directly affects realized cash flows.
+  - question: What is foreign exchange translation exposure?
+    answer: Translation exposure is the accounting risk that exchange rate changes will affect the reported amounts of
+      foreign subsidiaries when their financial statements are translated into the reporting currency. It may affect
+      reported equity and income presentation even when cash has not moved.
+  - question: What is economic exposure?
+    answer: Economic exposure is the broader risk that exchange rate changes alter a company's long-term competitive
+      position, costs, pricing power, and future cash flows. It is wider and more strategic than transaction exposure.
+  - question: Why do companies hedge?
+    answer: Companies hedge to reduce unwanted volatility in cash flows, earnings, or asset values caused by interest rates,
+      foreign exchange, commodity prices, or other market factors. Hedging aims to manage risk, not to turn Treasury
+      into a casino.
+  - question: What is country risk?
+    answer: Country risk is the risk that political, economic, legal, or social conditions in a country will impair business
+      operations or returns. It includes expropriation risk, currency controls, instability, and regulatory uncertainty.
+  - question: What is the business objective of transfer pricing?
+    answer: Transfer pricing sets prices for transactions between related entities and affects reported profitability, tax
+      positions, and performance measurement across jurisdictions. It must be economically supportable and compliant
+      with tax rules.
+  - question: What are the five components of COSO ERM?
+    answer: The updated COSO ERM framework is often summarized as governance and culture, strategy and objective-setting,
+      performance, review and revision, and information, communication, and reporting. It links risk management directly
+      to strategy rather than treating risk as a side activity.
+  - question: What is the difference between risk appetite and risk tolerance?
+    answer: Risk appetite is the broad amount and type of risk an organization is willing to accept in pursuit of value,
+      while risk tolerance is the acceptable variation around specific objectives. Appetite is the big picture;
+      tolerance is the measurable guardrail.
+  - question: What is the difference between inherent risk and residual risk?
+    answer: Inherent risk is the level of risk before considering controls or responses, while residual risk is the
+      remaining risk after those controls or responses are applied. Management wants residual risk to fit within
+      tolerance.
+  - question: Why are ESG metrics relevant in business analysis?
+    answer: Environmental, social, and governance metrics can affect financing costs, regulatory exposure, reputation,
+      supply chain resilience, and investor demand. Even when disclosure frameworks vary, the business impacts can be
+      real.
+  - question: How can sustainability-linked finance affect risk analysis?
+    answer: Sustainability-linked loans or targets can change borrowing costs, performance incentives, and reporting
+      demands. Analysts should consider whether targets are credible, measurable, and operationally realistic.
+  - question: Why is the fraud triangle relevant in business analysis?
+    answer: The fraud triangle highlights pressure, opportunity, and rationalization as conditions that can increase fraud
+      risk. Analysts should be more skeptical when incentives, weak controls, or financial strain are present.
+  - question: What is a make-or-buy decision?
+    answer: A make-or-buy decision compares relevant costs and strategic considerations of producing internally versus
+      outsourcing. Only costs and benefits that change because of the decision should matter.
+  - question: How should a special order be evaluated?
+    answer: A special order should be evaluated based on relevant incremental revenue, incremental cost, capacity
+      availability, and strategic side effects such as pricing expectations or channel conflict. Allocated fixed costs
+      often muddy the water but may not be relevant.
+  - question: What is a bottleneck or constrained resource?
+    answer: A bottleneck is the limited resource that restricts total output, such as machine hours or skilled labor time.
+      When capacity is constrained, managers should prioritize products with the highest contribution margin per unit of
+      the scarce resource.
+  - question: How are joint product decisions evaluated after the split-off point?
+    answer: After split-off, further processing decisions should compare incremental revenue from additional processing to
+      the incremental processing cost. Joint costs incurred before split-off are sunk for that decision.
+  - question: What is a sunk cost?
+    answer: A sunk cost is a past cost that cannot be changed by the current decision. It should be ignored in relevant cost
+      analysis, no matter how emotionally attached management feels to it.
+  - question: What is an opportunity cost?
+    answer: Opportunity cost is the benefit forgone by choosing one option instead of the next best alternative. It matters
+      in business decisions even though it may not appear directly in the accounting records.
+  - question: How are expected value and decision trees used in business analysis?
+    answer: Expected value combines outcomes with their probabilities to estimate the average result of uncertain choices,
+      and decision trees organize those possible paths visually. They are especially useful when management must compare
+      risk across multiple scenarios.
+  - question: What should a CPA candidate remember about the normal distribution and hypothesis testing?
+    answer: In a normal distribution, many observations cluster near the mean and fewer appear in the tails, which supports
+      common probability judgments and confidence intervals. In hypothesis testing, the p-value helps evaluate whether
+      the observed result is unlikely under the null hypothesis, but statistical significance is not automatically
+      business significance.

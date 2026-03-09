@@ -1,0 +1,1140 @@
+config:
+  name: "CPA FAR: Accounting & Financial Reporting — Balance Sheet Accounts"
+  description: Cash, receivables, inventory, PPE, intangibles, investments, liabilities, leases, contingencies, and equity
+    transactions tested in CPA FAR and BAR.
+  questionDelay: 1
+  answerDelay: 1
+  youtube:
+    videoId: DxGNDnpoW7o
+    url: https://youtu.be/DxGNDnpoW7o
+    uploadedAt: 2026-03-08T13:47:49.286Z
+    privacy: unlisted
+    contentSha: a073b7ba
+questions:
+  - question: How is cash defined for financial reporting purposes?
+    answer: >-
+      Cash includes currency on hand and demand deposits, plus other accounts with characteristics similar to demand
+      deposits. It must generally be **available for current use** to be presented as cash.
+
+
+      Items that often require separate treatment include:
+
+
+      - **restricted cash** — reported separately or disclosed
+
+      - **postdated checks** — typically receivables, not cash
+
+      - **NSF checks** — receivables, not cash
+
+      - **cash equivalents** — short-term, highly liquid investments with original maturities of three months or less
+  - question: What is the difference between cash and cash equivalents?
+    answer: |-
+      **Cash** is money available immediately. **Cash equivalents** are short-term, highly liquid investments that are:
+
+      - readily convertible to known amounts of cash
+      - so near maturity that they present insignificant risk of changes in value
+
+      A classic test point is the **original maturity of three months or less** from the date of purchase.
+  - question: How are accounts receivable reported when some amounts may be uncollectible?
+    answer: >-
+      Accounts receivable are reported at **net realizable value**, meaning gross receivables less the **allowance for
+      credit losses** or allowance for doubtful accounts.
+
+
+      The related bad debt expense is recorded through an estimate rather than waiting until a specific account is known
+      to be uncollectible. This follows the accrual basis and matching concept.
+  - question: What is the allowance method for bad debts and why is it preferred?
+    answer: >-
+      Under the allowance method, a company estimates expected uncollectible amounts and records:
+
+
+      - **debit bad debt expense**
+
+      - **credit allowance for doubtful accounts**
+
+
+      Later write-offs reduce the receivable and the allowance, with no new expense at that point.
+
+
+      It is preferred because it reports receivables at net realizable value and matches expected credit losses to the
+      period in which the related sales or receivables arise.
+  - question: How do write-offs and recoveries affect the allowance account?
+    answer: >-
+      A write-off removes a specific uncollectible account:
+
+
+      - debit allowance for doubtful accounts
+
+      - credit accounts receivable
+
+
+      A recovery usually reverses the write-off and then records the cash collection.
+
+
+      Key exam point: a write-off **does not affect net income** under the allowance method because the expense was
+      estimated earlier.
+  - question: What is the difference between pledging, assigning, and factoring receivables?
+    answer: >-
+      - **Pledging** receivables means using them as collateral for a loan; the receivables stay on the books.
+
+      - **Assigning** receivables is a more formal use of specific receivables as collateral, usually with disclosure.
+
+      - **Factoring** receivables means selling them to a third party, which may be accounted for as a sale or a secured
+      borrowing depending on whether control is surrendered.
+
+
+      FAR often tests whether the receivable remains on the seller's balance sheet.
+  - question: What inventory costs are included under GAAP?
+    answer: >-
+      Inventory includes all costs necessary to bring inventory to its present location and condition, such as:
+
+
+      - purchase price
+
+      - freight-in
+
+      - handling directly related to acquisition
+
+      - appropriate production costs for manufactured inventory
+
+
+      Abnormal waste, storage costs unrelated to production, selling costs, and most administrative costs are expensed
+      as incurred rather than inventoried.
+  - question: What inventory costing methods are most important on the CPA exam?
+    answer: |-
+      The major costing methods are:
+
+      - **specific identification**
+      - **FIFO**
+      - **weighted-average**
+
+      Under U.S. GAAP, **LIFO** is also permitted and is highly testable, even though IFRS does not allow it.
+
+      In periods of rising prices, FIFO usually produces:
+
+      - lower cost of goods sold
+      - higher ending inventory
+      - higher gross profit and net income
+  - question: How is inventory measured after acquisition under lower-of-cost-or-market or lower-of-cost-and-NRV rules?
+    answer: >-
+      Inventory is not carried above amounts expected to be realized. Under U.S. GAAP, measurement rules depend partly
+      on the costing method, but the exam focus is the same: if inventory utility declines below its recorded amount, a
+      **write-down** may be required.
+
+
+      A write-down recognizes a loss in the current period and reduces carrying value. FAR questions commonly test
+      whether replacement cost, ceiling, floor, or net realizable value is used in the calculation.
+  - question: How are property, plant, and equipment initially measured?
+    answer: >-
+      PPE is initially recorded at **historical cost**, including:
+
+
+      - purchase price
+
+      - taxes
+
+      - shipping and handling
+
+      - installation
+
+      - testing
+
+      - other costs necessary to prepare the asset for intended use
+
+
+      Land includes costs such as legal fees, title charges, and costs to prepare the land. Land improvements are
+      recorded separately if they have limited useful lives.
+  - question: How is depreciation calculated and what methods should a CPA candidate know?
+    answer: >-
+      Depreciation allocates the cost of a tangible long-lived asset over its useful life, excluding estimated salvage
+      value when appropriate.
+
+
+      Common methods:
+
+
+      - **straight-line**
+
+      - **double-declining balance**
+
+      - **sum-of-the-years'-digits**
+
+      - **units-of-production**
+
+
+      High-yield rule: depreciation is based on **cost - salvage value** for straight-line and units-of-production, but
+      some accelerated methods apply a rate to book value.
+  - question: What is the difference between ordinary repairs, betterments, and extraordinary repairs?
+    answer: >-
+      - **Ordinary repairs and maintenance** keep an asset in normal operating condition and are expensed.
+
+      - **Betterments / improvements** increase efficiency, productivity, or useful life and are capitalized.
+
+      - **Extraordinary repairs** that significantly extend useful life or improve the asset beyond original condition
+      are generally capitalized.
+
+
+      The exam often asks whether a cost should be expensed immediately or added to the asset's carrying amount.
+  - question: How are long-lived asset impairments recognized for assets held and used?
+    answer: >-
+      For long-lived assets held and used, impairment testing generally involves:
+
+
+      1. **Recoverability test** — compare carrying amount to undiscounted expected future cash flows
+
+      2. If not recoverable, measure impairment as **carrying amount minus fair value**
+
+
+      After impairment, the reduced carrying amount becomes the new basis. Candidates should be careful not to skip the
+      recoverability step for assets subject to that model.
+  - question: How are intangible assets classified and amortized?
+    answer: >-
+      Intangible assets are generally classified as either:
+
+
+      - **finite-lived** — amortized over useful life
+
+      - **indefinite-lived** — not amortized, but tested for impairment
+
+
+      Examples of finite-lived intangibles include patents and customer lists. Common indefinite-lived intangibles
+      include some trademarks and trade names, depending on the facts.
+  - question: How is internally developed software treated under GAAP?
+    answer: >-
+      The treatment depends on the type of software and the project stage. In broad terms:
+
+
+      - costs incurred during the **preliminary / planning stage** are expensed
+
+      - certain costs incurred after technological feasibility or the application development stage may be capitalized,
+      depending on the software context
+
+      - training and maintenance are generally expensed
+
+
+      BAR may test these rules in more depth, especially the distinction between software for sale, internal-use
+      software, and website development.
+  - question: What are the main categories of debt and equity investments under GAAP?
+    answer: >-
+      Key categories include:
+
+
+      - **amortized cost** for certain debt securities held to collect contractual cash flows
+
+      - **fair value through net income** for many equity investments and trading-type instruments
+
+      - **fair value through OCI** for certain debt securities
+
+      - **equity method** when the investor has significant influence but not control, generally presumed around 20% to
+      50% ownership unless evidence suggests otherwise
+  - question: When is the equity method used and how does it work?
+    answer: >-
+      The equity method is used when the investor can exercise **significant influence** over the investee's operating
+      and financial policies but does not control it.
+
+
+      The investor:
+
+
+      - records the investment initially at cost
+
+      - increases the carrying amount for its share of investee income
+
+      - decreases the carrying amount for dividends received
+
+
+      Dividends under the equity method are generally **not dividend income**; they are treated as a return of
+      investment.
+  - question: How are bonds payable initially and subsequently measured?
+    answer: >-
+      Bonds payable are initially recorded at the present value of future cash flows, which may result in issuance at:
+
+
+      - **par**
+
+      - **discount**
+
+      - **premium**
+
+
+      The carrying amount is then amortized over time, typically using the **effective interest method**. Bond carrying
+      value moves toward face value by maturity.
+  - question: How are contingencies classified and recognized?
+    answer: |-
+      Loss contingencies are evaluated based on likelihood and ability to estimate:
+
+      - **Probable and reasonably estimable** → accrue and disclose
+      - **Reasonably possible** → disclose only
+      - **Remote** → usually no accrual or disclosure, unless specifically required
+
+      Gain contingencies are treated more conservatively and generally are not recognized before realization.
+  - question: How are leases presented by a lessee under current GAAP?
+    answer: >-
+      Lessees generally recognize:
+
+
+      - a **right-of-use asset**
+
+      - a **lease liability**
+
+
+      for both finance and operating leases, subject to limited exceptions such as qualifying short-term leases.
+
+
+      Classification affects the income statement pattern, but both types usually appear on the balance sheet. This is a
+      favorite FAR topic because it changed from older lease accounting rules.
+  - question: How is treasury stock accounted for?
+    answer: >-
+      Treasury stock represents a corporation's own shares that have been reacquired. Under the **cost method**, the
+      treasury stock account is recorded at the repurchase cost and is a **contra-equity** account.
+
+
+      Treasury stock transactions do **not** create gains or losses in net income. Reissuance above cost increases
+      additional paid-in capital from treasury stock; reissuance below cost first reduces any related APIC balance and
+      then retained earnings if necessary.
+  - question: How is stock-based compensation generally recognized?
+    answer: >-
+      Stock-based compensation is generally measured at the **grant-date fair value** of the award and recognized as
+      compensation expense over the required service period, usually the vesting period.
+
+
+      BAR may test additional nuances such as forfeitures, graded vesting, and the difference between equity-classified
+      and liability-classified awards. Equity-classified awards are fixed at grant-date fair value; liability-classified
+      awards are remeasured each reporting date.
+  - question: How is the allowance for doubtful accounts estimated using the aging of receivables method?
+    answer: >-
+      Under the **aging method**, trade receivables are grouped by how long they have been outstanding (e.g., 0–30 days,
+      31–60 days, 61–90 days, over 90 days). Each bucket is multiplied by a historical loss percentage that reflects
+      increasing default risk with age.
+
+
+      The resulting total is the **required balance** in the allowance account. The adjusting entry brings the allowance
+      to that balance, which may require a debit or credit to bad debt expense.
+  - question: What is the percentage-of-sales method for estimating bad debts?
+    answer: >-
+      Under the **percentage-of-sales (income statement) method**, management applies a historical loss rate to credit
+      sales for the period. The resulting amount is the **bad debt expense** for the period and is added to the existing
+      allowance balance.
+
+
+      Unlike the aging method, this approach focuses on the income statement matching concept rather than targeting a
+      specific balance sheet amount. It does not automatically correct for prior misestimates.
+  - question: What is a note receivable and how is it initially valued?
+    answer: >-
+      A **note receivable** is a formal written promise to pay a specified principal amount plus interest on a
+      determinable future date. Notes are initially recorded at their **face value** when the stated rate approximates
+      market rate.
+
+
+      If a note is non-interest-bearing or carries a below-market rate, it is recorded at **present value** using the
+      market rate to impute interest, and the discount is amortized over the note's life using the effective-interest
+      method.
+  - question: How does a company account for a specific write-off that is later recovered?
+    answer: >-
+      When a previously written-off account is recovered, two entries are required:
+
+
+      1. **Reverse the write-off**: Debit Accounts Receivable; Credit Allowance for Doubtful Accounts.
+
+      2. **Record the cash collection**: Debit Cash; Credit Accounts Receivable.
+
+
+      The net effect on the allowance balance is zero, but both steps are necessary to properly reinstate and then
+      collect the receivable.
+  - question: How is inventory valued under the lower-of-cost-or-net-realizable-value (LCNRV) rule for non-LIFO/retail
+      inventories?
+    answer: >-
+      Under ASC 330, non-LIFO and non-retail inventory is measured at the **lower of cost or net realizable value
+      (NRV)**. NRV is estimated selling price in the ordinary course of business **less** cost to complete and sell.
+
+
+      If NRV is below cost, a **write-down** is recorded as a loss in cost of goods sold or a separate line item. The
+      write-down establishes a new cost basis; subsequent recovery is **not** permitted under GAAP.
+  - question: How does LIFO reserve arise and what does it measure?
+    answer: >-
+      When a company uses **LIFO internally** but discloses a **LIFO reserve** (also called the LIFO allowance), the
+      reserve represents the cumulative difference between FIFO cost (or current replacement cost) and LIFO cost.
+
+
+      Analysts use it to convert LIFO financials to FIFO-equivalent: add the LIFO reserve to inventory and multiply the
+      reserve change by (1 − tax rate) to adjust net income. On the exam, watch for LIFO liquidation questions where
+      old, lower-cost LIFO layers are sold.
+  - question: What is a LIFO liquidation and what effect does it have on income?
+    answer: >-
+      A **LIFO liquidation** occurs when sales exceed purchases, forcing a company to dip into older, lower-cost
+      inventory layers. Because older costs are matched against current revenues, **gross profit and taxable income
+      increase artificially**.
+
+
+      GAAP requires disclosure of LIFO liquidations and their effect on income. The exam may ask you to calculate the
+      extra income produced and the related tax effect.
+  - question: How is the retail inventory method used to estimate ending inventory?
+    answer: >-
+      The **retail inventory method** estimates inventory by applying a **cost-to-retail ratio** to ending inventory at
+      retail:
+
+
+      1. Compute total goods available at cost and retail.
+
+      2. Calculate the cost ratio = cost ÷ retail.
+
+      3. Deduct sales (net of markups and markdowns, depending on the method) from retail to get ending inventory at
+         retail.
+
+      4. Multiply by the cost ratio to get ending inventory at cost.
+
+
+      The **conventional (LCM) retail method** includes markups but excludes markdowns from the ratio denominator to
+      produce a conservative (lower) cost ratio.
+  - question: What is the gross profit method for estimating inventory?
+    answer: >-
+      The **gross profit method** estimates ending inventory using a historical gross profit rate:
+
+
+      1. Start with beginning inventory + purchases = goods available.
+
+      2. Multiply net sales by the cost-of-sales percentage (1 − gross profit %) to estimate COGS.
+
+      3. Subtract estimated COGS from goods available to get estimated ending inventory.
+
+
+      It is used for interim estimates and insurance claims but is **not acceptable for annual financial statements**
+      under GAAP.
+  - question: What costs are capitalized as part of the cost of self-constructed assets?
+    answer: >-
+      For **self-constructed assets**, GAAP capitalizes:
+
+      - Direct materials and direct labor
+
+      - Variable overhead directly attributable to the construction
+
+      - A portion of **fixed overhead** allocated to the asset (full-cost approach)
+
+
+      Interest incurred during construction of a qualifying asset must also be capitalized under ASC 835-20. Costs
+      beyond those necessary to complete the asset are expensed. Abnormal waste or inefficiency is never capitalized.
+  - question: How is interest capitalized during construction of a qualifying asset?
+    answer: >-
+      Under ASC 835-20, **avoidable interest** on qualifying assets under construction is capitalized. The amount
+      capitalized is the lesser of:
+
+      - Actual interest incurred during the period, or
+
+      - Interest computed on the **average accumulated expenditures** using the weighted-average interest rate on
+        outstanding borrowings (or the specific borrowing rate if proceeds were borrowed specifically for the project).
+
+
+      Capitalization begins when expenditures are made and activities to prepare the asset are underway, and ends when
+      the asset is substantially complete.
+  - question: What are the straight-line, double-declining balance, and sum-of-years-digits depreciation methods?
+    answer: >-
+      - **Straight-line**: (Cost − Salvage) ÷ Useful life. Equal expense each year.
+
+      - **Double-declining balance (DDB)**: 2 ÷ Useful life × Book value. Ignores salvage until book value approaches
+        it; never depreciate below salvage.
+
+      - **Sum-of-years-digits (SYD)**: (Cost − Salvage) × (Remaining life ÷ SYD). SYD = n(n+1)/2 for n-year life.
+        Accelerated, but salvage is considered from year 1.
+
+
+      DDB and SYD are accelerated methods that front-load expense. Exam questions often ask you to compute year-2 or
+      partial-year depreciation using each method.
+  - question: What is the units-of-production (activity) depreciation method?
+    answer: >-
+      Under **units-of-production**, depreciation is based on actual usage:
+
+
+      Rate = (Cost − Salvage) ÷ Total estimated units of production
+
+
+      Annual depreciation = Rate × Units produced in the period
+
+
+      This method is appropriate when wear and obsolescence relate more to use than to time (e.g., machinery, oil wells,
+      vehicles). It results in variable expense amounts each period.
+  - question: How is a change in depreciation method or estimate handled?
+    answer: >-
+      A **change in depreciation method** is treated as a **change in accounting estimate effected by a change in
+      accounting principle** and accounted for **prospectively**. No catch-up adjustment is made to prior periods.
+
+
+      A **change in useful life or residual value** is a pure change in estimate, also handled prospectively: spread the
+      remaining book value (less salvage) over the revised remaining life from the date of change forward.
+  - question: How is an asset's carrying amount tested for impairment under ASC 360 (held and used)?
+    answer: >-
+      Under ASC 360, a **two-step impairment test** applies to long-lived assets held and used:
+
+
+      **Step 1 – Recoverability test**: Compare the asset's carrying amount to the sum of undiscounted future cash
+      flows. If carrying amount ≤ undiscounted cash flows, **no impairment**.
+
+
+      **Step 2 – Measurement**: If carrying amount > undiscounted cash flows, measure the impairment loss as carrying
+      amount **minus fair value**. After write-down, the new fair value becomes the cost basis (no subsequent recovery).
+  - question: How are assets classified as held-for-sale and measured?
+    answer: >-
+      An asset (or disposal group) is classified as **held-for-sale** when management commits to a plan to sell, the
+      asset is available for immediate sale, a buyer is actively sought, and sale is probable within **12 months**.
+
+
+      Held-for-sale assets are measured at the **lower of carrying amount or fair value less costs to sell** and are
+      **no longer depreciated**. They are reported separately in the balance sheet, typically as a current asset.
+  - question: What is the difference between finite-lived and indefinite-lived intangible assets?
+    answer: |-
+      - **Finite-lived intangibles** (patents, customer lists, non-compete agreements, software): amortized on a
+        systematic basis over their useful life. Tested for impairment when an event or change in circumstances
+        indicates the carrying amount may not be recoverable.
+
+      - **Indefinite-lived intangibles** (certain trade names, renewable licenses): **not amortized** but tested for
+        impairment at least annually (or more often if triggering events occur). Goodwill follows a similar rule.
+  - question: How is goodwill impairment tested and measured under current GAAP?
+    answer: |-
+      Under ASU 2017-04, goodwill impairment is a **one-step test** at the reporting unit level:
+
+      1. Optionally perform a qualitative assessment (step 0) — if it is more likely than not that fair value exceeds
+         carrying value, stop.
+
+      2. Compare the **fair value of the reporting unit** to its **carrying amount** (including goodwill).
+      3. If carrying amount exceeds fair value, record an impairment loss equal to that excess, capped at the goodwill
+         balance.
+
+
+      Goodwill impairment is **not reversible** under U.S. GAAP.
+  - question: What is the three-stage model for internally developed computer software costs?
+    answer: >-
+      Under ASC 350-40 (internal-use software):
+
+      1. **Preliminary project stage**: costs are **expensed** (research and feasibility activities).
+
+      2. **Application development stage**: **direct costs are capitalized** (coding, testing).
+
+      3. **Post-implementation/operation stage**: costs are **expensed** (training, maintenance).
+
+
+      Under ASC 985-20 (software to be sold), costs are expensed until **technological feasibility** is established,
+      then capitalized until the product is available for release.
+  - question: How are trading securities measured and what happens to unrealized gains/losses?
+    answer: >-
+      **Trading securities** are measured at **fair value** on each reporting date. Unrealized holding gains and losses
+      are reported in **net income** (not OCI). Interest and dividends are also included in income.
+
+
+      Trading securities are typically classified as current assets because management intends to sell them in the near
+      term.
+  - question: How are available-for-sale (AFS) securities measured and reported?
+    answer: >-
+      **Available-for-sale securities** are measured at **fair value**, but unrealized holding gains and losses are
+      reported in **other comprehensive income (OCI)**, not net income.
+
+
+      When sold, the cumulative OCI amount is **reclassified (recycled) into net income** as a realized gain or loss.
+      Dividends and interest from AFS securities are recognized in income as earned.
+  - question: How is an other-than-temporary impairment (OTTI) recognized for debt securities?
+    answer: >-
+      For an AFS or held-to-maturity **debt security** with a fair value below amortized cost, if the entity intends to
+      sell (or more likely than not will be required to sell), the **full impairment** is recognized in income.
+
+
+      If the entity does **not** intend to sell, the impairment is split:
+
+      - **Credit loss component** → income
+
+      - **Non-credit component** → OCI
+
+
+      Subsequent recovery of credit losses on held-to-maturity securities may be recognized under the current expected
+      credit loss (CECL) model.
+  - question: How are held-to-maturity (HTM) securities measured?
+    answer: >-
+      **HTM securities** (debt instruments only) are measured at **amortized cost** using the effective-interest method.
+      Unrealized fair value changes are **not reported**. To qualify as HTM, management must have the positive intent
+      and ability to hold them to maturity.
+
+
+      Transferring out of HTM to AFS is rare and can trigger a reclassification of the unrealized gain/loss into OCI.
+      Frequent sales from HTM call into question the classification and may "taint" the portfolio.
+  - question: How does the equity method work when the investee reports net income and pays dividends?
+    answer: >-
+      Under the **equity method**:
+
+      - Investor records its share of investee's **net income**: Debit Investment; Credit Investment Income.
+
+      - Dividends received **reduce the investment** account: Debit Cash; Credit Investment. Dividends are a return of
+        capital, not income.
+
+
+      If an investee has OCI items, the investor records its proportionate share in its own OCI. The investment account
+      on the investor's books rises with income and falls with dividends/losses.
+  - question: What is the difference between current and long-term classification of liabilities?
+    answer: >-
+      A liability is **current** if it is expected to be settled within **one year or the operating cycle**, whichever
+      is longer. Obligations settleable on demand or that are due within 12 months are current unless refinanced on a
+      long-term basis before the financial statements are issued.
+
+
+      A key rule: if a company **violates a debt covenant** and the lender can demand repayment, the debt is
+      reclassified as current unless a waiver is obtained before the balance sheet date.
+  - question: How are bonds issued at a premium or discount subsequently measured?
+    answer: >-
+      Bonds are initially recorded at **proceeds (present value)**. The difference between face and proceeds is a
+      premium (proceeds > face) or discount (proceeds < face).
+
+
+      Using the **effective-interest method**, periodic interest expense = carrying amount × market rate. Amortization
+      adjusts the carrying approach toward face value. Premium amortization reduces interest expense below the coupon;
+      discount amortization increases interest expense above the coupon. At maturity, carrying amount = face value.
+  - question: How is the effective-interest method applied to bond amortization?
+    answer: >-
+      Each period:
+
+      1. **Interest expense** = Beginning carrying amount × Effective (market) interest rate.
+
+      2. **Cash paid** = Face value × Stated (coupon) rate.
+
+      3. **Amortization** = Difference between interest expense and cash paid.
+
+
+      For a **discount bond**, interest expense > cash, so the carrying amount increases. For a **premium bond**,
+      interest expense < cash, so the carrying amount decreases.
+  - question: What is a loss contingency and when must it be accrued?
+    answer: >-
+      A **loss contingency** is an existing condition with an uncertain outcome. Under ASC 450, a loss is **accrued**
+      when:
+
+      1. It is **probable** (likely to occur), and
+
+      2. The amount can be **reasonably estimated**.
+
+
+      If both conditions are met, record the **best estimate** (or the minimum of a range if no single amount is
+      better). If only probable but not estimable, or only reasonably possible, **disclose** but do not accrue.
+  - question: What is a gain contingency and how is it treated?
+    answer: >-
+      **Gain contingencies** are generally **not accrued** under GAAP (conservatism). They are **disclosed** when it is
+      probable that a gain has been realized so that users are not misled.
+
+
+      Unlike loss contingencies, there is no symmetrical accrual rule. The gain is recognized only when the contingency
+      is resolved and realization is virtually certain.
+  - question: What is the difference between an operating lease and a finance lease under ASC 842?
+    answer: >-
+      A lessee classifies a lease as **finance** if any one criterion is met: transfer of ownership, purchase option the
+      lessee is reasonably certain to exercise, lease term is a major part of economic life, present value of payments
+      is substantially all the fair value, or the asset is specialized with no alternative use to the lessor.
+
+
+      **Finance lease**: front-loaded expense (amortization of ROU asset + interest on lease liability). **Operating
+      lease**: single straight-line lease cost. Both require a right-of-use asset and lease liability on the balance
+      sheet.
+  - question: How is the right-of-use (ROU) asset initially measured by a lessee?
+    answer: >-
+      The ROU asset equals the **initial lease liability** plus any initial direct costs incurred by the lessee, plus
+      any prepaid lease payments, minus any lease incentives received.
+
+
+      The lease liability is measured at the **present value of remaining lease payments** discounted at the rate
+      implicit in the lease (or the lessee's incremental borrowing rate if the implicit rate is not readily
+      determinable). Short-term leases (≤ 12 months) may be exempted from balance sheet recognition.
+  - question: What are the components of shareholders' equity on the balance sheet?
+    answer: |-
+      Shareholders' equity typically consists of:
+      - **Common stock** (par value × shares issued)
+      - **Additional paid-in capital (APIC)** — proceeds above par
+      - **Retained earnings** — cumulative net income minus dividends declared
+      - **Accumulated other comprehensive income (AOCI)** — unrealized gains/losses on AFS securities, hedges,
+        pension adjustments, foreign currency translation
+
+      - **Treasury stock** — contra-equity, shares repurchased
+
+      Noncontrolling interest is also part of consolidated equity in consolidated statements.
+  - question: What journal entries are made when a company declares and pays a cash dividend?
+    answer: >-
+      **Declaration date**: Debit Retained Earnings (or Dividends Declared); Credit Dividends Payable.
+
+      **Record date**: No entry; only establishes who will receive the dividend.
+
+      **Payment date**: Debit Dividends Payable; Credit Cash.
+
+
+      Note: dividends reduce retained earnings, not net income. They are not an expense. Dividends on preferred stock
+      must be deducted from net income when computing earnings per share available to common shareholders.
+  - question: How are stock dividends and stock splits recorded?
+    answer: |-
+      - **Small stock dividend (< 20–25%)**: Fair value transferred from retained earnings to common stock (par) and
+        APIC. Total equity unchanged; per-share book value decreases.
+
+      - **Large stock dividend (≥ 20–25%)**: Par value transferred from retained earnings to common stock. No APIC
+        change.
+
+      - **Stock split**: Par value per share decreases proportionally; shares increase. No dollar change to any equity
+        account (memorandum entry only).
+
+
+      In all cases, total equity and total assets remain unchanged.
+  - question: What is book value per share of common stock and how is it calculated?
+    answer: >-
+      **Book value per share** = (Total shareholders' equity − Preferred equity) ÷ Common shares outstanding.
+
+
+      Preferred equity in this context is the liquidation preference for preferred stock plus any dividends in arrears
+      (for cumulative preferred). Book value per share is a balance sheet measure and differs from market price.
+
+
+      It is tested in ratio analysis questions and also in EPS context when preferred dividends must be subtracted from
+      income.
+  - question: How are dividends in arrears on cumulative preferred stock disclosed?
+    answer: >-
+      Dividends in arrears on **cumulative preferred stock** are **not accrued as a liability** until declared. However,
+      they must be **disclosed** in the notes to the financial statements.
+
+
+      When computing EPS, cumulative preferred dividends (whether or not declared) reduce income available to common
+      shareholders. For noncumulative preferred, only **declared** dividends reduce income available to common.
+  - question: What is the measurement of convertible bonds at issuance under U.S. GAAP?
+    answer: >-
+      Under U.S. GAAP (ASC 470-20, post-ASU 2020-06 transition), most convertible instruments are recorded as a **single
+      liability instrument** without separating the equity (conversion) component. The full proceeds are allocated to
+      the liability.
+
+
+      Before ASU 2020-06, some convertible bonds required bifurcation into debt and equity components; after adoption,
+      that bifurcation is eliminated for most instruments. The exam may test both the old and new models.
+  - question: How are deferred revenues (contract liabilities) reported on the balance sheet?
+    answer: >-
+      **Deferred revenue** (contract liability under ASC 606) represents cash received before performance obligations
+      are satisfied. It is classified as a **current or long-term liability** based on when the related performance
+      obligation is expected to be fulfilled.
+
+
+      As revenue is earned over time, deferred revenue is reduced and revenue recognized. Common examples: gift cards,
+      subscriptions, advance payments, and software maintenance contracts.
+  - question: What is the difference between accounts payable and accrued liabilities?
+    answer: |-
+      - **Accounts payable**: Obligations for goods or services already received from vendors, supported by invoices.
+        Part of the normal trade payable cycle.
+
+      - **Accrued liabilities**: Amounts owed but not yet invoiced or paid at period-end (e.g., accrued wages, accrued
+        interest payable, accrued warranty costs). Recognized through adjusting entries to match expenses to the period.
+
+
+      Both are current liabilities; together they form the bulk of current operating obligations on a balance sheet.
+  - question: How are warranty obligations estimated and recorded?
+    answer: >-
+      When a product is sold with a warranty, GAAP requires accrual of the **estimated warranty liability** at the time
+      of sale under the **assurance-type warranty** model (ASC 460):
+
+
+      - Record: Debit Warranty Expense; Credit Estimated Warranty Liability.
+
+      - As actual warranty claims occur: Debit Estimated Warranty Liability; Credit Cash/Parts/Labor.
+
+
+      The estimate is based on historical experience and expected future costs. If a warranty is a **separate service
+      warranty** (extended warranty sold separately), it is treated as a distinct performance obligation under ASC 606.
+  - question: How is a note payable with imputed interest recorded?
+    answer: >-
+      When a note is issued at face and the stated rate is below market, or when a non-interest-bearing note is issued
+      for cash, GAAP requires recording the note at **present value** using the market rate:
+
+
+      - Record: Debit Cash (PV of note); Debit Discount on Note Payable; Credit Notes Payable (face).
+
+      - Each period, amortize the discount using the effective-interest method: Debit Interest Expense; Credit Discount
+        on Note Payable.
+
+
+      The discount reduces the net carrying value of the note until it equals face at maturity.
+  - question: What is a compensated absence and when must it be accrued?
+    answer: >-
+      Under ASC 710, a liability for **compensated absences** (vacation, sick days) must be accrued if:
+
+      1. The obligation is attributable to employee services already rendered.
+
+      2. The rights vest or accumulate.
+
+      3. Payment is probable.
+
+      4. The amount can be reasonably estimated.
+
+
+      Vested vacation pay is always accrued. Sick pay that does not accumulate or vest (e.g., use-it-or-lose-it current
+      year) is accrued only if it accumulates across periods.
+  - question: What is the accounting for asset retirement obligations (AROs)?
+    answer: >-
+      When an entity has a legal obligation to retire a long-lived asset, an **ARO** is recognized under ASC 410:
+
+      - **Liability**: Present value of estimated future dismantlement/restoration costs.
+
+      - **Asset**: An equal amount is added to the carrying value of the related long-lived asset (ARO asset).
+
+
+      The ARO liability accretes (increases) over time using the credit-adjusted risk-free rate, recognized as accretion
+      expense. The ARO asset portion is depreciated over the asset's useful life.
+  - question: How is debt classified when a long-term loan covenant is violated?
+    answer: >-
+      If a company violates a debt covenant before the balance sheet date, the debt must be reclassified as **current**
+      unless the lender grants a **waiver** curing the violation before the financial statements are issued. A waiver
+      obtained after the balance sheet date but before issuance may allow long-term classification only under certain
+      conditions.
+
+
+      This is a common FAR trick: even if the company plans to refinance, the key is whether a binding refinancing
+      agreement exists before the balance sheet date (or issuance date per ASC 470-10).
+  - question: How are debt issuance costs presented and amortized?
+    answer: >-
+      Under ASC 835, **debt issuance costs** (underwriting fees, legal costs) are presented as a **direct deduction from
+      the face amount** of the related debt (contra-liability), similar to a discount. They are amortized over the
+      debt's term using the **effective-interest method** (or straight-line if immaterial).
+
+
+      Issuance costs for revolving credit facilities may still be presented as an asset (deferred financing cost) and
+      amortized straight-line over the commitment period.
+  - question: What is the current ratio and how does it relate to working capital analysis of the balance sheet?
+    answer: >-
+      **Current ratio** = Current assets ÷ Current liabilities. A ratio above 1 indicates positive working capital.
+
+
+      **Working capital** = Current assets − Current liabilities. Exam questions ask how specific transactions change
+      these metrics. For example: collecting a receivable leaves current ratio unchanged; paying a current liability
+      with cash increases the current ratio when it is > 1 but decreases it when < 1.
+  - question: What is the quick (acid-test) ratio and what does it exclude?
+    answer: >-
+      **Quick ratio** = (Cash + Short-term investments + Net receivables) ÷ Current liabilities.
+
+
+      It excludes **inventory** and **prepaid expenses** because they are less liquid. A quick ratio of 1.0 means the
+      company can pay all current liabilities from its most liquid assets without relying on inventory sales.
+
+
+      The exam often contrasts the current ratio (includes inventory) with the quick ratio (excludes inventory) to test
+      understanding of liquidity measurement.
+  - question: What is the difference between authorized, issued, and outstanding shares?
+    answer: >-
+      - **Authorized shares**: Maximum shares a corporation may issue per its articles of incorporation.
+
+      - **Issued shares**: Shares that have been sold or distributed to shareholders.
+
+      - **Outstanding shares**: Issued shares **minus treasury shares** (shares repurchased but not retired).
+
+
+      Earnings per share uses weighted-average **outstanding** shares. Dividends are paid on **outstanding** shares. The
+      par value recorded equals **issued** shares × par value per share.
+  - question: How is par value versus stated value treated in stockholders' equity?
+    answer: >-
+      When shares are issued, the **par (or stated) value** is recorded in the common stock account, and any amounts
+      received **above par** go into **additional paid-in capital (APIC)**.
+
+
+      Par value has little economic significance today (often $0.01 or $0.001 per share) but is a legal concept
+      establishing the minimum price below which shares cannot be issued. No-par stock with a stated value follows the
+      same accounting logic.
+  - question: What are the effects of a 2-for-1 stock split on EPS and book value per share?
+    answer: >-
+      In a **2-for-1 stock split**: shares double, par value per share halves, total par value is unchanged, and no
+      equity accounts change in dollar terms (memorandum entry).
+
+
+      - **EPS**: Drops by half (more shares, same income).
+
+      - **Book value per share**: Drops by half (more shares, same total equity).
+
+      - **Market price per share**: Theoretically halves to keep total market cap constant.
+
+
+      For EPS calculations, prior period shares outstanding and EPS must be **retroactively restated** for stock splits
+      and stock dividends.
+  - question: How does the purchase of treasury stock under the cost method affect stockholders' equity?
+    answer: >-
+      When treasury stock is purchased, **total equity decreases** by the cost paid. The treasury stock account is a
+      **contra-equity** account (debit balance) that reduces total equity.
+
+
+      If treasury stock is subsequently reissued above cost: Credit Treasury Stock at cost; Credit APIC-Treasury Stock
+      for the excess. If reissued below cost: debit APIC-Treasury Stock (to zero), then debit Retained Earnings for any
+      remaining shortfall. No gain or loss is reported in income.
+  - question: What is a quasi-reorganization and when is it used?
+    answer: >-
+      A **quasi-reorganization** is an accounting procedure that allows a company with a deficit in retained earnings to
+      eliminate the deficit by restating assets to fair value, reducing paid-in capital, and "fresh-starting" with a
+      zero retained earnings balance.
+
+
+      It requires shareholder approval and is disclosed. The company cannot pay dividends until new retained earnings
+      accumulate after the quasi-reorganization date. It is a rare but tested concept on FAR.
+  - question: How are investments in joint ventures accounted for under U.S. GAAP?
+    answer: >-
+      Investments in **joint ventures** where the investor has **joint control** (typically 50/50 or shared governance)
+      are generally accounted for using the **equity method** under U.S. GAAP. There is no proportionate consolidation
+      for U.S. GAAP (unlike IFRS in some situations).
+
+
+      The equity method applies: the investment account increases with the investor's share of income and decreases with
+      dividends. The investment is also tested for impairment of the remaining carrying value.
+  - question: How are financial instruments with characteristics of both debt and equity classified?
+    answer: >-
+      Mandatorily redeemable preferred stock and certain financial instruments with **obligations to transfer cash or
+      assets** are classified as **liabilities** under ASC 480 because they require eventual redemption regardless of
+      equity appearance.
+
+
+      The classification question focuses on whether the issuer can **unconditionally avoid** delivering cash (equity)
+      or must deliver cash (liability). Convertible notes and preferred stock with discretionary dividends generally
+      start as equity until a triggering event.
+  - question: What is the accounting for a stock buyback program using the retirement method?
+    answer: |-
+      Under the **retirement method** (par value method), when treasury shares are formally retired:
+      1. Debit Common Stock (par × retired shares).
+      2. Debit APIC — amount originally received above par for those shares.
+      3. Credit Cash (cost of repurchase).
+      4. Any excess of repurchase price over original proceeds is charged to Retained Earnings; any shortfall increases
+         APIC from retirements.
+
+
+      Unlike the cost method, the retirement method removes the shares permanently from equity accounts.
+  - question: What is accumulated other comprehensive income (AOCI) and how does it differ from retained earnings?
+    answer: >-
+      **AOCI** accumulates items that bypass the income statement but are recognized in comprehensive income:
+
+      - Unrealized gains/losses on AFS debt securities
+
+      - Effective portion of cash flow hedge gains/losses
+
+      - Foreign currency translation adjustments
+
+      - Pension prior service costs and actuarial gains/losses not yet amortized
+
+
+      Unlike **retained earnings** (which accumulates net income after dividends), AOCI holds items that may ultimately
+      be "recycled" into net income when the underlying transaction is realized or reclassified.
+  - question: How is the equity method investment tested for impairment?
+    answer: >-
+      If there is evidence of a loss in value of an equity method investment that is **other than temporary**, the
+      investor must write the investment down to fair value and recognize the loss in income.
+
+
+      Indicators include prolonged operating losses by the investee, bankruptcy filing, or inability to raise capital.
+      Unlike goodwill impairment, post-write-down recovery is **not recognized** until the investment is sold. The new
+      lower amount becomes the cost basis going forward.
+  - question: How are mortgages and other secured long-term debts presented on the balance sheet?
+    answer: >-
+      Long-term debt such as **mortgages** is presented:
+
+      - **Current portion**: the principal payments due within 12 months are classified as current liabilities.
+
+      - **Long-term portion**: remaining principal due beyond 12 months.
+
+      Unamortized debt issuance costs are presented as a direct deduction from the face. Interest payable is a separate
+      current liability. On the exam, watch for questions that require splitting a mortgage between current and
+      long-term components.
+  - question: What is a variable interest entity (VIE) and when must it be consolidated?
+    answer: >-
+      A **VIE** is an entity where equity investors lack sufficient equity at risk, lack decision-making power, or do
+      not absorb losses/receive benefits in proportion to voting interest. The **primary beneficiary** — the party that
+      (1) has power to direct activities that most significantly affect the VIE's economic performance and (2) absorbs a
+      majority of expected losses or residual returns — must **consolidate** the VIE.
+
+
+      VIE analysis is common in special-purpose entities, leasing arrangements, and joint ventures. FAR tests whether a
+      sponsor must consolidate the VIE even with little or no ownership interest.
+  - question: How are sale-leaseback transactions accounted for by the seller-lessee?
+    answer: >-
+      Under ASC 842, if the transfer qualifies as a sale under ASC 606:
+
+      - Derecognize the asset; recognize a **ROU asset and lease liability** for the leaseback portion.
+
+      - Recognize a **gain or loss** only on the portion of the asset effectively sold (proportional approach).
+
+
+      If the transfer does **not** qualify as a sale (e.g., repurchase option exists), the transaction is treated as a
+      **financing arrangement**; no derecognition occurs.
+  - question: What is the straight-line method for operating lease expense under ASC 842?
+    answer: >-
+      For an **operating lease**, the lessee recognizes a single **straight-line lease cost** over the lease term, even
+      if payments vary (e.g., escalating rents). The lease cost equals total payments divided by the lease term (in
+      periods).
+
+
+      The ROU asset is amortized as the plug to equalize total lease cost, so in early periods the ROU asset decreases
+      by more than the liability. In later periods when liability amortization slows, ROU asset amortization is smaller.
+  - question: How are lease modifications accounted for under ASC 842?
+    answer: >-
+      A **lease modification** is a change in scope or price not part of the original terms. Accounting depends on
+      whether the modification grants a new right-of-use:
+
+      - If the modification grants an **additional ROU asset** and the price is commensurate with market → treat as a
+        **separate (new) lease**.
+
+      - Otherwise → remeasure the existing lease liability at the modified terms and adjust the ROU asset accordingly
+        on the effective date of the modification.
+  - question: What is the accounting treatment for intangible assets acquired in a business combination?
+    answer: >-
+      In a business combination, **identifiable intangible assets** (customer relationships, trade names, technology,
+      non-compete agreements) meeting recognizability criteria are recorded at **fair value** at the acquisition date,
+      separately from goodwill.
+
+
+      They are subsequently amortized if finite-lived, or tested for impairment annually if indefinite-lived. Goodwill
+      is the **residual** — the excess of purchase price over the fair value of all net identifiable assets acquired.
+  - question: What is the accounting for negative goodwill (bargain purchase)?
+    answer: >-
+      If the fair value of net assets acquired exceeds the consideration paid, the acquirer has a **bargain purchase**.
+      Before recognizing negative goodwill, GAAP requires a **reassessment** of all identifiable assets and liabilities
+      to confirm their fair values are accurate.
+
+
+      After reassessment, any remaining excess is recognized immediately as a **gain in net income** on the acquisition
+      date. Negative goodwill is not carried on the balance sheet.
+  - question: What is a classified balance sheet and what makes an asset or liability "current"?
+    answer: >-
+      A **classified balance sheet** separates assets and liabilities into **current** and **noncurrent** categories.
+
+
+      An asset is current if it is expected to convert to cash, be sold, or be consumed within **one year or the
+      operating cycle**, whichever is longer. A liability is current if it is expected to be settled within the same
+      period.
+
+
+      The operating cycle is the time from cash outlay to cash receipt from selling goods or services. For most
+      companies, one year is the operative limit.
+  - question: How do you calculate ending retained earnings?
+    answer: >-
+      **Ending retained earnings** = Beginning retained earnings + Net income (or − Net loss) − Dividends declared.
+
+
+      Corrections of prior-period errors and certain accounting principle changes are recorded as **prior-period
+      adjustments** directly to beginning retained earnings (rather than through current-period income), so the formula
+      may also include: ± Prior-period adjustment (net of tax).
+  - question: How is the operating cycle relevant to the classification of certain assets as current?
+    answer: >-
+      Certain assets tied to the **operating cycle** remain current even if they will not convert to cash within 12
+      months. For example:
+
+      - **Tobacco companies** or **distillers** with multi-year aging inventory may classify it as current because
+        it moves through their operating cycle.
+
+      - **Long-term receivables** arising from normal trade are current if they are within the operating cycle.
+
+
+      Exam questions may describe an industry with a long operating cycle and ask about the proper current/noncurrent
+      classification.
+  - question: How is the debt-to-equity ratio computed and what does it indicate?
+    answer: >-
+      **Debt-to-equity ratio** = Total liabilities ÷ Total stockholders' equity.
+
+
+      A higher ratio indicates greater **financial leverage** and more risk to creditors. Lenders use this ratio as a
+      covenant metric. Analysts may use a modified version: long-term debt ÷ equity (excluding current liabilities) to
+      focus on capital structure leverage.
+
+
+      On FAR, know how specific transactions (e.g., issuing bonds, repurchasing stock, paying dividends) change both the
+      numerator and denominator.
+  - question: What is the return on equity (ROE) ratio and how is it computed?
+    answer: >-
+      **Return on equity (ROE)** = Net income ÷ Average stockholders' equity.
+
+
+      ROE measures how effectively management generates profit from shareholders' investment. The **DuPont
+      decomposition** breaks ROE into: Profit margin × Asset turnover × Financial leverage (equity multiplier).
+
+
+      CPA exam questions may ask you to compute ROE components or explain why ROE changes when net income, dividends, or
+      share repurchases change the average equity balance.
+  - question: How are dividends received from an equity method investee treated in cash flow statements?
+    answer: >-
+      Under the equity method, **dividends received** from the investee are a **return on investment** classified as
+      **operating activities** under U.S. GAAP (because dividends received are generally operating).
+
+
+      The investment income recognized under the equity method (non-cash) is an **add-back** item when reconciling net
+      income to operating cash flows. The actual dividend cash received is reflected in operating activities.
+  - question: What is a decommissioning cost and how does it relate to the cost of PP&E?
+    answer: >-
+      **Decommissioning costs** are obligations to dismantle or restore an asset at the end of its useful life (e.g.,
+      nuclear plant decommissioning, oil well plugging requirements). Under ASC 410-20 (ARO guidance), they are
+      capitalized into the cost of the related asset at their **present value** and depreciated over the useful life.
+
+
+      The offsetting liability (ARO) accretes at the credit-adjusted risk-free rate. Both the capitalized cost (via
+      depreciation) and accretion expense are recognized in the income statement.
+  - question: What is the purpose of the statement of changes in stockholders' equity?
+    answer: >-
+      The **statement of changes in stockholders' equity** (or statement of stockholders' equity) reconciles the
+      beginning and ending balance of each equity component across a period. It shows:
+
+      - Net income and OCI (comprehensive income)
+
+      - Dividends declared
+
+      - Stock issuances, repurchases, and retirements
+
+      - Prior-period adjustments and accounting changes
+
+
+      It is a required financial statement under GAAP and links the income statement, balance sheet, and statement of
+      comprehensive income.
+  - question: What are the disclosure requirements for related-party transactions?
+    answer: >-
+      Under ASC 850, entities must disclose:
+
+      - Nature of the relationship with each related party
+
+      - Description of the transaction (including amounts)
+
+      - Dollar amounts of transactions for each period presented
+
+      - Amounts due to or from related parties and the terms.
+
+
+      Related parties include parent/subsidiary relationships, fellow subsidiaries, entities under common control,
+      principal owners, management, and their immediate family. Key exam point: existence must be disclosed **even if no
+      transactions occurred**.
+  - question: How are borrowing costs on qualifying assets treated differently between U.S. GAAP and IFRS?
+    answer: >-
+      Under U.S. GAAP (ASC 835-20): interest must be capitalized on qualifying assets (those requiring a substantial
+      period to get ready for use). The amount is based on **avoidable interest** using actual borrowings.
+
+
+      Under IFRS (IAS 23): similar requirement — borrowing costs **directly attributable** to acquiring, constructing,
+      or producing a qualifying asset must be capitalized. The scope of qualifying assets is slightly broader under
+      IFRS. On BAR, IFRS differences are tested; on FAR, U.S. GAAP is primary but IFRS comparisons may appear.
+  - question: What is the difference between the cost model and revaluation model for PP&E under IFRS vs. U.S. GAAP?
+    answer: >-
+      Under U.S. GAAP, PP&E is carried at historical cost less accumulated depreciation and impairment. The
+      **revaluation model** is **not permitted** under U.S. GAAP.
+
+
+      Under IFRS (IAS 16), entities may choose the **cost model** or the **revaluation model**. Under revaluation,
+      assets are carried at fair value at the revaluation date less subsequent depreciation. Increases go to
+      **revaluation surplus** (OCI/equity); decreases first reduce any existing surplus, then hit income. BAR candidates
+      should know this IFRS/GAAP difference.
+  - question: What is an investment property and how is it measured under IFRS compared to U.S. GAAP?
+    answer: >-
+      **Investment property** is property held to earn rental income or for capital appreciation, not for the entity's
+      own use or sale in the ordinary course of business.
+
+
+      Under U.S. GAAP, there is **no separate investment property standard**; such assets are accounted for as PP&E at
+      cost. Under IFRS (IAS 40), entities may choose the **cost model** or the **fair value model**. Under the fair
+      value model, changes in fair value flow through **profit or loss** each period with no depreciation. This is a key
+      BAR exam distinction.
+  - question: What is the measurement of biological assets under IFRS and how does it differ from U.S. GAAP?
+    answer: >-
+      Under IFRS (IAS 41), **biological assets** (living animals and plants) are measured at **fair value less costs to
+      sell**, with changes recognized in profit or loss. Agricultural produce at point of harvest is also measured at
+      fair value less costs to sell.
+
+
+      U.S. GAAP has **no equivalent general standard** for biological assets; they are typically measured at cost. BAR
+      tests IFRS recognition for agricultural and biological assets as one of the IFRS vs. GAAP differences that FAR/BAR
+      candidates should be aware of.
+  - question: How is the balance sheet (statement of financial position) structured differently under IFRS versus U.S. GAAP?
+    answer: >-
+      Under U.S. GAAP, assets are typically listed in **order of liquidity** (most liquid first: cash, receivables,
+      inventory, PP&E). Current assets appear before noncurrent assets.
+
+
+      Under IFRS, entities have more flexibility. Many present assets in **reverse order of liquidity** (PP&E first,
+      cash last) and may use a **net asset** presentation (assets minus liabilities). IFRS also uses the term "statement
+      of financial position." BAR tests these presentational differences; FAR focuses on the U.S. GAAP format. and
+      liability-classified awards.

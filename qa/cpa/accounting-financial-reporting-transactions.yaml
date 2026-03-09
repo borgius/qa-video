@@ -1,0 +1,1175 @@
+config:
+  name: "CPA FAR/BAR: Accounting & Financial Reporting — Transactions and Technical Accounting"
+  description: Revenue recognition, leases, income taxes, fair value, contingencies, subsequent events, accounting changes
+    and errors, business combinations, goodwill, derivatives, and BAR technical add-ons.
+  questionDelay: 1
+  answerDelay: 1
+  youtube:
+    videoId: aRQMZfJmXOc
+    url: https://youtu.be/aRQMZfJmXOc
+    uploadedAt: 2026-03-08T13:48:13.863Z
+    privacy: unlisted
+    contentSha: ce83206f
+questions:
+  - question: What is the ASC 606 five-step revenue recognition model?
+    answer: |-
+      The five-step model is:
+
+      1. **Identify the contract with the customer**
+      2. **Identify the performance obligations**
+      3. **Determine the transaction price**
+      4. **Allocate the transaction price to the performance obligations**
+      5. **Recognize revenue when or as each performance obligation is satisfied**
+
+      This is one of the highest-yield topics in FAR and BAR. If you get lost, return to those five steps.
+  - question: What makes a contract valid under ASC 606?
+    answer: |-
+      A contract exists for revenue recognition purposes when:
+
+      - the parties have approved the contract
+      - each party's rights can be identified
+      - payment terms can be identified
+      - the contract has commercial substance
+      - collection is probable
+
+      If those criteria are not met, revenue usually cannot be recognized yet under ASC 606.
+  - question: What is a performance obligation?
+    answer: >-
+      A performance obligation is a promise to transfer to the customer a **distinct** good or service, or a series of
+      distinct goods or services that are substantially the same and follow the same transfer pattern.
+
+
+      A good or service is distinct if:
+
+
+      - the customer can benefit from it on its own or with other readily available resources, and
+
+      - it is separately identifiable from other promises in the contract
+
+
+      FAR simulations often test whether a bundle should be separated into multiple obligations or treated as one.
+  - question: How is the transaction price determined under ASC 606?
+    answer: >-
+      The transaction price is the amount of consideration the entity expects to receive, adjusted for items such as:
+
+
+      - variable consideration
+
+      - significant financing component
+
+      - noncash consideration
+
+      - consideration payable to a customer
+
+
+      Variable consideration is included only to the extent that it is probable a significant revenue reversal will not
+      occur when the uncertainty is resolved.
+  - question: When is revenue recognized over time rather than at a point in time?
+    answer: >-
+      Revenue is recognized **over time** if one of the following applies:
+
+
+      - the customer simultaneously receives and consumes benefits as the entity performs
+
+      - the entity's performance creates or enhances an asset the customer controls as it is created
+
+      - the asset has no alternative use to the entity and the entity has an enforceable right to payment for
+      performance completed to date
+
+
+      If none of these criteria are met, revenue is generally recognized **at a point in time**.
+  - question: How are contract assets, contract liabilities, and receivables different?
+    answer: >-
+      - A **receivable** exists when the entity has an unconditional right to consideration, subject only to passage of
+      time.
+
+      - A **contract asset** exists when the entity has performed but the right to payment is conditional on something
+      other than time.
+
+      - A **contract liability** exists when the customer has paid or payment is due before the entity satisfies the
+      performance obligation.
+
+
+      This classification issue is heavily tested in modern revenue questions.
+  - question: How are contract acquisition and fulfillment costs treated?
+    answer: >-
+      **Incremental costs of obtaining a contract** are capitalized if the entity expects to recover them, such as
+      certain sales commissions.
+
+
+      **Fulfillment costs** may be capitalized if they:
+
+
+      - relate directly to a contract
+
+      - generate or enhance resources that will be used to satisfy performance obligations
+
+      - are expected to be recovered
+
+
+      Otherwise, such costs are expensed as incurred.
+  - question: How do contributions differ from exchange transactions for not-for-profits?
+    answer: >-
+      A **contribution** is a nonreciprocal transfer, meaning the resource provider does not receive commensurate value
+      in return. An **exchange transaction** is reciprocal, like a customer purchase.
+
+
+      This distinction matters because contributions follow contribution guidance, while exchange transactions follow
+      the revenue recognition model under ASC 606.
+  - question: What is the difference between an operating lease and a finance lease for a lessee?
+    answer: >-
+      Both generally create a right-of-use asset and lease liability, but they differ in expense recognition.
+
+
+      - **Finance lease** expense is front-loaded because it reflects separate interest expense and amortization.
+
+      - **Operating lease** usually results in a more even single lease expense over time.
+
+
+      Classification depends on criteria such as transfer of ownership, bargain purchase option, lease term relative to
+      economic life, present value of payments relative to fair value, and whether the asset is specialized.
+  - question: How is a lease liability initially measured?
+    answer: >-
+      The lease liability is initially measured at the **present value of lease payments** not yet paid, discounted
+      using the rate implicit in the lease if readily determinable, or otherwise the lessee's incremental borrowing
+      rate.
+
+
+      Lease payments may include fixed payments, certain variable payments based on an index or rate, amounts probable
+      under residual value guarantees, exercise price of a reasonably certain purchase option, and penalties for
+      terminating when applicable.
+  - question: What is special about sale-leaseback accounting?
+    answer: >-
+      In a sale-leaseback, the seller-lessee first determines whether the transfer of the asset qualifies as a **sale**.
+      If it does, sale accounting is recognized and the leaseback is accounted for separately. If not, the transaction
+      is generally treated as a financing arrangement rather than a true sale.
+
+
+      CPA questions often test whether control transferred under revenue recognition principles.
+  - question: What are deferred tax assets and deferred tax liabilities?
+    answer: >-
+      Deferred taxes arise from **temporary differences** between book basis and tax basis, as well as certain
+      carryforwards.
+
+
+      - **Deferred tax liability (DTL)** usually reflects taxable amounts in future periods
+
+      - **Deferred tax asset (DTA)** usually reflects deductible amounts in future periods or future tax benefits such
+      as NOL carryforwards
+
+
+      The core formula is temporary difference × enacted future tax rate.
+  - question: What is a valuation allowance for deferred tax assets?
+    answer: >-
+      A deferred tax asset is reduced by a **valuation allowance** if it is more likely than not that some portion or
+      all of the DTA will not be realized.
+
+
+      This is a high-yield judgment topic. Candidates should evaluate positive and negative evidence about future
+      taxable income, reversal of taxable temporary differences, tax planning strategies, and carryforward periods.
+  - question: How are uncertain tax positions accounted for?
+    answer: >-
+      Uncertain tax positions are evaluated using a recognition and measurement approach. Broadly, a tax benefit is
+      recognized only if it is more likely than not to be sustained on examination based on technical merits. The amount
+      recognized is then measured based on the largest amount of tax benefit with sufficient likelihood of being
+      realized.
+
+
+      BAR may test this more than FAR, but the concept is fair game.
+  - question: What is the fair value hierarchy under ASC 820?
+    answer: |-
+      The fair value hierarchy prioritizes valuation inputs into three levels:
+
+      - **Level 1** — quoted prices in active markets for identical assets or liabilities
+      - **Level 2** — observable inputs other than quoted Level 1 prices
+      - **Level 3** — unobservable inputs based on the entity's own assumptions
+
+      The hierarchy focuses on the **inputs used**, not the importance of the item itself.
+  - question: What valuation approaches are used in fair value measurement?
+    answer: |-
+      The three broad approaches are:
+
+      - **Market approach** — uses prices and market transactions for identical or comparable items
+      - **Income approach** — converts future amounts to a present value amount
+      - **Cost approach** — based on current replacement cost for the service capacity of an asset
+
+      The company should maximize observable inputs and minimize unobservable inputs.
+  - question: How are subsequent events classified after year-end?
+    answer: >-
+      Subsequent events are generally classified as:
+
+
+      - **recognized / adjusting events** — provide additional evidence about conditions that existed at the balance
+      sheet date, so the statements are adjusted
+
+      - **nonrecognized / nonadjusting events** — relate to conditions that arose after the balance sheet date, so they
+      are disclosed if material but not adjusted
+
+
+      Example: settlement of litigation that confirms a year-end obligation may be adjusting; a major fire after
+      year-end is usually nonadjusting.
+  - question: What is the difference between a change in accounting principle, a change in estimate, and correction of an error?
+    answer: >-
+      - **Change in accounting principle** — usually accounted for retrospectively unless impracticable or unless GAAP
+      requires another treatment
+
+      - **Change in accounting estimate** — accounted for prospectively in current and future periods
+
+      - **Correction of an error** — prior-period adjustment with restatement of prior statements when presented
+
+
+      Classic exam trap: a change in depreciation method is treated as a **change in estimate effected by a change in
+      principle**, so it is handled prospectively.
+  - question: How is a business combination accounted for under the acquisition method?
+    answer: >-
+      The acquisition method generally requires:
+
+
+      - identifying the acquirer
+
+      - determining the acquisition date
+
+      - recognizing and measuring identifiable assets acquired and liabilities assumed at fair value
+
+      - recognizing goodwill or a bargain purchase gain
+
+
+      Acquisition-related costs such as legal and advisory fees are generally expensed rather than included in the
+      purchase price.
+  - question: How is goodwill calculated in a business combination?
+    answer: >-
+      Goodwill is generally calculated as:
+
+
+      **Consideration transferred + fair value of any noncontrolling interest + fair value of any previously held
+      interest - fair value of identifiable net assets acquired**
+
+
+      If this calculation is negative after reassessing measurements, a **bargain purchase gain** is recognized in
+      earnings.
+  - question: How is goodwill treated after acquisition?
+    answer: >-
+      Goodwill is **not amortized**. Instead, it is tested for impairment at the reporting unit level. If the carrying
+      amount of the reporting unit exceeds its fair value, an impairment loss may be recognized.
+
+
+      BAR may test goodwill impairment more deeply than FAR, including reporting unit concepts and triggering events.
+  - question: What is derivative accounting trying to accomplish?
+    answer: >-
+      Derivatives are generally recognized on the balance sheet at **fair value**. The accounting then depends on
+      whether the derivative is designated in a qualifying hedge relationship and what type of hedge it is.
+
+
+      Without hedge accounting, gains and losses often go directly to earnings. With hedge accounting, timing of gain or
+      loss recognition may be aligned with the hedged item.
+  - question: What are the main types of hedges tested on the CPA exam?
+    answer: >-
+      The main hedge types are:
+
+
+      - **fair value hedge** — hedges exposure to changes in fair value of a recognized asset, liability, or firm
+      commitment
+
+      - **cash flow hedge** — hedges exposure to variability in expected future cash flows
+
+      - **net investment hedge** — hedges a foreign operation investment exposure
+
+
+      High-yield point: effective cash flow hedge gains and losses are generally recorded in **OCI** first and later
+      reclassified into earnings when the hedged cash flows affect earnings.
+  - question: How are research and development costs usually treated?
+    answer: >-
+      Research and development costs are generally **expensed as incurred**, subject to limited exceptions. This is a
+      favorite conceptual question because students often want to capitalize them.
+
+
+      BAR may explore exceptions more deeply, especially where GAAP has specific software or other technical guidance.
+  - question: What should a candidate know about pension and other postretirement benefit basics?
+    answer: >-
+      At a high level, you should know the difference between **defined contribution** and **defined benefit** plans.
+
+
+      - In a defined contribution plan, the employer's obligation is generally limited to the contribution.
+
+      - In a defined benefit plan, accounting focuses on the projected benefit obligation, plan assets, funded status,
+      pension expense components, and certain OCI items.
+
+
+      BAR is more likely to test the technical details, but FAR candidates should know the basic framework.
+  - question: What are the components of pension expense under a defined benefit plan?
+    answer: |-
+      Pension expense for a **defined benefit plan** under ASC 715 consists of:
+      1. **Service cost**: present value of benefits earned by employees in the current period.
+      2. **Interest cost**: increase in projected benefit obligation (PBO) due to passage of time.
+      3. **Expected return on plan assets**: reduces pension expense (subtracted).
+      4. **Amortization of prior service cost**: from OCI into expense over average remaining service life.
+      5. **Amortization of net actuarial gain/loss**: using the "corridor" approach or full recognition.
+      Actuarial gains/losses and prior service costs are initially recorded in OCI and amortized into income over time.
+  - question: What is the projected benefit obligation (PBO) and how does it differ from the accumulated benefit obligation
+      (ABO)?
+    answer: >-
+      - **PBO**: present value of all future benefits earned to date, assuming **future salary increases** as
+        applicable. This is the primary measure used in accounting for the funded status.
+
+      - **ABO**: present value of future benefits earned to date based on **current salary levels** (no future
+        salary projection).
+
+
+      The PBO is larger than the ABO for most plans with salary-linked benefits. The **funded status** reported on the
+      balance sheet = Plan assets − PBO. If plan assets < PBO, a net pension liability is reported; if plan assets >
+      PBO, a net pension asset (subject to ceiling tests).
+  - question: How is the funded status of a pension plan presented on the balance sheet?
+    answer: >-
+      Under ASC 715-20, the **funded status** (plan assets at fair value minus PBO) must be recognized as a net pension
+      asset or liability on the balance sheet. There is no "smoothing" allowed on the balance sheet.
+
+
+      Prior service costs, net actuarial gains/losses, and transition amounts not yet recognized in income are reported
+      in **accumulated other comprehensive income (AOCI)**. They are subsequently amortized from AOCI into pension
+      expense.
+  - question: What is an operating lease liability remeasurement event under ASC 842?
+    answer: >-
+      A lessee must **remeasure** its lease liability when there is a lease modification, a reassessment of the lease
+      term, or a change in the likelihood of exercising a purchase option or variable lease payments based on an
+      index/rate.
+
+
+      The liability is recalculated at the revised discount rate and remaining payments. The ROU asset is adjusted by
+      the same amount. If the ROU asset is reduced to zero but a liability remains, the difference is recognized as a
+      gain. Remeasurement events are distinct from routine lease modifications that constitute a separate new lease.
+  - question: How is deferred tax expense (benefit) calculated for a period?
+    answer: >-
+      **Deferred tax expense/benefit** = Change in deferred tax liabilities − Change in deferred tax assets (adjusted
+      for the valuation allowance change).
+
+
+      If a deferred tax liability increases, tax expense increases (future taxes expected). If a deferred tax asset
+      increases, tax expense decreases (future deductions recognized). The total income tax expense = current tax
+      expense (taxes payable this year) + deferred tax expense (benefit).
+  - question: What temporary differences give rise to deferred tax liabilities?
+    answer: >-
+      A **deferred tax liability (DTL)** arises when taxable income will be higher than pretax income in a future period
+      — i.e., book income exceeds taxable income **now** due to timing. Common examples:
+
+      - Accelerated depreciation for tax (MACRS) vs. straight-line for book.
+
+      - Installment sales recognized for book in full at sale but for tax only as payments are received.
+
+      - Capitalized costs for book that are immediately deducted for tax.
+
+
+      DTLs represent future taxes owed and are a liability on the balance sheet.
+  - question: What temporary differences give rise to deferred tax assets?
+    answer: >-
+      A **deferred tax asset (DTA)** arises when taxable income will be lower than pretax income in a future period —
+      i.e., tax deductions will exceed book expenses in a future year. Common examples:
+
+      - Estimated warranty liabilities accrued for book but deducted for tax only when paid.
+
+      - Bad debt allowance is a book deduction now; the specific write-off is the tax deduction.
+
+      - Net operating loss carryforwards (NOLs): create a DTA equal to the NOL × tax rate.
+
+      - Advance payments taxed this year but recognized in book income in a future period.
+  - question: What is a valuation allowance and when is it required for deferred tax assets?
+    answer: >-
+      A **valuation allowance** reduces a deferred tax asset to the amount more likely than not (>50%) to be realized.
+      It is required when it is more likely than not that some or all of the DTA will not be realized.
+
+
+      Factors evidence: history of losses, expiring carryforward periods, book-tax differences reversing at unfavorable
+      times, and future taxable income projections. Establishing or increasing a valuation allowance increases income
+      tax expense; releasing it decreases tax expense (benefit).
+  - question: How are uncertain tax positions (UTPs) recognized and measured under ASC 740-10?
+    answer: >-
+      A tax benefit from an uncertain position is recognized only if it is **more likely than not (>50%)** to be
+      sustained on its technical merits upon examination ("recognition threshold").
+
+
+      If recognized, the benefit is measured as the **largest amount more than 50% likely to be realized** upon
+      settlement — a cumulative probability approach. Unrecognized tax benefits are disclosed as a liability (UTB
+      liability). Interest and penalties may be classified as income tax expense or operating expense per policy.
+  - question: What is the intraperiod tax allocation and how does it work?
+    answer: |-
+      **Intraperiod allocation** assigns income tax expense (or benefit) to the components of income in the same period:
+      - Continuing operations → allocated income tax expense.
+      - OCI items → tax effects remain in OCI (each OCI component is shown net of tax or gross with separate tax
+        disclosure).
+
+      - Discontinued operations → tax effects allocated to that category.
+      - Prior-period adjustments (error corrections) → tax effects included in the adjustment to retained earnings.
+
+      This ensures each section of the financial statements reflects its fair share of the tax burden.
+  - question: What is the ASC 820 fair value definition and key concepts?
+    answer: >-
+      Under ASC 820, **fair value** is the **exit price** — the price that would be received to sell an asset or paid to
+      transfer a liability in an **orderly transaction** between **market participants** at the measurement date.
+
+
+      Key concepts: (1) it is market-based, not entity-specific; (2) measured in the **principal market** (or most
+      advantageous market); (3) assumes the highest and best use for non-financial assets; (4) a transaction is
+      "orderly" (not a forced sale). Fair value is a current measurement regardless of when the asset was acquired.
+  - question: What are the three levels of the fair value hierarchy and what types of inputs are used?
+    answer: >-
+      **Level 1**: Quoted prices in active markets for identical assets/liabilities (most reliable; e.g., NYSE stock
+      prices for publicly traded equities).
+
+
+      **Level 2**: Observable inputs other than Level 1 quoted prices — quoted prices for similar assets, observable
+      market data such as interest rates, yield curves, credit spreads (e.g., pricing a corporate bond from a benchmark
+      yield).
+
+
+      **Level 3**: Unobservable inputs using the entity's own assumptions about market participant assumptions (e.g.,
+      private company DCF valuation, illiquid real estate). Highest subjectivity; most disclosures required.
+  - question: What is the income approach, market approach, and cost approach for fair value measurement?
+    answer: >-
+      **Income approach**: converts future amounts (cash flows or earnings) to a present value (DCF analysis, option
+      pricing models). Used for equity interests, intangibles, derivatives.
+
+
+      **Market approach**: uses prices and relevant information from market transactions involving identical or
+      comparable assets/liabilities (comparable company multiples, comparable transactions).
+
+
+      **Cost approach**: current replacement cost – reflects the amount required to replicate the service capacity of an
+      asset. Often used for specialized equipment or PP&E when market comparables don't exist.
+  - question: What are subsequent events and when is the financial statement issuance date relevant?
+    answer: >-
+      **Subsequent events** are events or transactions occurring after the balance sheet date but before the financial
+      statements are issued (or available to be issued for non-SEC entities).
+
+
+      - **Type I (recognized)**: provides additional evidence about conditions that existed at the balance sheet date
+        → adjust financial statements.
+
+      - **Type II (nonrecognized)**: conditions that arose after the balance sheet date → only disclose (do not adjust).
+
+
+      The cut-off date is **issuance** for public companies or **available to be issued** for private companies.
+  - question: What are examples of Type I and Type II subsequent events?
+    answer: >-
+      **Type I examples** (adjust the statements): - Settlement of a lawsuit for an amount different from the accrual
+      (lawsuit existed at year-end). - Bankruptcy of a major customer after year-end that reveals the receivable was
+      uncollectible at year-end. - Completion of an asset valuation confirming an impairment that existed at year-end.
+
+
+      **Type II examples** (disclose only): - New business combination completed after year-end. - Stock issuance or
+      debt refinancing after year-end. - Natural disaster occurring after year-end. - Issuance of stock or bonds after
+      year-end (new condition).
+  - question: How is a change in accounting estimate handled prospectively?
+    answer: >-
+      A **change in accounting estimate** (e.g., change in useful life, residual value, expected warranty claims, bad
+      debt percentages) is handled **prospectively** — applied in the current period and future periods. No catch-up
+      adjustment to prior periods is made, and comparative statements are not restated.
+
+
+      Only the **footnotes** need to disclose the change if the effect is material. The one exception: a change in
+      estimate that is **inseparable from a change in accounting principle** (e.g., change in depreciation method) is
+      treated as a change in principle reflected prospectively.
+  - question: What disclosures are required for accounting changes and error corrections?
+    answer: |-
+      - **Change in accounting principle (retrospective)**: nature of change, the reason it is preferable, cumulative
+        effect on beginning retained earnings, and the effect on each period presented.
+
+      - **Change in accounting estimate**: description of the change and effect on income from continuing operations,
+        net income, and EPS.
+
+      - **Error correction (restatement)**: nature of the error, the effect on each financial statement line for
+        each prior period restated, and the effect on beginning retained earnings.
+  - question: How is goodwill calculated in a step acquisition (acquiring additional shares of a subsidiary)?
+    answer: >-
+      In a **step acquisition**, when an investor moves from equity method to consolidation by acquiring a controlling
+      interest:
+
+      1. Remeasure the previously held equity interest to **fair value** at the acquisition date, recognizing a gain
+         or loss in income.
+
+      2. Add the remeasured prior holding to the consideration transferred and the NCI fair value, then subtract the
+         fair value of identifiable net assets acquired to get **goodwill**.
+
+
+      This "fresh start" ensures all components of the business combination are at acquisition-date fair value.
+  - question: How is a gain on a bargain purchase disclosed and verified under ASC 805?
+    answer: >-
+      A **bargain purchase** (negative goodwill) occurs when the fair value of identifiable net assets acquired exceeds
+      consideration paid plus NCI. Before recognizing the gain:
+
+
+      - Perform a **reassessment** of all assets, liabilities, contingent liabilities, and NCI to ensure they are
+        correctly identified and valued.
+
+      - If excess remains after reassessment, recognize a **gain in income** (not equity) on the acquisition date.
+
+
+      Bargain purchases are rare; they may occur in distressed sales, forced divestitures, or government-mandated sales.
+  - question: What is the measurement period in a business combination?
+    answer: >-
+      The **measurement period** under ASC 805 is up to **one year** after the acquisition date. During this period, the
+      acquirer may retrospectively adjust provisional fair values assigned to assets and liabilities as new information
+      is obtained about facts and circumstances existing at the acquisition date.
+
+
+      Adjustments are made as if the accounting were complete at the acquisition date — i.e., prior period comparative
+      amounts are adjusted. After the measurement period closes, changes to fair values are recognized in current period
+      income (not as measurement period adjustments).
+  - question: How are transaction costs treated in a business combination under ASC 805?
+    answer: >-
+      Under ASC 805, **acquisition-related transaction costs** (investment banking fees, legal fees, due diligence
+      costs) are **expensed as incurred** in the period of the transaction. They are **not** included in the
+      consideration transferred or capitalized as goodwill.
+
+
+      Debt issuance costs for financing the acquisition are deferred and amortized per ASC 835. Equity issuance costs
+      reduce the proceeds from the stock issuance (charged to APIC).
+  - question: How does the acquisition method differ from the prior pooling-of-interests method?
+    answer: >-
+      The **acquisition method** (ASC 805) requires: one party is identified as acquirer; all identifiable assets and
+      liabilities are measured at acquisition-date **fair value**; goodwill is recognized for the excess over net fair
+      value; transaction costs are expensed.
+
+
+      The former **pooling-of-interests method** (eliminated in 2001 by SFAS 141) combined book values of both entities
+      at historical cost, recognized no goodwill, and restated prior periods. It significantly understated combined
+      assets and inflated post-combination ROA/ROE. FAR may test awareness that pooling is no longer permitted.
+  - question: How is in-process research and development (IPR&D) treated in a business combination?
+    answer: >-
+      Under ASC 805, **in-process R&D acquired in a business combination** is recognized as an **indefinite-lived
+      intangible asset** at fair value at the acquisition date (not immediately expensed). It is not amortized until the
+      project is completed or abandoned.
+
+
+      Once completed, it is reclassified as a finite-lived intangible and amortized over its useful life. If abandoned,
+      it is written off to expense. This differs from internally generated R&D, which is expensed immediately.
+  - question: What is a derivative financial instrument and how is it defined under ASC 815?
+    answer: >-
+      Under ASC 815, a **derivative** has three characteristics:
+
+      1. Has one or more **underlyings** (e.g., interest rate, stock price, commodity price) and one or more notional
+         amounts or payment provisions.
+
+      2. Requires **little or no initial net investment**.
+
+      3. Can be settled by a **net settlement** mechanism (or equivalent).
+
+
+      Examples: interest rate swaps, currency forwards, futures contracts, purchased options. They are measured at
+      **fair value** on the balance sheet each period, with changes in fair value flowing to income or OCI depending on
+      hedge designation.
+  - question: What is a fair value hedge and how is it accounted for?
+    answer: >-
+      A **fair value hedge** hedges the exposure to changes in the fair value of a recognized asset, liability, or firm
+      commitment. Both the derivative and the hedged item are adjusted to fair value:
+
+      - Gain/loss on the **derivative** → recognized in income immediately.
+
+      - Offsetting gain/loss on the **hedged item** (basis adjustment) → also recognized in income immediately.
+
+
+      The gains/losses should largely offset in income. Common example: fixed-rate debt hedged with an interest rate
+      swap converting it to floating rate (the swap's fair value and the debt's fair value change in opposite
+      directions).
+  - question: What is a cash flow hedge and how are gains/losses reported?
+    answer: >-
+      A **cash flow hedge** hedges the variability in cash flows of a forecasted transaction or a recognized asset/
+      liability's variable cash flows. Accounting:
+
+      - **Effective portion** of the hedge gain/loss → reported in **OCI**.
+
+      - **Ineffective portion** → reported immediately in **income**.
+
+      - When the hedged transaction affects income → reclassify the OCI amount into income in the same period.
+
+
+      Example: a company that will purchase inventory in 6 months uses a commodity futures contract; the effective
+      portion of the futures gain/loss is in OCI until the inventory purchase occurs.
+  - question: What is a net investment hedge in foreign operations?
+    answer: >-
+      A **net investment hedge** protects against foreign currency translation risk on the net investment in a foreign
+      subsidiary. The hedging instrument may be a derivative or a non-derivative (e.g., foreign currency borrowing).
+
+
+      Gains/losses on the hedging instrument (to the extent effective) are reported in **OCI as translation
+      adjustments** alongside the cumulative translation adjustment of the foreign subsidiary. They are reclassified to
+      income only when the subsidiary is sold or deconsolidated.
+  - question: What are the hedge accounting documentation and effectiveness testing requirements?
+    answer: >-
+      To qualify for hedge accounting under ASC 815, an entity must:
+
+      1. **Formally designate and document** the hedging relationship at inception (risk management objective, hedged
+         item, hedging instrument, how effectiveness will be assessed).
+
+      2. **Assess hedge effectiveness**: the designated hedge must be expected to be highly effective (changes in fair
+         value or cash flows attributable to the hedged risk offset substantially — a commonly used guideline is 80–125%
+         offset).
+
+      3. **Ongoing effectiveness assessment**: reassess each reporting period.
+
+      Without meeting these requirements, the derivative is marked to fair value through income with no special hedge
+      treatment.
+  - question: How are foreign currency transaction gains and losses recognized?
+    answer: >-
+      When a U.S. company has a **foreign currency transaction** (e.g., a sale denominated in euros), the receivable is
+      initially recorded at the spot rate. At each balance sheet date, the monetary item is **remeasured** at the
+      current spot rate.
+
+
+      The resulting exchange gain or loss is recognized in **net income** (not OCI) for the period. When cash is
+      collected, any remaining exchange difference is also recognized in income. This is the **transaction gain/loss** —
+      distinct from the **translation adjustment** (OCI) for translating a foreign subsidiary.
+  - question: What is the current rate method for translating foreign subsidiary financial statements?
+    answer: >-
+      Under ASC 830, when the **functional currency** of a foreign subsidiary is its local currency, the **current rate
+      method** is used:
+
+      - **Assets and liabilities**: translated at the **current (closing) exchange rate**.
+
+      - **Income statement items**: translated at the **weighted-average rate** for the period.
+
+      - **Equity**: translated at historical rates; retained earnings at accumulated historical rates.
+
+      - **Translation adjustment**: the plug to balance the translated statements → reported in **OCI** (cumulative
+        translation adjustment, CTA).
+  - question: When is the temporal (remeasurement) method used for foreign currency translation?
+    answer: >-
+      The **temporal (remeasurement) method** is used when the **functional currency** of the foreign entity is the
+      **parent's reporting currency** (e.g., the subsidiary is just an extension of the parent's operations).
+
+
+      - **Monetary items** (cash, receivables, payables): remeasured at the **current rate**.
+
+      - **Nonmonetary items** (inventory at cost, PP&E): remeasured at the **historical rate**.
+
+      - **Remeasurement gains/losses**: flow through **net income** (not OCI).
+
+
+      A highly inflationary economy (≥ 100% inflation over 3 years) triggers the use of the parent's reporting currency
+      as functional currency, requiring the temporal method.
+  - question: what is revenue recognition for long-term service contracts under ASC 606?
+    answer: >-
+      ASC 606 requires evaluating whether performance is **over time** or **at a point in time**. For service contracts,
+      performance is likely over time if the customer simultaneously receives and consumes benefits as the entity
+      performs.
+
+
+      An appropriate **measure of progress** must be selected: output methods (milestones, units delivered) or input
+      methods (costs incurred, labor hours). The measure must faithfully depict performance. If outcome cannot be
+      measured reliably, revenue is recognized only to the extent of costs incurred (break-even).
+  - question: How is variable consideration estimated under ASC 606?
+    answer: >-
+      Variable consideration (discounts, refunds, rebates, performance bonuses, penalties) must be estimated using
+      either:
+
+      - **Expected value method**: probability-weighted amount across the range of outcomes.
+
+      - **Most likely amount**: the single most likely outcome.
+
+
+      The estimate is included in the transaction price only to the extent it is **probable that a significant revenue
+      reversal will not occur** when uncertainty is resolved (constraint). Volume discounts and returns are common exam
+      applications.
+  - question: What is the concept of a principal versus agent in revenue recognition?
+    answer: >-
+      Under ASC 606, a company is the **principal** if it controls the promised good/service before transfer to the
+      customer → recognize **gross revenue** (full amount).
+
+
+      A company is the **agent** if it arranges for another party to provide the good/service → recognize only the **net
+      fee or commission**.
+
+
+      The key test: does the entity control the specified good or service before it is transferred? Indicators include
+      primary responsibility for fulfillment, inventory risk, and discretion to set prices.
+  - question: How are contract costs (incremental costs of obtaining a contract) treated under ASC 606?
+    answer: >-
+      **Incremental costs of obtaining a contract** (e.g., sales commissions that would not have been incurred without
+      the contract) are recognized as an asset and **amortized** over the period the related goods/services are
+      transferred.
+
+
+      A practical expedient allows expensing if the amortization period would be **one year or less**. Costs to fulfill
+      a contract are capitalized if: directly related to the contract, generate/enhance resources used to satisfy
+      performance obligations, and are expected to be recovered.
+  - question: What is a bill-and-hold arrangement and when is revenue recognized?
+    answer: >-
+      In a **bill-and-hold** arrangement, the customer is billed but the seller retains the goods. Revenue is recognized
+      when control transfers, which may be before physical delivery if:
+
+      1. The reason for the bill-and-hold is **substantive** (customer request with a business reason).
+
+      2. The product is **identified as belonging to the customer**.
+
+      3. The product is **ready for transfer to the customer**.
+
+      4. The company **cannot redirect** the product to another customer.
+
+
+      All four criteria must be met; otherwise control has not transferred and revenue is deferred.
+  - question: How are licenses of intellectual property recognized under ASC 606?
+    answer: >-
+      Licenses are classified as:
+
+      - **Right to use** (functional IP): grants a license to IP as it exists at a point in time → revenue at a
+        **point in time** (e.g., software license for a specific version, film rights).
+
+      - **Right to access** (symbolic IP): provides access to IP as it evolves over time (e.g., franchise rights,
+        brand name licenses) → revenue recognized **over time** (the license period).
+
+
+      The distinction depends on whether the licensor's ongoing activities significantly affect the utility of the IP.
+      Royalties based on sales/usage are recognized when the subsequent sale/usage occurs.
+  - question: What are warranties under ASC 606 and how are they classified?
+    answer: |-
+      - **Assurance-type warranty**: assures the customer the product meets specifications. Not a separate performance
+        obligation; accrue under ASC 460 as a contingency. The transaction price is not allocated to it.
+
+      - **Service-type warranty**: provides a service that goes beyond mere assurance (e.g., extended coverage, 24/7
+        support). Treated as a **separate performance obligation** under ASC 606; a portion of the transaction price
+        is allocated to it and recognized over the warranty period.
+
+
+      Key indicator: if the customer could purchase the warranty separately, it is likely service-type.
+  - question: What are customer loyalty programs (points/rewards) and how are they accounted for under ASC 606?
+    answer: >-
+      Customer loyalty points represent a **separate performance obligation** (material right). A portion of the
+      transaction price is allocated to the points based on their **relative stand-alone selling price** (consideration
+      × points stand-alone value ÷ total stand-alone selling prices).
+
+
+      The allocated amount is recognized in revenue when the points are **redeemed** or when they **expire** (if
+      expiration is accounted for using a breakage estimate). This replaces the older incremental cost approach.
+  - question: How is the right-of-return provision handled under ASC 606?
+    answer: |-
+      When customers have a right to return products, an entity should recognize:
+      - **Revenue**: only the amount it is **entitled to** (net expected returns) — i.e., the transaction price
+        constrained by the estimated return rate.
+
+      - **Refund liability**: for estimated returns (a liability for amounts expected to be refunded).
+      - **Return asset** (recoverable asset): the cost of goods expected to be returned (offset against COGS).
+
+      The estimate uses the expected value or most likely amount method, subject to the constraint.
+  - question: How is the concept of "control" central to revenue recognition and asset derecognition?
+    answer: >-
+      **Control** is the ability to direct the use of and obtain substantially all the remaining benefits from an asset.
+      Under ASC 606, a seller recognizes revenue when control of the promised good or service transfers to the customer.
+
+
+      Control transfer may occur at a point in time (delivery, acceptance) or over time (service contracts, custom
+      assets). The same concept applies to asset sales: a gain/loss is recognized under ASC 610 only when control of the
+      nonfinancial asset transfers. Applied broadly, "control" aligns revenue and derecognition accounting.
+  - question: What is a constructive obligation and how does it create a liability?
+    answer: >-
+      A **constructive obligation** arises from an entity's established pattern of past practice, or published policies,
+      that create a valid expectation by others that the entity will act in a certain way — even without a legal
+      requirement.
+
+
+      Under GAAP, constructive obligations are recognized as liabilities when probable and measurable (similar to
+      contingent liabilities). Example: a company with a consistent history of providing severance pays to laid-off
+      employees has a constructive obligation to do so in a current restructuring, even without a formal plan announced.
+  - question: What is a restructuring charge and when is it recognized under GAAP?
+    answer: >-
+      Under ASC 420, costs related to an exit or disposal activity (restructuring) are recognized as a **liability**
+      when the obligation is **incurred** — which typically requires:
+
+      - For involuntary termination benefits: a communicated, sufficiently detailed plan specifying terms.
+
+      - For one-time termination benefits communicated over a future service period: recognized ratably over that
+        service period.
+
+      - For contract termination costs: when the contract is terminated.
+
+
+      Restructuring charges **cannot** be recognized just because management approves a plan; employee notification is
+      required for severance.
+  - question: What is the difference between a finance lease and an operating lease from the lessor's perspective?
+    answer: |-
+      Under ASC 842, a **lessor** classifies a lease as:
+      - **Operating lease**: Lessor keeps the asset on its books, recognizes lease income on a straight-line basis,
+        and continues to depreciate the asset.
+
+      - **Sales-type lease**: Lessor derecognizes the asset, recognizes a net investment in the lease, and recognizes
+        a selling profit at commencement (if any) plus interest income over the lease.
+
+      - **Direct financing lease**: Lessor derecognizes the asset but does not recognize a selling profit at
+        commencement; interest income recognized over the lease using the effective-interest method.
+
+
+      Classification depends on whether risks/rewards are transferred to the lessee.
+  - question: How are unguaranteed residual values treated in a sales-type lease for the lessor?
+    answer: >-
+      In a **sales-type lease**, the lessor's net investment = PV of future lease payments + PV of the unguaranteed
+      residual value discounted at the rate implicit in the lease.
+
+
+      The **unguaranteed residual value** represents the portion of the asset's value not guaranteed by the lessee or a
+      third party. It increases the net investment but does not affect the selling price or gross profit calculation.
+      Changes in estimated residual value affect the net investment (and interest income pattern) if revised.
+  - question: How are tax effects of intraperiod allocation applied to OCI items?
+    answer: >-
+      GAAP requires that the tax effects of items reported in OCI are also reported **in OCI** (not in tax expense from
+      continuing operations). OCI items may be presented:
+
+      - **Net of tax**: show each OCI component after subtracting related taxes.
+
+      - **Gross**: show each OCI component pre-tax with a single total tax effect of OCI.
+
+
+      FAR questions may show a pension adjustment or unrealized AFS gain and ask for the after-tax OCI amount. Multiply
+      the pre-tax amount by (1 − tax rate) to get the net-of-tax OCI.
+  - question: How are currency translation adjustments reported when a foreign subsidiary is sold?
+    answer: >-
+      The **cumulative translation adjustment (CTA)** accumulated in AOCI is **reclassified into income** when the
+      entity disposes of a subsidiary (sale, liquidation, dissolution). This is a recycling of the OCI amount.
+
+
+      The CTA is included in the determination of the gain or loss on sale/disposal of the subsidiary. If only a portion
+      of the subsidiary is sold and consolidation continues, only a proportionate share of the CTA is reclassified (or
+      retained in AOCI, depending on the nature of the transaction).
+  - question: How is a sale-leaseback transaction tested to determine if a sale has occurred?
+    answer: >-
+      Under ASC 842/606, a **sale** in a sale-leaseback occurs when the transfer of the asset meets the revenue
+      recognition criteria of ASC 606 (i.e., control truly transfers to the buyer-lessor).
+
+
+      If a repurchase option exists that the seller-lessee is reasonably certain to exercise, or if the leaseback is a
+      finance lease, control may not have transferred → treat as a **financing arrangement** (continue recognizing the
+      asset, record a financial liability for the proceeds).
+  - question: How are debt modifications and debt extinguishments distinguished under ASC 470?
+    answer: >-
+      Under ASC 470-50, a modification is an **extinguishment** if the present value of the new cash flows differs from
+      the present value of the old cash flows by ≥ **10% (the 10% test)**. In that case:
+
+      - **Extinguishment**: derecognize old debt; recognize new debt at fair value; record a **gain or loss** in income.
+
+      - **Modification**: no derecognition; adjust carrying value prospectively; spread remaining costs and fees over
+        remaining term.
+
+
+      Qualitative factors (e.g., addition of equity conversion feature) may also trigger extinguishment treatment
+      regardless of the 10% test.
+  - question: What is an embedded derivative and when must it be bifurcated?
+    answer: >-
+      An **embedded derivative** is a derivative instrument that is combined with a non-derivative host contract (e.g.,
+      a convertible bond with an interest rate derivative, a structured note with a commodity-linked payment).
+
+
+      Under ASC 815, the embedded derivative must be **bifurcated** and accounted for separately as a derivative (at
+      fair value through income) if:
+
+      1. The economic characteristics are **not clearly and closely related** to the host.
+
+      2. The hybrid instrument is **not measured at fair value** in its entirety with changes in income.
+
+      3. A **separate instrument** with the same terms would be a derivative.
+  - question: How is the fair value option applied to financial instruments?
+    answer: >-
+      Under ASC 825, entities may **elect the fair value option** for most financial instruments at the instrument-
+      by-instrument level at **initial recognition** (generally irrevocable). When elected, the instrument is carried at
+      fair value with changes reported in **income**.
+
+
+      This can simplify accounting for hybrid instruments (eliminating bifurcation), reduce earnings volatility for
+      matched assets/liabilities, or align U.S. GAAP treatment with IFRS. Unrealized gains/losses flow through income,
+      not OCI (even for instruments that would otherwise be AFS securities).
+  - question: What is the current expected credit loss (CECL) model and how does it differ from the old incurred loss model?
+    answer: >-
+      **CECL (ASC 326)** requires recognizing an allowance for **lifetime expected credit losses** at origination of a
+      financial asset (rather than waiting until a loss is "probable" — the old incurred loss standard).
+
+
+      Key differences:
+
+      - **Timing**: earlier recognition (Day 1 allowance for new loans).
+
+      - **Scope**: current and future economic conditions considered; forward-looking (not just historical).
+
+      - **Measurement**: lifetime losses, not 12-month losses.
+
+
+      CECL applies to loans, held-to-maturity securities, trade receivables, and other financial assets measured at
+      amortized cost.
+  - question: How are credit losses recognized for available-for-sale (AFS) securities under ASC 326?
+    answer: >-
+      For **AFS debt securities** under ASC 326-30, credit losses are recognized through an **allowance** (not a direct
+      write-down). The process:
+
+      1. If the fair value < amortized cost, evaluate whether the difference is credit-related.
+
+      2. The **credit loss component** → recognized in income (through an allowance, which can be reversed if
+         conditions improve).
+
+      3. The **non-credit component** → remains in OCI.
+
+
+      Unlike the old OTTI model, credit losses on AFS securities can now be **reversed in subsequent periods** if credit
+      conditions improve.
+  - question: What is asset retirement obligation (ARO) accounting and when is it triggered?
+    answer: >-
+      An **ARO** arises when an entity has a **legal obligation** to remove a long-lived asset at retirement (e.g.,
+      decommissioning a nuclear plant, restoring a leased site, plugging oil wells per regulatory requirement).
+
+
+      Recognition: record a **liability** at the present value of the estimated future retirement costs (using a
+      credit-adjusted risk-free rate) and capitalize an equal amount into the cost of the related asset. The liability
+      accretes over time; the capitalized cost depreciates. Changes in estimated cash flows are recognized as
+      adjustments to the ARO asset and liability.
+  - question: How is an operating segment identified and what is the role of the chief operating decision maker (CODM)?
+    answer: >-
+      An **operating segment** is a component that:
+
+      1. Engages in business activities earning revenues and incurring expenses.
+
+      2. Has operating results regularly reviewed by the **CODM** (chief operating decision maker) to allocate
+         resources and assess performance.
+
+      3. Has discrete financial information available.
+
+
+      The CODM may be the CEO, COO, or a committee. The "management approach" in ASC 280 means segments reflect how
+      internal management views the business, not external product/service lines. The segments may not align with legal
+      entities.
+  - question: What is the accounting for insurance proceeds when an insured asset is destroyed?
+    answer: >-
+      When an insured asset is involuntarily converted (fire, flood):
+
+      1. **Remove** the asset (debit Accumulated Depreciation, debit Loss; credit Asset at cost).
+
+      2. **Accrue insurance receivable** when proceeds are probable and the amount is estimable (Debit Insurance
+         Receivable; Credit Gain/Loss adjustment).
+
+      3. When proceeds are **received**: Debit Cash; Credit Insurance Receivable.
+
+
+      The net gain or loss = insurance proceeds − carrying value of the asset destroyed. For tax purposes, certain
+      involuntary conversions may allow deferral of gain if replacement property is acquired within specified time.
+  - question: How is the completed contract method vs. over-time recognition illustrated in a construction example?
+    answer: >-
+      Under **over-time recognition** (ASC 606), using an input method (cost-to-cost):
+
+
+      % complete = Costs incurred to date ÷ Total estimated costs
+
+
+      Revenue recognized to date = % complete × Total contract price
+
+
+      Revenue for the period = Revenue recognized to date − Revenue recognized in prior periods
+
+
+      If the contract is expected to result in a **loss**, the entire anticipated loss is recognized **immediately** in
+      the period it becomes probable, regardless of the stage of completion.
+  - question: How is a nonmonetary exchange of assets accounted for?
+    answer: >-
+      Under ASC 845, nonmonetary exchanges of assets are measured at **fair value** if the exchange has **commercial
+      substance** — meaning the entity's future cash flows are expected to significantly change as a result.
+
+
+      If commercial substance exists: record the received asset at fair value, derecognize the given asset at book
+      value, and recognize any gain/loss.
+
+      If **no commercial substance** (or fair value is not determinable): record the received asset at the **book value
+      of the asset given up** — no gain recognized; losses may still be recognized.
+  - question: How are contributed services recognized by not-for-profit entities?
+    answer: >-
+      **Contributed services** are recognized as revenue and expense if they:
+
+      1. Create or enhance **nonfinancial assets** (e.g., constructing a building), or
+
+      2. Require **specialized skills** that the NFP would otherwise need to purchase (e.g., CPA services, legal
+         services, nursing care).
+
+
+      General volunteer services (e.g., answering phones) that do not meet either criterion are not recognized. When
+      recognized, the fair value of the services is recorded as contribution revenue and expense (or asset
+      capitalization).
+  - question: How is the effective interest rate computed for a bond and how does it relate to yield to maturity?
+    answer: >-
+      The **effective interest rate** (also called the yield to maturity, or market rate at issuance) is the rate that
+      equates the bond's purchase price to the present value of all future cash flows (coupons + face at maturity).
+
+
+      For amortization under GAAP, this same rate is applied to the carrying value each period to compute interest
+      expense. It is fixed at issuance (for fixed-rate bonds under the effective-interest method) unless the bond is
+      fair-valued or the rate is variable. The coupon (stated) rate determines cash payments; the market rate determines
+      expense.
+  - question: What is troubled debt restructuring (TDR) and how is it accounted for by the debtor?
+    answer: >-
+      A **troubled debt restructuring** occurs when a creditor, for economic or legal reasons related to the debtor's
+      financial difficulties, grants a concession it would not otherwise consider (e.g., reduced interest, extended
+      term, forgiveness of principal).
+
+
+      **Debtor accounting (ASC 470-60)**:
+
+      - If the total future undiscounted cash flows under the restructured terms ≥ carrying value of the debt → no gain;
+        a new effective interest rate is computed.
+
+      - If total future undiscounted cash flows < carrying value → recognize a **gain on restructuring** equal to
+        the difference; the new carrying value = total future undiscounted payments.
+
+
+      Note: FASB eliminated TDR classification for creditors under ASU 2022-02 (replaced with CECL guidance).
+  - question: How is an installment sale recognized for book versus tax purposes?
+    answer: >-
+      For **book purposes** under ASC 606, revenue from an installment sale is generally recognized at the **point
+      control transfers** (when the sale occurs), even though cash is collected in installments.
+
+
+      For **tax purposes**, the installment method may be elected: gain is recognized proportionally as payments are
+      received (gross profit percentage × each payment). This creates a **deferred tax liability** because book income
+      is recognized earlier than taxable income.
+  - question: What is the accounting for investments in limited partnerships or funds (non-controlling)?
+    answer: >-
+      Investments in **limited partnerships** where the investor holds a minimal interest are accounted for using the
+      **equity method** if the investor has the ability to exercise significant influence (typically ≥ 3–5% threshold
+      for LPs, as opposed to the 20% threshold for corporations).
+
+
+      If the investor cannot exercise significant influence over an LLC/LP, it may use the **measurement alternative**
+      (cost less impairment, adjusted for observable price changes) or elect the fair value option. This is a nuanced
+      area tested on BAR.
+  - question: How is the tax benefit of a net operating loss (NOL) carryforward recognized?
+    answer: >-
+      An **NOL carryforward** creates a **deferred tax asset** = NOL × applicable tax rate. Recognition requires
+      judgment:
+
+      - Record the full DTA.
+
+      - Then assess whether a **valuation allowance** is needed if realization is not more likely than not.
+
+
+      Under TCJA (2017): federal NOL carryforwards are indefinite (no expiration), but limited to 80% of taxable income
+      in any future year. Carryback is generally eliminated (with exceptions). Exam questions ask how the DTA is
+      measured and whether a valuation allowance applies.
+  - question: How is the tax rate change applied to deferred tax balances?
+    answer: >-
+      When a new tax rate is **enacted** (not merely proposed), deferred tax assets and liabilities are **remeasured**
+      at the new rate. The resulting adjustment flows through current-period **income tax expense (or benefit)** from
+      continuing operations in the period of enactment — even if the DTAs/DTLs relate to prior periods.
+
+
+      This is a frequent exam trap: the adjustment is made in the period of enactment, not in the period the new rate
+      takes effect (which may be a future year).
+  - question: What is the difference between current and deferred tax in ASC 740?
+    answer: >-
+      Under ASC 740, there is no longer a separation into "current" and "noncurrent" deferred tax items (ASU 2015-17
+      eliminated this for public companies; private companies had an option). All deferred tax assets and liabilities
+      are presented as **noncurrent** on the balance sheet.
+
+
+      However, the **conceptual** distinction remains:
+
+      - **Current tax expense**: the tax payable (or refundable) on this year's taxable income.
+
+      - **Deferred tax expense/benefit**: the change in deferred tax balances resulting from temporary differences
+        and rate changes.
+  - question: How does IFRS differ from U.S. GAAP in the treatment of contingent liabilities?
+    answer: >-
+      Under **U.S. GAAP (ASC 450)**: a contingency is accrued when loss is **probable and reasonably estimable**;
+      disclosed when reasonably possible.
+
+
+      Under **IFRS (IAS 37)**: a provision (liability) is recognized when an obligation is **more likely than not** to
+      require an outflow (>50% probability) and the amount can be reliably estimated. The **best estimate** of the
+      expenditure is accrued, using a probability-weighted approach for a range.
+
+
+      Key difference: IFRS uses "more likely than not" everywhere; U.S. GAAP uses the higher "probable" threshold for
+      accrual. IFRS may require accrual in some cases where GAAP only requires disclosure.
+  - question: What is the "corridor approach" for pension actuarial gains and losses, and has it changed?
+    answer: >-
+      The **corridor approach** (previously used under legacy GAAP) amortized actuarial gains/losses only to the extent
+      they exceeded 10% of the greater of the PBO or plan assets (the "corridor"). Amounts within the corridor were not
+      amortized.
+
+
+      Under current ASC 715, the corridor approach is **one permitted method** for amortizing cumulative net actuarial
+      gains/losses out of AOCI into pension expense. Entities may also recognize all actuarial gains/losses immediately
+      in OCI (with amortization) or use other systematic amortization methods. BAR tests the mechanics of the corridor
+      amortization.
+  - question: What is a hybrid financial instrument and how is it accounted for under ASC 815?
+    answer: >-
+      A **hybrid instrument** is a non-derivative host contract combined with an embedded derivative. Examples include
+      convertible bonds, structured notes with returns linked to a stock index, and callable CDs.
+
+
+      When the embedded derivative is bifurcated under ASC 815:
+
+      - The **host contract** continues under its own GAAP (e.g., a debt host under ASC 470).
+
+      - The **embedded derivative** is recognized at fair value and changes flow through income.
+
+
+      Alternatively, the entire hybrid may be elected under the **fair value option** (ASC 825), recognizing the whole
+      instrument at fair value through income and eliminating bifurcation complexity.
+  - question: How is the accounting for software development costs different under ASC 350-40 vs. ASC 985-20?
+    answer: >-
+      **ASC 350-40 (internal-use software)**:
+
+      - Preliminary project stage: expense.
+
+      - Application development: capitalize direct costs.
+
+      - Post-implementation: expense.
+
+
+      **ASC 985-20 (software to be sold/leased to others)**:
+
+      - Pre-technological feasibility: expense as R&D.
+
+      - Post-technological feasibility until product release: capitalize.
+
+      - Post-release/general availability: expense ongoing maintenance/support.
+
+
+      The key trigger for 985-20 capitalization is **technological feasibility** (a working model or equivalent); for
+      350-40 it is the **application development stage** starting date.
+  - question: What is the stock-based compensation expense calculation for stock options?
+    answer: >-
+      Under ASC 718, option compensation expense = **grant-date fair value** (e.g., Black-Scholes value) × number of
+      options expected to vest, recognized straight-line over the **requisite service period** (typically the vesting
+      period).
+
+
+      At each period: cumulative expense recognized = (% of vesting period elapsed) × (grant-date fair value × options
+      expected to vest). Forfeitures adjust the numerator (reduce estimated vesting). After the vesting period, no
+      further expense is recognized regardless of market price changes.
+  - question: How are restricted stock units (RSUs) measured and recognized compared to stock options?
+    answer: >-
+      **RSUs** are measured at the **grant-date fair value of the underlying stock** (not an option pricing model),
+      since RSUs have intrinsic value equal to the share price on the grant date (no exercise price).
+
+
+      Compensation expense = Grant-date stock price × Shares expected to vest, recognized over the service (vesting)
+      period. RSUs deliver the stock (or cash equivalent) upon vesting without any payment by the employee. They are
+      simpler to value than options.
+  - question: How is employee stock purchase plan (ESPP) compensation treated under ASC 718?
+    answer: >-
+      Under ASC 718, an **ESPP** is **compensatory** if it has a discount exceeding 5%, a **looking-back** provision, or
+      other features. Compensation expense is the fair value of the purchase right (option-like value plus discount).
+
+
+      Non-compensatory ESPPs (discount ≤ 5%, no lookback, no option features) do not generate compensation expense. FAR
+      and BAR may test the criteria distinguishing compensatory from non-compensatory ESPPs.
+  - question: What is the accounting for a spin-off of a subsidiary?
+    answer: >-
+      In a **spin-off**, the parent distributes shares of a subsidiary to its own shareholders as a dividend (pro-rata,
+      no consideration received). The distribution is measured at the **carrying value** of the distributed shares (not
+      fair value) since it is a reorganization of entities under common control.
+
+
+      The subsidiary's net assets are removed from the parent's balance sheet; retained earnings decrease by the
+      carrying value. No gain or loss is recognized at the parent level. The spin-off is disclosed as a discontinued
+      operation if it qualifies.
+  - question: What is the accounting difference between an asset acquisition and a business combination?
+    answer: >-
+      **Business combination (ASC 805)**: The acquired set of activities constitutes a business (inputs, processes, and
+      outputs). All identifiable assets and liabilities are measured at fair value; goodwill is recognized; transaction
+      costs are expensed.
+
+
+      **Asset acquisition (not a business)**: The purchase price (including transaction costs) is allocated to the
+      acquired assets and assumed liabilities based on **relative fair values**. No goodwill is recognized. This
+      distinction is critical in real estate transactions, where many deals are structured or accounted for as asset
+      acquisitions (no goodwill, transaction costs capitalized).

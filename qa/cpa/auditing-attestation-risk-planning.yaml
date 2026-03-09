@@ -1,0 +1,550 @@
+config:
+  name: "CPA AUD: Auditing & Attestation — Risk Assessment and Planning"
+  description: Audit planning, understanding the entity and environment, internal control, materiality, fraud risk,
+    analytics, related parties, specialists, internal auditors, and service organizations for CPA AUD prep.
+  questionDelay: 1
+  answerDelay: 1
+  youtube:
+    videoId: J2XBGkVviw4
+    url: https://youtu.be/J2XBGkVviw4
+    uploadedAt: 2026-03-08T13:48:41.611Z
+    privacy: unlisted
+    contentSha: 386a3832
+questions:
+  - question: What is the objective of audit planning?
+    answer: >-
+      Audit planning helps the auditor perform the engagement effectively and efficiently by establishing the overall
+      strategy and developing the detailed audit plan.
+
+
+      Good planning helps the auditor:
+
+
+      - focus on important areas
+
+      - identify and respond to risks
+
+      - coordinate team members and specialists
+
+      - perform work on a timely basis
+
+      - reduce the chance that material issues are overlooked
+  - question: What is the difference between an overall audit strategy and an audit plan?
+    answer: >-
+      The **overall audit strategy** sets the scope, timing, direction, and resource allocation for the engagement. It
+      is the high-level game plan.
+
+
+      The **audit plan** is more detailed and describes the nature, timing, and extent of risk assessment procedures and
+      further audit procedures at the assertion level.
+
+
+      Strategy is the map; the audit plan is the turn-by-turn directions.
+  - question: Why must the auditor understand the entity and its environment?
+    answer: >-
+      Understanding the entity and its environment allows the auditor to identify and assess risks of material
+      misstatement. This understanding includes:
+
+
+      - industry, regulatory, and external factors
+
+      - nature of the entity
+
+      - objectives and strategies
+
+      - measurement and review of financial performance
+
+      - internal control
+
+
+      Without this understanding, risk assessment becomes guesswork dressed up as confidence.
+  - question: What external and internal factors should the auditor consider when understanding the entity?
+    answer: |-
+      Important external factors include industry conditions, competition, economic trends, laws, and technology change.
+
+      Important internal factors include:
+
+      - ownership and governance structure
+      - operations and business model
+      - capital structure
+      - accounting policies
+      - use of IT systems
+      - performance pressures and incentive structures
+
+      These factors can affect susceptibility to error or fraud.
+  - question: What is the COSO internal control framework?
+    answer: >-
+      COSO identifies five components of internal control:
+
+
+      - **control environment**
+
+      - **risk assessment**
+
+      - **control activities**
+
+      - **information and communication**
+
+      - **monitoring**
+
+
+      AUD questions often ask which component is implicated by a fact pattern. For example, tone at the top points to
+      the **control environment**.
+  - question: What are IT general controls and why do they matter?
+    answer: >-
+      IT general controls support the continued effective operation of application controls and the reliability of
+      system- generated information. Common categories include:
+
+
+      - access controls
+
+      - program change controls
+
+      - program development controls
+
+      - computer operations controls
+
+
+      If IT general controls are weak, the auditor may not be able to rely on system-generated reports or automated
+      controls.
+  - question: What is materiality in an audit?
+    answer: >-
+      **Materiality** is the magnitude of an omission or misstatement that makes it probable the judgment of a
+      reasonable user would be influenced by the information.
+
+
+      Materiality is not purely numerical. It includes:
+
+
+      - **quantitative factors** — size of the misstatement
+
+      - **qualitative factors** — nature of the item or surrounding circumstances
+
+
+      A small misstatement can still be material if it changes a trend, affects compliance, or hides fraud.
+  - question: What is performance materiality?
+    answer: >-
+      **Performance materiality** is set at an amount lower than overall materiality to reduce to an appropriately low
+      level the probability that the aggregate of uncorrected and undetected misstatements exceeds overall materiality.
+
+
+      In simple terms, it provides a buffer. Auditors use it to design procedures and sampling because waiting until the
+      very edge of overall materiality would be a bold and regrettable hobby.
+  - question: What is audit risk and how is it related to risk of material misstatement and detection risk?
+    answer: >-
+      Audit risk is the risk that the auditor expresses an inappropriate opinion when the financial statements are
+      materially misstated.
+
+
+      Conceptually:
+
+
+      **Audit risk = risk of material misstatement × detection risk**
+
+
+      Risk of material misstatement includes:
+
+
+      - **inherent risk**
+
+      - **control risk**
+
+
+      If assessed risk of material misstatement is high, the auditor generally reduces acceptable detection risk by
+      doing more persuasive procedures.
+  - question: What is the fraud triangle?
+    answer: >-
+      The fraud triangle describes three conditions that commonly contribute to fraud:
+
+
+      - **incentive or pressure**
+
+      - **opportunity**
+
+      - **rationalization**
+
+
+      Auditors use this concept to identify fraud risk factors. For example, tight debt covenants may create pressure,
+      poor segregation of duties creates opportunity, and a toxic culture can encourage rationalization.
+  - question: How do auditors use analytical procedures during planning?
+    answer: >-
+      Planning analytics help the auditor identify unusual relationships, trends, fluctuations, or ratios that may
+      signal increased risk.
+
+
+      Examples include comparing:
+
+
+      - current results to prior years
+
+      - actual to budget
+
+      - industry averages to company results
+
+      - relationships such as gross margin, days sales outstanding, and inventory turnover
+
+
+      Unexpected relationships may suggest areas requiring more detailed testing.
+  - question: Why are related party transactions important in risk assessment?
+    answer: >-
+      Related party transactions can present elevated risk because they may:
+
+
+      - lack economic substance
+
+      - occur on non-arm's-length terms
+
+      - be used to hide liabilities or inflate revenue
+
+      - be omitted from disclosure
+
+
+      The auditor should identify related parties, understand the business purpose of significant transactions, and test
+      whether the transactions were properly accounted for and disclosed.
+  - question: Why are accounting estimates a significant risk area?
+    answer: >-
+      Estimates involve uncertainty and judgment, making them vulnerable to both unintentional bias and intentional
+      manipulation. Common high-risk estimates include:
+
+
+      - allowance for credit losses
+
+      - inventory obsolescence
+
+      - fair values
+
+      - warranty reserves
+
+      - pension assumptions
+
+      - goodwill impairment
+
+
+      The more subjective the estimate, the more skeptical the auditor should be.
+  - question: What is the auditor's responsibility regarding laws and regulations?
+    answer: >-
+      The auditor is not responsible for preventing noncompliance, but should obtain reasonable assurance that the
+      financial statements are free of material misstatement caused by noncompliance that affects the statements.
+
+
+      If the auditor becomes aware of suspected noncompliance, the auditor should understand the matter, consider its
+      effect on the financial statements, and determine any implications for governance communication or the audit
+      report.
+  - question: How can the work of internal auditors affect the external audit?
+    answer: >-
+      External auditors may use the work of internal auditors in some areas after evaluating:
+
+
+      - objectivity
+
+      - competence
+
+      - systematic and disciplined approach
+
+
+      However, the external auditor retains full responsibility for the audit opinion and cannot outsource professional
+      judgment on significant matters.
+  - question: When may an auditor use the work of a specialist?
+    answer: >-
+      Specialists may be used when expertise is needed beyond ordinary auditing and accounting knowledge, such as in:
+
+
+      - valuation of complex instruments
+
+      - actuarial estimates
+
+      - environmental liabilities
+
+      - mineral reserves
+
+      - legal interpretation in specialized circumstances
+
+
+      The auditor should evaluate the specialist's competence, capabilities, objectivity, and the relevance and
+      reasonableness of the specialist's work.
+  - question: What is a service organization and why is it important to auditors?
+    answer: >-
+      A **service organization** provides services to user entities that are relevant to user entities' internal control
+      over financial reporting, such as payroll processing, cloud systems, or transaction processing.
+
+
+      If significant processes are outsourced, the user auditor must understand how that affects control risk and the
+      design of audit procedures.
+  - question: What is the difference between a SOC 1 and a SOC 2 report?
+    answer: >-
+      - **SOC 1** reports address controls relevant to user entities' internal control over financial reporting.
+
+      - **SOC 2** reports address controls related to trust services criteria such as security, availability, processing
+      integrity, confidentiality, and privacy.
+
+
+      For a financial statement audit, SOC 1 is usually the more directly relevant report.
+  - question: What is the difference between a Type 1 and a Type 2 SOC report?
+    answer: >-
+      - **Type 1** reports on the fairness of the description of the system and the suitability of the design of
+      controls as of a point in time.
+
+      - **Type 2** includes those same matters and also reports on the operating effectiveness of controls over a period
+      of time.
+
+
+      Type 2 is generally more useful to a financial statement auditor because it addresses actual operating
+      effectiveness.
+  - question: What is significant risk and how does it affect the audit plan?
+    answer: >-
+      A **significant risk** is an identified and assessed risk of material misstatement that requires special audit
+      consideration. These risks often involve fraud, unusual transactions, significant judgment, or major estimation
+      uncertainty.
+
+
+      Significant risks usually require:
+
+
+      - more experienced staff
+
+      - more supervision
+
+      - more persuasive evidence
+
+      - specific and targeted procedures
+  - question: What are preliminary engagement activities in audit planning?
+    answer: Preliminary activities include evaluating continuance, complying with ethical requirements including
+      independence, and establishing an understanding of the engagement terms. They happen before detailed planning
+      begins.
+  - question: Why should the audit team discuss risks early in the engagement?
+    answer: Team discussion helps share knowledge, identify fraud and error risks, coordinate skeptical thinking, and ensure
+      important issues are not trapped in one person's head.
+  - question: What is audit brainstorming?
+    answer: Brainstorming is the engagement team's discussion of how and where the financial statements might be materially
+      misstated, especially due to fraud. It encourages skeptical, creative risk assessment.
+  - question: Why should professional skepticism be emphasized during planning?
+    answer: Early skepticism prevents the team from accepting management's story too quickly and helps shape stronger risk
+      assessment procedures before detailed testing begins.
+  - question: What is a significant class of transactions, account balance, or disclosure?
+    answer: It is an area important enough that a material misstatement could reasonably occur in it, requiring focused
+      audit attention at the assertion level.
+  - question: What is an assertion-level risk?
+    answer: Assertion-level risk relates to specific assertions such as completeness, existence, or valuation for a
+      particular transaction class, balance, or disclosure.
+  - question: What is a financial-statement-level risk?
+    answer: Financial-statement-level risks affect the statements as a whole, such as weak governance, management override,
+      or a poor control environment. They influence the overall audit approach.
+  - question: How do financial-statement-level risks affect the audit strategy?
+    answer: They may lead the auditor to assign more experienced staff, increase supervision, expand unpredictable
+      procedures, and perform more work closer to year-end.
+  - question: What is inherent risk?
+    answer: Inherent risk is the susceptibility of an assertion to material misstatement before considering related
+      controls. Complex estimates and unusual transactions often have high inherent risk.
+  - question: What is control risk?
+    answer: Control risk is the risk a material misstatement could occur and not be prevented or detected and corrected on a
+      timely basis by the entity's internal control.
+  - question: Why can control risk rarely be assumed to be zero?
+    answer: No internal control system is perfect. Human error, override, collusion, and changing circumstances mean some
+      risk almost always remains.
+  - question: What are relevant assertions in an audit?
+    answer: Relevant assertions are those with a reasonable possibility of containing a misstatement that would be material,
+      individually or in the aggregate, for a given balance, transaction class, or disclosure.
+  - question: How do assertions differ for transactions, account balances, and disclosures?
+    answer: Transactions focus on occurrence, completeness, accuracy, cutoff, and classification. Account balances emphasize
+      existence, rights and obligations, completeness, and valuation. Disclosures add presentation and
+      understandability.
+  - question: What is a walkthrough?
+    answer: A walkthrough traces a transaction from initiation through recording into the financial statements while
+      observing controls and identifying points where misstatements could occur.
+  - question: Why does the auditor perform walkthroughs?
+    answer: Walkthroughs help confirm understanding of transaction flows, identify key controls, spot design gaps, and
+      verify whether documented processes match reality.
+  - question: What is segregation of duties?
+    answer: Segregation of duties means dividing authorization, custody, recordkeeping, and reconciliation responsibilities
+      so one person cannot both commit and conceal errors or fraud.
+  - question: What duties are considered incompatible?
+    answer: Authorization, custody of assets, recordkeeping, and independent review are classic incompatible functions.
+      Giving too many of them to one person increases fraud opportunity.
+  - question: What are compensating controls?
+    answer: "Compensating controls reduce risk when ideal segregation or control design is not possible. Example: strong
+      owner review in a small business."
+  - question: What is the difference between preventive and detective controls?
+    answer: Preventive controls aim to stop misstatements before they happen, while detective controls identify problems
+      after they occur so correction can follow.
+  - question: What is the difference between manual and automated controls?
+    answer: Manual controls rely on human performance, while automated controls are programmed into systems. Automated
+      controls can be highly consistent, but only if IT general controls are effective.
+  - question: What are entity-level controls?
+    answer: Entity-level controls operate broadly across the organization, such as ethics programs, governance oversight,
+      budget review, and internal audit. They influence many specific controls beneath them.
+  - question: Why is the control environment especially important?
+    answer: The control environment sets the tone for ethics, accountability, and oversight. If the environment is weak,
+      many other controls become less reliable.
+  - question: What are the main types of risk assessment procedures?
+    answer: Risk assessment procedures include inquiries, analytical procedures, observation, and inspection. Auditors
+      combine them to build an understanding of risks and controls.
+  - question: Are inquiries alone sufficient for risk assessment?
+    answer: No. Inquiry is useful but not enough by itself because people may be mistaken, incomplete, or biased. It should
+      be supported by other procedures.
+  - question: How is inspection used in risk assessment?
+    answer: Inspection of documents, reports, policies, contracts, minutes, and system descriptions helps the auditor
+      understand operations, governance, and control design.
+  - question: How is observation used in risk assessment?
+    answer: Observation lets the auditor see how processes are actually performed, such as cash counts, inventory
+      procedures, approval workflows, or segregation of duties in practice.
+  - question: How do planning analytics differ from substantive analytics?
+    answer: Planning analytics identify risk areas and unusual relationships. Substantive analytics are used later as
+      evidence to help detect misstatements in specific assertions.
+  - question: Why might the auditor include unpredictable procedures in the audit plan?
+    answer: Unpredictability makes it harder for management to anticipate the auditor's exact procedures and conceal fraud,
+      especially when management override risk is present.
+  - question: Why is revenue recognition presumed to be a fraud risk in many audits?
+    answer: Revenue is often tied to performance targets, compensation, and market expectations, giving management strong
+      incentives to accelerate or inflate it.
+  - question: How can the auditor rebut the presumption of fraud risk in revenue recognition?
+    answer: The auditor must document persuasive reasons why the presumption does not apply in the specific circumstances.
+      It cannot be dismissed casually.
+  - question: Why are journal entries a common fraud risk area?
+    answer: Fraudulent journal entries can override normal transaction processing and controls, especially near period-end.
+      Auditors often target unusual entries for testing.
+  - question: What are indicators that related parties may exist even if management does not disclose them?
+    answer: Clues include unusual transactions, shared addresses, common officers, round-dollar transfers, terms unlike
+      market terms, and entities with no clear business purpose.
+  - question: Why are significant unusual transactions a planning concern?
+    answer: They may involve complex accounting, nonstandard terms, weak business rationale, or efforts to manipulate
+      results. They often deserve special audit attention.
+  - question: Why should the auditor understand the business purpose of unusual transactions?
+    answer: A transaction that lacks economic substance or clear business purpose may signal fraud, earnings management, or
+      related party activity.
+  - question: What are examples of fraud incentives or pressures?
+    answer: Examples include debt covenant pressure, bonus targets, impending financing needs, declining profitability, and
+      personal financial stress on management.
+  - question: What are examples of fraud opportunities?
+    answer: Examples include weak segregation of duties, poor oversight, override-friendly systems, ineffective controls,
+      and dominant management.
+  - question: What are clues to fraud rationalization?
+    answer: Rationalization may appear in statements like "we're just borrowing earnings," "everyone does it," or "we'll fix
+      it next quarter." Tone and attitude matter.
+  - question: What is management override of controls?
+    answer: Management override occurs when executives bypass otherwise effective controls, such as by directing improper
+      entries, suppressing reports, or approving unusual transactions.
+  - question: Why are whistleblower complaints relevant to risk assessment?
+    answer: Complaints may reveal fraud, control failures, or cultural issues the auditor would not otherwise see. They
+      should never be dismissed just because they are inconvenient.
+  - question: How do laws with direct effect differ from laws with indirect effect in the audit?
+    answer: Laws with direct effect have a direct impact on financial statement amounts or disclosures, such as tax laws.
+      Laws with indirect effect may be important operationally but do not directly determine amounts in the statements.
+  - question: How does the auditor evaluate internal audit objectivity?
+    answer: The auditor considers reporting lines, freedom from management interference, organizational status, and whether
+      the internal audit function can act impartially.
+  - question: How does the auditor evaluate internal audit competence?
+    answer: Competence is assessed through experience, training, certifications, quality of documentation, and demonstrated
+      ability to perform disciplined work.
+  - question: What is meant by a systematic and disciplined approach in internal audit?
+    answer: It means internal auditors follow structured methodologies, documentation standards, quality review, and logical
+      procedures rather than ad hoc work.
+  - question: Can the external auditor use internal auditors' work in areas involving significant judgment?
+    answer: Use is more limited in highly subjective or high-risk areas. The more judgment involved, the more direct work
+      the external auditor usually performs.
+  - question: What are complementary user entity controls in a SOC 1 report?
+    answer: These are controls the service organization assumes the user entity will perform. The user auditor must consider
+      whether the client actually performs them.
+  - question: What is a subservice organization in a service-organization context?
+    answer: A subservice organization is another service provider used by the main service organization. Its role may affect
+      whether the SOC report fully addresses relevant controls.
+  - question: What if no SOC report is available for a key service organization?
+    answer: The auditor may need to perform alternative procedures, request more information, visit the service
+      organization, or increase substantive testing at the user entity.
+  - question: Why is organization-wide IT risk important in planning?
+    answer: Weak IT governance, poor access controls, or weak change management can affect many systems at once, making data
+      and automated controls less reliable across the audit.
+  - question: How can cybersecurity issues affect audit planning?
+    answer: Cyber incidents may create risks involving data integrity, unauthorized transactions, disruption of operations,
+      disclosure obligations, and possible going concern issues.
+  - question: Why does business continuity and disaster recovery matter to risk assessment?
+    answer: Poor recovery planning can increase the risk of data loss, interruption, weak controls after system failures,
+      and unreliable financial reporting.
+  - question: What are examples of qualitative materiality factors?
+    answer: A misstatement may be material if it hides a trend, affects compliance, changes a loss to income, affects
+      compensation, masks fraud, or involves a sensitive disclosure.
+  - question: Can materiality change during the audit?
+    answer: Yes. If new information changes the auditor's view of the entity or expected results, overall or performance
+      materiality may need to be revised.
+  - question: What is tolerable deviation rate in tests of controls?
+    answer: It is the maximum rate of control deviation the auditor is willing to accept and still rely on the control at
+      the planned level.
+  - question: What is expected deviation rate in control testing?
+    answer: It is the auditor's estimate of how often a control is likely to fail in the population. Higher expected
+      deviation usually means a larger sample.
+  - question: How does sample size change as planned reliance on controls increases?
+    answer: If the auditor wants greater reliance on a control, sample size usually increases because more evidence is
+      needed to support that reliance.
+  - question: Why must the auditor document the risk assessment process?
+    answer: Documentation shows how risks were identified, what controls were understood, what judgments were made, and why
+      the planned responses are appropriate.
+  - question: How should the auditor update risk assessment during the engagement?
+    answer: Risk assessment is ongoing. As new evidence appears, the auditor revises the plan, changes procedures, and
+      updates conclusions about risk.
+  - question: How does the auditor evaluate a specialist's competence?
+    answer: The auditor considers qualifications, reputation, experience, certifications, and prior work in the relevant area.
+  - question: How does the auditor evaluate a specialist's objectivity?
+    answer: The auditor considers relationships, financial interests, employment ties, and other factors that might bias the
+      specialist's work.
+  - question: What is the difference between a management's specialist and an auditor's specialist?
+    answer: Management's specialist helps prepare the client's accounting or estimates. The auditor's specialist helps the
+      auditor evaluate evidence. The auditor treats their work differently.
+  - question: Why is understanding data flow important in risk assessment?
+    answer: The auditor needs to know where transactions originate, how they are processed, where they can be altered, and
+      how they end up in the general ledger and disclosures.
+  - question: Why should the auditor map major transaction cycles?
+    answer: Mapping cycles such as revenue, purchasing, payroll, inventory, and financing helps identify where misstatements
+      could occur and which controls matter most.
+  - question: Why are walkthroughs especially useful in an IT environment?
+    answer: They help the auditor see where automated steps, interfaces, system reports, and access points affect the flow
+      of data and the design of controls.
+  - question: What is the difference between testing control design and testing operating effectiveness?
+    answer: Design testing asks whether the control, if used properly, could prevent or detect misstatements. Operating
+      effectiveness asks whether the control actually worked during the period.
+  - question: When does the auditor usually test controls?
+    answer: The auditor tests controls when planning to rely on them, when substantive procedures alone are insufficient, or
+      when required by the engagement context.
+  - question: When might the auditor skip tests of controls and use a substantive approach instead?
+    answer: If controls are weak, not efficient to test, or not necessary to support the audit approach, the auditor may
+      rely primarily on substantive procedures.
+  - question: How does a known significant deficiency affect planning?
+    answer: It increases control risk and may require broader substantive testing, more experienced staff, and more direct
+      work by the external auditor.
+  - question: Who should participate in fraud brainstorming?
+    answer: Key engagement team members should participate, especially those with knowledge of the client, high-risk areas,
+      IT, and reporting issues.
+  - question: Why are related party disclosures a recurring audit risk?
+    answer: Related party relationships may be hidden, transactions may be unusual, and disclosure requirements are often
+      not intuitive to management.
+  - question: Why should going concern indicators be considered during planning?
+    answer: Early identification of liquidity, financing, or operational distress helps the auditor design timely procedures
+      and reporting considerations.
+  - question: Why are management bias and estimates linked in planning?
+    answer: Estimates are fertile ground for bias because assumptions can be manipulated without obvious fake documents. The
+      auditor plans additional skepticism around them.
+  - question: What are common benchmarks used in setting materiality?
+    answer: Auditors may use benchmarks such as pretax income, revenue, total assets, equity, or expenditures, depending on
+      the nature of the entity and what users focus on.
+  - question: Why is performance materiality set below overall materiality?
+    answer: It provides a cushion so the total of detected and undetected misstatements is less likely to exceed overall
+      materiality.
+  - question: What is the clearly trivial threshold?
+    answer: It is an amount below which misstatements are considered clearly insignificant and generally need not be
+      accumulated for evaluation, though judgment still matters.
+  - question: Can disclosures themselves have a risk of material misstatement?
+    answer: Yes. Narrative and quantitative disclosures can be incomplete, inaccurate, biased, or omitted entirely,
+      especially in related parties, estimates, and contingencies.
+  - question: How do industry pressures affect audit risk?
+    answer: Intense competition, regulatory scrutiny, rapid change, commodity prices, or market decline can increase
+      pressure on management and raise risk of manipulation.
+  - question: Why do changes from the prior year matter during planning?
+    answer: Major changes in systems, personnel, ownership, strategy, operations, or financing often create new risks or
+      make prior-year audit knowledge less reliable.
+  - question: Why should the auditor understand management's process for closing the books?
+    answer: The period-end close often includes journal entries, estimates, consolidations, and disclosure preparation,
+      making it a key point where material misstatements or management override may occur.
+  - question: How do mergers, acquisitions, or restructurings affect audit planning?
+    answer: They increase risk through complex accounting, integration issues, valuation estimates, changed controls, and
+      new disclosures that require specialized attention.
+  - question: Why are nonroutine transactions often treated as higher risk?
+    answer: Nonroutine transactions occur infrequently, may involve unusual judgment, and often lack standardized controls,
+      making them more susceptible to material misstatement.

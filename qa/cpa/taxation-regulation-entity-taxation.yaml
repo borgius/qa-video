@@ -1,0 +1,306 @@
+config:
+  name: "CPA REG/TCP: Federal Taxation of Entities"
+  description: High-yield CPA REG and TCP deck covering C corporations, S corporations, partnerships, LLCs, tax-exempt organizations, basis and distribution rules, book-tax differences, NOLs, and international/entity planning basics.
+  questionDelay: 1
+  answerDelay: 1
+questions:
+  - question: What is a C corporation for federal tax purposes?
+    answer: >-
+      A C corporation is a separate taxable entity that computes and pays its own federal income tax.
+  - question: Why is double taxation associated with C corporations?
+    answer: >-
+      Corporate income may be taxed once at the corporation level and again when after-tax earnings are distributed to shareholders as dividends.
+  - question: What is section 351 in broad terms?
+    answer: >-
+      Section 351 generally allows tax-free transfer of property to a corporation in exchange for stock when control requirements are met immediately after the exchange.
+  - question: What control requirement applies under section 351?
+    answer: >-
+      The transferors as a group must generally own at least 80 percent of the corporation's voting power and 80 percent of each class of nonvoting stock immediately after the exchange.
+  - question: What happens if boot is received in a section 351 exchange?
+    answer: >-
+      Gain may be recognized to the extent of the lesser of realized gain or boot received, but losses are generally not recognized.
+  - question: How are services treated in a purported section 351 transfer?
+    answer: >-
+      Stock received for services is generally taxable compensation and the service provider usually does not count as a property transferor for control unless the property contribution is significant.
+  - question: What is a corporation's basis in property received in a section 351 exchange?
+    answer: >-
+      The corporation generally takes a carryover basis increased by any gain recognized by the transferor.
+  - question: What is a shareholder's basis in stock received in a section 351 exchange?
+    answer: >-
+      The shareholder generally takes basis equal to the basis of property transferred, adjusted for boot received, liabilities, and gain recognized.
+  - question: What is corporate taxable income in broad terms?
+    answer: >-
+      Corporate taxable income starts with gross income and is reduced by allowable deductions subject to corporate-specific limitations and rules.
+  - question: What is a permanent book-tax difference?
+    answer: >-
+      A permanent difference is an item recognized for book or tax but never in the other system, such as certain nondeductible expenses or tax-exempt income.
+  - question: What is a temporary book-tax difference?
+    answer: >-
+      A temporary difference is an item recognized in both book and tax but in different periods, creating deferred tax effects for financial accounting.
+  - question: Why do book-tax differences matter on the CPA exam?
+    answer: >-
+      They affect taxable income computations, M-1 or M-3 reconciliations, deferred taxes, and entity planning.
+  - question: What is a net operating loss?
+    answer: >-
+      A net operating loss exists when allowable tax deductions exceed gross income for the year under the applicable NOL rules.
+  - question: Why are NOL rules important for entity planning?
+    answer: >-
+      NOLs can reduce taxable income in other years, affecting cash taxes, valuation, and transaction planning.
+  - question: How are charitable contributions generally treated by C corporations?
+    answer: >-
+      Charitable contribution deductions are allowed subject to taxable income limitations and carryforward rules.
+  - question: What is the dividends received deduction?
+    answer: >-
+      The dividends received deduction permits corporations receiving certain dividends from domestic corporations to deduct a percentage to mitigate multiple layers of tax.
+  - question: Why is the dividends received deduction tested?
+    answer: >-
+      Because it is a classic C corporation rule and often appears in taxable income computations.
+  - question: How are capital losses treated by C corporations?
+    answer: >-
+      Corporate capital losses can offset capital gains but generally do not offset ordinary income.
+  - question: What is the accumulated earnings tax designed to prevent?
+    answer: >-
+      It discourages corporations from improperly retaining earnings to avoid shareholder-level tax on dividends.
+  - question: What is a personal holding company in broad terms?
+    answer: >-
+      It is a closely held corporation with substantial passive income that may be subject to special anti-deferral tax rules.
+  - question: What is an S corporation?
+    answer: >-
+      An S corporation is generally a pass-through entity that usually does not pay federal income tax at the entity level, with items flowing through to shareholders.
+  - question: Why do taxpayers choose S corporation status?
+    answer: >-
+      S status can avoid C corporation double taxation while retaining corporate limited liability under state law.
+  - question: What are the basic shareholder eligibility rules for an S corporation?
+    answer: >-
+      An S corporation must generally have eligible shareholders, a limited number of shareholders, and no ineligible owners such as most partnerships, corporations, or nonresident aliens.
+  - question: Why is the one-class-of-stock rule important for S corporations?
+    answer: >-
+      An S corporation may have only one class of stock in terms of economic rights, and violating the rule can terminate the election.
+  - question: What is required to make an S election?
+    answer: >-
+      The corporation must file a timely election and obtain the required consent of eligible shareholders.
+  - question: What is pass-through taxation?
+    answer: >-
+      Pass-through taxation means income, deductions, credits, and other tax items are generally reported by owners rather than taxed at the entity level.
+  - question: Why are separately stated items important in S corporations and partnerships?
+    answer: >-
+      Separately stated items must be separately reported because their tax effect depends on each owner's individual situation.
+  - question: What is stock basis in an S corporation?
+    answer: >-
+      Stock basis begins with contributions and purchase cost, increases for income items and additional contributions, and decreases for losses, deductions, and distributions.
+  - question: Why does basis matter to an S corporation shareholder?
+    answer: >-
+      Basis limits loss deductions, affects taxation of distributions, and determines gain or loss on disposition.
+  - question: What is debt basis in an S corporation?
+    answer: >-
+      Debt basis arises from direct loans by the shareholder to the S corporation and can allow additional loss deductions beyond stock basis.
+  - question: What is the accumulated adjustments account?
+    answer: >-
+      AAA is an S corporation account used to track previously taxed income for ordering certain distributions.
+  - question: How are S corporation distributions generally taxed?
+    answer: >-
+      Distributions generally are tax-free to the extent of shareholder basis unless special earnings and profits rules or excess distributions create dividend or gain treatment.
+  - question: What happens when an S corporation distribution exceeds shareholder basis?
+    answer: >-
+      The excess is generally recognized as gain.
+  - question: What is the built-in gains tax?
+    answer: >-
+      It is a corporate-level tax that can apply when a former C corporation elects S status and later disposes of appreciated assets within the recognition period.
+  - question: Why is passive investment income a concern for some S corporations?
+    answer: >-
+      If a former C corporation with accumulated earnings and profits has excessive passive investment income, it may face tax and risk termination of its S status.
+  - question: What is a partnership for federal tax purposes?
+    answer: >-
+      A partnership is a pass-through arrangement in which the entity files an informational return while partners report their distributive shares of tax items.
+  - question: How is an LLC taxed by default?
+    answer: >-
+      A single-member LLC is generally disregarded by default, while a multi-member LLC is generally taxed as a partnership unless an election changes classification.
+  - question: What is check-the-box classification?
+    answer: >-
+      It is the federal system allowing eligible entities to elect corporate tax classification instead of default classification.
+  - question: What is section 721 in broad terms?
+    answer: >-
+      Section 721 generally allows tax-free contribution of property to a partnership in exchange for a partnership interest.
+  - question: What basis does a partnership generally take in contributed property?
+    answer: >-
+      The partnership generally takes a carryover basis in contributed property.
+  - question: What is a partner's initial outside basis?
+    answer: >-
+      It generally equals the adjusted basis of property and cash contributed, increased by the partner's share of partnership liabilities and adjusted for gain recognized if any.
+  - question: What is inside basis?
+    answer: >-
+      Inside basis is the partnership's tax basis in its assets.
+  - question: What is outside basis?
+    answer: >-
+      Outside basis is a partner's tax basis in the partnership interest.
+  - question: Why are inside and outside basis different concepts?
+    answer: >-
+      Inside basis tracks the entity's basis in its assets, while outside basis tracks the owner's basis in the entity interest.
+  - question: How do partnership liabilities affect partner basis?
+    answer: >-
+      A partner's share of partnership liabilities generally increases outside basis, while relief from liabilities generally decreases outside basis.
+  - question: Why do liability allocations matter in partnerships?
+    answer: >-
+      They affect basis, loss deductions, disguised sale analysis, and the tax consequences of contributions and distributions.
+  - question: What is partnership ordinary business income?
+    answer: >-
+      It is the partnership's ordinary income from operations that flows through to partners and increases outside basis.
+  - question: What is a guaranteed payment?
+    answer: >-
+      A guaranteed payment is a payment to a partner for services or capital determined without regard to partnership income.
+  - question: Why are guaranteed payments important?
+    answer: >-
+      They are generally deductible or capitalizable by the partnership and ordinary income to the receiving partner.
+  - question: Are partners taxed on distributive share even if no cash is distributed?
+    answer: >-
+      Yes; partners are generally taxed on allocated income whether or not it is actually distributed.
+  - question: What is the partnership basis limitation on losses?
+    answer: >-
+      A partner generally cannot deduct partnership losses beyond the partner's outside basis, with at-risk and passive loss rules also potentially limiting the deduction.
+  - question: How are current partnership cash distributions generally treated?
+    answer: >-
+      They are generally tax-free to the extent of outside basis, but gain is recognized to the extent cash distributed exceeds outside basis.
+  - question: How is basis of property distributed by a partnership generally determined?
+    answer: >-
+      Distributed property generally takes a carryover-type basis subject to limits tied to the partner's outside basis and the partnership's inside basis.
+  - question: What are hot assets under section 751?
+    answer: >-
+      Hot assets are unrealized receivables and substantially appreciated inventory items that can create ordinary income on certain partnership sales or distributions.
+  - question: Why do hot assets matter?
+    answer: >-
+      They prevent conversion of ordinary income items into capital gain through partnership transactions.
+  - question: What is a liquidating distribution from a partnership?
+    answer: >-
+      It is a distribution that completely terminates a partner's interest and requires special basis and gain or loss rules.
+  - question: What is a section 754 election?
+    answer: >-
+      It is an election allowing basis adjustments to partnership property after certain transfers or distributions to better align inside and outside basis.
+  - question: Why is a section 754 election useful?
+    answer: >-
+      It can prevent duplication or omission of gain or loss when partnership interests change hands.
+  - question: How is gain or loss on sale of a partnership interest generally characterized?
+    answer: >-
+      It is generally capital, except to the extent ordinary income is required for hot assets and other special items.
+  - question: What does substantial economic effect mean in partnership allocations?
+    answer: >-
+      It means the tax allocation follows the partners' true economic arrangement under the Code and regulations.
+  - question: Why are special allocations examined carefully?
+    answer: >-
+      Because allocations that lack substantial economic effect may be reallocated by the IRS.
+  - question: How are corporate distributions generally taxed to shareholders?
+    answer: >-
+      Corporate distributions are generally dividends to the extent of current or accumulated earnings and profits, then return of capital to basis, then gain.
+  - question: What are earnings and profits?
+    answer: >-
+      Earnings and profits are a corporate tax measure roughly reflecting the corporation's economic ability to pay dividends.
+  - question: What is a return of capital distribution?
+    answer: >-
+      It is the portion of a corporate distribution that exceeds earnings and profits and reduces shareholder basis rather than being taxed as a dividend.
+  - question: What is a constructive dividend?
+    answer: >-
+      A constructive dividend is an economic benefit conferred on a shareholder that is treated as a dividend even though not formally declared.
+  - question: Why are constructive dividends tested?
+    answer: >-
+      They are common when closely held corporations pay personal expenses, excessive compensation, or provide below-market benefits to shareholders.
+  - question: How are property distributions by a corporation generally treated to the corporation?
+    answer: >-
+      The corporation may recognize gain as if the property were sold for fair market value, and special rules govern the shareholder side.
+  - question: How are liquidating distributions from a corporation generally treated to shareholders?
+    answer: >-
+      Shareholders generally treat liquidating distributions as payment in exchange for stock, producing capital gain or loss measured against stock basis.
+  - question: How is a corporation generally taxed on liquidation?
+    answer: >-
+      A C corporation generally recognizes gain or loss on distribution of assets in complete liquidation, subject to special rules.
+  - question: What is a tax-exempt organization in broad terms?
+    answer: >-
+      It is an entity that qualifies under a specific Code provision, such as section 501(c)(3), for exemption from federal income tax on related exempt-function income.
+  - question: What is a section 501(c)(3) organization?
+    answer: >-
+      It is an organization operated for charitable, educational, religious, scientific, or certain other exempt purposes and subject to strict qualification rules.
+  - question: What is private inurement?
+    answer: >-
+      Private inurement occurs when an exempt organization's earnings improperly benefit insiders, which can jeopardize exempt status.
+  - question: Why are lobbying and political campaign rules important for exempt organizations?
+    answer: >-
+      Because excessive lobbying or prohibited political campaign activity can lead to excise taxes, penalties, or loss of exemption.
+  - question: What is unrelated business taxable income?
+    answer: >-
+      UBTI is income from a regularly carried on trade or business unrelated to the organization's exempt purpose and may be subject to tax.
+  - question: Why does UBTI exist?
+    answer: >-
+      It prevents exempt organizations from gaining an unfair advantage in unrelated commercial activities.
+  - question: What is the federal tax compliance burden of tax-exempt organizations?
+    answer: >-
+      Many exempt organizations must file annual informational returns and comply with governance, recordkeeping, and disclosure obligations.
+  - question: What is an affiliated group for consolidated return purposes?
+    answer: >-
+      It is a qualifying group of corporations connected through stock ownership that may elect to file a consolidated federal income tax return.
+  - question: Why might corporations file a consolidated return?
+    answer: >-
+      Consolidation can allow offsetting profits and losses within the group and simplify certain intercompany tax results.
+  - question: What is sourcing of income?
+    answer: >-
+      Sourcing determines whether income is treated as U.S.-source or foreign-source for international tax purposes.
+  - question: How is interest income generally sourced?
+    answer: >-
+      Interest is generally sourced by reference to the residence of the payor, subject to statutory exceptions.
+  - question: How is personal services income generally sourced?
+    answer: >-
+      Personal services income is generally sourced where the services are performed.
+  - question: How is inventory income generally sourced in broad terms?
+    answer: >-
+      Inventory sourcing depends on how and where the inventory is produced and sold under the applicable tax rules.
+  - question: What is a controlled foreign corporation?
+    answer: >-
+      A CFC is a foreign corporation meeting U.S. ownership thresholds that can trigger current inclusion rules for certain U.S. shareholders.
+  - question: What is Subpart F income in broad terms?
+    answer: >-
+      Subpart F requires certain categories of a CFC's income to be currently included by qualifying U.S. shareholders even without an actual distribution.
+  - question: What is GILTI in broad terms?
+    answer: >-
+      GILTI is a current inclusion regime aimed at certain low-taxed foreign earnings of controlled foreign corporations.
+  - question: Why do CFC rules matter for CPA candidates?
+    answer: >-
+      They test whether taxpayers can defer foreign income and are a core part of modern entity and international tax planning.
+  - question: What is effectively connected income?
+    answer: >-
+      It is income effectively connected with a U.S. trade or business and generally taxed on a net basis to foreign persons.
+  - question: What is FDAP income in broad terms?
+    answer: >-
+      FDAP refers to certain fixed or determinable annual or periodic U.S.-source income often subject to gross-basis withholding when paid to foreign persons.
+  - question: What is transfer pricing?
+    answer: >-
+      Transfer pricing concerns the pricing of transactions between related parties and generally requires arm's-length results.
+  - question: Why is the arm's-length principle important?
+    answer: >-
+      It prevents related entities from shifting income improperly across jurisdictions or among taxpayers.
+  - question: What entity choice factors should a CPA candidate consider?
+    answer: >-
+      Key factors include liability protection, number and type of owners, pass-through versus entity-level tax, basis and distribution rules, compensation issues, and exit strategy.
+  - question: Why do tax elections matter for entities?
+    answer: >-
+      Elections can change timing, character, classification, basis, and the overall tax cost of transactions.
+  - question: What is reasonable compensation in the S corporation context?
+    answer: >-
+      Shareholder-employees of S corporations should receive reasonable wage compensation for services performed rather than characterizing all earnings as distributions.
+  - question: Why is reasonable compensation a common exam issue?
+    answer: >-
+      Because underpaying wages may improperly avoid employment taxes, while overpaying can distort deductions and distributions.
+  - question: What is a disguised sale in partnership taxation?
+    answer: >-
+      A disguised sale may occur when a contribution and related distribution or payment are structured to look like a tax-free contribution but economically function as a sale.
+  - question: What is the purpose of schedule M-1 or M-3 reconciliation?
+    answer: >-
+      It reconciles financial statement income to taxable income by identifying book-tax differences.
+  - question: Why must corporations consider estimated tax payments?
+    answer: >-
+      Corporations may face penalties if they do not pay enough tax during the year through required estimated payments.
+  - question: What is a corporate reorganization in broad terms?
+    answer: >-
+      It is a qualifying restructuring transaction that can receive tax-deferred treatment if statutory requirements are met.
+  - question: Why do asset sales and stock sales produce different tax results?
+    answer: >-
+      Asset sales can trigger gain at the entity level and step-up basis for buyers, while stock sales usually transfer entity ownership without changing the inside basis of assets.
+  - question: What is the best exam approach to entity taxation questions?
+    answer: >-
+      Identify the entity type first, then determine whether tax is paid at the entity or owner level, compute basis effects, apply distribution and loss-limitation rules, and finally check for special elections or international complications.

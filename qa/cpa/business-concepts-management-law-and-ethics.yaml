@@ -1,0 +1,340 @@
+config:
+  name: CPA Business Concepts — Management, Communications, Law & Ethics
+  description: High-yield CPA prep for governance, strategy, communication, international business, business law, AICPA
+    ethics, and REG-style legal concepts.
+  questionDelay: 1
+  answerDelay: 1
+  youtube:
+    videoId: 6pj1QcOLv8w
+    url: https://youtu.be/6pj1QcOLv8w
+    uploadedAt: 2026-03-08T13:49:06.075Z
+    privacy: unlisted
+    contentSha: 5d4d141a
+questions:
+  - question: What is corporate governance?
+    answer: Corporate governance is the system of oversight, accountability, incentives, and control used to direct an
+      organization. Good governance supports ethical behavior, reliable reporting, risk oversight, and long-term value.
+  - question: What is the board of directors responsible for?
+    answer: The board oversees management, sets strategic direction at a high level, monitors risk, and protects the
+      interests of shareholders and other stakeholders as required. It is not supposed to run daily operations, but it
+      also is not decorative conference-room furniture.
+  - question: What is the role of the audit committee?
+    answer: The audit committee oversees financial reporting, the external audit, internal control, and often ethics or
+      compliance matters. Independence and financial literacy of committee members are especially important.
+  - question: What is meant by tone at the top?
+    answer: Tone at the top refers to the ethical and control-conscious culture established by senior leadership. If
+      leadership signals that results matter more than integrity, employees tend to hear that message very clearly.
+  - question: Why is internal communication important in organizations?
+    answer: Internal communication aligns employees on goals, responsibilities, risks, and changes in process or policy.
+      Poor communication can cause control failures even when the rules themselves are well designed.
+  - question: Why is external communication important?
+    answer: External communication supports investor relations, customer trust, regulatory compliance, and coordination with
+      lenders, vendors, and service providers. Messaging should be accurate, timely, and consistent with reported facts.
+  - question: What is active listening?
+    answer: Active listening means focusing on what the other person is saying, asking clarifying questions, and confirming
+      understanding before reacting. In management and client settings, it reduces miscommunication and improves problem
+      solving.
+  - question: What makes an executive summary effective?
+    answer: An effective executive summary states the issue, key facts, analysis, recommendation, and impact in a concise,
+      decision-oriented format. It should save time, not create a scavenger hunt.
+  - question: What is SWOT analysis?
+    answer: SWOT analysis evaluates strengths, weaknesses, opportunities, and threats. Strengths and weaknesses are
+      internal, while opportunities and threats are external.
+  - question: What is PESTLE analysis?
+    answer: PESTLE analysis reviews political, economic, social, technological, legal, and environmental factors affecting
+      an organization. It is useful for strategic planning and international business analysis.
+  - question: What is the balanced scorecard?
+    answer: The balanced scorecard translates strategy into performance measures across multiple perspectives, commonly
+      financial, customer, internal process, and learning and growth. It helps management avoid chasing only short-term
+      financial numbers.
+  - question: What is the difference between a strategic objective and a KPI?
+    answer: A strategic objective states what the organization wants to achieve, while a KPI measures progress toward that
+      objective. Objectives provide direction and KPIs provide evidence.
+  - question: What is the difference between a mission and a vision?
+    answer: A mission explains the organization's purpose today, while a vision describes what it wants to become in the
+      future. Mission is present identity; vision is future aspiration.
+  - question: What are Porter's Five Forces?
+    answer: Porter's Five Forces are rivalry among existing competitors, threat of new entrants, threat of substitutes,
+      bargaining power of buyers, and bargaining power of suppliers. They help evaluate industry attractiveness and
+      competitive pressure.
+  - question: What is value chain analysis?
+    answer: Value chain analysis examines how activities across sourcing, operations, logistics, marketing, and support
+      create value and incur cost. It helps management identify where efficiency or differentiation can improve
+      performance.
+  - question: Why is communication important during change management?
+    answer: Change efforts fail more often when employees do not understand the reason, timeline, responsibilities, or
+      expected benefits. Clear communication reduces resistance and improves adoption.
+  - question: What is the role of a project sponsor?
+    answer: A project sponsor provides authority, resources, strategic alignment, and escalation support for a project. When
+      the sponsor disappears, projects often wander like a shopping cart with one broken wheel.
+  - question: What are common conflict resolution approaches?
+    answer: Common approaches include avoiding, accommodating, competing, compromising, and collaborating. Collaboration
+      often produces the best long-term result when parties can work toward mutual interests.
+  - question: What is BATNA in negotiation?
+    answer: BATNA stands for Best Alternative To a Negotiated Agreement. Knowing your BATNA helps you evaluate offers and
+      avoid accepting terms worse than your realistic fallback option.
+  - question: What is the difference between functional and divisional organizational structures?
+    answer: A functional structure groups employees by specialty such as finance or marketing, while a divisional structure
+      groups by product, geography, or customer line. Functional structures improve specialization, while divisional
+      structures can improve accountability for results.
+  - question: What is a matrix organization risk?
+    answer: In a matrix structure, employees may report to more than one manager, which can improve coordination but also
+      cause unclear authority, conflicting priorities, and slower decision-making.
+  - question: What is the difference between centralized and decentralized decision-making?
+    answer: Centralized decision-making keeps authority at higher levels for consistency and control, while decentralized
+      decision-making pushes authority closer to operations for speed and local responsiveness. The right balance
+      depends on strategy, risk, and complexity.
+  - question: What is the agency problem?
+    answer: The agency problem arises when managers or agents pursue their own interests rather than the interests of owners
+      or principals. Governance, incentives, monitoring, and ethics are used to reduce this conflict.
+  - question: What is the difference between a shareholder and stakeholder perspective?
+    answer: A shareholder perspective focuses primarily on returns to owners, while a stakeholder perspective considers the
+      interests of employees, customers, communities, regulators, suppliers, and others affected by the organization.
+  - question: Why is delegation important in management?
+    answer: Delegation allows managers to distribute work efficiently, develop staff, and focus on higher-level decisions.
+      Responsibility can be delegated, but ultimate accountability usually cannot.
+  - question: What is performance management?
+    answer: Performance management is the process of setting expectations, measuring results, providing feedback, and
+      aligning rewards or development actions with organizational goals. Strong systems emphasize both outcomes and
+      behaviors.
+  - question: Why is succession planning important?
+    answer: Succession planning prepares the organization for leadership or key-role transitions, reducing disruption and
+      preserving institutional knowledge. It is risk management with a human face.
+  - question: Why is cross-cultural communication important in international business?
+    answer: Cross-cultural communication helps teams avoid misunderstandings in negotiation, leadership, marketing, and
+      service. A message that sounds clear in one culture can land very differently in another.
+  - question: What is comparative advantage?
+    answer: Comparative advantage means a party can produce a good or service at lower opportunity cost than another party.
+      It explains why trade can benefit both sides even when one side is more efficient at everything.
+  - question: What is a tariff?
+    answer: A tariff is a tax on imported goods. It can protect domestic producers, raise government revenue, and increase
+      prices for buyers.
+  - question: What is a quota?
+    answer: A quota is a limit on the quantity of imports allowed into a country. Like tariffs, quotas can reduce
+      competition and affect prices and supply.
+  - question: How can currency appreciation affect exporters?
+    answer: When a country's currency appreciates, its exports may become more expensive to foreign buyers, which can weaken
+      competitiveness abroad. Importers may benefit at the same time because foreign goods become cheaper.
+  - question: What is political risk in international business?
+    answer: Political risk is the chance that government actions, instability, conflict, or policy changes will negatively
+      affect operations or investments. It may involve expropriation, regulation, taxes, or restrictions on cash flows.
+  - question: Why does ethical culture matter in management?
+    answer: Ethical culture influences decisions when no one is watching and shapes whether employees feel pressure to bend
+      rules. Controls work far better in an ethical culture than in an environment that quietly rewards bad behavior.
+  - question: What are the main sources of law?
+    answer: Main sources include constitutional law, statutory law, administrative regulations, and common law from judicial
+      decisions. CPA candidates should know who creates the rule before deciding how it applies.
+  - question: What is the difference between common law and statutory law?
+    answer: Common law is developed through court decisions and precedent, while statutory law is enacted by legislatures.
+      Many business law topics involve both, depending on the issue.
+  - question: What is administrative law?
+    answer: Administrative law consists of rules and decisions created by governmental agencies under authority granted by
+      statute. Agencies often issue regulations, perform investigations, and hold hearings.
+  - question: What is the difference between civil law and criminal law?
+    answer: Civil law generally deals with disputes between private parties and seeks remedies such as damages or
+      injunctions, while criminal law involves offenses against the state and can result in fines or imprisonment.
+  - question: What is an intentional tort?
+    answer: An intentional tort is a civil wrong committed deliberately, such as fraud, battery, assault, false
+      imprisonment, defamation, or intentional interference with business relations.
+  - question: What is negligence?
+    answer: Negligence is the failure to exercise reasonable care, resulting in harm to another party. The classic elements
+      are duty, breach, causation, and damages.
+  - question: What are the basic elements of a valid contract?
+    answer: A valid contract generally requires agreement, consideration, capacity, and legality. Some contracts also must
+      meet formal requirements such as a writing.
+  - question: What is an offer?
+    answer: An offer is a definite expression of willingness to contract on specified terms, made so that the other party
+      can accept and create a binding agreement. Mere invitations to negotiate usually are not offers.
+  - question: What is acceptance?
+    answer: Acceptance is the offeree's clear assent to the terms of the offer. Under common law, the mirror image rule
+      generally requires acceptance to match the offer exactly.
+  - question: What is consideration?
+    answer: Consideration is the bargained-for exchange of legal value between parties, such as a promise, performance, or
+      forbearance. A gift promise alone generally lacks consideration.
+  - question: What is contractual capacity?
+    answer: Capacity refers to a party's legal ability to enter a contract. Minors, intoxicated persons, or mentally
+      impaired persons may have the power to void certain agreements.
+  - question: What does legality mean in contract law?
+    answer: A contract must have a lawful purpose to be enforceable. Agreements involving illegal acts or against public
+      policy generally are not enforceable.
+  - question: What is the statute of frauds?
+    answer: The statute of frauds requires certain contracts to be in writing to be enforceable, such as contracts involving
+      interests in land, promises to pay another's debt, and agreements that cannot be performed within one year.
+  - question: What is the parol evidence rule?
+    answer: The parol evidence rule generally bars prior or contemporaneous oral evidence that contradicts a final written
+      agreement, subject to exceptions such as fraud, ambiguity, or later modification.
+  - question: What is the difference between assignment and delegation?
+    answer: An assignment transfers contractual rights, while a delegation transfers contractual duties. Duties involving
+      special personal skill generally cannot be delegated without consent.
+  - question: What is a material breach?
+    answer: A material breach is a significant failure to perform that excuses the other party from further performance and
+      may support damages. A minor breach usually allows damages but not total discharge.
+  - question: What contract remedies should a CPA candidate know?
+    answer: Common remedies include compensatory damages, consequential damages when appropriate, rescission, restitution,
+      and specific performance in limited situations. Punitive damages are generally not awarded for ordinary contract
+      breach.
+  - question: What is a third-party beneficiary?
+    answer: A third-party beneficiary is a nonparty intended to benefit from a contract and who may acquire enforceable
+      rights once those rights vest. Incidental beneficiaries usually do not have such rights.
+  - question: What is accord and satisfaction?
+    answer: Accord and satisfaction is a contract mechanism for settling a disputed or unliquidated debt by agreeing to
+      accept substituted performance and then completing it. The accord is the agreement and the satisfaction is the
+      execution.
+  - question: How is an agency relationship created?
+    answer: Agency is created when a principal authorizes an agent to act on the principal's behalf and subject to the
+      principal's control, and the agent consents. It can be formed by agreement, implication, ratification, or
+      estoppel.
+  - question: What is actual authority?
+    answer: Actual authority exists when the principal intentionally grants authority to the agent, either expressly or by
+      implication. It determines whether the agent can bind the principal.
+  - question: What is apparent authority?
+    answer: Apparent authority arises when the principal's conduct leads a third party to reasonably believe the agent has
+      authority, even if actual authority is lacking. The focus is on the third party's reasonable perception.
+  - question: What fiduciary duties does an agent owe a principal?
+    answer: Agents generally owe duties of loyalty, obedience, care, accounting, and disclosure within the scope of the
+      agency. Secret profits and self-dealing are classic breaches.
+  - question: What are the main characteristics of a general partnership?
+    answer: A general partnership is an association of two or more persons carrying on as co-owners of a business for
+      profit. Partners usually share management rights and have joint and several liability for partnership obligations.
+  - question: What is an LLP?
+    answer: A Limited Liability Partnership is a partnership form that generally provides partners with liability protection
+      from certain debts or malpractice of other partners, depending on state law. It is common for professional firms.
+  - question: What is an LLC?
+    answer: A Limited Liability Company combines liability protection for owners with flexible management and tax treatment.
+      Members usually are not personally liable for entity debts solely because of ownership.
+  - question: What are the key characteristics of a corporation?
+    answer: A corporation is a separate legal entity with continuity of life, centralized management, transferable ownership
+      interests, and limited liability for shareholders. It exists independently of its owners.
+  - question: What is piercing the corporate veil?
+    answer: Piercing the corporate veil occurs when a court disregards the corporation's separate legal existence and holds
+      owners personally liable, usually because of abuse such as undercapitalization, commingling, or fraud.
+  - question: What rights do shareholders generally have?
+    answer: Shareholders generally have rights to vote, receive dividends if declared, inspect certain records, and share in
+      residual assets upon liquidation after creditors are paid. Preferred shareholders may have special priority
+      rights.
+  - question: What is the duty of care for directors?
+    answer: The duty of care requires directors to act in good faith, with the care an ordinarily prudent person would use,
+      and in a manner reasonably believed to be in the corporation's best interests.
+  - question: What is the business judgment rule?
+    answer: The business judgment rule generally protects directors from liability for informed, good-faith business
+      decisions made without conflicts of interest, even if the results later turn out badly.
+  - question: What is the duty of loyalty?
+    answer: The duty of loyalty requires directors and officers to place the corporation's interests above personal
+      interests in matters related to the corporation. Self-dealing and usurping corporate opportunities are classic
+      violations.
+  - question: What is insider trading?
+    answer: Insider trading generally involves trading securities while in possession of material nonpublic information in
+      breach of a duty. Both the person trading and those who improperly tip others can face liability.
+  - question: When does UCC Article 2 apply?
+    answer: UCC Article 2 applies to contracts for the sale of goods, not services or real estate. Mixed contracts are often
+      tested by asking whether the dominant purpose is goods or services.
+  - question: Who is a merchant under the UCC?
+    answer: A merchant is a person who regularly deals in goods of the kind or otherwise holds themselves out as having
+      special knowledge or skill regarding the goods or practices involved. Merchant status triggers several special UCC
+      rules.
+  - question: What is risk of loss in a sales contract?
+    answer: Risk of loss determines which party bears the financial loss if goods are damaged before the sale is completed.
+      The answer depends on contract terms, shipment arrangements, breach status, and whether a merchant is involved.
+  - question: What is an express warranty?
+    answer: An express warranty arises from an affirmation of fact, promise, description, or sample that becomes part of the
+      basis of the bargain. Puffery alone usually does not create one.
+  - question: What is the implied warranty of merchantability?
+    answer: The implied warranty of merchantability assures that goods sold by a merchant are fit for the ordinary purposes
+      for which such goods are used. It applies automatically unless properly disclaimed.
+  - question: What is the implied warranty of fitness for a particular purpose?
+    answer: This warranty arises when the seller knows the buyer's special purpose and knows the buyer is relying on the
+      seller's skill or judgment to select suitable goods. Merchant status is not required.
+  - question: What is the perfect tender rule?
+    answer: Under the UCC, a buyer generally may reject goods if the goods or tender fail in any respect to conform to the
+      contract, subject to important limitations and cure rights. The rule sounds harsh because it is.
+  - question: What makes an instrument negotiable?
+    answer: A negotiable instrument must generally be a written and signed unconditional promise or order to pay a fixed
+      amount of money, payable on demand or at a definite time, and payable to order or bearer where required.
+  - question: What is a holder in due course?
+    answer: A holder in due course takes a negotiable instrument for value, in good faith, and without notice of certain
+      problems, gaining protection against many personal defenses.
+  - question: What are blank and restrictive endorsements?
+    answer: A blank endorsement makes an instrument payable to bearer, while a restrictive endorsement limits how it may be
+      used, such as "for deposit only." Endorsements affect transferability and risk.
+  - question: What is attachment in a secured transaction?
+    answer: Attachment is the point when a security interest becomes enforceable against the debtor with respect to the
+      collateral. It generally requires value given, debtor rights in the collateral, and a security agreement or
+      control.
+  - question: What is perfection in a secured transaction?
+    answer: Perfection is the step that puts others on notice of the secured party's interest and helps establish priority.
+      Common methods include filing, possession, and control.
+  - question: Why is priority important in secured transactions?
+    answer: Priority determines which creditor gets paid first from collateral when claims compete. Secured transaction
+      questions love ranking fights almost as much as sports fans do.
+  - question: What is Chapter 7 bankruptcy?
+    answer: Chapter 7 is a liquidation proceeding in which nonexempt assets are collected and distributed to creditors. The
+      goal is to discharge eligible debts and wind down the debtor's estate.
+  - question: What is Chapter 11 bankruptcy?
+    answer: Chapter 11 is primarily a reorganization proceeding that allows a business, and sometimes individuals, to
+      continue operations while restructuring debts under court supervision.
+  - question: What is the automatic stay in bankruptcy?
+    answer: The automatic stay halts most collection actions against the debtor immediately upon filing bankruptcy. It gives
+      the debtor breathing room and preserves the estate for orderly administration.
+  - question: What is a preferential transfer?
+    answer: A preferential transfer is a payment or transfer made shortly before bankruptcy that unfairly favors one
+      creditor over others and may be recoverable by the bankruptcy estate if statutory conditions are met.
+  - question: What is a fraudulent transfer?
+    answer: A fraudulent transfer involves transferring assets to hinder, delay, or defraud creditors, or transferring for
+      less than reasonably equivalent value under insolvency conditions. Such transfers may be avoided.
+  - question: What rights does a surety generally have after paying the debt?
+    answer: A surety who pays a debtor's obligation may have rights of reimbursement against the debtor and subrogation to
+      the creditor's rights. The surety is not supposed to be the permanent volunteer wallet.
+  - question: What are the basics of antitrust law a CPA candidate should know?
+    answer: Antitrust law aims to preserve competition and generally prohibits conduct such as price fixing, market
+      allocation, bid rigging, and certain monopolistic behavior. The core idea is that markets should compete rather
+      than collude.
+  - question: What are common exceptions to employment at will?
+    answer: Common exceptions include discrimination laws, retaliation protections, public policy exceptions, implied
+      contracts, and protections for certain whistleblowing activity. At-will does not mean employers may do absolutely
+      anything.
+  - question: What federal discrimination topics are important at a high level?
+    answer: CPA candidates should know that employment discrimination laws restrict adverse actions based on protected
+      characteristics and prohibit harassment and retaliation in covered settings. High-level familiarity is usually
+      more important than memorizing every procedural detail.
+  - question: What does integrity mean under the AICPA Code?
+    answer: Integrity requires honesty and candor within the limits of confidentiality. A CPA must not knowingly
+      misrepresent facts or subordinate professional judgment to others.
+  - question: What is the difference between objectivity and independence?
+    answer: Objectivity is impartiality and freedom from conflicts in judgment, while independence is a stricter requirement
+      for certain attest services requiring both independence in fact and in appearance.
+  - question: What is client confidentiality for a CPA?
+    answer: A CPA generally may not disclose confidential client information without specific consent, except in limited
+      permitted circumstances such as valid legal process or professional review. Confidentiality does not excuse fraud.
+  - question: What are acts discreditable?
+    answer: Acts discreditable are behaviors that harm the profession's reputation, such as dishonesty, certain failures to
+      comply with standards or laws, or improper handling of client records. The label is broad because reputational
+      damage comes in many flavors.
+  - question: What are the main contingent fee restrictions for CPAs?
+    answer: CPAs generally may not charge contingent fees for certain services such as audits, reviews, compilations when
+      independence is expected, or some tax matters under professional rules. The concern is that fee dependence may
+      bias judgment.
+  - question: What should a CPA candidate know about commissions and referral fees?
+    answer: Commissions and referral fees may be allowed in some circumstances but often require disclosure and may be
+      barred when independence-related services are involved. Always think conflict of interest first.
+  - question: Why is due diligence important in tax and business advice?
+    answer: Due diligence requires a CPA to use reasonable care in preparing returns, giving advice, and relying on
+      information. It means verifying what needs verification instead of just accepting convenient assumptions.
+  - question: What should CPAs consider about whistleblowing?
+    answer: CPAs should understand both ethical duties and legal constraints when reporting misconduct, including
+      confidentiality, documentation, internal reporting channels, and any applicable legal protections. Whistleblowing
+      is rarely simple, but silence can be costly too.
+  - question: What is the Foreign Corrupt Practices Act?
+    answer: The FCPA prohibits bribing certain foreign officials to obtain or retain business and also requires issuers to
+      maintain adequate books, records, and internal accounting controls. It is a business law and control topic wrapped
+      into one exam-friendly package.
+  - question: What are common anti-money laundering red flags?
+    answer: Red flags include unusual transaction patterns, lack of economic purpose, shell entities, structuring,
+      unexplained source of funds, and reluctance to provide identifying information. The key idea is unusual opacity
+      plus unusual money movement.
+  - question: What is an ethical decision framework?
+    answer: An ethical decision framework typically identifies the facts, stakeholders, duties, alternatives, consequences,
+      applicable rules, and the most defensible course of action. Structured thinking helps when pressure and ambiguity
+      are high.
+  - question: Why is a code of conduct important?
+    answer: A code of conduct establishes expected behaviors, reporting channels, and standards for ethical decision-making.
+      It supports training, accountability, and a consistent culture across the organization.

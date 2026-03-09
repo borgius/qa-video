@@ -1,0 +1,504 @@
+config:
+  name: "CPA AUD: Auditing & Attestation — Further Procedures and Audit Evidence"
+  description: Audit evidence, data analytics, sampling, substantive procedures, estimates, inventory, investments,
+    litigation, going concern, subsequent events, and management representations for CPA AUD prep.
+  questionDelay: 1
+  answerDelay: 1
+  youtube:
+    videoId: K_EzOCbEdBA
+    url: https://youtu.be/K_EzOCbEdBA
+    uploadedAt: 2026-03-08T13:48:27.481Z
+    privacy: unlisted
+    contentSha: d7d88287
+questions:
+  - question: What makes audit evidence persuasive?
+    answer: |-
+      The persuasiveness of audit evidence depends on both **relevance** and **reliability**.
+
+      Evidence is more reliable when it is:
+
+      - obtained from independent external sources
+      - generated under effective internal control
+      - obtained directly by the auditor
+      - documentary rather than purely oral
+      - original rather than copied, when authenticity matters
+
+      Sufficiency relates to quantity; appropriateness relates to quality.
+  - question: How do data analytics support audit procedures?
+    answer: >-
+      Data analytics can help auditors:
+
+
+      - identify anomalies and outliers
+
+      - test entire populations in some circumstances
+
+      - stratify transactions by risk
+
+      - improve targeting of samples
+
+      - compare trends and relationships over time
+
+
+      However, analytics do not replace professional judgment. The auditor must still evaluate whether the underlying
+      data is complete, accurate, and relevant.
+  - question: Why is data reliability important when using analytics or AI tools?
+    answer: >-
+      If the underlying data is incomplete, inaccurate, inconsistent, or improperly extracted, even elegant analysis can
+      produce junk conclusions with impressive formatting.
+
+
+      Auditors should consider:
+
+
+      - source of the data
+
+      - completeness and accuracy
+
+      - whether data was transformed or cleaned properly
+
+      - access and change controls over the data
+
+      - whether AI outputs were independently validated
+  - question: What is audit sampling?
+    answer: >-
+      Audit sampling is the application of audit procedures to less than 100% of items in a relevant population so the
+      auditor can draw a conclusion about the population.
+
+
+      Sampling may be used in tests of controls or substantive testing. The auditor designs the sample to reduce
+      sampling risk to an acceptably low level.
+  - question: What is the difference between sampling risk and nonsampling risk?
+    answer: >-
+      **Sampling risk** arises because the auditor examines less than the entire population and may reach a conclusion
+      different from the conclusion that would be reached by testing all items.
+
+
+      **Nonsampling risk** arises from human factors such as:
+
+
+      - using inappropriate procedures
+
+      - misinterpreting evidence
+
+      - failing to recognize a misstatement
+
+
+      In short, sampling risk is a population selection issue; nonsampling risk is more of an auditor execution issue.
+  - question: What are substantive procedures?
+    answer: >-
+      Substantive procedures are audit procedures designed to detect material misstatements at the assertion level. They
+      include:
+
+
+      - **tests of details**
+
+      - **substantive analytical procedures**
+
+
+      Even when controls are strong, the auditor performs substantive procedures for material classes of transactions,
+      account balances, and disclosures.
+  - question: What is the difference between inspection, observation, inquiry, confirmation, recalculation, and reperformance?
+    answer: |-
+      These are common evidence-gathering procedures:
+
+      - **inspection** — examining records or tangible assets
+      - **observation** — watching a process being performed by others
+      - **inquiry** — seeking information from knowledgeable persons
+      - **confirmation** — obtaining a direct written response from a third party
+      - **recalculation** — checking mathematical accuracy
+      - **reperformance** — independently executing procedures or controls originally performed by the entity
+
+      Confirmation and reperformance are generally more persuasive than inquiry alone.
+  - question: What are positive and negative confirmations?
+    answer: >-
+      A **positive confirmation** requests a response in all cases, whether the recipient agrees or disagrees with the
+      information.
+
+
+      A **negative confirmation** requests a response only if the recipient disagrees.
+
+
+      Negative confirmations provide less persuasive evidence and are appropriate only when risk is low, many small
+      balances exist, and the auditor believes recipients are likely to give them proper attention.
+  - question: Why is observation of physical inventory important?
+    answer: >-
+      Observation of physical inventory helps the auditor evaluate existence and condition of inventory and assess
+      whether count procedures are effective.
+
+
+      During inventory observation, the auditor typically:
+
+
+      - observes client count procedures
+
+      - performs test counts
+
+      - inspects inventory condition
+
+      - traces counts to inventory records and vice versa
+
+
+      It provides strong evidence for **existence**, but less direct evidence for **valuation** or **rights and
+      obligations**.
+  - question: How does the auditor test accounting estimates?
+    answer: >-
+      The auditor may:
+
+
+      - test how management developed the estimate
+
+      - develop an independent expectation
+
+      - review subsequent events or transactions
+
+
+      Key considerations include management assumptions, data quality, sensitivity to changes, bias, and whether the
+      estimate is consistent with the entity's business and external evidence.
+  - question: What audit procedures are common for investments?
+    answer: |-
+      Common procedures include:
+
+      - confirming securities with custodians or brokers
+      - inspecting statements and agreements
+      - testing fair value using market prices or valuation models
+      - reviewing classification and disclosure
+      - assessing impairment or credit loss issues where relevant
+
+      Investments often combine existence, valuation, and classification risks in one tidy little package.
+  - question: How does the auditor obtain evidence about litigation, claims, and assessments?
+    answer: |-
+      The auditor typically:
+
+      - inquires of management and those charged with governance
+      - reviews legal expense accounts and board minutes
+      - obtains a management representation letter
+      - sends an attorney inquiry letter when appropriate
+
+      Litigation can affect contingencies, disclosures, and going concern, so the auditor should take it seriously.
+  - question: What is the auditor's responsibility for going concern?
+    answer: >-
+      The auditor evaluates whether substantial doubt exists about the entity's ability to continue as a going concern
+      for a reasonable period, generally one year after the date the financial statements are issued or available to be
+      issued, depending on the framework and circumstances.
+
+
+      The auditor considers conditions and events such as recurring losses, negative cash flows, loan defaults, or loss
+      of key customers, along with management's plans to mitigate the problem.
+  - question: What happens if substantial doubt about going concern remains after considering management's plans?
+    answer: >-
+      If adequate disclosure is included in the financial statements, the auditor may issue an unmodified opinion with a
+      separate **going concern emphasis-of-matter** or equivalent explanatory paragraph, depending on the standards.
+
+
+      If disclosure is inadequate, the opinion may need to be modified.
+  - question: What are subsequent events procedures in an audit?
+    answer: >-
+      The auditor performs procedures up to the report date to identify events occurring after the balance sheet date
+      that may require adjustment or disclosure. Procedures may include:
+
+
+      - reading interim financial statements
+
+      - reading minutes of meetings
+
+      - inquiring of management and legal counsel
+
+      - reviewing subsequent cash receipts or disbursements
+
+      - considering events affecting estimates or contingencies
+  - question: What is a management representation letter?
+    answer: >-
+      A management representation letter is a written confirmation from management acknowledging responsibility for the
+      financial statements and making specific representations about matters material to the audit.
+
+
+      It supplements, but does not replace, other audit evidence.
+  - question: What matters are commonly included in the management representation letter?
+    answer: |-
+      Common representations include:
+
+      - management's responsibility for the financial statements
+      - availability of all records and information
+      - completeness of transactions
+      - disclosure of fraud and suspected fraud
+      - disclosure of related parties
+      - disclosure of subsequent events
+      - disclosure of litigation and contingencies
+
+      If management refuses to provide the letter, that is usually a scope limitation and a major problem for the audit.
+  - question: How do substantive analytical procedures differ from planning analytics?
+    answer: >-
+      **Planning analytics** help identify risk areas. **Substantive analytical procedures** are used as evidence to
+      detect material misstatements in specific assertions.
+
+
+      For substantive analytics to be effective, the relationship being tested must be predictable, the data must be
+      reliable, and the threshold for investigating differences must be appropriately set.
+  - question: What assertions are commonly tested for account balances and transactions?
+    answer: |-
+      Common assertions include:
+
+      - **existence / occurrence**
+      - **completeness**
+      - **rights and obligations**
+      - **valuation / allocation / accuracy**
+      - **cutoff**
+      - **classification and understandability / presentation and disclosure**
+
+      AUD questions often ask which procedure best addresses a particular assertion.
+  - question: Why are external confirmations usually stronger than internal inquiry?
+    answer: >-
+      External confirmations are generally more reliable because they come directly from an independent third party
+      rather than from management or employees whose statements may be biased or incomplete.
+
+
+      Reliability still depends on control over the confirmation process. If the client intercepts the confirmation, the
+      evidence value drops dramatically.
+  - question: What is cut-off testing and why is it important?
+    answer: >-
+      Cut-off testing determines whether transactions are recorded in the proper accounting period. It is especially
+      important around period-end for:
+
+
+      - revenue
+
+      - purchases
+
+      - inventory movements
+
+      - payables and receivables
+
+
+      Errors in cut-off can overstate or understate revenue, expenses, assets, and liabilities simultaneously.
+  - question: What is the difference between sufficiency and appropriateness of audit evidence?
+    answer: Sufficiency refers to the quantity of evidence. Appropriateness refers to the quality of evidence, meaning its
+      relevance and reliability.
+  - question: What does relevance mean in audit evidence?
+    answer: Relevance means the evidence actually addresses the assertion being tested. Evidence can be reliable but still
+      not be relevant to the specific audit objective.
+  - question: When are internally generated documents more reliable?
+    answer: Internal documents are more reliable when the related controls over preparation, authorization, and retention
+      are effective.
+  - question: Why are original documents generally more reliable than copies?
+    answer: Originals reduce the risk of alteration or omission, especially where authenticity matters. Copies may still be
+      acceptable, but the auditor stays alert to manipulation risk.
+  - question: Why is evidence obtained directly by the auditor usually stronger?
+    answer: Directly obtained evidence gives the auditor firsthand knowledge and reduces dependence on management's
+      representations or processing.
+  - question: How should the auditor handle contradictory evidence?
+    answer: Contradictory evidence should be investigated, not ignored. The auditor resolves the inconsistency before
+      reaching a conclusion.
+  - question: What does inspection of tangible assets usually prove best?
+    answer: It usually provides strong evidence about existence, but it does not by itself prove rights, valuation, or
+      whether the asset is free of liens.
+  - question: Why is inquiry alone weak evidence?
+    answer: Inquiry depends on what people say, and people may be mistaken, incomplete, biased, or dishonest. It is usually
+      corroborated with other procedures.
+  - question: How does reperformance differ from recalculation?
+    answer: Recalculation checks mathematical accuracy. Reperformance goes further by independently executing a control or
+      process to see whether it operates as described.
+  - question: What is the difference between tests of controls and substantive procedures?
+    answer: Tests of controls evaluate whether controls operated effectively. Substantive procedures are designed to detect
+      material misstatements in assertions.
+  - question: What is a dual-purpose test?
+    answer: A dual-purpose test gathers evidence about both the effectiveness of a control and the accuracy of amounts in
+      the same procedure. It can improve efficiency if designed carefully.
+  - question: When are substantive analytical procedures most effective?
+    answer: They are most effective when relationships are predictable, data is reliable, and the auditor can form a precise
+      expectation.
+  - question: Why does precision of expectation matter in substantive analytics?
+    answer: The more precise the expectation, the better the procedure can detect misstatements. Vague expectations produce
+      weak audit evidence.
+  - question: What is an acceptable difference threshold in analytical procedures?
+    answer: It is the amount of unexplained difference the auditor is willing to tolerate before further investigation is
+      required.
+  - question: Why can disaggregated data improve analytical procedures?
+    answer: Breaking data down by product, region, month, or customer can reveal anomalies hidden inside broad totals.
+  - question: What is a sampling unit?
+    answer: The sampling unit is the individual item selected for testing, such as an invoice, sales transaction, or line
+      item in a population.
+  - question: What is the difference between random, systematic, haphazard, and block selection?
+    answer: Random selection uses chance, systematic selection uses a fixed interval, haphazard selection avoids deliberate
+      bias without formal randomness, and block selection tests contiguous items and is generally weaker.
+  - question: Why is block sampling generally less persuasive?
+    answer: A contiguous block may not represent the whole population if errors cluster by time or batch. It is therefore
+      less representative than more dispersed selections.
+  - question: What is the difference between statistical and nonstatistical sampling?
+    answer: Statistical sampling uses probability-based selection and evaluation. Nonstatistical sampling relies more on
+      professional judgment, though both require careful design.
+  - question: What is attribute sampling?
+    answer: Attribute sampling is usually used in tests of controls to estimate the rate at which a control deviates from
+      its prescribed operation.
+  - question: What is variables sampling?
+    answer: Variables sampling is used in substantive testing to estimate misstatement amounts in a population.
+  - question: What is monetary-unit sampling?
+    answer: Monetary-unit sampling gives larger-dollar items a greater chance of selection and is commonly used to test for
+      overstatement in account balances such as receivables.
+  - question: Why is stratification useful in sampling?
+    answer: Stratification groups items by characteristics such as size or risk so the auditor can focus on significant
+      items and improve sampling efficiency.
+  - question: What is projected misstatement?
+    answer: Projected misstatement is the auditor's estimate of likely misstatement in the population based on misstatements
+      found in the sample.
+  - question: What is tolerable misstatement?
+    answer: Tolerable misstatement is the amount of misstatement the auditor is willing to accept in a population without
+      changing the planned conclusion.
+  - question: What is the risk of overreliance in tests of controls?
+    answer: It is the risk the auditor concludes a control is more effective than it really is, which can lead to
+      insufficient substantive testing.
+  - question: What is the risk of incorrect acceptance in substantive testing?
+    answer: It is the risk the auditor concludes an account balance is fairly stated when it is actually materially
+      misstated. This is the more dangerous sampling risk for audit effectiveness.
+  - question: When are positive confirmations preferred?
+    answer: Positive confirmations are preferred when individual balances are significant, risk is high, many disputes are
+      expected, or the auditor needs more persuasive evidence.
+  - question: How should the auditor evaluate confirmation exceptions?
+    answer: Exceptions should be investigated to determine whether they reflect timing differences, errors, fraud, or
+      disputed balances.
+  - question: What alternative procedures are used for nonresponses to receivable confirmations?
+    answer: Common alternatives include examining subsequent cash receipts, shipping documents, sales invoices, and customer
+      orders.
+  - question: What is a blank confirmation and why can it be useful?
+    answer: A blank confirmation asks the respondent to fill in the amount or information rather than confirm a stated
+      number. It can provide stronger evidence but may reduce response rates.
+  - question: What should the auditor consider with electronic confirmations?
+    answer: The auditor should consider authenticity, sender identity, data security, and whether the process prevents
+      client interception or alteration.
+  - question: What procedures commonly test the existence of accounts receivable?
+    answer: Confirmations, subsequent cash receipts review, examination of shipping documents, and vouching recorded
+      balances to supporting records are common procedures.
+  - question: What procedures are effective for testing completeness of accounts payable?
+    answer: The auditor often searches for unrecorded liabilities by reviewing subsequent disbursements, unmatched receiving
+      reports, vendor statements, and unpaid invoices.
+  - question: What procedures are common in auditing cash?
+    answer: Common procedures include bank confirmations, bank reconciliations, cutoff bank statements, proof of cash, and
+      testing reconciling items.
+  - question: Why are bank confirmations important?
+    answer: They provide direct external evidence about balances, loans, restrictions, pledged assets, and other banking
+      relationships.
+  - question: Why does the auditor review bank reconciliations?
+    answer: Reconciliations help identify timing differences, errors, kiting, lapping clues, and whether recorded cash
+      agrees with bank activity.
+  - question: What is a proof of cash?
+    answer: A proof of cash reconciles beginning and ending cash balances with receipts and disbursements recorded by both
+      the bank and the books. It is useful when cash misstatement is suspected.
+  - question: How does the auditor test inventory valuation?
+    answer: The auditor reviews costing methods, tests pricing, evaluates obsolescence, compares cost to market or NRV where
+      required, and considers damaged or slow-moving items.
+  - question: Why is consigned inventory an audit concern?
+    answer: The client may mistakenly include inventory it does not own or omit inventory it owns but stores elsewhere.
+      Rights and obligations become critical.
+  - question: What if the auditor cannot observe inventory at year-end?
+    answer: The auditor may observe counts at another date and perform roll-forward or roll-back procedures, or use
+      alternate procedures if observation is impracticable.
+  - question: What are roll-forward or roll-back procedures for inventory?
+    answer: They reconcile quantities from an observed count date to year-end by testing intervening purchases, sales, and
+      production records.
+  - question: What procedures are common for property, plant, and equipment?
+    answer: Auditors inspect major additions, review authorizations, test depreciation, inspect assets, examine disposal
+      support, and review repairs for possible capitalization issues.
+  - question: How does the auditor test depreciation expense?
+    answer: The auditor evaluates useful lives and salvage values, recalculates depreciation, and checks whether methods are
+      consistent with company policy and asset use.
+  - question: What procedures are common for prepaid expenses?
+    answer: The auditor inspects invoices and contracts, recalculates amortization, and verifies whether amounts relate to
+      future periods rather than current expenses.
+  - question: What procedures are common in auditing payroll?
+    answer: Common work includes testing authorization of pay rates, reconciling payroll to personnel records, testing
+      withholdings, and searching for ghost employees.
+  - question: Why is revenue cut-off testing important?
+    answer: It helps determine whether revenue was recorded in the proper period and whether shipments or services actually
+      occurred before year-end.
+  - question: What is the search for unrecorded liabilities?
+    answer: It is a procedure focused on identifying payables or accruals that should have been recorded before year-end but
+      were omitted.
+  - question: Why review subsequent cash disbursements when auditing accounts payable?
+    answer: Payments made after year-end may reveal liabilities that existed at year-end but were not recorded in the books.
+  - question: How does the auditor test fair value of investments?
+    answer: The auditor uses quoted prices where available, evaluates valuation models and assumptions when necessary, and
+      assesses hierarchy classification and disclosure.
+  - question: What evidence may be needed for derivatives and hedging activities?
+    answer: The auditor may inspect contracts, confirm positions with counterparties, test fair value, evaluate hedge
+      designation and effectiveness, and review disclosures.
+  - question: What is a retrospective review of estimates?
+    answer: It compares prior-period estimates with actual outcomes to identify management bias, weak processes, or patterns
+      of overly optimistic or conservative assumptions.
+  - question: What are indicators of management bias in estimates?
+    answer: Indicators include consistently optimistic assumptions, selective use of data, adjustments clustered at
+      period-end, and patterns that always improve reported results.
+  - question: Why are written representations not a substitute for other audit evidence?
+    answer: Management representations are necessary but not sufficient. They support other evidence and cannot replace
+      direct testing.
+  - question: What is the effect if management refuses to provide written representations?
+    answer: Refusal is usually a scope limitation and raises doubts about management integrity. It can lead to a qualified
+      opinion or disclaimer.
+  - question: What is the purpose of the attorney letter?
+    answer: It seeks information about litigation, claims, and assessments that may require accrual or disclosure in the
+      financial statements.
+  - question: Why can legal letters have limitations?
+    answer: Attorneys may limit responses due to privilege or uncertainty, so the auditor evaluates whether enough evidence
+      has still been obtained.
+  - question: What kinds of management plans may mitigate going concern doubt?
+    answer: Plans may include raising capital, restructuring debt, reducing costs, selling assets, or improving operations,
+      but the auditor evaluates whether they are realistic and probable.
+  - question: What if management's going concern plans are not likely to work?
+    answer: The auditor treats substantial doubt as remaining and evaluates whether disclosure is adequate and whether the
+      report needs emphasis or modification.
+  - question: What is dual dating in an auditor's report?
+    answer: Dual dating limits responsibility for a specific subsequent event to that event's later date while keeping the
+      original report date for other matters.
+  - question: What if facts are discovered after the report date but before issuance?
+    answer: The auditor investigates, determines whether the financial statements need revision, and updates procedures or
+      the report date as appropriate.
+  - question: What if facts are discovered after the financial statements are issued?
+    answer: The auditor considers whether the facts existed at the report date, discusses the matter with management and
+      governance, and may take steps to prevent future reliance on the report if revision is needed.
+  - question: Why are subsequent cash collections useful audit evidence for receivables?
+    answer: Collections after year-end can support existence and valuation of receivables outstanding at year-end.
+  - question: Why is external evidence usually stronger than internal evidence?
+    answer: Outside parties are generally more independent of management, reducing the risk of internal bias or manipulation.
+  - question: When can internally generated reports still be strong evidence?
+    answer: They can be persuasive if the auditor tests the completeness and accuracy of the report and related IT controls
+      are reliable.
+  - question: What is information produced by the entity and why must it be tested?
+    answer: Information produced by the entity includes reports, schedules, and data used by the auditor. The auditor tests
+      its completeness and accuracy before relying on it.
+  - question: Why are data extraction controls relevant to audit evidence?
+    answer: If data is pulled incorrectly from a system, the resulting analysis may be flawed even if the source system
+      itself is accurate.
+  - question: What are computer-assisted audit techniques?
+    answer: They are technology-based tools used to extract, analyze, recalculate, and test large volumes of data efficiently.
+  - question: How should AI-generated audit insights be used?
+    answer: As leads, not as unquestioned conclusions. The auditor corroborates AI outputs and evaluates bias, relevance,
+      and data quality.
+  - question: Why is journal entry testing a common further audit procedure in fraud responses?
+    answer: Fraud often bypasses normal processes through manual or unusual entries, especially entries posted late, by
+      senior users, or to unusual accounts.
+  - question: Why might the auditor perform surprise procedures?
+    answer: Surprise counts or unannounced testing reduce the chance that fraudulent activity can be temporarily concealed
+      for the auditor's benefit.
+  - question: What further procedures are common when related party risk is high?
+    answer: The auditor may inspect underlying agreements, confirm terms with third parties, review board minutes, analyze
+      unusual transactions, and expand disclosure testing.
+  - question: What is a cutoff bank statement?
+    answer: It is a bank statement for a short period after year-end used to verify reconciling items such as outstanding
+      checks and deposits in transit.
+  - question: How does tracing differ from vouching?
+    answer: Tracing starts with source documents and moves forward into the accounting records, which helps test
+      completeness. Vouching starts in the records and goes back to support, which helps test existence or occurrence.
+  - question: What if receivables are confirmed at an interim date rather than year-end?
+    answer: The auditor performs roll-forward procedures on the intervening period and considers whether additional risk
+      exists before relying on the interim results.
+  - question: Why might the auditor confirm zero-balance or inactive accounts payable vendors?
+    answer: It can help test completeness because omitted liabilities may relate to vendors that do not show a recorded
+      year-end balance.
+  - question: When might an inventory specialist be useful?
+    answer: A specialist may help when inventory is highly technical, difficult to value, or measured with specialized
+      methods such as commodities, reserves, or complex manufacturing processes.
+  - question: How does the auditor evaluate a management specialist's assumptions?
+    answer: The auditor considers consistency with market data, company history, the specialist's methods, and whether the
+      assumptions appear reasonable and unbiased.
+  - question: Why is surprise cash count observation sometimes useful?
+    answer: An unannounced cash count can help detect theft, lapping, or cash-handling weaknesses by reducing the chance
+      that balances are temporarily manipulated before the auditor arrives.
