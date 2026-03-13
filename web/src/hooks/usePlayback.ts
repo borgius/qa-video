@@ -33,6 +33,8 @@ type Action =
   | { type: 'SET_PHASE'; phase: Phase }
   | { type: 'NEXT_CARD' }
   | { type: 'PREV_CARD' }
+  | { type: 'STEP_NEXT' }
+  | { type: 'STEP_PREV' }
   | { type: 'GO_TO_CARD'; index: number }
   | { type: 'TOGGLE_SHUFFLE' }
   | { type: 'TOGGLE_QUEUE_MODE' }
@@ -142,6 +144,33 @@ function reducer(state: PlaybackState, action: Action): PlaybackState {
       const prev = Math.max(0, state.currentCardIdx - 1);
       return { ...state, currentCardIdx: prev, phase: 'question', pendingRating: null };
     }
+    case 'STEP_NEXT': {
+      const inAnswer = state.phase === 'answer' || state.phase === 'a-speaking' || state.phase === 'a-pause' || state.phase === 'done';
+      if (inAnswer) {
+        if (state.isQueueMode) {
+          return advanceQueue(state);
+        }
+        const next = state.currentCardIdx + 1;
+        if (next >= state.cardOrder.length) {
+          return { ...state, phase: 'done', isPlaying: false };
+        }
+        return { ...state, currentCardIdx: next, phase: 'question', pendingRating: null };
+      } else {
+        // Q territory → go to answer of current card
+        return { ...state, phase: 'answer' };
+      }
+    }
+    case 'STEP_PREV': {
+      const inAnswer = state.phase === 'answer' || state.phase === 'a-speaking' || state.phase === 'a-pause';
+      if (inAnswer) {
+        // A territory → go to question of current card
+        return { ...state, phase: 'question', pendingRating: null };
+      } else {
+        // Q territory → go to answer of previous card
+        if (state.currentCardIdx <= 0) return state;
+        return { ...state, currentCardIdx: state.currentCardIdx - 1, phase: 'answer', pendingRating: null };
+      }
+    }
     case 'GO_TO_CARD':
       return { ...state, currentCardIdx: action.index, phase: 'question', isPlaying: true, pendingRating: null };
     case 'MARK_CARD':
@@ -188,6 +217,8 @@ export function usePlayback() {
   const timerRef = useRef<number | null>(null);
   const phaseRef = useRef<Phase>(state.phase);
   phaseRef.current = state.phase;
+  // Tracks whether the user explicitly paused (vs audio not yet started)
+  const isUserPausedRef = useRef(false);
 
   // Clean up on unmount
   useEffect(() => {
@@ -213,6 +244,14 @@ export function usePlayback() {
         playAudio(audioUrl(file, cardRealIdx, 'question'));
         break;
       }
+      case 'q-speaking': {
+        // Resume audio if user had paused mid-speech
+        if (isUserPausedRef.current && audioRef.current) {
+          isUserPausedRef.current = false;
+          audioRef.current.play().catch(() => dispatch({ type: 'PAUSE' }));
+        }
+        break;
+      }
       case 'q-pause': {
         const delay = (config.questionDelay ?? 2) * 1000;
         timerRef.current = window.setTimeout(() => {
@@ -223,6 +262,14 @@ export function usePlayback() {
       case 'answer': {
         dispatch({ type: 'SET_PHASE', phase: 'a-speaking' });
         playAudio(audioUrl(file, cardRealIdx, 'answer'));
+        break;
+      }
+      case 'a-speaking': {
+        // Resume audio if user had paused mid-speech
+        if (isUserPausedRef.current && audioRef.current) {
+          isUserPausedRef.current = false;
+          audioRef.current.play().catch(() => dispatch({ type: 'PAUSE' }));
+        }
         break;
       }
       case 'a-pause': {
@@ -262,6 +309,7 @@ export function usePlayback() {
       audioRef.current = new Audio();
     }
     const audio = audioRef.current;
+    isUserPausedRef.current = false;
 
     audio.onended = () => {
       const p = phaseRef.current;
@@ -290,15 +338,18 @@ export function usePlayback() {
   const play = useCallback(() => dispatch({ type: 'PLAY' }), []);
   const pause = useCallback(() => {
     dispatch({ type: 'PAUSE' });
-    stopAudioAndTimer(audioRef, timerRef);
+    // Pause audio without resetting position so resume continues from same point
+    isUserPausedRef.current = true;
+    if (audioRef.current) audioRef.current.pause();
+    if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
   }, []);
   const next = useCallback(() => {
     stopAudioAndTimer(audioRef, timerRef);
-    dispatch({ type: 'NEXT_CARD' });
+    dispatch({ type: 'STEP_NEXT' });
   }, []);
   const prev = useCallback(() => {
     stopAudioAndTimer(audioRef, timerRef);
-    dispatch({ type: 'PREV_CARD' });
+    dispatch({ type: 'STEP_PREV' });
   }, []);
   const loadFile = useCallback((name: string, data: FileDetail) => {
     stopAudioAndTimer(audioRef, timerRef);

@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { FlashcardViewer } from './components/FlashcardViewer';
+import { QuestionGrid } from './components/QuestionGrid';
 import { useFiles } from './hooks/useFiles';
 import { usePlayback } from './hooks/usePlayback';
 import { useKeyboard } from './hooks/useKeyboard';
@@ -12,16 +13,27 @@ export default function App() {
   const { state, currentCard, currentRealIndex, displayType, isSpeaking, queueRemaining, isCardActive } = playback;
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [zoomed, setZoomed] = useState(false);
+  const [showGrid, setShowGrid] = useState(false);
+  const [tileZoom, setTileZoom] = useState(1);
 
   const handleSelectFile = useCallback((name: string) => {
-    if (name === state.currentFile) return;
+    if (name === state.currentFile) {
+      setShowGrid(true);
+      return;
+    }
     fetchFileDetail(name).then(data => {
       playback.loadFile(name, data);
+      setShowGrid(true);
     });
   }, [state.currentFile, playback.loadFile]);
 
   const toggleSidebar = useCallback(() => setSidebarOpen(v => !v), []);
   const toggleZoom = useCallback(() => setZoomed(v => !v), []);
+
+  const handleGridSelectCard = useCallback((orderIdx: number) => {
+    playback.goToCard(orderIdx);
+    setShowGrid(false);
+  }, [playback.goToCard]);
 
   const keyboardActions = useMemo(() => ({
     onTogglePlay: () => {
@@ -36,6 +48,7 @@ export default function App() {
     onToggleZoom: toggleZoom,
     onToggleQueueMode: playback.toggleQueueMode,
     onRate: playback.rateCard,
+    onCloseGrid: () => setShowGrid(false),
   }), [state.isPlaying, playback, toggleSidebar, toggleZoom]);
 
   useKeyboard(keyboardActions);
@@ -77,24 +90,38 @@ export default function App() {
         />
       )}
 
-      <FlashcardViewer
-        card={currentCard}
-        fileName={state.currentFile ?? ''}
-        cardIndex={currentRealIndex}
-        displayType={displayType}
-        isSpeaking={isSpeaking}
-        phase={state.phase}
-        title={title}
-        sidebarOpen={sidebarOpen}
-        onToggleSidebar={toggleSidebar}
-        zoomed={zoomed}
-        onToggleZoom={toggleZoom}
-        onRate={playback.rateCard}
-        queueRemaining={queueRemaining}
-        pendingRating={state.pendingRating}
-        isQueueMode={state.isQueueMode}
-        isCardActive={isCardActive}
-      />
+      {showGrid && state.fileData ? (
+        <QuestionGrid
+          questions={state.fileData.questions}
+          cardOrder={state.cardOrder}
+          title={title}
+          tileZoom={tileZoom}
+          onZoomIn={() => setTileZoom(z => Math.min(z + 0.25, 3))}
+          onZoomOut={() => setTileZoom(z => Math.max(z - 0.25, 0.5))}
+          onSelectCard={handleGridSelectCard}
+          sidebarOpen={sidebarOpen}
+          onToggleSidebar={toggleSidebar}
+        />
+      ) : (
+        <FlashcardViewer
+          card={currentCard}
+          fileName={state.currentFile ?? ''}
+          cardIndex={currentRealIndex}
+          displayType={displayType}
+          isSpeaking={isSpeaking}
+          phase={state.phase}
+          title={title}
+          sidebarOpen={sidebarOpen}
+          onToggleSidebar={toggleSidebar}
+          zoomed={zoomed}
+          onToggleZoom={toggleZoom}
+          onRate={playback.rateCard}
+          queueRemaining={queueRemaining}
+          pendingRating={state.pendingRating}
+          isQueueMode={state.isQueueMode}
+          isCardActive={isCardActive}
+        />
+      )}
     </div>
   );
 }

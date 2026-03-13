@@ -11,6 +11,7 @@ interface KeyboardActions {
   onToggleZoom: () => void;
   onToggleQueueMode: () => void;
   onRate: (rating: Rating) => void;
+  onCloseGrid: () => void;
 }
 
 const ratingKeys: Record<string, Rating> = {
@@ -35,6 +36,10 @@ export function useKeyboard(actions: KeyboardActions) {
       }
 
       switch (e.key) {
+        case 'Escape':
+          e.preventDefault();
+          actions.onCloseGrid();
+          break;
         case ' ':
           e.preventDefault();
           actions.onTogglePlay();
