@@ -3,7 +3,7 @@ import { unlink, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
 import { getFfmpegPath } from './ffmpeg-paths.js';
-import type { Segment } from './types.js';
+import type { FrameSpan, Segment } from './types.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -51,6 +51,74 @@ export async function createSilentClip(
     '-r', '30',
     outputPath,
   ]);
+}
+
+/**
+ * Create a video clip from multiple still images (one per click-state frame),
+ * each displayed for a specified duration, combined with a single audio track.
+ *
+ * Falls back to createSegmentClip–style single-image handling when only one
+ * frame is provided.
+ */
+export async function createMultiFrameClip(
+  frames: FrameSpan[],
+  audioPath: string,
+  totalDuration: number,
+  outputPath: string,
+): Promise<void> {
+  if (frames.length === 0) throw new Error('createMultiFrameClip: no frames');
+
+  if (frames.length === 1) {
+    // Fast path: single image — equivalent to createSegmentClip.
+    await execFileAsync(getFfmpegPath(), [
+      '-y',
+      '-loop', '1', '-i', frames[0].imagePath,
+      '-i', audioPath,
+      '-filter_complex', `[1:a]apad=whole_dur=${totalDuration}[a]`,
+      '-map', '0:v',
+      '-map', '[a]',
+      '-c:v', 'libx264', '-tune', 'stillimage',
+      '-c:a', 'aac', '-b:a', '384k', '-ar', '48000', '-ac', '2',
+      '-pix_fmt', 'yuv420p',
+      '-t', String(totalDuration),
+      '-r', '30',
+      outputPath,
+    ]);
+    return;
+  }
+
+  // Multi-frame path: loop each image for its duration then concat.
+  // Build FFmpeg args: one -loop 1 -i <img> per frame, then audio as last input.
+  const args: string[] = ['-y'];
+  for (const f of frames) {
+    args.push('-loop', '1', '-i', f.imagePath);
+  }
+  args.push('-i', audioPath);
+
+  // Build filter_complex: trim each video stream to its duration, concat them,
+  // pad the audio to totalDuration.
+  const audioIdx = frames.length;
+  const filterParts: string[] = [];
+  for (let i = 0; i < frames.length; i++) {
+    filterParts.push(`[${i}:v]trim=duration=${frames[i].durationSec},setpts=PTS-STARTPTS[v${i}]`);
+  }
+  const concatInputs = frames.map((_, i) => `[v${i}]`).join('');
+  filterParts.push(`${concatInputs}concat=n=${frames.length}:v=1:a=0[vout]`);
+  filterParts.push(`[${audioIdx}:a]apad=whole_dur=${totalDuration}[aout]`);
+
+  args.push(
+    '-filter_complex', filterParts.join('; '),
+    '-map', '[vout]',
+    '-map', '[aout]',
+    '-c:v', 'libx264', '-tune', 'stillimage',
+    '-c:a', 'aac', '-b:a', '384k', '-ar', '48000', '-ac', '2',
+    '-pix_fmt', 'yuv420p',
+    '-t', String(totalDuration),
+    '-r', '30',
+    outputPath,
+  );
+
+  await execFileAsync(getFfmpegPath(), args);
 }
 
 /**

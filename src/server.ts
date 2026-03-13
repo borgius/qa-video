@@ -1,12 +1,13 @@
 import express from 'express';
 import cors from 'cors';
-import { readdirSync, mkdirSync } from 'fs';
+import { readdirSync, mkdirSync, existsSync, readFileSync } from 'fs';
 import { createServer } from 'node:net';
 import { join, resolve } from 'path';
 import { concatenateAudioFiles } from './assembler.js';
 import { cachedPath, isCached, resolveOutputDir, slug } from './cache.js';
 import { generateTitle, topicFromFilename } from './metadata.js';
 import { parseYamlFile } from './parser.js';
+import { parseSlidevDeck } from './slidev.js';
 import { renderSlide } from './renderer.js';
 import { buildAudioPlan } from './tts-preprocess.js';
 import { initTTS, synthesize } from './tts.js';
@@ -30,29 +31,55 @@ app.get('/api/health', (_req, res) => {
 
 // ── Files ──
 
-/** Scan qaDir for YAML files at root level and one level of subdirectories. */
+/** Scan qaDir for YAML and Slidev .md files at root level and one level of subdirectories. */
 function scanYamlFiles(dir: string, filterFilename?: string) {
-  const results: { relPath: string; subfolder: string | undefined; filename: string }[] = [];
+  const results: { relPath: string; subfolder: string | undefined; filename: string; type: 'yaml' | 'slidev' }[] = [];
+  const isSource = (f: string) => f.endsWith('.yaml') || f.endsWith('.yml') || f.endsWith('.md');
+  const fileType = (f: string): 'yaml' | 'slidev' => f.endsWith('.md') ? 'slidev' : 'yaml';
   const entries = readdirSync(dir, { withFileTypes: true });
   for (const entry of entries) {
     if (entry.isDirectory() && !entry.name.startsWith('.')) {
       try {
         readdirSync(join(dir, entry.name))
-          .filter(f => f.endsWith('.yaml') || f.endsWith('.yml'))
+          .filter(isSource)
           .sort()
           .forEach(f => {
             if (!filterFilename || filterFilename === f) {
-              results.push({ relPath: `${entry.name}/${f}`, subfolder: entry.name, filename: f });
+              results.push({ relPath: `${entry.name}/${f}`, subfolder: entry.name, filename: f, type: fileType(f) });
             }
           });
       } catch { /* skip unreadable subdirs */ }
-    } else if (entry.isFile() && (entry.name.endsWith('.yaml') || entry.name.endsWith('.yml'))) {
+    } else if (entry.isFile() && isSource(entry.name)) {
       if (!filterFilename || filterFilename === entry.name) {
-        results.push({ relPath: entry.name, subfolder: undefined, filename: entry.name });
+        results.push({ relPath: entry.name, subfolder: undefined, filename: entry.name, type: fileType(entry.name) });
       }
     }
   }
   return results.sort((a, b) => a.relPath.localeCompare(b.relPath));
+}
+
+/** Resolve the absolute source file path for a deck name, trying .yaml, .yml, .md in order. */
+function resolveSourceFile(name: string): string {
+  for (const ext of ['.yaml', '.yml', '.md']) {
+    const p = join(qaDir, `${name}${ext}`);
+    if (existsSync(p)) return p;
+  }
+  throw Object.assign(new Error(`Source file not found: ${name}`), { code: 'ENOENT' });
+}
+
+/** Return the path to the first PNG frame for a Slidev slide if the export cache exists. */
+function findSlidevFrame(name: string, cardIndex: number): string | null {
+  const tempDir = join(outputDir, '.tmp', name);
+  const manifestPath = join(tempDir, 'frames-manifest.json');
+  if (!existsSync(manifestPath)) return null;
+  try {
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
+    const slide = manifest.slides?.[cardIndex];
+    if (slide?.frames?.length > 0 && existsSync(slide.frames[0])) {
+      return slide.frames[0] as string;
+    }
+  } catch { /* corrupt manifest */ }
+  return null;
 }
 
 app.get('/api/files', async (_req, res, next) => {
@@ -60,21 +87,18 @@ app.get('/api/files', async (_req, res, next) => {
     const allFiles = scanYamlFiles(qaDir, filterFile);
 
     const files = await Promise.all(
-      allFiles.map(async ({ relPath, subfolder, filename }) => {
+      allFiles.map(async ({ relPath, subfolder, filename, type }) => {
         const filePath = join(qaDir, relPath);
-        const name = relPath.replace(/\.(yaml|yml)$/, '');
+        const name = relPath.replace(/\.(yaml|yml|md)$/, '');
         try {
+          if (type === 'slidev') {
+            const deck = await parseSlidevDeck(filePath);
+            return { name, filename, subfolder, title: deck.title, description: deck.description || '', questionCount: deck.slides.length, type: 'slidev' as const };
+          }
           const data = await parseYamlFile(filePath);
-          return {
-            name,
-            filename,
-            subfolder,
-            title: generateTitle(filePath, data),
-            description: data.config.description || '',
-            questionCount: data.questions.length,
-          };
+          return { name, filename, subfolder, title: generateTitle(filePath, data), description: data.config.description || '', questionCount: data.questions.length, type: 'yaml' as const };
         } catch {
-          return { name, filename, subfolder, title: topicFromFilename(filePath), description: '', questionCount: 0 };
+          return { name, filename, subfolder, title: topicFromFilename(filePath), description: '', questionCount: 0, type };
         }
       })
     );
@@ -88,9 +112,24 @@ app.get('/api/files', async (_req, res, next) => {
 app.get('/api/files/:name', async (req, res, next) => {
   try {
     const { name } = req.params;
-    const filePath = join(qaDir, `${name}.yaml`);
-    const data = await parseYamlFile(filePath);
+    const filePath = resolveSourceFile(name);
 
+    if (filePath.endsWith('.md')) {
+      const deck = await parseSlidevDeck(filePath);
+      res.json({
+        name,
+        title: deck.title,
+        config: {},
+        questions: deck.slides.map(s => ({
+          question: s.title || `Slide ${s.index + 1}`,
+          answer: s.narrationSegments.map(seg => seg.text).join(' '),
+        })),
+        type: 'slidev',
+      });
+      return;
+    }
+
+    const data = await parseYamlFile(filePath);
     res.json({
       name,
       title: generateTitle(filePath, data),
@@ -164,7 +203,37 @@ app.get('/api/audio/:name/:cardIndex/:type', async (req, res, next) => {
       return;
     }
 
-    const filePath = join(qaDir, `${name}.yaml`);
+    const filePath = resolveSourceFile(name);
+
+    // ── Slidev branch ──────────────────────────────────────────────────────────
+    if (filePath.endsWith('.md')) {
+      const deck = await parseSlidevDeck(filePath);
+      if (cardIndex < 0 || cardIndex >= deck.slides.length) {
+        res.status(404).json({ error: 'Card index out of range' });
+        return;
+      }
+      const slide = deck.slides[cardIndex];
+      const text = type === 'question'
+        ? (slide.title || `Slide ${slide.index + 1}`)
+        : slide.narrationSegments.map(s => s.text).join(' ');
+      const voice = DEFAULT_CONFIG.voice;
+      const prefix = type === 'question' ? `sq_${cardIndex}` : `sa_${cardIndex}_${slide.name}`;
+      const tempDir = join(outputDir, '.tmp', name);
+      mkdirSync(tempDir, { recursive: true });
+      const audioPath = cachedPath(tempDir, prefix, `slidev:${type}:${text}:${voice}`, 'wav');
+      const label = `[${name}] slide-${cardIndex + 1} ${type}`;
+      if (isCached(audioPath, false)) {
+        console.log(`${label} — cached`);
+        res.sendFile(audioPath, { dotfiles: 'allow' });
+        return;
+      }
+      console.log(`${label} — generating...`);
+      await enqueue(text, audioPath, voice);
+      res.sendFile(audioPath, { dotfiles: 'allow' });
+      return;
+    }
+
+    // ── YAML branch ────────────────────────────────────────────────────────────
     const data = await parseYamlFile(filePath);
 
     if (cardIndex < 0 || cardIndex >= data.questions.length) {
@@ -228,7 +297,31 @@ app.get('/api/audio/:name/:cardIndex/:type/status', async (req, res, next) => {
       return;
     }
 
-    const filePath = join(qaDir, `${name}.yaml`);
+    const filePath = resolveSourceFile(name);
+
+    // ── Slidev branch ──────────────────────────────────────────────────────────
+    if (filePath.endsWith('.md')) {
+      const deck = await parseSlidevDeck(filePath);
+      if (cardIndex < 0 || cardIndex >= deck.slides.length) {
+        res.status(404).json({ error: 'Card index out of range' });
+        return;
+      }
+      const slide = deck.slides[cardIndex];
+      const text = type === 'question'
+        ? (slide.title || `Slide ${slide.index + 1}`)
+        : slide.narrationSegments.map(s => s.text).join(' ');
+      const voice = DEFAULT_CONFIG.voice;
+      const prefix = type === 'question' ? `sq_${cardIndex}` : `sa_${cardIndex}_${slide.name}`;
+      const tempDir = join(outputDir, '.tmp', name);
+      const audioPath = cachedPath(tempDir, prefix, `slidev:${type}:${text}:${voice}`, 'wav');
+      res.json({
+        cached: isCached(audioPath, false),
+        generating: ttsQueue.some(j => j.path === audioPath),
+      });
+      return;
+    }
+
+    // ── YAML branch ────────────────────────────────────────────────────────────
     const data = await parseYamlFile(filePath);
 
     if (cardIndex < 0 || cardIndex >= data.questions.length) {
@@ -270,7 +363,62 @@ app.get('/api/slides/:name/:cardIndex/:type', async (req, res, next) => {
       return;
     }
 
-    const filePath = join(qaDir, `${name}.yaml`);
+    const filePath = resolveSourceFile(name);
+
+    // ── Slidev branch: serve exported PNG frame ────────────────────────────────
+    if (filePath.endsWith('.md')) {
+      const framePath = findSlidevFrame(name, cardIndex);
+      if (framePath) {
+        res.sendFile(framePath, { dotfiles: 'allow' });
+        return;
+      }
+      // Frame not yet exported — fall back to a text card render
+      const deck = await parseSlidevDeck(filePath);
+      if (cardIndex < 0 || cardIndex >= deck.slides.length) {
+        res.status(404).json({ error: 'Card index out of range' });
+        return;
+      }
+      const slide = deck.slides[cardIndex];
+      const text = type === 'question'
+        ? (slide.title || `Slide ${slide.index + 1}`)
+        : slide.narrationSegments.map(s => s.text).join(' ');
+      const totalCards = deck.slides.length;
+      const width = DEFAULT_CONFIG.width;
+      const height = DEFAULT_CONFIG.height;
+      const config: PipelineConfig = {
+        inputPath: filePath,
+        outputPath: '',
+        tempDir: '',
+        voice: DEFAULT_CONFIG.voice,
+        questionVoice: DEFAULT_CONFIG.questionVoice,
+        codeVoice: DEFAULT_CONFIG.codeVoice,
+        questionDelay: DEFAULT_CONFIG.questionDelay,
+        answerDelay: DEFAULT_CONFIG.answerDelay,
+        cardGap: DEFAULT_CONFIG.cardGap,
+        fontSize: DEFAULT_CONFIG.fontSize,
+        backgroundColor: DEFAULT_CONFIG.backgroundColor,
+        questionColor: DEFAULT_CONFIG.questionColor,
+        answerColor: DEFAULT_CONFIG.answerColor,
+        textColor: DEFAULT_CONFIG.textColor,
+        width,
+        height,
+        force: false,
+        format: 'full',
+        questionsPerShort: DEFAULT_CONFIG.questionsPerShort,
+      };
+      const segType = type as 'question' | 'answer';
+      const slideHash = `slidev-card:v1:${text}:${segType}:${cardIndex}:${totalCards}:${width}x${height}`;
+      const tempDir = join(outputDir, '.tmp', name);
+      mkdirSync(tempDir, { recursive: true });
+      const imagePath = cachedPath(tempDir, `scard_${cardIndex}_${segType}`, slideHash, 'png');
+      if (!isCached(imagePath, false)) {
+        await renderSlide(imagePath, { text, type: segType, cardIndex, totalCards, config });
+      }
+      res.sendFile(imagePath, { dotfiles: 'allow' });
+      return;
+    }
+
+    // ── YAML branch ────────────────────────────────────────────────────────────
     const data = await parseYamlFile(filePath);
 
     if (cardIndex < 0 || cardIndex >= data.questions.length) {

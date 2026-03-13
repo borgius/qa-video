@@ -1,14 +1,17 @@
 import { existsSync, mkdirSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
 import { cpus } from 'node:os';
-import { concatenateAudioFiles, concatenateClips, createSegmentClip, createSilentClip } from './assembler.js';
+import { concatenateAudioFiles, concatenateClips, createMultiFrameClip, createSegmentClip, createSilentClip } from './assembler.js';
 import { cachedPath, isCached, removeStale, sha, slug } from './cache.js';
 import { parseYamlFile } from './parser.js';
 import { renderSlide } from './renderer.js';
+import { parseSlidevDeck } from './slidev.js';
+import { captureSlidevFrames } from './slidev-runtime.js';
 import { TTSPool } from './tts-pool.js';
 import { type AudioPlan, buildAudioPlan } from './tts-preprocess.js';
 import { getAudioDuration } from './tts.js';
-import { DEFAULT_CONFIG, type PipelineConfig, type Segment } from './types.js';
+import { DEFAULT_CONFIG, type FrameSpan, type PipelineConfig, type Segment } from './types.js';
 
 /** Run tasks in parallel, at most `limit` concurrent at a time. */
 async function runConcurrent<T>(tasks: (() => Promise<T>)[], limit: number): Promise<T[]> {
@@ -570,3 +573,200 @@ export async function runShortsPipeline(config: PipelineConfig): Promise<string[
 
   return outputPaths;
 }
+
+// ── Slidev pipeline ───────────────────────────────────────────────────────────
+
+/**
+ * Generate a narrated MP4 from a Slidev .md deck.
+ * Stages:
+ *   1. Parse deck  → SlidevSlide array with notes + narration segments
+ *   2. Export PNG frames via `slidev export --with-clicks`
+ *   3. TTS synthesis for every narration segment
+ *   4. Assemble per-slide multi-frame clips → concat final video
+ */
+export async function runSlidevPipeline(config: PipelineConfig): Promise<void> {
+  const pipelineStart = Date.now();
+  const { force } = config;
+
+  if (!existsSync(config.tempDir)) mkdirSync(config.tempDir, { recursive: true });
+
+  // ── Stage 1: Parse Slidev deck ──
+  const stage1Start = Date.now();
+  console.log('\n── Stage 1/4: Parsing Slidev deck ──');
+  const deck = await parseSlidevDeck(config.inputPath);
+  const deckContent = await readFile(config.inputPath, 'utf-8');
+  const deckHash = sha(deckContent);
+  console.log(`  Title:  ${deck.title}`);
+  console.log(`  Slides: ${deck.slides.length}`);
+  console.log(`  Stage 1 done (${elapsed(stage1Start)}s)`);
+
+  // ── Stage 2: Capture visual frames ──
+  const stage2Start = Date.now();
+  console.log('\n── Stage 2/4: Capturing Slidev frames ──');
+  const slideFramesList = await captureSlidevFrames(
+    config.inputPath, deck.slides.length, deckHash, config.tempDir, force,
+  );
+  const totalFrameCount = slideFramesList.reduce((sum, sf) => sum + sf.frames.length, 0);
+  console.log(`  Captured ${totalFrameCount} frame(s) across ${deck.slides.length} slide(s)`);
+  console.log(`  Stage 2 done (${elapsed(stage2Start)}s)`);
+
+  // ── Stage 3: TTS synthesis ──
+  const stage3Start = Date.now();
+  console.log('\n── Stage 3/4: Synthesizing speech ──');
+
+  // One TTS part per narration segment per slide.
+  interface SlidevTTSPart {
+    slideIdx: number;
+    frameIndex: number;
+    audioPath: string;
+    ttsText: string;
+  }
+  const ttsParts: SlidevTTSPart[] = deck.slides.flatMap(slide =>
+    slide.narrationSegments.map(seg => {
+      const prefix = `sl_${slide.index}_seg_${seg.frameIndex}`;
+      const audioPath = cachedPath(config.tempDir, prefix, sha(`${seg.text}:${config.voice}`), 'wav');
+      return { slideIdx: slide.index, frameIndex: seg.frameIndex, audioPath, ttsText: seg.text };
+    }),
+  );
+
+  const uncachedParts = ttsParts.filter(p => !isCached(p.audioPath, force));
+  if (uncachedParts.length > 0) {
+    const pool = new TTSPool();
+    console.log(`  Voice: ${config.voice} — workers: ${pool.size} (${uncachedParts.length} part(s))`);
+    process.stdout.write(`  Loading TTS model...`);
+    const loadStart = Date.now();
+    await pool.init(config.voice);
+    console.log(` done (${elapsed(loadStart)}s)`);
+    let done = 0;
+    await Promise.all(uncachedParts.map(async p => {
+      await pool.synthesize(p.ttsText, p.audioPath);
+      process.stdout.write(`\r  Synthesizing: ${++done}/${uncachedParts.length}`);
+    }));
+    console.log();
+    await pool.terminate();
+  } else {
+    console.log('  All audio cached');
+  }
+  console.log(`  Stage 3 done (${elapsed(stage3Start)}s)`);
+
+  // ── Stage 4: Assemble clips ──
+  const stage4Start = Date.now();
+  console.log('\n── Stage 4/4: Assembling video ──');
+
+  const HOLD = config.answerDelay; // post-speech hold added to the last frame
+
+  interface SlideClipDesc {
+    path: string;
+    frames: FrameSpan[];
+    audioPath: string;
+    totalDuration: number;
+  }
+
+  const slideClipDescs: SlideClipDesc[] = [];
+
+  for (const slide of deck.slides) {
+    const sf = slideFramesList[slide.index];
+    if (!sf || sf.frames.length === 0) continue;
+
+    const parts = ttsParts.filter(p => p.slideIdx === slide.index);
+    if (parts.length === 0) continue;
+
+    let combinedAudioPath: string;
+    let frameSpans: FrameSpan[];
+    let totalDuration: number;
+
+    if (parts.length === 1) {
+      // Single narration chunk → spread visual frames evenly during speech.
+      const audioDuration = await getAudioDuration(parts[0].audioPath);
+      totalDuration = audioDuration + HOLD;
+      combinedAudioPath = parts[0].audioPath;
+      const perFrame = audioDuration / sf.frames.length;
+      frameSpans = sf.frames.map((f, i) => ({
+        imagePath: f,
+        durationSec: i < sf.frames.length - 1 ? perFrame : perFrame + HOLD,
+      }));
+    } else {
+      // Multiple segments with [click] markers → each shows its target frame.
+      const durations = await Promise.all(parts.map(p => getAudioDuration(p.audioPath)));
+      totalDuration = durations.reduce((a, b) => a + b, 0) + HOLD;
+
+      // Concatenate segment audio files into one track.
+      const combHash = sha(parts.map(p => p.audioPath).join(':'));
+      combinedAudioPath = cachedPath(config.tempDir, `sl_${slide.index}_audio`, combHash, 'wav');
+      if (!isCached(combinedAudioPath, force)) {
+        await concatenateAudioFiles(parts.map(p => p.audioPath), combinedAudioPath);
+      }
+
+      // Sum durations per target frame (clips may exceed frame count → cap to last frame).
+      const frameDurations = new Array<number>(sf.frames.length).fill(0);
+      for (let j = 0; j < parts.length; j++) {
+        const fi = Math.min(parts[j].frameIndex, sf.frames.length - 1);
+        frameDurations[fi] += durations[j];
+      }
+      frameSpans = sf.frames.map((f, i) => ({
+        imagePath: f,
+        durationSec: frameDurations[i] + (i === sf.frames.length - 1 ? HOLD : 0),
+      }));
+    }
+
+    const clipHash = sha(
+      `slideclip:v1:${slide.index}:${combinedAudioPath}:` +
+      frameSpans.map(fs => `${fs.imagePath}:${fs.durationSec.toFixed(3)}`).join(','),
+    );
+    const clipPath = cachedPath(config.tempDir, `slideclip_${slide.index}`, clipHash, 'mp4');
+    slideClipDescs.push({ path: clipPath, frames: frameSpans, audioPath: combinedAudioPath, totalDuration });
+  }
+
+  // Encode uncached clips.
+  const uncachedClips = slideClipDescs.filter(d => !isCached(d.path, force));
+  let encodedCount = 0;
+  const clipConcurrency = Math.max(2, Math.floor(cpus().length * 0.5));
+  console.log(`  Clips: ${slideClipDescs.length} total, ${uncachedClips.length} to encode (${clipConcurrency} concurrent)`);
+
+  await runConcurrent(
+    slideClipDescs.map(desc => async () => {
+      if (isCached(desc.path, force)) return;
+      await createMultiFrameClip(desc.frames, desc.audioPath, desc.totalDuration, desc.path);
+      encodedCount++;
+      process.stdout.write(`\r  Encoding: ${encodedCount}/${uncachedClips.length}`);
+    }),
+    clipConcurrency,
+  );
+  if (uncachedClips.length > 0) console.log();
+
+  // Interleave slide clips with gap clips.
+  const finalClipPaths: string[] = [];
+  const finalClipDurations: number[] = [];
+  for (let i = 0; i < slideClipDescs.length; i++) {
+    finalClipPaths.push(slideClipDescs[i].path);
+    finalClipDurations.push(slideClipDescs[i].totalDuration);
+
+    if (i < slideClipDescs.length - 1 && config.cardGap > 0) {
+      const lastFrame = slideClipDescs[i].frames[slideClipDescs[i].frames.length - 1].imagePath;
+      const gapHash = sha(`slidegap:${lastFrame}:${config.cardGap}`);
+      const gapPath = cachedPath(config.tempDir, `slidegap_${i}`, gapHash, 'mp4');
+      if (!isCached(gapPath, force)) {
+        await createSilentClip(lastFrame, config.cardGap, gapPath);
+      }
+      finalClipPaths.push(gapPath);
+      finalClipDurations.push(config.cardGap);
+    }
+  }
+
+  process.stdout.write(`  Concatenating: 0/${finalClipPaths.length}`);
+  const concatStart = Date.now();
+  await concatenateClips(
+    finalClipPaths, config.outputPath, config.tempDir, finalClipDurations,
+    (current, total) => { process.stdout.write(`\r  Concatenating: ${current}/${total}`); },
+  );
+  console.log(`\r  Concatenating: ${finalClipPaths.length}/${finalClipPaths.length} done (${elapsed(concatStart)}s)`);
+  console.log(`  Stage 4 done (${elapsed(stage4Start)}s)`);
+
+  const totalVideoDuration = finalClipDurations.reduce((a, b) => a + b, 0);
+  console.log(`\n══ Slidev Pipeline Complete ══`);
+  console.log(`  Output:   ${config.outputPath}`);
+  console.log(`  Duration: ~${formatDuration(totalVideoDuration)}`);
+  console.log(`  Slides:   ${deck.slides.length}`);
+  console.log(`  Time:     ${elapsed(pipelineStart)}s`);
+}
+

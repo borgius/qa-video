@@ -64,6 +64,12 @@ export interface Segment {
   totalDuration: number; // audio + padding
 }
 
+/** One still-image span within a multi-frame Slidev clip. */
+export interface FrameSpan {
+  imagePath: string;
+  durationSec: number;
+}
+
 export interface PipelineConfig {
   inputPath: string;
   outputPath: string;

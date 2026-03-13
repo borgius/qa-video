@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { SlideCard } from './SlideCard';
 import { RatingButtons } from './RatingButtons';
 import { YamlCard } from '../types';
@@ -21,6 +22,8 @@ interface FlashcardViewerProps {
   isQueueMode?: boolean;
   isCardActive?: boolean;
   format?: 'full' | 'shorts';
+  isSlidev?: boolean;
+  captionsText?: string;
 }
 
 const toolbarBtnStyle: React.CSSProperties = {
@@ -55,7 +58,10 @@ export function FlashcardViewer({
   isQueueMode,
   isCardActive,
   format,
+  isSlidev,
+  captionsText,
 }: FlashcardViewerProps) {
+  const [captionsEnabled, setCaptionsEnabled] = useState(false);
   if (!card) {
     return (
       <div style={{
@@ -125,6 +131,21 @@ export function FlashcardViewer({
         <button type="button" onClick={onToggleZoom} title="Zoom to fit (F)" style={toolbarBtnStyle}>
           {zoomed ? 'Exit zoom' : 'Zoom'}
         </button>
+        {isSlidev && (
+          <button
+            type="button"
+            onClick={() => setCaptionsEnabled(v => !v)}
+            title="Toggle captions (C)"
+            style={{
+              ...toolbarBtnStyle,
+              background: captionsEnabled ? 'rgba(255,255,255,0.18)' : toolbarBtnStyle.background,
+              borderColor: captionsEnabled ? 'rgba(255,255,255,0.35)' : (toolbarBtnStyle.border as string),
+              color: captionsEnabled ? '#fff' : 'var(--text-secondary)',
+            }}
+          >
+            CC
+          </button>
+        )}
       </div>
 
       {/* Title */}
@@ -147,6 +168,8 @@ export function FlashcardViewer({
         isSpeaking={isSpeaking}
         zoomed={zoomed}
         format={format}
+        captionsEnabled={isSlidev && captionsEnabled}
+        captionsText={captionsText}
       />
 
       {/* Rating buttons (queue mode, floating overlay on top of slide) */}

@@ -125,6 +125,8 @@ export default function App() {
           isQueueMode={state.isQueueMode}
           isCardActive={isCardActive}
           format={settings.format}
+          isSlidev={state.fileData?.type === 'slidev'}
+          captionsText={displayType === 'question' ? currentCard?.question : currentCard?.answer}
         />
       )}
     </div>

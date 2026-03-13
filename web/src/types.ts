@@ -24,6 +24,7 @@ export interface FileInfo {
   title: string;
   description: string;
   questionCount: number;
+  type?: 'yaml' | 'slidev';
 }
 
 export interface FileDetail {
@@ -31,6 +32,7 @@ export interface FileDetail {
   title: string;
   config: YamlConfig;
   questions: YamlCard[];
+  type?: 'yaml' | 'slidev';
 }
 
 export interface AppSettings {

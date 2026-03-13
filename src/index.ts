@@ -7,7 +7,7 @@ import { readFile, rm, writeFile } from 'fs/promises';
 import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
 import { createRequire } from 'module';
 import { createInterface } from 'readline';
-import { runPipeline, runShortsPipeline } from './pipeline.js';
+import { runPipeline, runShortsPipeline, runSlidevPipeline } from './pipeline.js';
 import { PipelineConfig, DEFAULT_CONFIG } from './types.js';
 import { ensureDeps } from './ffmpeg-paths.js';
 import { parseYamlFile } from './parser.js';
@@ -27,8 +27,33 @@ program
   .description('Generate flashcard videos from YAML Q&A files with TTS narration.\n\nImport flashcards from Anki, Brainscape, RemNote, Knowt, Gizmo, or Mochi,\nthen generate YouTube-ready videos with offline neural TTS narration.')
   .version(pkg.version);
 
+function isSlidevFile(filePath: string): boolean {
+  return filePath.endsWith('.md');
+}
+
+/** Strip recognised input extensions to get a bare name for output paths. */
+function stripInputExt(filePath: string): string {
+  return basename(filePath)
+    .replace(/\.md$/, '')
+    .replace(/\.yaml$/, '')
+    .replace(/\.yml$/, '');
+}
+
+/** Run the appropriate pipeline for a given config (YAML or Slidev). */
+async function runPipelineForInput(config: PipelineConfig): Promise<void> {
+  if (isSlidevFile(config.inputPath)) {
+    await runSlidevPipeline(config);
+  } else if (config.format === 'shorts') {
+    const shortPaths = await runShortsPipeline(config);
+    console.log(`\nGenerated ${shortPaths.length} short video(s):`);
+    shortPaths.forEach(p => console.log(`  ${p}`));
+  } else {
+    await runPipeline(config);
+  }
+}
+
 function buildConfig(inputPath: string, opts: any): PipelineConfig {
-  const inputName = basename(inputPath, '.yaml').replace(/\.yml$/, '');
+  const inputName = stripInputExt(inputPath);
   const outputPath = opts.output
     ? resolve(opts.output)
     : opts.outputDir
@@ -82,37 +107,88 @@ const sharedOptions = (cmd: Command) =>
     .option('--format <type>', `Output format: full or shorts (default: ${DEFAULT_CONFIG.format})`, DEFAULT_CONFIG.format)
     .option('--questions-per-short <n>', `Questions per short video in shorts mode (default: ${DEFAULT_CONFIG.questionsPerShort})`, String(DEFAULT_CONFIG.questionsPerShort));
 
-// Single file
+// Single file or directory
 sharedOptions(
   program
     .command('generate')
-    .description('Generate a video from a single YAML Q&A file')
-    .requiredOption('-i, --input <path>', 'Path to YAML file')
-    .option('-o, --output <path>', 'Output video file path')
+    .description('Generate a video from a YAML or Slidev (.md) file, or all files in a directory')
+    .option('-i, --input <path>', 'Path to a single YAML or Slidev .md file')
+    .option('-d, --dir <path>', 'Directory of YAML / Slidev .md files (generates all)')
+    .option('-o, --output <path>', 'Output video file path (single-file mode only)')
     .option('--output-dir <path>', 'Output directory (default: auto-resolved .qa/)')
 ).action(async (opts) => {
   try {
-    const inputPath = resolve(opts.input);
-    if (!existsSync(inputPath)) {
-      console.error(`Error: Input file not found: ${inputPath}`);
+    if (!opts.input && !opts.dir) {
+      console.error('Error: Provide -i <file> or -d <dir>');
       process.exit(1);
     }
 
-    const config = buildConfig(inputPath, opts);
+    if (opts.input) {
+      // ── Single file ──
+      const inputPath = resolve(opts.input);
+      if (!existsSync(inputPath)) {
+        console.error(`Error: Input file not found: ${inputPath}`);
+        process.exit(1);
+      }
+      const config = buildConfig(inputPath, opts);
+      console.log(`\n╔══════════════════════════════════╗`);
+      console.log(`║      QA Video Generator          ║`);
+      console.log(`╚══════════════════════════════════╝`);
+      console.log(`Input:  ${config.inputPath}`);
+      console.log(`Output: ${config.outputPath}`);
+      await runPipelineForInput(config);
+      return;
+    }
 
+    // ── Directory ──
+    const dirPath = resolve(opts.dir);
+    if (!existsSync(dirPath)) {
+      console.error(`Error: Directory not found: ${dirPath}`);
+      process.exit(1);
+    }
+    const sourceFiles = readdirSync(dirPath)
+      .filter(f => f.endsWith('.yaml') || f.endsWith('.yml') || f.endsWith('.md'))
+      .sort();
+    if (sourceFiles.length === 0) {
+      console.error(`Error: No YAML or Slidev .md files found in: ${dirPath}`);
+      process.exit(1);
+    }
     console.log(`\n╔══════════════════════════════════╗`);
     console.log(`║      QA Video Generator          ║`);
     console.log(`╚══════════════════════════════════╝`);
-    console.log(`Input:  ${config.inputPath}`);
-    console.log(`Output: ${config.outputPath}`);
-
-    if (config.format === 'shorts') {
-      const shortPaths = await runShortsPipeline(config);
-      console.log(`\nGenerated ${shortPaths.length} short video(s):`);
-      shortPaths.forEach(p => console.log(`  ${p}`));
-    } else {
-      await runPipeline(config);
+    console.log(`Directory: ${dirPath}`);
+    console.log(`Files:     ${sourceFiles.length}`);
+    const batchStart = Date.now();
+    const results: { file: string; status: string; time: string }[] = [];
+    for (let fi = 0; fi < sourceFiles.length; fi++) {
+      const file = sourceFiles[fi];
+      const inputPath = join(dirPath, file);
+      console.log(`\n${'═'.repeat(60)}`);
+      console.log(`  FILE ${fi + 1}/${sourceFiles.length}: ${file}`);
+      console.log(`${'═'.repeat(60)}`);
+      const fileStart = Date.now();
+      try {
+        const fileOpts = {
+          ...opts,
+          output: opts.outputDir
+            ? join(resolve(opts.outputDir), stripInputExt(file) + '.mp4')
+            : undefined,
+        };
+        const config = buildConfig(inputPath, fileOpts);
+        console.log(`Output: ${config.outputPath}`);
+        await runPipelineForInput(config);
+        results.push({ file, status: 'OK', time: ((Date.now() - fileStart) / 1000).toFixed(1) + 's' });
+      } catch (err: any) {
+        results.push({ file, status: `FAILED: ${err.message}`, time: ((Date.now() - fileStart) / 1000).toFixed(1) + 's' });
+        console.error(`  Error processing ${file}: ${err.message}`);
+      }
     }
+    const totalTime = ((Date.now() - batchStart) / 1000).toFixed(1);
+    const ok = results.filter(r => r.status === 'OK').length;
+    console.log(`\n${'═'.repeat(60)}`);
+    for (const r of results) console.log(`  [${r.status === 'OK' ? 'OK  ' : 'FAIL'}] ${r.file} (${r.time})`);
+    console.log(`\n  Total: ${ok} succeeded, ${results.length - ok} failed, ${totalTime}s`);
+    if (results.length - ok > 0) process.exit(1);
   } catch (err: any) {
     console.error(`\nError: ${err.message}`);
     if (process.env.DEBUG) console.error(err.stack);
@@ -125,8 +201,8 @@ sharedOptions(
   program
     .command('update')
     .description('Re-render changed slides and reassemble video(s), regenerating only what changed')
-    .option('-i, --input <path>', 'Path to a single YAML file')
-    .option('-d, --dir <path>', 'Directory of YAML files (updates all)')
+    .option('-i, --input <path>', 'Path to a single YAML or Slidev .md file')
+    .option('-d, --dir <path>', 'Directory of YAML / Slidev .md files (updates all)')
     .option('-o, --output <path>', 'Output video path (single-file mode only)')
     .option('--output-dir <path>', 'Output directory (directory mode only)')
 ).action(async (opts) => {
@@ -152,13 +228,7 @@ sharedOptions(
       console.log(`Input:  ${config.inputPath}`);
       console.log(`Output: ${config.outputPath}`);
 
-      if (config.format === 'shorts') {
-        const shortPaths = await runShortsPipeline(config);
-        console.log(`\nGenerated ${shortPaths.length} short video(s):`);
-        shortPaths.forEach(p => console.log(`  ${p}`));
-      } else {
-        await runPipeline(config);
-      }
+      await runPipelineForInput(config);
       return;
     }
 
@@ -170,11 +240,11 @@ sharedOptions(
     }
 
     const yamlFiles = readdirSync(dirPath)
-      .filter(f => f.endsWith('.yaml') || f.endsWith('.yml'))
+      .filter(f => f.endsWith('.yaml') || f.endsWith('.yml') || f.endsWith('.md'))
       .sort();
 
     if (yamlFiles.length === 0) {
-      console.error(`Error: No YAML files found in: ${dirPath}`);
+      console.error(`Error: No YAML or Slidev .md files found in: ${dirPath}`);
       process.exit(1);
     }
 
@@ -200,17 +270,13 @@ sharedOptions(
         const fileOpts = {
           ...opts,
           output: opts.outputDir
-            ? join(resolve(opts.outputDir), basename(file, '.yaml').replace(/\.yml$/, '') + '.mp4')
+            ? join(resolve(opts.outputDir), stripInputExt(file) + '.mp4')
             : undefined,
         };
         const config = buildConfig(inputPath, fileOpts);
         console.log(`Output: ${config.outputPath}`);
 
-        if (config.format === 'shorts') {
-          await runShortsPipeline(config);
-        } else {
-          await runPipeline(config);
-        }
+        await runPipelineForInput(config);
 
         const timeStr = ((Date.now() - fileStart) / 1000).toFixed(1) + 's';
         results.push({ file, status: 'OK', time: timeStr });
@@ -257,11 +323,11 @@ sharedOptions(
     }
 
     const yamlFiles = readdirSync(dirPath)
-      .filter(f => f.endsWith('.yaml') || f.endsWith('.yml'))
+      .filter(f => f.endsWith('.yaml') || f.endsWith('.yml') || f.endsWith('.md'))
       .sort();
 
     if (yamlFiles.length === 0) {
-      console.error(`Error: No YAML files found in: ${dirPath}`);
+      console.error(`Error: No YAML or Slidev .md files found in: ${dirPath}`);
       process.exit(1);
     }
 
@@ -288,7 +354,7 @@ sharedOptions(
         const fileOpts = {
           ...opts,
           output: opts.outputDir
-            ? join(resolve(opts.outputDir), basename(file, '.yaml').replace(/\.yml$/, '') + '.mp4')
+            ? join(resolve(opts.outputDir), stripInputExt(file) + '.mp4')
             : undefined,
         };
         const config = buildConfig(inputPath, fileOpts);
@@ -301,7 +367,7 @@ sharedOptions(
         }
 
         console.log(`Output: ${config.outputPath}`);
-        await runPipeline(config);
+        await runPipelineForInput(config);
 
         const timeStr = ((Date.now() - fileStart) / 1000).toFixed(1) + 's';
         results.push({ file, status: 'OK', time: timeStr });
@@ -348,16 +414,16 @@ program
 
       if (opts.input) {
         const inputPath = resolve(opts.input);
-        const inputName = basename(inputPath, '.yaml').replace(/\.yml$/, '');
+        const inputName = stripInputExt(inputPath);
         const tmpDir = opts.outputDir
           ? join(resolve(opts.outputDir), '.tmp', inputName)
           : join(resolveOutputDir(dirname(inputPath)), '.tmp', inputName);
         targets.push(tmpDir);
       } else if (opts.dir) {
         const dirPath = resolve(opts.dir);
-        const yamlFiles = readdirSync(dirPath).filter(f => f.endsWith('.yaml') || f.endsWith('.yml'));
+        const yamlFiles = readdirSync(dirPath).filter(f => f.endsWith('.yaml') || f.endsWith('.yml') || f.endsWith('.md'));
         for (const file of yamlFiles) {
-          const inputName = basename(file, '.yaml').replace(/\.yml$/, '');
+          const inputName = stripInputExt(file);
           const tmpDir = opts.outputDir
             ? join(resolve(opts.outputDir), '.tmp', inputName)
             : join(resolveOutputDir(dirPath), '.tmp', inputName);
@@ -1003,8 +1069,8 @@ program
           console.error(`Error: Input file not found: ${inputPath}`);
           process.exit(1);
         }
-        if (!inputPath.endsWith('.yaml') && !inputPath.endsWith('.yml')) {
-          console.error(`Error: Input file must be a .yaml or .yml file: ${inputPath}`);
+        if (!inputPath.endsWith('.yaml') && !inputPath.endsWith('.yml') && !inputPath.endsWith('.md')) {
+          console.error(`Error: Input file must be a .yaml, .yml, or .md file: ${inputPath}`);
           process.exit(1);
         }
         serveDir = dirname(inputPath);
@@ -1031,18 +1097,18 @@ program
       }
 
       const rootYaml = readdirSync(serveDir)
-        .filter(f => f.endsWith('.yaml') || f.endsWith('.yml'));
+        .filter(f => f.endsWith('.yaml') || f.endsWith('.yml') || f.endsWith('.md'));
       const subYaml = readdirSync(serveDir, { withFileTypes: true })
         .filter(e => e.isDirectory() && !e.name.startsWith('.'))
         .flatMap(e => {
-          try { return readdirSync(join(serveDir, e.name)).filter(f => f.endsWith('.yaml') || f.endsWith('.yml')); }
+          try { return readdirSync(join(serveDir, e.name)).filter(f => f.endsWith('.yaml') || f.endsWith('.yml') || f.endsWith('.md')); }
           catch { return []; }
         });
       let yamlFiles = [...rootYaml, ...subYaml];
       if (filterFile) yamlFiles = yamlFiles.filter(f => f === filterFile);
 
       if (yamlFiles.length === 0) {
-        console.error(`Error: No YAML files found in: ${serveDir}`);
+        console.error(`Error: No YAML or .md files found in: ${serveDir}`);
         process.exit(1);
       }
 
