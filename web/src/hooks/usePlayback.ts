@@ -240,6 +240,11 @@ export function usePlayback() {
 
     switch (state.phase) {
       case 'question': {
+        // For Slidev decks skip the question (title) phase entirely — go straight to notes.
+        if (state.fileData?.type === 'slidev') {
+          dispatch({ type: 'SET_PHASE', phase: 'answer' });
+          break;
+        }
         dispatch({ type: 'SET_PHASE', phase: 'q-speaking' });
         playAudio(audioUrl(file, cardRealIdx, 'question'));
         break;

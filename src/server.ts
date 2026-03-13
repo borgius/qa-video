@@ -2,12 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import { readdirSync, mkdirSync, existsSync, readFileSync } from 'fs';
 import { createServer } from 'node:net';
+import { createHash } from 'node:crypto';
 import { join, resolve } from 'path';
 import { concatenateAudioFiles } from './assembler.js';
 import { cachedPath, isCached, resolveOutputDir, slug } from './cache.js';
 import { generateTitle, topicFromFilename } from './metadata.js';
 import { parseYamlFile } from './parser.js';
 import { parseSlidevDeck } from './slidev.js';
+import { captureSlidevFrames } from './slidev-runtime.js';
 import { renderSlide } from './renderer.js';
 import { buildAudioPlan } from './tts-preprocess.js';
 import { initTTS, synthesize } from './tts.js';
@@ -367,54 +369,29 @@ app.get('/api/slides/:name/:cardIndex/:type', async (req, res, next) => {
 
     // ── Slidev branch: serve exported PNG frame ────────────────────────────────
     if (filePath.endsWith('.md')) {
-      const framePath = findSlidevFrame(name, cardIndex);
+      // Try the cache first
+      let framePath = findSlidevFrame(name, cardIndex);
+      if (!framePath) {
+        // Export all frames on-demand (first request triggers slidev export for the whole deck)
+        console.log(`[slidev] exporting frames for ${name}…`);
+        const deck = await parseSlidevDeck(filePath);
+        const rawContent = readFileSync(filePath, 'utf-8');
+        const deckHash = createHash('sha256').update(rawContent).digest('hex');
+        const tempDir = join(outputDir, '.tmp', name);
+        mkdirSync(tempDir, { recursive: true });
+        try {
+          await captureSlidevFrames(filePath, deck.slides.length, deckHash, tempDir, false);
+        } catch (exportErr: any) {
+          console.warn(`[slidev] export failed: ${exportErr.message}`);
+        }
+        framePath = findSlidevFrame(name, cardIndex);
+      }
       if (framePath) {
         res.sendFile(framePath, { dotfiles: 'allow' });
         return;
       }
-      // Frame not yet exported — fall back to a text card render
-      const deck = await parseSlidevDeck(filePath);
-      if (cardIndex < 0 || cardIndex >= deck.slides.length) {
-        res.status(404).json({ error: 'Card index out of range' });
-        return;
-      }
-      const slide = deck.slides[cardIndex];
-      const text = type === 'question'
-        ? (slide.title || `Slide ${slide.index + 1}`)
-        : slide.narrationSegments.map(s => s.text).join(' ');
-      const totalCards = deck.slides.length;
-      const width = DEFAULT_CONFIG.width;
-      const height = DEFAULT_CONFIG.height;
-      const config: PipelineConfig = {
-        inputPath: filePath,
-        outputPath: '',
-        tempDir: '',
-        voice: DEFAULT_CONFIG.voice,
-        questionVoice: DEFAULT_CONFIG.questionVoice,
-        codeVoice: DEFAULT_CONFIG.codeVoice,
-        questionDelay: DEFAULT_CONFIG.questionDelay,
-        answerDelay: DEFAULT_CONFIG.answerDelay,
-        cardGap: DEFAULT_CONFIG.cardGap,
-        fontSize: DEFAULT_CONFIG.fontSize,
-        backgroundColor: DEFAULT_CONFIG.backgroundColor,
-        questionColor: DEFAULT_CONFIG.questionColor,
-        answerColor: DEFAULT_CONFIG.answerColor,
-        textColor: DEFAULT_CONFIG.textColor,
-        width,
-        height,
-        force: false,
-        format: 'full',
-        questionsPerShort: DEFAULT_CONFIG.questionsPerShort,
-      };
-      const segType = type as 'question' | 'answer';
-      const slideHash = `slidev-card:v1:${text}:${segType}:${cardIndex}:${totalCards}:${width}x${height}`;
-      const tempDir = join(outputDir, '.tmp', name);
-      mkdirSync(tempDir, { recursive: true });
-      const imagePath = cachedPath(tempDir, `scard_${cardIndex}_${segType}`, slideHash, 'png');
-      if (!isCached(imagePath, false)) {
-        await renderSlide(imagePath, { text, type: segType, cardIndex, totalCards, config });
-      }
-      res.sendFile(imagePath, { dotfiles: 'allow' });
+      // Still no frame (slidev not installed or export failed) — 404
+      res.status(404).json({ error: 'Slide frame not available. Run `slidev export` or install @slidev/cli.' });
       return;
     }
 
