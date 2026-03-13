@@ -32,3 +32,8 @@ export interface FileDetail {
   config: YamlConfig;
   questions: YamlCard[];
 }
+
+export interface AppSettings {
+  format: 'full' | 'shorts';
+  questionsPerShort: number;
+}

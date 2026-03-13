@@ -7,13 +7,13 @@ import { readFile, rm, writeFile } from 'fs/promises';
 import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
 import { createRequire } from 'module';
 import { createInterface } from 'readline';
-import { runPipeline } from './pipeline.js';
+import { runPipeline, runShortsPipeline } from './pipeline.js';
 import { PipelineConfig, DEFAULT_CONFIG } from './types.js';
 import { ensureDeps } from './ffmpeg-paths.js';
 import { parseYamlFile } from './parser.js';
 import { generateTitle, generateDescription } from './metadata.js';
 import { runAuthFlow, getAuthenticatedClient } from './youtube-auth.js';
-import { uploadToYouTube, findVideoByShaTag, ensureVideoHasShaTag } from './uploader.js';
+import { uploadToYouTube, findVideoByShaTag, ensureVideoHasShaTag, createPlaylist, addVideoToPlaylist } from './uploader.js';
 import { sha, resolveOutputDir } from './cache.js';
 import { getDriver, listDrivers, driverNames } from './importers/index.js';
 
@@ -43,6 +43,8 @@ function buildConfig(inputPath: string, opts: any): PipelineConfig {
     : join(outputDir, '.tmp', inputName);
   mkdirSync(tempDir, { recursive: true });
 
+  const format = (opts.format ?? DEFAULT_CONFIG.format) as 'full' | 'shorts';
+
   return {
     inputPath,
     outputPath,
@@ -58,9 +60,11 @@ function buildConfig(inputPath: string, opts: any): PipelineConfig {
     questionColor: DEFAULT_CONFIG.questionColor,
     answerColor: DEFAULT_CONFIG.answerColor,
     textColor: DEFAULT_CONFIG.textColor,
-    width: DEFAULT_CONFIG.width,
-    height: DEFAULT_CONFIG.height,
+    width: format === 'shorts' ? 1080 : DEFAULT_CONFIG.width,
+    height: format === 'shorts' ? 1920 : DEFAULT_CONFIG.height,
     force: opts.force ?? false,
+    format,
+    questionsPerShort: parseInt(opts.questionsPerShort ?? String(DEFAULT_CONFIG.questionsPerShort), 10) || DEFAULT_CONFIG.questionsPerShort,
   };
 }
 
@@ -74,7 +78,9 @@ const sharedOptions = (cmd: Command) =>
     .option('--card-gap <seconds>', 'Gap between cards', String(DEFAULT_CONFIG.cardGap))
     .option('--font-size <px>', 'Font size for slide text', String(DEFAULT_CONFIG.fontSize))
     .option('--temp-dir <path>', 'Temporary directory for intermediate files', '')
-    .option('--force', 'Regenerate all artifacts, ignoring cache', false);
+    .option('--force', 'Regenerate all artifacts, ignoring cache', false)
+    .option('--format <type>', `Output format: full or shorts (default: ${DEFAULT_CONFIG.format})`, DEFAULT_CONFIG.format)
+    .option('--questions-per-short <n>', `Questions per short video in shorts mode (default: ${DEFAULT_CONFIG.questionsPerShort})`, String(DEFAULT_CONFIG.questionsPerShort));
 
 // Single file
 sharedOptions(
@@ -100,7 +106,13 @@ sharedOptions(
     console.log(`Input:  ${config.inputPath}`);
     console.log(`Output: ${config.outputPath}`);
 
-    await runPipeline(config);
+    if (config.format === 'shorts') {
+      const shortPaths = await runShortsPipeline(config);
+      console.log(`\nGenerated ${shortPaths.length} short video(s):`);
+      shortPaths.forEach(p => console.log(`  ${p}`));
+    } else {
+      await runPipeline(config);
+    }
   } catch (err: any) {
     console.error(`\nError: ${err.message}`);
     if (process.env.DEBUG) console.error(err.stack);
@@ -140,7 +152,13 @@ sharedOptions(
       console.log(`Input:  ${config.inputPath}`);
       console.log(`Output: ${config.outputPath}`);
 
-      await runPipeline(config);
+      if (config.format === 'shorts') {
+        const shortPaths = await runShortsPipeline(config);
+        console.log(`\nGenerated ${shortPaths.length} short video(s):`);
+        shortPaths.forEach(p => console.log(`  ${p}`));
+      } else {
+        await runPipeline(config);
+      }
       return;
     }
 
@@ -188,7 +206,11 @@ sharedOptions(
         const config = buildConfig(inputPath, fileOpts);
         console.log(`Output: ${config.outputPath}`);
 
-        await runPipeline(config);
+        if (config.format === 'shorts') {
+          await runShortsPipeline(config);
+        } else {
+          await runPipeline(config);
+        }
 
         const timeStr = ((Date.now() - fileStart) / 1000).toFixed(1) + 's';
         results.push({ file, status: 'OK', time: timeStr });
@@ -406,6 +428,60 @@ async function saveYoutubeInfo(
   );
 }
 
+/** Save youtube shorts playlist info back to the YAML file's config section */
+async function saveYoutubeShortsInfo(
+  yamlPath: string,
+  info: {
+    playlistId: string;
+    playlistUrl: string;
+    privacy: string;
+    videos: Array<{ videoId: string; url: string; title: string; cardStart: number; cardEnd: number }>;
+  },
+) {
+  const raw = await readFile(yamlPath, 'utf-8');
+  const doc = parseYaml(raw) ?? {};
+  if (!doc.config) doc.config = {};
+  doc.config.youtubeShorts = {
+    playlistId: info.playlistId,
+    playlistUrl: info.playlistUrl,
+    uploadedAt: new Date().toISOString(),
+    privacy: info.privacy,
+    videos: info.videos,
+  };
+  await writeFile(
+    yamlPath,
+    stringifyYaml(doc, { lineWidth: 120, defaultKeyType: 'PLAIN', defaultStringType: 'PLAIN' }),
+    'utf-8',
+  );
+}
+
+/**
+ * Resolve the directory where shorts for a given YAML (or video) path are stored.
+ * Convention: <outputDir>/<name>/  e.g.  .qa/terms/
+ */
+function resolveShortsDir(inputPath: string): string {
+  const isYaml = inputPath.endsWith('.yaml') || inputPath.endsWith('.yml');
+  if (isYaml) {
+    const name = basename(inputPath, '.yaml').replace(/\.yml$/, '');
+    return join(resolveOutputDir(dirname(inputPath)), name);
+  }
+  // Given a video path like .qa/terms.mp4
+  return join(dirname(inputPath), basename(inputPath, '.mp4'));
+}
+
+/** Discover short video files for a YAML or video path */
+function findShortVideos(inputPath: string): string[] {
+  const dir = resolveShortsDir(inputPath);
+  try {
+    return readdirSync(dir)
+      .filter(f => /^\d+-/.test(f) && f.endsWith('.mp4'))
+      .sort()
+      .map(f => join(dir, f));
+  } catch {
+    return [];
+  }
+}
+
 /** Resolve a single input (video path, yaml path, or bare name) to { videoPath, yamlPath? } */
 function resolveUploadTarget(input: string): { videoPath: string; yamlPath?: string } {
   let inputPath = resolve(input);
@@ -489,6 +565,119 @@ function promptEditable(
   });
 }
 
+// Upload to YouTube — shorts handler
+async function uploadShortsAction(opts: any): Promise<void> {
+  const inputArg = opts.dir ?? opts.input ?? resolveOutputDir(process.cwd());
+  const resolvedInput = resolve(inputArg);
+
+  // Collect YAML paths to process
+  let yamlPaths: string[];
+  if (existsSync(resolvedInput) && statSync(resolvedInput).isDirectory()) {
+    yamlPaths = readdirSync(resolvedInput)
+      .filter(f => f.endsWith('.yaml') || f.endsWith('.yml'))
+      .sort()
+      .map(f => join(resolvedInput, f));
+    if (yamlPaths.length === 0) {
+      console.error('Error: No YAML files found to derive shorts from.');
+      process.exit(1);
+    }
+  } else if (resolvedInput.endsWith('.yaml') || resolvedInput.endsWith('.yml')) {
+    yamlPaths = [resolvedInput];
+  } else {
+    // bare name or .mp4 — try to find the YAML
+    const target = resolveUploadTarget(inputArg);
+    if (!target.yamlPath) {
+      console.error(`Error: Cannot find YAML for ${inputArg}`);
+      process.exit(1);
+    }
+    yamlPaths = [target.yamlPath];
+  }
+
+  let authClient: Awaited<ReturnType<typeof getAuthenticatedClient>> | undefined;
+
+  for (const yamlPath of yamlPaths) {
+    if (!existsSync(yamlPath)) {
+      console.warn(`  YAML not found: ${yamlPath} — skipping.`);
+      continue;
+    }
+    const shortFiles = findShortVideos(yamlPath);
+    const shortsDir = resolveShortsDir(yamlPath);
+    if (shortFiles.length === 0) {
+      console.warn(`  No short videos found in ${shortsDir} — skipping.`);
+      console.warn(`  Run "qa-video generate -i <file> --format shorts" first.`);
+      continue;
+    }
+
+    const yamlData = await parseYamlFile(yamlPath);
+    const baseTitle = generateTitle(yamlPath, yamlData);
+    const baseDescription = generateDescription(yamlPath, yamlData);
+    const questionsPerShort = yamlData.config.questionsPerShort ?? DEFAULT_CONFIG.questionsPerShort;
+
+    console.log(`\n${'═'.repeat(60)}`);
+    console.log(`  Shorts upload: ${baseTitle} (${shortFiles.length} clips)`);
+    console.log(`  Folder: ${shortsDir}`);
+    console.log(`${'═'.repeat(60)}`);
+
+    if (opts.dryRun) {
+      console.log(`  --dry-run: would upload ${shortFiles.length} short(s) and create/update playlist.`);
+      shortFiles.forEach((f, i) => console.log(`    [${i + 1}] ${basename(f)}`));
+      continue;
+    }
+
+    if (!authClient) authClient = await getAuthenticatedClient(opts.credentials);
+
+    const uploadedVideos: Array<{ videoId: string; url: string; title: string; cardStart: number; cardEnd: number }> = [];
+    const tags = (opts.tags as string).split(',').map((t: string) => t.trim());
+
+    for (let si = 0; si < shortFiles.length; si++) {
+      const shortPath = shortFiles[si];
+      const shortNum = si + 1;
+      const shortTitle = `${baseTitle} — Short ${String(shortNum).padStart(2, '0')}`;
+      const cardStart = si * questionsPerShort;
+      const cardEnd = cardStart + questionsPerShort;
+
+      console.log(`\n  Uploading short ${shortNum}/${shortFiles.length}: ${basename(shortPath)}`);
+      const result = await uploadToYouTube(authClient, {
+        videoPath: shortPath,
+        title: shortTitle,
+        description: baseDescription,
+        privacy: opts.privacy as 'public' | 'unlisted' | 'private',
+        categoryId: opts.category,
+        tags: [...tags, `qavideo-short-${shortNum}`],
+      });
+      uploadedVideos.push({ videoId: result.videoId, url: result.url, title: shortTitle, cardStart, cardEnd });
+    }
+
+    // Create playlist and add all shorts
+    const playlistTitle = `${baseTitle} — Shorts`;
+    const { playlistId, url: playlistUrl } = await createPlaylist(
+      authClient,
+      playlistTitle,
+      baseDescription,
+      opts.privacy as 'public' | 'unlisted' | 'private',
+    );
+
+    console.log(`\n  Adding ${uploadedVideos.length} video(s) to playlist...`);
+    for (let pi = 0; pi < uploadedVideos.length; pi++) {
+      await addVideoToPlaylist(authClient, playlistId, uploadedVideos[pi].videoId, pi);
+      console.log(`    [${pi + 1}] ${uploadedVideos[pi].title}`);
+    }
+
+    console.log(`\n  Playlist: ${playlistUrl}`);
+
+    // Save shorts info to YAML
+    if (yamlPath && existsSync(yamlPath)) {
+      await saveYoutubeShortsInfo(yamlPath, {
+        playlistId,
+        playlistUrl,
+        privacy: opts.privacy,
+        videos: uploadedVideos,
+      });
+      console.log(`  Saved to: ${yamlPath}`);
+    }
+  }
+}
+
 // Upload to YouTube
 program
   .command('upload')
@@ -505,8 +694,15 @@ program
   .option('--no-confirm', 'Skip interactive editing and confirmation prompts')
   .option('--force', 'Force re-upload even if already uploaded')
   .option('--dry-run', 'Preview metadata without uploading', false)
+  .option('--format <type>', 'Upload format: full or shorts', 'full')
   .action(async (opts) => {
     try {
+      // ── Shorts upload path ──
+      if (opts.format === 'shorts') {
+        await uploadShortsAction(opts);
+        return;
+      }
+
       // Determine list of videos to upload
       const inputArg = opts.dir ?? opts.input ?? resolveOutputDir(process.cwd());
       const resolvedInput = resolve(inputArg);

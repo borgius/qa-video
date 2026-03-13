@@ -1,4 +1,5 @@
 import { existsSync, mkdirSync } from 'node:fs';
+import { basename, dirname, join } from 'node:path';
 import { cpus } from 'node:os';
 import { concatenateAudioFiles, concatenateClips, createSegmentClip, createSilentClip } from './assembler.js';
 import { cachedPath, isCached, removeStale, sha, slug } from './cache.js';
@@ -57,7 +58,10 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
   const stage1Start = Date.now();
   console.log('\n── Stage 1/4: Parsing YAML ──');
   const yamlData = await parseYamlFile(config.inputPath);
-  const cards = yamlData.questions;
+  const allCards = yamlData.questions;
+  const rangeStart = config.cardRange?.[0] ?? 0;
+  const rangeEnd = config.cardRange?.[1] ?? allCards.length;
+  const cards = allCards.slice(rangeStart, rangeEnd);
 
   const yamlConfig = yamlData.config;
   if (yamlConfig.questionDelay !== undefined && config.questionDelay === DEFAULT_CONFIG.questionDelay) {
@@ -197,14 +201,14 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
   const stage3Start = Date.now();
   console.log('\n── Stage 3/4: Rendering slides ──');
 
-  const gapSlideHash = `slide:gap:${config.backgroundColor}:${config.fontSize}:${cards.length}`;
+  const gapSlideHash = `slide:gap:${config.backgroundColor}:${config.fontSize}:${cards.length}:${config.width}x${config.height}`;
   const gapSlidePath = cachedPath(config.tempDir, 'slide_gap', gapSlideHash, 'png');
 
   // Slide cache keys include :v2 to invalidate pre-markdown cached slides.
   for (let i = 0; i < segments.length; i++) {
     const seg = segments[i];
     const qTextForHash = seg.type === 'answer' ? cards[seg.cardIndex].question : '';
-    const slideHash = `slide:v5:${seg.text}:${seg.type}:${seg.cardIndex}:${seg.totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}:${qTextForHash}`;
+    const slideHash = `slide:v5:${seg.text}:${seg.type}:${seg.cardIndex}:${seg.totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}:${qTextForHash}:${config.width}x${config.height}`;
     const slideTypeTag = seg.type === 'question' ? 'q' : 'a';
     seg.imagePath = cachedPath(config.tempDir, `slide_${i}_${slideTypeTag}_${seg.questionSlug}`, slideHash, 'png');
   }
@@ -301,4 +305,76 @@ export async function runPipeline(config: PipelineConfig): Promise<void> {
   console.log(`  Duration: ~${formatDuration(estimatedVideoDuration)}`);
   console.log(`  Cards:    ${cards.length}`);
   console.log(`  Time:     ${elapsed(pipelineStart)}s`);
+}
+
+// ── Shorts pipeline ───────────────────────────────────────────────────────────
+
+/**
+ * Split a YAML file into multiple short-form videos, grouping `questionsPerShort`
+ * cards per output file.  Returns the paths of all generated short clips.
+ */
+function toSlug(text: string, maxLen = 48): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, maxLen)
+    .replace(/-+$/, '');
+}
+
+export async function runShortsPipeline(config: PipelineConfig): Promise<string[]> {
+  const pipelineStart = Date.now();
+
+  const yamlData = await parseYamlFile(config.inputPath);
+  const totalCards = yamlData.questions.length;
+  const qps = config.questionsPerShort;
+  const groups = Math.ceil(totalCards / qps);
+  const numWidth = String(groups).length;
+
+  console.log(`\n╔══════════════════════════════════╗`);
+  console.log(`║    QA Video — Shorts Mode        ║`);
+  console.log(`╚══════════════════════════════════╝`);
+  // Shorts go into a dedicated subfolder: <outputDir>/<name>/short-01.mp4
+  const inputName = basename(config.inputPath, '.yaml').replace(/\.yml$/, '');
+  const shortsDir = join(dirname(config.outputPath), inputName);
+  mkdirSync(shortsDir, { recursive: true });
+
+  console.log(`Input:      ${config.inputPath}`);
+  console.log(`Cards:      ${totalCards}`);
+  console.log(`Per short:  ${qps}`);
+  console.log(`Shorts:     ${groups}`);
+  console.log(`Dimensions: ${config.width}×${config.height}`);
+  console.log(`Output dir: ${shortsDir}`);
+
+  const outputPaths: string[] = [];
+
+  for (let i = 0; i < groups; i++) {
+    const start = i * qps;
+    const end = Math.min(start + qps, totalCards);
+    const shortNum = String(i + 1).padStart(Math.max(numWidth, 2), '0');
+    const questionSlug = toSlug(yamlData.questions[start].question);
+    const shortOutputPath = join(shortsDir, `${shortNum}-${questionSlug}.mp4`);
+    const shortTempDir = join(config.tempDir, `short-${shortNum}`);
+
+    console.log(`\n${'═'.repeat(60)}`);
+    console.log(`  SHORT ${i + 1}/${groups}: cards ${start + 1}–${end}`);
+    console.log(`${'═'.repeat(60)}`);
+
+    mkdirSync(shortTempDir, { recursive: true });
+
+    await runPipeline({
+      ...config,
+      outputPath: shortOutputPath,
+      tempDir: shortTempDir,
+      cardRange: [start, end],
+    });
+
+    outputPaths.push(shortOutputPath);
+  }
+
+  const totalTime = ((Date.now() - pipelineStart) / 1000).toFixed(1);
+  console.log(`\n══ Shorts Complete: ${groups} video(s) in ${totalTime}s ══`);
+  console.log(`  Output dir: ${shortsDir}`);
+
+  return outputPaths;
 }

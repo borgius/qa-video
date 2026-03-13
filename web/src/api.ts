@@ -17,6 +17,7 @@ export function audioUrl(name: string, cardIndex: number, type: 'question' | 'an
   return `/api/audio/${encodeURIComponent(name)}/${cardIndex}/${type}`;
 }
 
-export function slideUrl(name: string, cardIndex: number, type: 'question' | 'answer'): string {
-  return `/api/slides/${encodeURIComponent(name)}/${cardIndex}/${type}`;
+export function slideUrl(name: string, cardIndex: number, type: 'question' | 'answer', format?: 'full' | 'shorts'): string {
+  const base = `/api/slides/${encodeURIComponent(name)}/${cardIndex}/${type}`;
+  return format === 'shorts' ? `${base}?format=shorts` : base;
 }

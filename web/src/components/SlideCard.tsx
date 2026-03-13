@@ -7,18 +7,25 @@ interface SlideCardProps {
   cardIndex: number;
   isSpeaking?: boolean;
   zoomed?: boolean;
+  format?: 'full' | 'shorts';
 }
 
-export function SlideCard({ fileName, type, cardIndex, isSpeaking, zoomed }: SlideCardProps) {
+export function SlideCard({ fileName, type, cardIndex, isSpeaking, zoomed, format }: SlideCardProps) {
   const badgeColor = type === 'question' ? '#e94560' : '#0cca4a';
-  const src = slideUrl(fileName, cardIndex, type);
+  const src = slideUrl(fileName, cardIndex, type, format);
+  const isShorts = format === 'shorts';
+
+  const sizeStyle: React.CSSProperties = isShorts
+    ? zoomed
+      ? { height: 'min(91vh, 840px)', aspectRatio: '9 / 16' }
+      : { height: 'min(70vh, 600px)', aspectRatio: '9 / 16' }
+    : zoomed
+      ? { width: 'min(93vw, calc(93vh * 16 / 9))', aspectRatio: '16 / 9' }
+      : { width: '100%', maxWidth: '960px', aspectRatio: '16 / 9' };
 
   return (
     <div style={{
-      // Use min() so the 16:9 box fits within both viewport constraints
-      width: zoomed ? 'min(93vw, calc(93vh * 16 / 9))' : '100%',
-      maxWidth: zoomed ? undefined : '960px',
-      aspectRatio: '16 / 9',
+      ...sizeStyle,
       position: 'relative',
       borderRadius: zoomed ? '4px' : '12px',
       overflow: 'hidden',

@@ -350,12 +350,32 @@ export async function renderSlide(
   const canvas = createCanvas(width, height);
   const ctx = canvas.getContext('2d');
 
+  // ── Dimension-aware layout constants ──────────────────────────────────────
+  // Scale all fixed pixel values relative to the canvas so that both
+  // 1920×1080 (full video) and 1080×1920 (shorts) look proportional.
+  const isPortrait = height > width;
+  // Header height: ~6.25% of the shorter dimension, minimum 70px
+  const headerHeight = Math.max(70, Math.round(Math.min(width, height) * 0.0625));
+  // Header text & badge scale with the shorter axis
+  const shortSide = Math.min(width, height);
+  const headerFontSize = Math.max(18, Math.round(shortSide * 0.026));
+  const badgeSize = Math.max(44, Math.round(shortSide * 0.056));
+  const badgeRadius = Math.round(badgeSize * 0.2);
+  const headerPadX = Math.round(width * 0.022);          // left/right padding for header text
+  const headerTextY = Math.round(headerHeight * 0.64);   // baseline within header
+  const badgeX = width - badgeSize - Math.round(width * 0.022);
+  const badgeY = Math.round((headerHeight - badgeSize) / 2);
+  const badgeFontSize = Math.max(20, Math.round(badgeSize * 0.58));
+  // Content margins: slightly tighter on portrait (narrower) canvases
+  const contentMargin = isPortrait
+    ? Math.round(width * 0.075)
+    : Math.round(width * 0.052);
+
   // ── Background ──
   ctx.fillStyle = bgColor;
   ctx.fillRect(0, 0, width, height);
 
   // ── Header bar ──
-  const headerHeight = 80;
   ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
   ctx.fillRect(0, 0, width, headerHeight);
 
@@ -365,11 +385,11 @@ export async function renderSlide(
     : headerLabel;
 
   ctx.fillStyle = textColor;
-  ctx.font = `bold 28px "Arial", "Helvetica", sans-serif`;
+  ctx.font = `bold ${headerFontSize}px "Arial", "Helvetica", sans-serif`;
   ctx.textAlign = 'left';
 
   // Truncate header if it exceeds available width (leave room for badge)
-  const maxHeaderWidth = width - 160;
+  const maxHeaderWidth = badgeX - headerPadX - 8;
   let displayHeader = headerText;
   if (ctx.measureText(displayHeader).width > maxHeaderWidth) {
     while (displayHeader.length > 0 && ctx.measureText(displayHeader + '…').width > maxHeaderWidth) {
@@ -378,30 +398,27 @@ export async function renderSlide(
     displayHeader += '…';
   }
 
-  ctx.fillText(displayHeader, 40, 50);
+  ctx.fillText(displayHeader, headerPadX, headerTextY);
 
   // ── Type badge ──
   const badgeText = type === 'question' ? 'Q' : 'A';
   const badgeColor = type === 'question' ? '#e94560' : '#0cca4a';
-  const badgeSize = 60;
-  const badgeX = width - 100;
-  const badgeY = 10;
 
   ctx.fillStyle = badgeColor;
   ctx.beginPath();
-  ctx.roundRect(badgeX, badgeY, badgeSize, badgeSize, 12);
+  ctx.roundRect(badgeX, badgeY, badgeSize, badgeSize, badgeRadius);
   ctx.fill();
 
   ctx.fillStyle = '#ffffff';
-  ctx.font = `bold 36px "Arial", "Helvetica", sans-serif`;
+  ctx.font = `bold ${badgeFontSize}px "Arial", "Helvetica", sans-serif`;
   ctx.textAlign = 'center';
-  ctx.fillText(badgeText, badgeX + badgeSize / 2, badgeY + 43);
+  ctx.fillText(badgeText, badgeX + badgeSize / 2, badgeY + Math.round(badgeSize * 0.72));
 
   // ── Content area ──
-  const contentMargin = 100;
   const contentWidth = width - 2 * contentMargin;
   const contentAreaTop = headerHeight;
-  const contentAreaHeight = height - contentAreaTop - 20;
+  const contentAreaBottom = height - Math.round(height * 0.015);
+  const contentAreaHeight = contentAreaBottom - contentAreaTop;
   const minFontSize = 16;
 
   const segments = parseMarkdown(text);
@@ -420,8 +437,8 @@ export async function renderSlide(
   const totalH = totalLayoutHeight(blocks, segGap);
   const codeFontSize = Math.max(14, Math.round(currentFontSize * 0.78));
 
-  // Code boxes span almost the full slide width for readability
-  const codeBoxMargin = 60;
+  // Code boxes: slightly inset from content margin
+  const codeBoxMargin = Math.max(40, Math.round(width * 0.031));
   const codeBoxWidth = width - 2 * codeBoxMargin;
 
   // Center the whole content block vertically in the content area

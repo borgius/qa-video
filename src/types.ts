@@ -6,6 +6,22 @@ export interface YoutubeInfo {
   contentSha?: string;      // SHA of questions+answers, used as YouTube tag for dedup
 }
 
+export interface YoutubeShortVideo {
+  videoId: string;
+  url: string;
+  title: string;
+  cardStart: number;  // 0-indexed, inclusive
+  cardEnd: number;    // exclusive
+}
+
+export interface YoutubeShortsInfo {
+  playlistId: string;
+  playlistUrl: string;
+  uploadedAt: string;
+  privacy?: string;
+  videos: YoutubeShortVideo[];
+}
+
 export interface YamlConfig {
   name?: string;            // video title (used for YouTube upload)
   description?: string;     // video description (used for YouTube upload)
@@ -21,6 +37,9 @@ export interface YamlConfig {
   answerColor?: string;
   textColor?: string;
   youtube?: YoutubeInfo;    // populated after successful YouTube upload
+  youtubeShorts?: YoutubeShortsInfo;  // populated after successful shorts upload
+  format?: 'full' | 'shorts';        // output format (default: full)
+  questionsPerShort?: number;        // questions per short video (default: 5)
 }
 
 export interface YamlCard {
@@ -64,6 +83,9 @@ export interface PipelineConfig {
   height: number;
   force: boolean;
   skipTTS?: boolean;  // skip TTS synthesis; use existing cached audio only
+  format: 'full' | 'shorts';       // output format
+  questionsPerShort: number;       // questions per short clip
+  cardRange?: [number, number];    // [startInclusive, endExclusive] for shorts segments
 }
 
 export const DEFAULT_CONFIG: Omit<PipelineConfig, 'inputPath' | 'outputPath' | 'tempDir'> = {
@@ -81,4 +103,6 @@ export const DEFAULT_CONFIG: Omit<PipelineConfig, 'inputPath' | 'outputPath' | '
   width: 1920,
   height: 1080,
   force: false,
+  format: 'full',
+  questionsPerShort: 5,
 };

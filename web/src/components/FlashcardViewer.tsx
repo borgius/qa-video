@@ -20,6 +20,7 @@ interface FlashcardViewerProps {
   pendingRating?: Rating | null;
   isQueueMode?: boolean;
   isCardActive?: boolean;
+  format?: 'full' | 'shorts';
 }
 
 const toolbarBtnStyle: React.CSSProperties = {
@@ -53,6 +54,7 @@ export function FlashcardViewer({
   pendingRating,
   isQueueMode,
   isCardActive,
+  format,
 }: FlashcardViewerProps) {
   if (!card) {
     return (
@@ -144,6 +146,7 @@ export function FlashcardViewer({
         cardIndex={cardIndex}
         isSpeaking={isSpeaking}
         zoomed={zoomed}
+        format={format}
       />
 
       {/* Rating buttons (queue mode, floating overlay on top of slide) */}

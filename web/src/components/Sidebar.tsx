@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { Phase } from '../hooks/usePlayback';
-import type { FileInfo, YamlCard } from '../types';
+import type { AppSettings, FileInfo, YamlCard } from '../types';
 import { PlaybackControls } from './PlaybackControls';
 import { QuestionList } from './QuestionList';
+import { SettingsPanel } from './SettingsPanel';
 
 interface SidebarProps {
   files: FileInfo[];
@@ -26,6 +27,8 @@ interface SidebarProps {
   questions: YamlCard[];
   cardOrder: number[];
   onGoToCard: (index: number) => void;
+  settings: AppSettings;
+  onUpdateSettings: (updates: Partial<AppSettings>) => void;
 }
 
 export function Sidebar({
@@ -50,10 +53,13 @@ export function Sidebar({
   questions,
   cardOrder,
   onGoToCard,
+  settings,
+  onUpdateSettings,
 }: SidebarProps) {
   const hasQuestions = questions.length > 0;
   const [topicsExpanded, setTopicsExpanded] = useState(true);
   const [collapsedFolders, setCollapsedFolders] = useState<Set<string>>(new Set());
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   // Auto-collapse topics when a file is selected
   useEffect(() => {
@@ -208,6 +214,25 @@ export function Sidebar({
         </h1>
         <button
           type="button"
+          onClick={() => setSettingsOpen(v => !v)}
+          title="Settings"
+          style={{
+            background: settingsOpen ? 'rgba(233,69,96,0.15)' : 'none',
+            border: 'none',
+            color: settingsOpen ? 'var(--accent)' : 'var(--text-secondary)',
+            cursor: 'pointer',
+            padding: '4px 6px',
+            borderRadius: '4px',
+            fontSize: '15px',
+            lineHeight: 1,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          ⚙
+        </button>
+        <button
+          type="button"
           onClick={onToggleSidebar}
           title="Hide sidebar (B)"
           style={{
@@ -336,6 +361,11 @@ export function Sidebar({
           </>
         )}
       </div>
+
+      {/* Settings panel */}
+      {settingsOpen && (
+        <SettingsPanel settings={settings} onUpdate={onUpdateSettings} />
+      )}
 
       {/* Playback controls */}
       <PlaybackControls

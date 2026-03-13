@@ -282,6 +282,10 @@ app.get('/api/slides/:name/:cardIndex/:type', async (req, res, next) => {
     const text = type === 'question' ? card.question : card.answer;
     const totalCards = data.questions.length;
 
+    const format = req.query.format === 'shorts' ? 'shorts' : 'full';
+    const width = format === 'shorts' ? 1080 : DEFAULT_CONFIG.width;
+    const height = format === 'shorts' ? 1920 : DEFAULT_CONFIG.height;
+
     const config: PipelineConfig = {
       inputPath: filePath,
       outputPath: '',
@@ -297,15 +301,17 @@ app.get('/api/slides/:name/:cardIndex/:type', async (req, res, next) => {
       questionColor: data.config.questionColor || DEFAULT_CONFIG.questionColor,
       answerColor: data.config.answerColor || DEFAULT_CONFIG.answerColor,
       textColor: data.config.textColor || DEFAULT_CONFIG.textColor,
-      width: DEFAULT_CONFIG.width,
-      height: DEFAULT_CONFIG.height,
+      width,
+      height,
       force: false,
+      format,
+      questionsPerShort: DEFAULT_CONFIG.questionsPerShort,
     };
 
     const segType = type as 'question' | 'answer';
     const qSlug = slug(card.question);
     const qTextForHash = segType === 'answer' ? card.question : '';
-    const slideHash = `slide:v5:${text}:${segType}:${cardIndex}:${totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}:${qTextForHash}`;
+    const slideHash = `slide:v5:${text}:${segType}:${cardIndex}:${totalCards}:${config.fontSize}:${config.questionColor}:${config.answerColor}:${config.textColor}:${qTextForHash}:${width}x${height}`;
     const tempDir = join(outputDir, '.tmp', name);
     mkdirSync(tempDir, { recursive: true });
 

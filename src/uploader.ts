@@ -99,6 +99,59 @@ export async function ensureVideoHasShaTag(
   return 'added';
 }
 
+export interface PlaylistResult {
+  playlistId: string;
+  url: string;
+}
+
+/**
+ * Create a new YouTube playlist, returning its ID and URL.
+ */
+export async function createPlaylist(
+  authClient: OAuth2Client,
+  title: string,
+  description: string,
+  privacy: 'public' | 'unlisted' | 'private',
+): Promise<PlaylistResult> {
+  const youtube = google.youtube({ version: 'v3', auth: authClient });
+
+  const res = await youtube.playlists.insert({
+    part: ['snippet', 'status'],
+    requestBody: {
+      snippet: { title, description },
+      status: { privacyStatus: privacy },
+    },
+  });
+
+  const playlistId = res.data.id!;
+  const url = `https://www.youtube.com/playlist?list=${playlistId}`;
+  console.log(`\n  Playlist created: ${url}`);
+  return { playlistId, url };
+}
+
+/**
+ * Add a video to a playlist at the given (0-based) position.
+ */
+export async function addVideoToPlaylist(
+  authClient: OAuth2Client,
+  playlistId: string,
+  videoId: string,
+  position: number,
+): Promise<void> {
+  const youtube = google.youtube({ version: 'v3', auth: authClient });
+
+  await youtube.playlistItems.insert({
+    part: ['snippet'],
+    requestBody: {
+      snippet: {
+        playlistId,
+        resourceId: { kind: 'youtube#video', videoId },
+        position,
+      },
+    },
+  });
+}
+
 export async function uploadToYouTube(
   authClient: OAuth2Client,
   options: UploadOptions,

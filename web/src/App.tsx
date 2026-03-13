@@ -5,12 +5,14 @@ import { QuestionGrid } from './components/QuestionGrid';
 import { useFiles } from './hooks/useFiles';
 import { usePlayback } from './hooks/usePlayback';
 import { useKeyboard } from './hooks/useKeyboard';
+import { useSettings } from './hooks/useSettings';
 import { fetchFileDetail } from './api';
 
 export default function App() {
   const { files, loading: loadingFiles } = useFiles();
   const playback = usePlayback();
   const { state, currentCard, currentRealIndex, displayType, isSpeaking, queueRemaining, isCardActive } = playback;
+  const { settings, updateSettings } = useSettings();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [zoomed, setZoomed] = useState(false);
   const [showGrid, setShowGrid] = useState(false);
@@ -87,6 +89,8 @@ export default function App() {
           questions={state.fileData?.questions ?? []}
           cardOrder={state.cardOrder}
           onGoToCard={playback.goToCard}
+          settings={settings}
+          onUpdateSettings={updateSettings}
         />
       )}
 
@@ -120,6 +124,7 @@ export default function App() {
           pendingRating={state.pendingRating}
           isQueueMode={state.isQueueMode}
           isCardActive={isCardActive}
+          format={settings.format}
         />
       )}
     </div>
