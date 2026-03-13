@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "file:///Users/admin/dev/interview/2026/qa/qa.schema.json",
+  "title": "Interview QA file",
+  "description": "Schema for YAML interview prep files in 2026/qa.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "config",
+    "questions"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional schema reference placed in YAML files for editor support."
+    },
+    "config": {
+      "$ref": "#/$defs/config"
+    },
+    "questions": {
+      "type": "array",
+      "description": "Ordered list of practice questions and spoken answers.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/questionAnswer"
+      }
+    }
+  },
+  "$defs": {
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "description",
+        "questionDelay",
+        "answerDelay"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "questionDelay": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Delay in seconds before showing the question."
+        },
+        "answerDelay": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Delay in seconds before showing the answer."
+        },
+        "totalQuestions": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Optional declared count of questions. Keep it in sync with the questions array length."
+        },
+        "youtube": {
+          "description": "Optional YouTube metadata or null when no video is linked.",
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/youtube"
+            }
+          ]
+        }
+      }
+    },
+    "youtube": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "videoId",
+        "url",
+        "uploadedAt",
+        "privacy"
+      ],
+      "properties": {
+        "videoId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "uploadedAt": {
+          "type": "string",
+          "description": "ISO-8601 timestamp string."
+        },
+        "privacy": {
+          "type": "string",
+          "enum": [
+            "private",
+            "unlisted",
+            "public"
+          ]
+        },
+        "contentSha": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "questionAnswer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "question",
+        "answer"
+      ],
+      "properties": {
+        "question": {
+          "type": "string",
+          "minLength": 1
+        },
+        "answer": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

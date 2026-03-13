@@ -1,0 +1,487 @@
+config:
+  name: 'DevOps-Interview-Questions: AWS Advanced'
+  description: Advanced AWS topics including DynamoDB, Lambda, API Gateway, messaging, observability, CloudFormation, containers,
+    KMS, security services, analytics, migration, and hybrid connectivity.
+  questionDelay: 1
+  answerDelay: 1
+questions:
+- question: What is Amazon DynamoDB?
+  answer: Amazon DynamoDB is a fully managed NoSQL key-value and document database. It delivers single-digit millisecond performance
+    at any scale, with built-in security, backup, and in-memory caching. It supports both key-value and document data models.
+- question: What are DynamoDB partition keys and sort keys?
+  answer: 'The partition key (hash key) determines which partition stores the data. The sort key (range key) is optional and
+    enables range queries within a partition. Together they form the primary key:
+
+    Simple primary key: Partition key only.
+
+    Composite primary key: Partition key + sort key.'
+- question: What is DynamoDB capacity mode?
+  answer: 'DynamoDB offers two capacity modes:
+
+    Provisioned: You specify read/write capacity units (RCUs/WCUs) with optional auto-scaling. More cost-effective for predictable
+    workloads.
+
+    On-Demand: Automatically scales to handle any traffic level. No capacity planning needed. Better for unpredictable or
+    spiky workloads.'
+- question: What is a DynamoDB Global Secondary Index (GSI)?
+  answer: A GSI is an index with a partition key and optional sort key different from the primary key. It allows querying
+    on non-key attributes. GSIs have their own provisioned throughput and contain a projection of the base table's attributes.
+- question: What is DynamoDB Streams?
+  answer: DynamoDB Streams captures a time-ordered sequence of item-level changes (inserts, updates, deletes) in a table.
+    Streams can trigger Lambda functions for event-driven processing, enabling use cases like cross-region replication, analytics,
+    and aggregation.
+- question: What is DynamoDB Global Tables?
+  answer: Global Tables provide multi-Region, multi-active replication for DynamoDB tables. Changes are replicated to all
+    regions within seconds, providing low-latency access for globally distributed applications and disaster recovery.
+- question: What is DynamoDB Accelerator (DAX)?
+  answer: DAX is an in-memory cache for DynamoDB that delivers up to 10x performance improvement — from milliseconds to microseconds.
+    It is fully managed, API-compatible with DynamoDB, and requires no application code changes beyond changing the endpoint.
+- question: What is DynamoDB Time to Live (TTL)?
+  answer: TTL automatically deletes expired items from a DynamoDB table based on a timestamp attribute. It is useful for session
+    data, temporary records, and log entries. TTL deletions do not consume write capacity and are processed within 48 hours
+    of expiration.
+- question: What is AWS Lambda?
+  answer: AWS Lambda is a serverless compute service that runs code in response to events without provisioning or managing
+    servers. You pay only for compute time consumed. Lambda supports Python, Node.js, Java, Go, .NET, Ruby, and custom runtimes.
+- question: What are common Lambda triggers?
+  answer: 'Common Lambda triggers include:
+
+    API Gateway (HTTP requests), S3 (object events), DynamoDB Streams (table changes), SQS (message processing), SNS (notifications),
+    CloudWatch Events/EventBridge (scheduled tasks), Kinesis (stream processing), Cognito (authentication events), and ALB
+    (HTTP requests).'
+- question: What are Lambda Layers?
+  answer: Lambda Layers allow you to package libraries, custom runtimes, and other dependencies separately from your function
+    code. Layers can be shared across multiple functions and accounts. A function can use up to 5 layers, and the total unzipped
+    size must be under 250 MB.
+- question: What is Lambda concurrency?
+  answer: 'Lambda concurrency is the number of function instances serving requests simultaneously:
+
+    Unreserved Concurrency: Shared pool across all functions (default account limit is 1,000).
+
+    Reserved Concurrency: Guarantees a set number of concurrent executions for a function.
+
+    Provisioned Concurrency: Pre-initializes instances to avoid cold starts, ensuring consistent latency.'
+- question: What is a Lambda cold start?
+  answer: A cold start occurs when Lambda creates a new execution environment for a function invocation. It includes downloading
+    code, starting the runtime, and running initialization code. Cold starts add latency (typically 100ms to several seconds)
+    and can be mitigated with Provisioned Concurrency.
+- question: What are Lambda environment variables?
+  answer: Environment variables are key-value pairs configured for a Lambda function that are accessible in code at runtime.
+    They are useful for storing configuration values, API keys, and database connection strings. Environment variables can
+    be encrypted using KMS.
+- question: What is Lambda versioning and aliases?
+  answer: 'Versions: Immutable snapshots of a Lambda function including code and configuration.
+
+    Aliases: Named pointers to specific versions (e.g., prod, staging). Aliases support traffic shifting for gradual deployments.
+    For example, you can route 90% of traffic to v1 and 10% to v2 for canary deployments.'
+- question: What is the maximum execution time for a Lambda function?
+  answer: The maximum execution timeout for a Lambda function is 15 minutes (900 seconds). For longer-running tasks, consider
+    using Step Functions, ECS, or Fargate. The default timeout is 3 seconds.
+- question: What is Lambda Destinations?
+  answer: Lambda Destinations route the result of asynchronous invocations to downstream services. You can configure separate
+    destinations for success and failure, including SQS, SNS, Lambda, and EventBridge. Destinations are preferred over Dead
+    Letter Queues for async processing.
+- question: What is Lambda@Edge vs CloudFront Functions?
+  answer: Lambda@Edge runs at Regional Edge Caches with up to 10 seconds (viewer) or 30 seconds (origin) execution time, supports
+    Node.js and Python, and can access external services. CloudFront Functions run at Edge Locations with sub-millisecond
+    execution, support only JavaScript, and are limited to lightweight transformations like header manipulation and URL rewrites.
+- question: What is Amazon API Gateway?
+  answer: Amazon API Gateway is a fully managed service for creating, publishing, maintaining, and securing APIs at any scale.
+    It supports REST APIs, HTTP APIs, and WebSocket APIs. It integrates with Lambda, EC2, and other AWS services.
+- question: What is the difference between REST API and HTTP API in API Gateway?
+  answer: 'REST API: Full-featured with API keys, request validation, WAF integration, caching, and resource policies. More
+    expensive.
+
+    HTTP API: Lightweight, lower latency, 70% cheaper, supports OIDC/OAuth2 natively, but fewer features. Ideal for Lambda
+    proxy integrations and simple API needs.'
+- question: What are API Gateway stages?
+  answer: Stages represent different environments (e.g., dev, staging, prod) for your API. Each stage has its own URL, configuration,
+    and stage variables. You can deploy different API versions to different stages and enable canary deployments for gradual
+    rollouts.
+- question: What is API Gateway throttling?
+  answer: 'API Gateway provides throttling to protect backends from traffic spikes:
+
+    Account-level: 10,000 requests per second with a 5,000 request burst.
+
+    Per-method/per-client: Configurable via usage plans and API keys.
+
+    Throttled requests receive a 429 Too Many Requests response.'
+- question: What is API Gateway caching?
+  answer: API Gateway caching stores responses in a cache to reduce backend calls and improve latency. Cache capacity ranges
+    from 0.5 GB to 237 GB, with a configurable TTL (default 300 seconds). Caching is available for REST APIs and can be configured
+    per method.
+- question: What is Amazon SQS?
+  answer: Amazon Simple Queue Service (SQS) is a fully managed message queuing service that decouples and scales microservices,
+    distributed systems, and serverless applications. It eliminates the complexity of managing messaging infrastructure.
+- question: What is the difference between SQS Standard and FIFO queues?
+  answer: 'Standard Queue: Nearly unlimited throughput, at-least-once delivery, best-effort ordering. Messages may be delivered
+    more than once or out of order.
+
+    FIFO Queue: Exactly-once processing, strict ordering, up to 300 messages/second (3,000 with batching). Messages are delivered
+    in the exact order they are sent.'
+- question: What is SQS Visibility Timeout?
+  answer: Visibility Timeout is the period during which a message is hidden from other consumers after being read. If the
+    consumer does not delete the message within this period, it becomes visible again for reprocessing. Default is 30 seconds,
+    maximum is 12 hours.
+- question: What is an SQS Dead Letter Queue (DLQ)?
+  answer: A Dead Letter Queue receives messages that could not be processed successfully after a specified number of attempts
+    (maxReceiveCount). DLQs help isolate and debug problematic messages without losing them.
+- question: What is SQS Long Polling?
+  answer: Long Polling waits for messages to arrive before returning a response, reducing empty responses and API costs. It
+    is configured by setting the WaitTimeSeconds parameter (1-20 seconds). Long Polling is preferred over Short Polling for
+    most use cases.
+- question: What is the maximum message size in SQS?
+  answer: The maximum SQS message size is 256 KB. For larger payloads, use the SQS Extended Client Library, which stores the
+    payload in S3 and sends a reference pointer in the SQS message, supporting payloads up to 2 GB.
+- question: What is Amazon SNS?
+  answer: Amazon Simple Notification Service (SNS) is a fully managed pub/sub messaging service. It enables fan-out to multiple
+    subscribers including SQS queues, Lambda functions, HTTP endpoints, email, SMS, and mobile push notifications.
+- question: What is the difference between SNS and SQS?
+  answer: SNS is a push-based pub/sub service that sends messages to multiple subscribers simultaneously (fan-out). SQS is
+    a pull-based queue where consumers poll for messages. They are often used together — SNS fans out messages to multiple
+    SQS queues for parallel processing.
+- question: What is an SNS FIFO Topic?
+  answer: SNS FIFO Topics provide strict message ordering and exactly-once delivery. They can only deliver to SQS FIFO queues.
+    FIFO Topics support message deduplication and ordering by message group ID, ensuring messages are processed in the correct
+    sequence.
+- question: What is SNS Message Filtering?
+  answer: SNS Message Filtering allows subscribers to receive only a subset of messages published to a topic. Filter policies
+    are JSON documents attached to subscriptions that match message attributes. This eliminates the need for subscribers to
+    filter messages themselves.
+- question: What is Amazon CloudWatch?
+  answer: Amazon CloudWatch is a monitoring and observability service that collects metrics, logs, and events from AWS resources
+    and applications. It provides dashboards, alarms, and automated actions to help you monitor performance and operational
+    health.
+- question: What are CloudWatch Metrics?
+  answer: CloudWatch Metrics are time-series data points representing resource utilization and performance. AWS services automatically
+    publish standard metrics (e.g., CPU utilization, network traffic). Custom metrics can be published via the PutMetricData
+    API for application-specific monitoring.
+- question: What are CloudWatch Alarms?
+  answer: CloudWatch Alarms watch a single metric and trigger actions when a threshold is breached. Alarm states include OK,
+    ALARM, and INSUFFICIENT_DATA. Actions can include SNS notifications, Auto Scaling policies, and EC2 instance actions (stop,
+    terminate, reboot).
+- question: What is CloudWatch Logs?
+  answer: CloudWatch Logs collects, stores, and analyzes log data from AWS services, EC2 instances, and applications. It supports
+    log groups, log streams, metric filters, subscription filters, and retention policies. Logs can be exported to S3 or streamed
+    to Lambda and Elasticsearch.
+- question: What is CloudWatch Logs Insights?
+  answer: CloudWatch Logs Insights is an interactive query service for analyzing log data. It uses a purpose-built query language
+    to search and aggregate log events across multiple log groups. It can generate visualizations and is useful for troubleshooting
+    and operational analysis.
+- question: What are CloudWatch Events and Amazon EventBridge?
+  answer: CloudWatch Events (now Amazon EventBridge) is a serverless event bus that routes events from AWS services, SaaS
+    applications, and custom sources to targets like Lambda, SQS, and Step Functions. EventBridge adds schema registry, cross-account
+    event routing, and third-party integrations.
+- question: What is CloudWatch Container Insights?
+  answer: Container Insights collects, aggregates, and summarizes metrics and logs from containerized applications on ECS,
+    EKS, and Kubernetes. It provides performance data at the cluster, node, pod, and task level, including CPU, memory, disk,
+    and network metrics.
+- question: What is AWS CloudFormation?
+  answer: AWS CloudFormation is an Infrastructure as Code (IaC) service that lets you define and provision AWS resources using
+    JSON or YAML templates. It manages resources as stacks, supports rollback on failure, and ensures consistent, repeatable
+    deployments.
+- question: What are the main sections of a CloudFormation template?
+  answer: 'Key sections include:
+
+    AWSTemplateFormatVersion: Template version.
+
+    Description: Template description.
+
+    Parameters: Input values provided at stack creation.
+
+    Mappings: Static key-value lookups.
+
+    Conditions: Conditional resource creation.
+
+    Resources (required): The AWS resources to create.
+
+    Outputs: Values returned after stack creation (e.g., endpoint URLs).'
+- question: What is a CloudFormation Stack?
+  answer: A Stack is a collection of AWS resources managed as a single unit. When you create, update, or delete a stack, CloudFormation
+    creates, updates, or deletes all resources in the template. Stacks support rollback, drift detection, and change sets.
+- question: What is a CloudFormation Change Set?
+  answer: A Change Set previews the changes that will be made to a stack before executing them. It shows which resources will
+    be added, modified, or replaced, helping you understand the impact of an update before applying it.
+- question: What is CloudFormation Drift Detection?
+  answer: Drift Detection identifies resources whose actual configuration differs from the stack template. This happens when
+    resources are modified manually outside of CloudFormation. Drift detection helps maintain infrastructure consistency and
+    compliance.
+- question: What are CloudFormation StackSets?
+  answer: StackSets extend CloudFormation by enabling you to deploy stacks across multiple AWS accounts and Regions with a
+    single operation. They are useful for applying governance policies, security baselines, and shared infrastructure across
+    an organization.
+- question: What is the Fn::Ref function in CloudFormation?
+  answer: Fn::Ref (or !Ref shorthand) returns the value of a parameter or the physical ID of a resource. For example, !Ref
+    MyEC2Instance returns the instance ID. It is one of the most commonly used intrinsic functions in CloudFormation templates.
+- question: What is Amazon ECS?
+  answer: Amazon Elastic Container Service (ECS) is a fully managed container orchestration service that runs Docker containers.
+    It supports two launch types — EC2 (you manage the instances) and Fargate (serverless). ECS integrates with ALB, IAM,
+    CloudWatch, and other AWS services.
+- question: What is AWS Fargate?
+  answer: AWS Fargate is a serverless compute engine for containers that works with both ECS and EKS. It eliminates the need
+    to provision and manage servers. You specify CPU and memory requirements, and Fargate handles the infrastructure. You
+    pay only for the resources your containers use.
+- question: What is Amazon EKS?
+  answer: Amazon Elastic Kubernetes Service (EKS) is a managed Kubernetes service that runs the Kubernetes control plane across
+    multiple AZs. It supports EC2 and Fargate for worker nodes and integrates with AWS services for networking, security,
+    and monitoring.
+- question: What is an ECS Task Definition?
+  answer: A Task Definition is a JSON document that describes one or more containers forming an application. It specifies
+    container images, CPU/memory, port mappings, environment variables, volumes, logging, and IAM roles. It is like a blueprint
+    for your containers.
+- question: What is an ECS Service?
+  answer: An ECS Service maintains a desired count of task instances running simultaneously. It integrates with ELB for load
+    balancing, supports rolling updates, and restarts tasks that fail health checks. Services ensure your application is always
+    available.
+- question: What is the difference between ECS and EKS?
+  answer: 'ECS: AWS-native, simpler to set up, tight integration with AWS services, uses Task Definitions, proprietary API.
+
+    EKS: Managed Kubernetes, portable across clouds, larger ecosystem and community, uses standard Kubernetes manifests, steeper
+    learning curve but more flexible.'
+- question: What is Amazon ECR?
+  answer: Amazon Elastic Container Registry (ECR) is a fully managed Docker container registry that stores, manages, and deploys
+    container images. It supports image scanning for vulnerabilities, encryption at rest, and lifecycle policies for image
+    cleanup.
+- question: What is ECS Exec?
+  answer: ECS Exec allows you to interactively execute commands inside a running container without SSH. It uses AWS Systems
+    Manager Session Manager for secure connections. It is useful for debugging, troubleshooting, and running one-off commands
+    in production containers.
+- question: What is AWS Step Functions?
+  answer: AWS Step Functions is a serverless orchestration service that coordinates multiple AWS services into workflows using
+    state machines defined in Amazon States Language (JSON). It supports sequential, parallel, branching, and error-handling
+    patterns.
+- question: What are the two workflow types in Step Functions?
+  answer: 'Standard Workflows: Long-running (up to 1 year), exactly-once execution, full execution history, higher cost. Ideal
+    for ETL, ML pipelines, and order processing.
+
+    Express Workflows: Short-lived (up to 5 minutes), at-least-once execution, higher throughput, lower cost. Ideal for high-volume
+    event processing, streaming data, and IoT.'
+- question: What are common Step Functions states?
+  answer: 'Key state types include:
+
+    Task: Performs work by invoking Lambda, ECS, SNS, SQS, or other services.
+
+    Choice: Adds branching logic based on input.
+
+    Parallel: Executes branches concurrently.
+
+    Wait: Delays execution for a specified time.
+
+    Map: Iterates over a collection, processing each item.
+
+    Pass: Passes input to output, optionally transforming data.
+
+    Succeed/Fail: Terminates the state machine.'
+- question: What is AWS KMS?
+  answer: AWS Key Management Service (KMS) creates and manages cryptographic keys for encrypting data across AWS services.
+    It supports symmetric and asymmetric keys, automatic key rotation, and integration with over 100 AWS services. Keys never
+    leave KMS unencrypted.
+- question: What is AWS Secrets Manager?
+  answer: AWS Secrets Manager securely stores and automatically rotates secrets such as database credentials, API keys, and
+    tokens. It integrates with RDS, Redshift, and DocumentDB for automatic credential rotation and provides SDK-based retrieval
+    in application code.
+- question: What is the difference between KMS and Secrets Manager?
+  answer: KMS manages encryption keys used to encrypt data. Secrets Manager stores and rotates secrets (passwords, API keys,
+    certificates). Secrets Manager uses KMS to encrypt the secrets it stores. Use KMS for encryption operations and Secrets
+    Manager for secret lifecycle management.
+- question: What is AWS WAF?
+  answer: AWS Web Application Firewall (WAF) protects web applications from common exploits like SQL injection, XSS, and bot
+    attacks. It integrates with CloudFront, ALB, and API Gateway. Rules can filter traffic based on IP addresses, headers,
+    body content, and rate limits.
+- question: What is AWS Shield?
+  answer: 'AWS Shield provides DDoS protection:
+
+    Shield Standard: Free, automatic protection against common Layer 3/4 attacks for all AWS customers.
+
+    Shield Advanced: Paid service with enhanced DDoS protection, 24/7 DDoS Response Team (DRT), cost protection, and advanced
+    detection for Layer 7 attacks.'
+- question: What is Amazon GuardDuty?
+  answer: Amazon GuardDuty is a threat detection service that continuously monitors AWS accounts and workloads for malicious
+    activity. It analyzes VPC Flow Logs, DNS logs, CloudTrail events, and S3 data events using machine learning to identify
+    threats like compromised instances and unauthorized access.
+- question: What is AWS Security Hub?
+  answer: AWS Security Hub provides a comprehensive view of your security state across AWS accounts. It aggregates findings
+    from GuardDuty, Inspector, Macie, Firewall Manager, and third-party tools. It runs automated compliance checks against
+    standards like CIS and PCI DSS.
+- question: What is Amazon Inspector?
+  answer: Amazon Inspector is an automated vulnerability management service that continuously scans EC2 instances, container
+    images in ECR, and Lambda functions for software vulnerabilities and unintended network exposure. It provides prioritized
+    findings with risk scores.
+- question: What is Amazon Macie?
+  answer: Amazon Macie is a data security service that uses machine learning to discover, classify, and protect sensitive
+    data stored in S3. It identifies personally identifiable information (PII), financial data, and credentials, helping organizations
+    meet compliance requirements.
+- question: What is AWS CloudTrail?
+  answer: AWS CloudTrail records API calls and events across your AWS account, providing an audit trail of user activity and
+    resource changes. It captures who made the call, when, from where, and what parameters were used. Trails can deliver logs
+    to S3 and CloudWatch.
+- question: What is the difference between CloudTrail and CloudWatch?
+  answer: 'CloudTrail: Records API activity and events (who did what and when) for auditing and compliance.
+
+    CloudWatch: Monitors resource performance metrics and logs (how are things running) for operational monitoring. They are
+    complementary — CloudTrail for governance, CloudWatch for performance.'
+- question: What is AWS Certificate Manager (ACM)?
+  answer: AWS Certificate Manager provisions, manages, and deploys public and private SSL/TLS certificates. Public certificates
+    are free and automatically renewed. ACM integrates with ALB, CloudFront, API Gateway, and other AWS services for easy
+    HTTPS enablement.
+- question: What is AWS Config?
+  answer: AWS Config continuously records and evaluates resource configurations against desired settings. It provides a configuration
+    history, compliance auditing, and change management. Config Rules can automatically assess whether resources comply with
+    your policies.
+- question: What is Amazon ElastiCache?
+  answer: Amazon ElastiCache is a fully managed in-memory caching service that supports Redis and Memcached. It improves application
+    performance by caching frequently accessed data, reducing database load, and providing sub-millisecond response times.
+- question: What is the difference between ElastiCache Redis and Memcached?
+  answer: 'Redis: Supports complex data structures, persistence, replication, pub/sub, Lua scripting, and cluster mode. Ideal
+    for caching, session stores, real-time analytics, and leaderboards.
+
+    Memcached: Simple key-value store, multi-threaded, no persistence, no replication. Ideal for simple caching with large
+    nodes and horizontal scaling.'
+- question: What are ElastiCache caching strategies?
+  answer: 'Lazy Loading (Cache-Aside): Data is loaded into cache only when requested. Cache misses result in a database query.
+    Stale data is possible.
+
+    Write-Through: Data is written to cache and database simultaneously. Always up-to-date but adds write latency.
+
+    TTL (Time to Live): Expiration time on cached data to limit staleness. Used with both strategies.'
+- question: What is Amazon Kinesis?
+  answer: 'Amazon Kinesis is a platform for real-time streaming data on AWS. It includes:
+
+    Kinesis Data Streams: Real-time data streaming with custom processing.
+
+    Kinesis Data Firehose: Loads streaming data into S3, Redshift, Elasticsearch, and Splunk.
+
+    Kinesis Data Analytics: Analyzes streaming data using SQL or Apache Flink.
+
+    Kinesis Video Streams: Captures and processes video streams.'
+- question: What is the difference between Kinesis Data Streams and SQS?
+  answer: 'Kinesis Data Streams: Real-time, ordered, multiple consumers can read the same data, data retained for 1-365 days,
+    suited for streaming analytics.
+
+    SQS: Message queue, per-message processing, each message consumed once (standard) or exactly-once (FIFO), 14-day retention
+    max, suited for decoupling and task distribution.'
+- question: What is a Kinesis Shard?
+  answer: A Shard is the base throughput unit of a Kinesis Data Stream. Each shard provides 1 MB/sec input and 2 MB/sec output.
+    Streams scale by adding or removing shards. Data is partitioned across shards using partition keys.
+- question: What is Amazon EFS?
+  answer: Amazon Elastic File System (EFS) is a fully managed, scalable, elastic NFS file system for Linux workloads. It can
+    be mounted by multiple EC2 instances simultaneously across AZs, automatically grows and shrinks, and supports standard
+    NFS protocols.
+- question: What is the difference between EBS, EFS, and S3?
+  answer: 'EBS: Block storage attached to a single EC2 instance (except Multi-Attach io2), single AZ, good for databases and
+    boot volumes.
+
+    EFS: File storage mountable by multiple instances across AZs, NFS protocol, good for shared file systems and content management.
+
+    S3: Object storage, accessed via HTTP/API, unlimited capacity, good for backups, static content, and data lakes.'
+- question: What is Amazon FSx?
+  answer: 'Amazon FSx provides fully managed file systems:
+
+    FSx for Windows File Server: Windows-native file system with SMB protocol, Active Directory integration.
+
+    FSx for Lustre: High-performance file system for HPC, ML, and media processing. Integrates with S3.
+
+    FSx for NetApp ONTAP: Multi-protocol file system with data management features.
+
+    FSx for OpenZFS: High-performance ZFS-based file system.'
+- question: What is AWS Storage Gateway?
+  answer: 'AWS Storage Gateway connects on-premises environments to cloud storage:
+
+    File Gateway: NFS/SMB interface to S3.
+
+    Volume Gateway: iSCSI block storage backed by S3 with EBS snapshots.
+
+    Tape Gateway: Virtual tape library backed by S3 and Glacier.
+
+    It is used for hybrid cloud storage, backup, and disaster recovery.'
+- question: What is AWS Snow Family?
+  answer: 'The Snow Family provides physical devices for edge computing and data migration:
+
+    Snowcone: 8-14 TB, portable, rugged. For edge computing and small data transfers.
+
+    Snowball Edge: 80-210 TB, with compute capability. For large data migrations and edge computing.
+
+    Snowmobile: Up to 100 PB in a shipping container. For exabyte-scale data center migrations.'
+- question: What is Amazon EventBridge?
+  answer: Amazon EventBridge is a serverless event bus that connects applications using events from AWS services, SaaS apps,
+    and custom sources. It supports event filtering, transformation, archiving, and replay. It replaces CloudWatch Events
+    with additional features.
+- question: What is AWS AppSync?
+  answer: AWS AppSync is a managed GraphQL service that simplifies application development by providing a flexible API for
+    accessing, manipulating, and combining data from multiple sources. It supports real-time subscriptions, offline access,
+    and data synchronization.
+- question: What is Amazon Cognito?
+  answer: 'Amazon Cognito provides user identity management:
+
+    User Pools: User directories for sign-up, sign-in, and MFA. Supports SAML and OIDC federation.
+
+    Identity Pools: Provides temporary AWS credentials for accessing AWS services. Supports anonymous and authenticated users.
+
+    Together they handle authentication, authorization, and user management for web and mobile apps.'
+- question: What is AWS SAM (Serverless Application Model)?
+  answer: AWS SAM is an open-source framework for building serverless applications. It extends CloudFormation with simplified
+    syntax for defining Lambda functions, APIs, DynamoDB tables, and event sources. The SAM CLI enables local testing and
+    debugging.
+- question: What is Amazon Redshift?
+  answer: Amazon Redshift is a fully managed petabyte-scale data warehouse service. It uses columnar storage, massively parallel
+    processing (MPP), and query optimization to deliver fast SQL analytics on structured and semi-structured data.
+- question: What is Amazon Athena?
+  answer: Amazon Athena is a serverless interactive query service that analyzes data in S3 using standard SQL. It supports
+    CSV, JSON, Parquet, and ORC formats. You pay only for the data scanned. Athena is commonly used for ad-hoc queries on
+    data lakes.
+- question: What is AWS Glue?
+  answer: AWS Glue is a fully managed ETL (Extract, Transform, Load) service. It includes a Data Catalog for metadata management,
+    crawlers for schema discovery, and Spark-based ETL jobs. Glue simplifies data preparation for analytics and machine learning.
+- question: What is Amazon OpenSearch Service?
+  answer: Amazon OpenSearch Service (formerly Elasticsearch Service) is a managed service for real-time search, monitoring,
+    and log analytics. It deploys and scales OpenSearch clusters and provides Kibana/OpenSearch Dashboards for visualization.
+- question: What is AWS Lake Formation?
+  answer: AWS Lake Formation simplifies building, securing, and managing data lakes on S3. It automates data ingestion, cataloging,
+    transformation, and security. It provides fine-grained access control at the column and row level.
+- question: What is Amazon QuickSight?
+  answer: Amazon QuickSight is a cloud-native business intelligence service that creates interactive dashboards and visualizations.
+    It supports SPICE (Super-fast, Parallel, In-memory Calculation Engine) for fast queries and integrates with RDS, Redshift,
+    S3, and other data sources.
+- question: What is AWS Database Migration Service (DMS)?
+  answer: AWS DMS migrates databases to AWS with minimal downtime. It supports homogeneous (e.g., Oracle to Oracle) and heterogeneous
+    (e.g., Oracle to Aurora) migrations. It can run continuous replication for real-time data synchronization.
+- question: What is the AWS Schema Conversion Tool (SCT)?
+  answer: AWS SCT converts database schemas and code from one database engine to another (e.g., Oracle to PostgreSQL). It
+    identifies and highlights conversion issues, generates equivalent code where possible, and works alongside DMS for heterogeneous
+    migrations.
+- question: What are the AWS Migration Strategies (6 Rs)?
+  answer: 'The 6 Rs of cloud migration are:
+
+    Rehost (Lift and Shift): Move as-is to the cloud.
+
+    Replatform (Lift and Reshape): Make minor optimizations.
+
+    Repurchase: Move to a SaaS product.
+
+    Refactor/Re-architect: Redesign using cloud-native features.
+
+    Retire: Decommission unneeded applications.
+
+    Retain: Keep on-premises for now.'
+- question: What is AWS Application Migration Service (MGN)?
+  answer: AWS Application Migration Service (formerly CloudEndure Migration) automates lift-and-shift migrations. It continuously
+    replicates source servers to AWS, enabling non-disruptive testing and cutover with minimal downtime.
+- question: What is AWS DataSync?
+  answer: AWS DataSync is a data transfer service that automates moving data between on-premises storage and AWS (S3, EFS,
+    FSx). It handles scheduling, monitoring, encryption, and data integrity verification, and can transfer data up to 10x
+    faster than open-source tools.
+- question: What is AWS Direct Connect?
+  answer: AWS Direct Connect establishes a dedicated private network connection from your data center to AWS. It provides
+    consistent network performance, reduced bandwidth costs, and a private connection that does not traverse the public internet.
+    It supports 1 Gbps and 10 Gbps connections.
+- question: What is AWS VPN?
+  answer: 'AWS VPN provides encrypted connections between your network and AWS:
+
+    Site-to-Site VPN: Connects on-premises networks to VPCs over IPsec tunnels through a Virtual Private Gateway or Transit
+    Gateway.
+
+    Client VPN: Enables remote users to securely access AWS resources and on-premises networks using OpenVPN-based clients.'
+- question: What is AWS Global Accelerator?
+  answer: AWS Global Accelerator improves application availability and performance by routing traffic through the AWS global
+    network instead of the public internet. It provides two static anycast IP addresses, automatic failover, and traffic dials
+    for weighted routing across Regions.

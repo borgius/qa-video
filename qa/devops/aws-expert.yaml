@@ -1,0 +1,521 @@
+config:
+  name: 'DevOps-Interview-Questions: AWS Expert'
+  description: Expert AWS topics including enterprise governance, cost optimization, advanced security, platform patterns,
+    hybrid and edge services, specialized databases, and deep operational design.
+  questionDelay: 1
+  answerDelay: 1
+questions:
+- question: What is the difference between CloudFront and Global Accelerator?
+  answer: 'CloudFront: CDN that caches content at Edge Locations, best for static/dynamic web content and video streaming.
+
+    Global Accelerator: Routes traffic through AWS backbone network to optimal endpoints, best for non-HTTP protocols (TCP/UDP),
+    gaming, IoT, and applications requiring static IPs or deterministic failover.'
+- question: What is an Elastic Network Interface (ENI)?
+  answer: An ENI is a virtual network interface that can be attached to an EC2 instance. It includes a primary private IP,
+    one or more secondary private IPs, an optional Elastic IP, security groups, and a MAC address. ENIs can be moved between
+    instances for failover.
+- question: What is AWS PrivateLink?
+  answer: AWS PrivateLink enables private connectivity between VPCs, supported AWS services, and on-premises networks without
+    exposing traffic to the internet. Traffic stays on the Amazon network. It uses Interface VPC Endpoints powered by ENIs
+    in your VPC.
+- question: What is AWS Cost Explorer?
+  answer: AWS Cost Explorer is a tool for visualizing and analyzing AWS spending patterns over time. It provides forecasts,
+    shows cost trends by service or tag, identifies savings opportunities, and supports custom reports with filtering and
+    grouping.
+- question: What is AWS Budgets?
+  answer: AWS Budgets lets you set custom cost and usage budgets with alerts when thresholds are exceeded. You can create
+    budgets based on cost, usage, Reserved Instance utilization, or Savings Plans coverage. Alerts can trigger SNS notifications
+    or automated actions.
+- question: What are AWS Savings Plans?
+  answer: 'Savings Plans provide discounted pricing in exchange for a commitment to a consistent amount of usage ($/hour)
+    for 1 or 3 years:
+
+    Compute Savings Plans: Apply to EC2, Lambda, and Fargate regardless of instance family, size, or Region.
+
+    EC2 Instance Savings Plans: Apply to specific instance families in a Region for higher discounts.'
+- question: What is the AWS Pricing Calculator?
+  answer: The AWS Pricing Calculator is a web tool that helps estimate the cost of AWS services before deployment. You can
+    model different configurations, compare pricing options, and generate detailed cost estimates for projects and proposals.
+- question: What are AWS Reserved Instances?
+  answer: 'Reserved Instances provide up to 72% discount compared to On-Demand by committing to 1 or 3 years of usage:
+
+    Standard RIs: Highest discount, limited flexibility to change instance attributes.
+
+    Convertible RIs: Lower discount but can change instance family, OS, and tenancy.
+
+    Payment options: All Upfront (highest discount), Partial Upfront, or No Upfront.'
+- question: What is AWS Cost Allocation Tags?
+  answer: Cost Allocation Tags are key-value pairs used to organize and track AWS costs. AWS-generated tags (e.g., aws:createdBy)
+    and user-defined tags can be activated in the Billing Console to appear in cost reports, enabling cost attribution by
+    team, project, or environment.
+- question: What is AWS Systems Manager?
+  answer: AWS Systems Manager provides a unified interface for managing AWS resources at scale. It includes capabilities for
+    patching, configuration management, remote access, inventory, parameter storage, and automation across EC2 instances and
+    on-premises servers.
+- question: What is Systems Manager Parameter Store?
+  answer: 'Parameter Store provides secure, hierarchical storage for configuration data and secrets. It supports:
+
+    String, StringList, and SecureString (KMS-encrypted) types.
+
+    Versioning and hierarchical naming (e.g., /app/prod/db-password).
+
+    Free for standard parameters (up to 10,000). It integrates with Lambda, ECS, CloudFormation, and other services.'
+- question: What is the difference between Parameter Store and Secrets Manager?
+  answer: 'Parameter Store: Free (standard tier), stores configuration and secrets, no automatic rotation, simpler.
+
+    Secrets Manager: Paid ($0.40/secret/month), specialized for secrets, automatic rotation for RDS/Redshift/DocumentDB, cross-account
+    access. Use Parameter Store for general configuration and Secrets Manager when automatic rotation is needed.'
+- question: What is Systems Manager Session Manager?
+  answer: Session Manager provides secure, auditable shell access to EC2 instances without opening inbound ports, managing
+    SSH keys, or using bastion hosts. Sessions are logged to S3 and CloudWatch for auditing. It supports port forwarding and
+    works through the SSM Agent.
+- question: What is Systems Manager Patch Manager?
+  answer: Patch Manager automates the process of patching managed instances with security and other updates. It uses patch
+    baselines to define which patches to approve, maintenance windows to schedule patching, and provides compliance reporting.
+- question: What is AWS Organizations?
+  answer: AWS Organizations enables centralized management of multiple AWS accounts. It provides consolidated billing, hierarchical
+    organization units (OUs), and Service Control Policies (SCPs) to enforce governance across all accounts.
+- question: What are Service Control Policies (SCPs)?
+  answer: SCPs are policies in AWS Organizations that set permission guardrails for member accounts. They restrict which AWS
+    services and actions are available, even if IAM policies grant access. SCPs do not grant permissions — they only limit
+    them. They do not affect the management account.
+- question: What is AWS Control Tower?
+  answer: AWS Control Tower automates the setup and governance of a secure, multi-account AWS environment. It provides a landing
+    zone, guardrails (preventive and detective), account factory for provisioning new accounts, and a dashboard for compliance
+    monitoring.
+- question: What is AWS RAM (Resource Access Manager)?
+  answer: AWS RAM enables you to share AWS resources (VPC subnets, Transit Gateways, License Manager configurations, Route
+    53 Resolver rules) with other AWS accounts or within your Organization, reducing resource duplication and cost.
+- question: What is AWS Elastic Beanstalk?
+  answer: AWS Elastic Beanstalk is a PaaS service that deploys and manages applications without worrying about infrastructure.
+    You upload your code, and Beanstalk handles provisioning, load balancing, auto-scaling, and monitoring. It supports Java,
+    .NET, Python, Node.js, Go, Docker, and more.
+- question: What deployment strategies does Elastic Beanstalk support?
+  answer: 'Elastic Beanstalk supports:
+
+    All at once: Deploys to all instances simultaneously. Fast but causes downtime.
+
+    Rolling: Deploys in batches, maintaining partial availability.
+
+    Rolling with additional batch: Launches new instances for the batch to maintain full capacity.
+
+    Immutable: Launches a full set of new instances, swaps when healthy.
+
+    Traffic splitting: Canary-style deployment that shifts traffic gradually.'
+- question: What is AWS CodePipeline?
+  answer: AWS CodePipeline is a fully managed continuous delivery service that automates build, test, and deploy pipelines.
+    It integrates with CodeCommit, CodeBuild, CodeDeploy, Lambda, CloudFormation, and third-party tools like GitHub and Jenkins.
+- question: What is AWS CodeBuild?
+  answer: AWS CodeBuild is a fully managed continuous integration service that compiles source code, runs tests, and produces
+    deployable artifacts. It scales automatically, supports custom build environments via Docker, and charges per build minute.
+- question: What is AWS CodeDeploy?
+  answer: 'AWS CodeDeploy automates application deployments to EC2 instances, on-premises servers, Lambda functions, and ECS
+    services. It supports:
+
+    In-place deployment: Updates existing instances.
+
+    Blue/green deployment: Shifts traffic to new instances/tasks.
+
+    It handles rollback on failure and integrates with Auto Scaling Groups.'
+- question: What is AWS CodeCommit?
+  answer: AWS CodeCommit is a managed Git-based source control service that hosts private Git repositories. It provides encryption
+    at rest and in transit, integrates with IAM for access control, and works with standard Git tools and CI/CD pipelines.
+- question: What is Amazon SageMaker?
+  answer: Amazon SageMaker is a fully managed machine learning service that provides tools to build, train, and deploy ML
+    models. It includes Jupyter notebooks, built-in algorithms, distributed training, model hosting, and MLOps features like
+    model monitoring and pipelines.
+- question: What are AWS AI services for common use cases?
+  answer: 'AWS provides pre-trained AI services:
+
+    Rekognition: Image and video analysis (object detection, facial recognition).
+
+    Comprehend: Natural language processing (sentiment, entities, key phrases).
+
+    Transcribe: Speech to text.
+
+    Polly: Text to speech.
+
+    Translate: Language translation.
+
+    Textract: Extract text and data from documents.
+
+    Lex: Build conversational interfaces (chatbots).'
+- question: What is Amazon Bedrock?
+  answer: Amazon Bedrock is a fully managed service for building generative AI applications using foundation models from Amazon
+    (Titan), Anthropic (Claude), Meta (Llama), and others. It provides API access to models, fine-tuning, RAG support, and
+    Agents for orchestrating complex tasks.
+- question: How do you design a highly available architecture on AWS?
+  answer: 'Key principles include:
+
+    Deploy across multiple Availability Zones.
+
+    Use Auto Scaling Groups and Elastic Load Balancers.
+
+    Use managed services (RDS Multi-AZ, S3, DynamoDB) with built-in redundancy.
+
+    Implement health checks and automated failover.
+
+    Use Route 53 with failover routing.
+
+    Design for stateless application tiers.
+
+    Store session data externally (ElastiCache, DynamoDB).'
+- question: How do you design for disaster recovery on AWS?
+  answer: 'AWS disaster recovery strategies (in order of cost and recovery speed):
+
+    Backup and Restore: Cheapest, longest recovery. Periodic backups to S3/Glacier.
+
+    Pilot Light: Core components always running, scale up on disaster.
+
+    Warm Standby: Scaled-down version of production always running.
+
+    Multi-Site Active/Active: Full production in multiple Regions, instant failover. RPO and RTO decrease as you move from
+    backup/restore to multi-site.'
+- question: What is a serverless architecture on AWS?
+  answer: 'A typical serverless architecture uses:
+
+    API Gateway for HTTP endpoints.
+
+    Lambda for compute.
+
+    DynamoDB or Aurora Serverless for data.
+
+    S3 for static assets.
+
+    Cognito for authentication.
+
+    Step Functions for orchestration.
+
+    SNS/SQS for messaging.
+
+    CloudFront for content delivery.
+
+    Benefits include no server management, automatic scaling, and pay-per-use pricing.'
+- question: How do you implement a microservices architecture on AWS?
+  answer: 'AWS microservices patterns include:
+
+    Compute: ECS, EKS, or Lambda for individual services.
+
+    API Management: API Gateway or ALB for routing.
+
+    Service Discovery: Cloud Map or ECS Service Discovery.
+
+    Messaging: SQS/SNS for asynchronous communication.
+
+    Data: Each service owns its database (database per service pattern).
+
+    Observability: X-Ray for tracing, CloudWatch for metrics and logs.
+
+    CI/CD: CodePipeline with per-service pipelines.'
+- question: What is the AWS three-tier architecture?
+  answer: 'The classic three-tier architecture on AWS:
+
+    Presentation Tier: CloudFront + S3 for static assets, ALB for routing.
+
+    Application Tier: EC2 instances or containers in private subnets, behind an ALB, in an Auto Scaling Group.
+
+    Data Tier: RDS or DynamoDB in private subnets, with Read Replicas for scaling reads.
+
+    Each tier is isolated with security groups and network ACLs, and can scale independently.'
+- question: How do you secure data at rest and in transit on AWS?
+  answer: 'At Rest: Enable encryption on S3 (SSE-S3, SSE-KMS, SSE-C), EBS volumes, RDS instances, DynamoDB tables, and other
+    storage services using KMS keys.
+
+    In Transit: Use TLS/SSL for all network communication. Enable HTTPS on ALB/CloudFront with ACM certificates. Use VPN or
+    Direct Connect for private connectivity. Enable SSL on RDS connections.'
+- question: What is infrastructure as code best practice on AWS?
+  answer: 'Best practices include:
+
+    Use CloudFormation or Terraform for all resource provisioning.
+
+    Store templates in version control (Git).
+
+    Use parameters and mappings for environment-specific values.
+
+    Implement nested stacks or modules for reusability.
+
+    Use change sets or plan to preview changes.
+
+    Enable drift detection.
+
+    Integrate IaC into CI/CD pipelines.
+
+    Follow naming conventions and use tags consistently.'
+- question: What is Amazon CloudWatch Synthetics?
+  answer: CloudWatch Synthetics creates canaries — configurable scripts that run on a schedule to monitor endpoints and APIs.
+    Canaries simulate user interactions and detect issues before real users are affected. They support screenshots, HTTP checks,
+    and custom scripts.
+- question: What is AWS X-Ray?
+  answer: AWS X-Ray is a distributed tracing service that helps analyze and debug microservices applications. It traces requests
+    as they flow through services, creates service maps, identifies performance bottlenecks, and pinpoints error root causes.
+- question: What is AWS Cloud Map?
+  answer: AWS Cloud Map is a service discovery service that maps custom names to resources like EC2 instances, ECS tasks,
+    S3 buckets, or DynamoDB tables. It enables applications to discover resources via API calls or DNS queries, simplifying
+    microservices communication.
+- question: What is Amazon MQ?
+  answer: Amazon MQ is a managed message broker service for Apache ActiveMQ and RabbitMQ. It is designed for migrating existing
+    applications that use standard messaging protocols (AMQP, MQTT, STOMP, OpenWire) to the cloud without rewriting code.
+- question: What is the difference between Amazon MQ, SQS, and SNS?
+  answer: 'Amazon MQ: Managed message broker for existing applications using standard protocols. Choose when migrating from
+    on-premises brokers.
+
+    SQS: Fully managed queue service, unlimited throughput, simpler API. Choose for new cloud-native applications.
+
+    SNS: Pub/sub messaging for fan-out to multiple subscribers. Choose when multiple consumers need the same message.'
+- question: What is AWS Backup?
+  answer: AWS Backup is a centralized service that automates backup across AWS services including EC2, EBS, RDS, DynamoDB,
+    EFS, FSx, and S3. It provides backup plans, retention policies, cross-Region and cross-account backup, and compliance
+    reporting.
+- question: What is Amazon SES?
+  answer: Amazon Simple Email Service (SES) is a scalable email sending and receiving service for transactional, marketing,
+    and notification emails. It supports SMTP and API interfaces, provides email authentication (DKIM, SPF, DMARC), and includes
+    deliverability tools.
+- question: What is AWS CloudHSM?
+  answer: AWS CloudHSM provides dedicated Hardware Security Modules in the AWS Cloud for generating and managing cryptographic
+    keys. It gives full control over keys and cryptographic operations, meeting regulatory requirements like FIPS 140-2 Level
+    3 compliance.
+- question: What is the difference between KMS and CloudHSM?
+  answer: 'KMS: Shared multi-tenant HSM, fully managed, simpler API, integrates with most AWS services, FIPS 140-2 Level 2.
+
+    CloudHSM: Dedicated single-tenant HSM, you manage keys and access, supports custom key stores, FIPS 140-2 Level 3. Choose
+    CloudHSM for strict compliance requirements or custom cryptographic operations.'
+- question: What is AWS Trusted Advisor?
+  answer: AWS Trusted Advisor inspects your AWS environment and provides recommendations in five categories — cost optimization,
+    performance, security, fault tolerance, and service limits. Basic checks are free for all accounts. Full checks require
+    Business or Enterprise Support.
+- question: What is AWS Personal Health Dashboard?
+  answer: AWS Personal Health Dashboard (now AWS Health) provides personalized alerts and remediation guidance when AWS events
+    may affect your resources. Unlike the Service Health Dashboard, it shows events specific to your account and resources.
+- question: What is AWS Outposts?
+  answer: AWS Outposts extends AWS infrastructure, services, and tools to on-premises locations. It provides the same hardware
+    and APIs as the AWS cloud, enabling a consistent hybrid experience. It supports EC2, EBS, ECS, EKS, RDS, S3, and more.
+- question: What is AWS Wavelength?
+  answer: AWS Wavelength embeds AWS compute and storage at the edge of 5G networks, enabling applications that require ultra-low
+    latency for mobile devices. Wavelength Zones are extensions of AWS Regions deployed within telecommunications provider
+    data centers.
+- question: What is AWS Local Zones?
+  answer: AWS Local Zones place AWS compute, storage, and database services closer to large population centers. They are extensions
+    of AWS Regions that provide single-digit millisecond latency for latency-sensitive applications like media, gaming, and
+    real-time analytics.
+- question: What is Amazon WorkSpaces?
+  answer: Amazon WorkSpaces is a managed Desktop-as-a-Service (DaaS) solution that provides Windows or Linux virtual desktops.
+    It eliminates the complexity of managing VDI infrastructure, integrates with Active Directory, and provides secure remote
+    access from any device.
+- question: What is Amazon Connect?
+  answer: Amazon Connect is a cloud-based contact center service that provides voice and chat capabilities. It uses AI/ML
+    for real-time sentiment analysis, call transcription, and intelligent routing. It scales from a few to tens of thousands
+    of agents with pay-per-use pricing.
+- question: What is AWS Amplify?
+  answer: AWS Amplify is a development platform for building full-stack web and mobile applications. It provides hosting,
+    authentication, APIs (GraphQL and REST), storage, analytics, and CI/CD. It simplifies connecting frontend applications
+    to AWS backend services.
+- question: What is AWS CDK?
+  answer: AWS Cloud Development Kit (CDK) is an open-source framework for defining cloud infrastructure using programming
+    languages like TypeScript, Python, Java, and C#. CDK code is synthesized into CloudFormation templates. It provides higher-level
+    constructs that reduce boilerplate.
+- question: What is the difference between CloudFormation, CDK, and Terraform?
+  answer: 'CloudFormation: AWS-native IaC using YAML/JSON templates. Deep AWS integration, no external state management.
+
+    CDK: Uses programming languages that synthesize to CloudFormation. Better for complex logic and reusable constructs.
+
+    Terraform: Multi-cloud IaC using HCL. Manages state externally. Better for multi-cloud or hybrid deployments.'
+- question: What is Amazon DocumentDB?
+  answer: Amazon DocumentDB is a managed document database service compatible with MongoDB. It provides scalable, durable,
+    and fully managed storage with up to 15 read replicas, continuous backup to S3, and encryption at rest.
+- question: What is Amazon Neptune?
+  answer: Amazon Neptune is a fully managed graph database service that supports Apache TinkerPop Gremlin and SPARQL query
+    languages. It is used for knowledge graphs, fraud detection, social networking, and recommendation engines.
+- question: What is Amazon Keyspaces?
+  answer: Amazon Keyspaces is a managed Apache Cassandra-compatible database service. It provides serverless Cassandra with
+    automatic scaling, continuous backups, and encryption. Applications can use existing Cassandra drivers and tools without
+    modification.
+- question: What is Amazon Timestream?
+  answer: Amazon Timestream is a serverless time-series database for IoT and operational monitoring. It automatically scales,
+    provides built-in time-series analytics functions, and stores recent data in memory while moving historical data to cost-optimized
+    storage.
+- question: What is AWS Transfer Family?
+  answer: AWS Transfer Family provides fully managed SFTP, FTPS, FTP, and AS2 protocol support for transferring files into
+    and out of S3 and EFS. It enables migration of file transfer workflows to AWS without modifying client applications.
+- question: What is AWS App Runner?
+  answer: AWS App Runner is a fully managed service for running containerized web applications and APIs. You provide source
+    code or a container image, and App Runner handles building, deploying, scaling, and load balancing. It is ideal for simple
+    web services that need quick deployment.
+- question: What is Amazon MemoryDB for Redis?
+  answer: Amazon MemoryDB is a durable, Redis-compatible, in-memory database service. Unlike ElastiCache, it provides data
+    durability with a Multi-AZ transactional log. It can serve as both a primary database and cache, eliminating the need
+    for a separate caching layer.
+- question: What is AWS Proton?
+  answer: AWS Proton is a managed service for platform teams to define, provision, and manage infrastructure templates for
+    developer self-service. It provides standardized templates for containerized and serverless applications, integrating
+    with IaC tools and CI/CD pipelines.
+- question: What is Amazon EventBridge Pipes?
+  answer: EventBridge Pipes connects event producers to consumers with optional filtering, enrichment, and transformation.
+    It simplifies point-to-point integrations between services like SQS, Kinesis, DynamoDB Streams, and Lambda without writing
+    custom glue code.
+- question: How do you troubleshoot connectivity issues in AWS?
+  answer: 'Systematic troubleshooting steps:
+
+    Check Security Groups for required inbound/outbound rules.
+
+    Verify Network ACLs allow traffic in both directions.
+
+    Confirm Route Tables have correct routes to the target.
+
+    Ensure Internet Gateway or NAT Gateway is properly configured.
+
+    Use VPC Flow Logs to identify denied traffic.
+
+    Check DNS resolution with nslookup or dig.
+
+    Use VPC Reachability Analyzer for path analysis.
+
+    Verify IAM permissions for service endpoints.'
+- question: What is AWS Compute Optimizer?
+  answer: AWS Compute Optimizer analyzes resource utilization and recommends optimal AWS resources to reduce costs and improve
+    performance. It provides recommendations for EC2 instances, Auto Scaling Groups, EBS volumes, and Lambda functions based
+    on historical CloudWatch metrics.
+- question: What is AWS Service Quotas?
+  answer: AWS Service Quotas is a centralized service for viewing and managing quotas (formerly called limits) for AWS services.
+    You can request quota increases, set CloudWatch alarms when approaching limits, and use the Service Quotas API for programmatic
+    access.
+- question: What is the AWS Nitro System?
+  answer: The AWS Nitro System is the underlying hardware and software platform used by modern EC2 instances. It offloads
+    virtualization, networking, storage, and security functions to dedicated Nitro cards and a lightweight Nitro hypervisor,
+    which reduces overhead, improves performance, and strengthens isolation between tenants.
+- question: What are AWS Nitro Enclaves?
+  answer: AWS Nitro Enclaves are isolated compute environments created from EC2 instances for highly sensitive workloads such
+    as cryptographic operations, tokenization, and key handling. Enclaves have no persistent storage, no interactive access,
+    and no external networking, and they communicate with the parent instance through a secure local channel.
+- question: What is AWS IAM Access Analyzer?
+  answer: IAM Access Analyzer helps identify unintended access to AWS resources by analyzing resource policies and trust policies.
+    It can detect public access or cross-account access to resources such as S3 buckets, KMS keys, IAM roles, and secrets,
+    making it valuable for continuous least-privilege reviews.
+- question: What is the difference between identity-based policies and resource-based policies in AWS?
+  answer: Identity-based policies are attached to IAM users, groups, or roles and define what those identities can do. Resource-based
+    policies are attached directly to resources like S3 buckets, KMS keys, SNS topics, or Lambda functions and define who
+    can access that resource. Effective access is evaluated from both sides along with SCPs, permission boundaries, and explicit
+    denies.
+- question: What is the difference between an IAM permission boundary and an SCP?
+  answer: A permission boundary limits the maximum permissions that a specific IAM user or role can receive within an account.
+    A Service Control Policy applies at the AWS Organizations level and limits what member accounts can do at all. Boundaries
+    are identity-scoped guardrails inside an account, while SCPs are account- or OU-level guardrails across an organization.
+- question: What are KMS key policies and how do they differ from IAM policies?
+  answer: A KMS key policy is the primary authorization mechanism attached directly to a KMS key and defines who can use or
+    administer that key. IAM policies can grant permissions to use KMS APIs only if the key policy also allows it. In practice,
+    key policies and IAM policies work together, but without the appropriate key policy, IAM permissions alone are not sufficient.
+- question: What are AWS KMS multi-Region keys?
+  answer: Multi-Region keys are KMS keys that can be replicated into other AWS Regions while sharing the same key material
+    and key ID semantics. They simplify cross-Region disaster recovery and active-active architectures because encrypted data
+    can be decrypted in another Region without re-encrypting under a completely different key.
+- question: What is AWS Private CA?
+  answer: AWS Private Certificate Authority is a managed private PKI service for issuing and managing internal X.509 certificates.
+    It is used for private TLS, mutual TLS, device identity, and internal service authentication. It integrates with ACM and
+    supports hierarchical CA structures without requiring you to run your own CA infrastructure.
+- question: What is Amazon Route 53 Resolver?
+  answer: Route 53 Resolver is the DNS service built into every VPC that resolves DNS queries for AWS resources and can be
+    extended with inbound and outbound endpoints. It is commonly used in hybrid environments to forward DNS queries between
+    on-premises networks and AWS, enabling centralized and conditional DNS resolution.
+- question: What is Route 53 Resolver DNS Firewall?
+  answer: Route 53 Resolver DNS Firewall lets you filter outbound DNS queries from VPCs using domain-based rule groups. It
+    can block known malicious domains, enforce allow lists, and help prevent malware callbacks or data exfiltration. It is
+    a DNS-layer security control that complements network-level firewalls.
+- question: What is AWS Network Firewall?
+  answer: AWS Network Firewall is a managed, stateful network firewall service for VPCs. It supports stateless and stateful
+    rule groups, domain-based filtering, Suricata-compatible rules, and centralized inspection architectures. It is used to
+    enforce east-west and north-south traffic controls at the VPC level.
+- question: What is VPC Lattice?
+  answer: Amazon VPC Lattice is an application networking service that simplifies service-to-service connectivity across VPCs
+    and accounts. It provides consistent service discovery, traffic routing, authentication, and observability for HTTP and
+    HTTPS services without requiring complex mesh or load balancer topologies.
+- question: What is AWS Cloud WAN?
+  answer: AWS Cloud WAN is a managed wide area networking service that centrally connects branch offices, data centers, VPCs,
+    and remote users using a global network policy. It simplifies multi-Region network design by giving organizations a central
+    way to define routing, segmentation, and connectivity across large distributed environments.
+- question: What are Transit Gateway route tables and why are they useful?
+  answer: Transit Gateway route tables control how attachments such as VPCs, VPNs, and Direct Connect gateways communicate
+    through a Transit Gateway. By using multiple route tables and attachment associations and propagations, you can segment
+    environments such as production, shared services, and development and prevent unnecessary full-mesh connectivity.
+- question: What are VPC interface endpoint policies?
+  answer: Interface endpoint policies are IAM-style resource policies attached to interface VPC endpoints that restrict which
+    API actions and principals can use the endpoint. They add another layer of control for private access to AWS services
+    such as SSM, KMS, and Secrets Manager from inside a VPC.
+- question: What are Amazon S3 Access Points?
+  answer: S3 Access Points provide named network endpoints with their own access policies for shared datasets in S3. They
+    simplify managing large buckets used by many teams, applications, or VPCs by allowing each consumer to have a tailored
+    policy and network origin configuration instead of relying on one large bucket policy.
+- question: What is S3 Multi-Region Access Points?
+  answer: S3 Multi-Region Access Points provide a single global endpoint that routes requests to S3 buckets in multiple Regions
+    based on AWS network conditions. They are designed for multi-Region applications that need low latency, resilience, and
+    simplified failover across replicated buckets.
+- question: What is S3 Batch Operations?
+  answer: S3 Batch Operations lets you perform bulk actions on millions or billions of S3 objects using a manifest. Supported
+    actions include copying objects, invoking Lambda per object, replacing tags, setting ACLs, and restoring archived objects.
+    It is useful for large-scale governance, migration, and remediation tasks.
+- question: What is AWS Backup Vault Lock?
+  answer: Backup Vault Lock enforces write-once-read-many style protection for AWS Backup recovery points. In compliance mode,
+    even administrators cannot delete or shorten retention before the lock expires. It is used to strengthen ransomware resilience
+    and support regulatory retention requirements.
+- question: What is Amazon RDS Blue/Green Deployments?
+  answer: RDS Blue/Green Deployments create a synchronized staging environment for database changes such as engine upgrades,
+    schema changes, or parameter updates. After testing, you switch the production endpoint to the green environment with
+    minimal downtime, reducing risk during major database changes.
+- question: What is Amazon Aurora Global Database?
+  answer: Aurora Global Database is a cross-Region database architecture that replicates Aurora storage to secondary Regions
+    with very low lag. It is designed for disaster recovery and low-latency global reads. In a regional failure, a secondary
+    Region can be promoted to become the new primary.
+- question: What is Aurora Serverless v2?
+  answer: Aurora Serverless v2 is an on-demand, auto-scaling configuration for Aurora that scales capacity in fine-grained
+    increments based on workload. Unlike the original serverless model, it scales faster, integrates with provisioned clusters,
+    and is suitable for more production workloads that need elasticity without manual capacity management.
+- question: What are DynamoDB transactional APIs?
+  answer: DynamoDB transactional APIs, such as TransactWriteItems and TransactGetItems, provide ACID transactions across multiple
+    items and tables within the same account and Region. They are used when you need all-or-nothing updates for workflows
+    like order creation, account balance updates, or inventory reservation.
+- question: What is DynamoDB adaptive capacity?
+  answer: Adaptive capacity is a DynamoDB capability that automatically increases throughput available to hot partitions when
+    access patterns are uneven. It helps reduce throttling caused by partition skew, but it is not a substitute for good partition
+    key design. Well-distributed keys are still essential for predictable scale.
+- question: What are ECS Capacity Providers?
+  answer: ECS Capacity Providers let you define how ECS tasks consume infrastructure capacity, including EC2 Auto Scaling
+    groups and Fargate. They support managed scaling and managed termination protection and let you mix On-Demand and Spot
+    capacity using weighted strategies for better cost and availability trade-offs.
+- question: What is Bottlerocket?
+  answer: Bottlerocket is an AWS-maintained Linux-based operating system purpose-built for running containers. It has a minimal
+    attack surface, atomic updates, and limited host access, making it attractive for ECS and EKS worker nodes where security
+    and operational consistency are important.
+- question: What is IRSA in Amazon EKS?
+  answer: IAM Roles for Service Accounts (IRSA) lets Kubernetes pods in EKS assume IAM roles using OIDC federation tied to
+    a Kubernetes service account. This removes the need to store AWS access keys in pods and enables fine-grained AWS permissions
+    per workload following least privilege principles.
+- question: What is AWS Lambda SnapStart?
+  answer: Lambda SnapStart reduces cold start latency for supported runtimes by initializing a function once, taking a snapshot
+    of the initialized execution environment, and reusing that snapshot for future invocations. It is especially valuable
+    for Java workloads that have heavy startup overhead.
+- question: What is the callback pattern in Step Functions?
+  answer: The callback pattern in Step Functions lets a workflow pause until an external process reports completion using
+    a task token. It is useful for human approvals, asynchronous third-party integrations, and long-running jobs where Step
+    Functions starts the work and waits for an out-of-band success or failure signal.
+- question: What are CloudFormation nested stacks?
+  answer: Nested stacks are CloudFormation stacks created as resources inside a parent stack. They help decompose large templates
+    into reusable, manageable components such as networking, security, and application layers. This improves maintainability
+    and reduces duplication in large IaC codebases.
+- question: What are CloudFormation custom resources?
+  answer: CloudFormation custom resources extend CloudFormation by invoking Lambda or SNS-backed logic during stack operations.
+    They are used when native resource types do not exist for a required action, such as bootstrapping external systems, generating
+    dynamic configuration, or managing specialized workflows during create, update, and delete events.
+- question: What is EventBridge Schema Registry?
+  answer: EventBridge Schema Registry discovers and stores event schemas from AWS services, SaaS providers, and custom applications.
+    It helps teams understand event structures, generate strongly typed code bindings, and reduce errors when building event-driven
+    integrations across services.
+- question: What is Amazon Redshift Serverless?
+  answer: Redshift Serverless is an on-demand deployment model for Amazon Redshift that automatically provisions and scales
+    data warehouse compute based on query workload. It removes cluster management overhead and is useful for analytics teams
+    that want Redshift capabilities without managing node sizes or pause/resume schedules.
+- question: What is Athena partition projection?
+  answer: Athena partition projection lets you define partition patterns in table properties instead of storing every partition
+    in the Glue Data Catalog. This reduces partition management overhead and improves performance for large partitioned datasets
+    where partitions can be derived predictably from naming conventions.
+- question: What are LF-Tags in AWS Lake Formation?
+  answer: LF-Tags are tag-based access control labels in Lake Formation used to grant permissions on databases, tables, and
+    columns based on attributes rather than named resources alone. They make large-scale data lake authorization easier to
+    manage because access can be governed through reusable business classifications such as domain, sensitivity, or environment.
