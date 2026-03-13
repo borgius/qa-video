@@ -1,333 +1,298 @@
 config:
   name: "CPA REG: Business Law"
-  description: High-yield CPA REG deck covering agency, contracts, sales, negotiable instruments, secured transactions, bankruptcy, business structures, owner rights and duties, employment law basics, and federal law topics.
+  description: High-yield CPA REG deck covering agency, contracts, sales, negotiable instruments, secured transactions,
+    bankruptcy, business structures, owner rights and duties, employment law basics, and federal law topics.
   questionDelay: 1
   answerDelay: 1
+  youtube:
+    videoId: aNZyngu4cJY
+    url: https://youtu.be/aNZyngu4cJY
+    uploadedAt: 2026-03-09T16:11:53.702Z
+    privacy: unlisted
+    contentSha: 6dff979a
 questions:
   - question: What is an agency relationship?
-    answer: >-
-      An agency relationship arises when a principal authorizes an agent to act on the principal's behalf and subject to the principal's control.
+    answer: An agency relationship arises when a principal authorizes an agent to act on the principal's behalf and subject
+      to the principal's control.
   - question: What are the key elements needed to create an agency relationship?
-    answer: >-
-      Consent, action on behalf of the principal, and the principal's right to control the agent are the key elements.
+    answer: Consent, action on behalf of the principal, and the principal's right to control the agent are the key elements.
   - question: Does an agency relationship require a written contract?
-    answer: >-
-      No; agency can be created orally, by conduct, or in writing unless a specific law requires a writing.
+    answer: No; agency can be created orally, by conduct, or in writing unless a specific law requires a writing.
   - question: What is actual authority?
-    answer: >-
-      Actual authority is authority the principal intentionally gives the agent, either expressly or impliedly.
+    answer: Actual authority is authority the principal intentionally gives the agent, either expressly or impliedly.
   - question: What is express authority?
-    answer: >-
-      Express authority is authority stated directly by the principal, often in words or writing.
+    answer: Express authority is authority stated directly by the principal, often in words or writing.
   - question: What is implied authority?
-    answer: >-
-      Implied authority includes powers reasonably necessary to carry out the agent's express authority or the tasks assigned.
+    answer: Implied authority includes powers reasonably necessary to carry out the agent's express authority or the tasks
+      assigned.
   - question: What is apparent authority?
-    answer: >-
-      Apparent authority exists when a third party reasonably believes the agent has authority because of the principal's manifestations.
+    answer: Apparent authority exists when a third party reasonably believes the agent has authority because of the
+      principal's manifestations.
   - question: Why does apparent authority protect third parties?
-    answer: >-
-      It binds the principal when the principal's words or conduct reasonably caused the third party to rely on the agent's supposed authority.
+    answer: It binds the principal when the principal's words or conduct reasonably caused the third party to rely on the
+      agent's supposed authority.
   - question: What is ratification in agency law?
-    answer: >-
-      Ratification occurs when a principal affirms an unauthorized act after the fact, making it binding as if originally authorized.
+    answer: Ratification occurs when a principal affirms an unauthorized act after the fact, making it binding as if
+      originally authorized.
   - question: What must generally exist for valid ratification?
-    answer: >-
-      The principal must know the material facts, accept the entire transaction, and have capacity at the time of ratification.
+    answer: The principal must know the material facts, accept the entire transaction, and have capacity at the time of
+      ratification.
   - question: What fiduciary duties does an agent owe to the principal?
-    answer: >-
-      The agent generally owes loyalty, obedience, reasonable care, accounting, and disclosure of relevant information.
+    answer: The agent generally owes loyalty, obedience, reasonable care, accounting, and disclosure of relevant information.
   - question: What duty of loyalty means for an agent?
-    answer: >-
-      The agent must act for the principal's benefit in matters connected with the agency and avoid self-dealing or secret profits.
+    answer: The agent must act for the principal's benefit in matters connected with the agency and avoid self-dealing or
+      secret profits.
   - question: What duty does the principal owe the agent?
-    answer: >-
-      The principal generally owes compensation if agreed, reimbursement and indemnification for authorized acts, and a duty to cooperate fairly.
+    answer: The principal generally owes compensation if agreed, reimbursement and indemnification for authorized acts, and
+      a duty to cooperate fairly.
   - question: When is a principal liable for contracts made by an agent?
-    answer: >-
-      A principal is liable when the agent acted with actual authority, apparent authority, or the act was later ratified.
+    answer: A principal is liable when the agent acted with actual authority, apparent authority, or the act was later
+      ratified.
   - question: What is a disclosed principal?
-    answer: >-
-      A disclosed principal is one whose identity is known to the third party and whose existence is known at the time of contracting.
+    answer: A disclosed principal is one whose identity is known to the third party and whose existence is known at the time
+      of contracting.
   - question: When is an agent typically liable on a contract for a disclosed principal?
-    answer: >-
-      The agent usually is not liable on the contract if acting within authority for a disclosed principal.
+    answer: The agent usually is not liable on the contract if acting within authority for a disclosed principal.
   - question: What is a partially disclosed principal?
-    answer: >-
-      A partially disclosed principal is one whose existence is known but whose identity is not known to the third party.
+    answer: A partially disclosed principal is one whose existence is known but whose identity is not known to the third party.
   - question: What is an undisclosed principal?
-    answer: >-
-      An undisclosed principal is one whose existence and identity are both unknown to the third party when the agent contracts.
+    answer: An undisclosed principal is one whose existence and identity are both unknown to the third party when the agent
+      contracts.
   - question: Why can an agent be liable when the principal is undisclosed or partially disclosed?
-    answer: >-
-      Because the third party did not know who stood behind the contract, the law often allows liability against the agent as well.
+    answer: Because the third party did not know who stood behind the contract, the law often allows liability against the
+      agent as well.
   - question: What is respondeat superior?
-    answer: >-
-      It is the doctrine under which an employer is vicariously liable for torts committed by an employee within the scope of employment.
+    answer: It is the doctrine under which an employer is vicariously liable for torts committed by an employee within the
+      scope of employment.
   - question: Are principals generally liable for torts of independent contractors?
-    answer: >-
-      Generally no, unless an exception applies, such as inherently dangerous activity or negligent hiring.
+    answer: Generally no, unless an exception applies, such as inherently dangerous activity or negligent hiring.
   - question: How can an agency relationship terminate?
-    answer: >-
-      It can terminate by agreement, completion of purpose, lapse of time, revocation, renunciation, death, incapacity, illegality, or operation of law.
+    answer: It can terminate by agreement, completion of purpose, lapse of time, revocation, renunciation, death,
+      incapacity, illegality, or operation of law.
   - question: Why is notice of termination important?
-    answer: >-
-      Notice helps cut off apparent authority so third parties no longer reasonably rely on the agent's ability to bind the principal.
+    answer: Notice helps cut off apparent authority so third parties no longer reasonably rely on the agent's ability to
+      bind the principal.
   - question: What is a contract?
-    answer: >-
-      A contract is a legally enforceable promise or set of promises.
+    answer: A contract is a legally enforceable promise or set of promises.
   - question: What are the basic requirements for contract formation?
-    answer: >-
-      Offer, acceptance, consideration, and no valid defense to formation are the basic requirements.
+    answer: Offer, acceptance, consideration, and no valid defense to formation are the basic requirements.
   - question: What is an offer?
-    answer: >-
-      An offer is a communication showing present intent to contract on definite terms so that acceptance will create a binding agreement.
+    answer: An offer is a communication showing present intent to contract on definite terms so that acceptance will create
+      a binding agreement.
   - question: When does a statement usually fail to qualify as an offer?
-    answer: >-
-      It usually fails when it is only preliminary negotiation, vague, indefinite, or does not show commitment to be bound.
+    answer: It usually fails when it is only preliminary negotiation, vague, indefinite, or does not show commitment to be
+      bound.
   - question: What is acceptance?
-    answer: >-
-      Acceptance is assent to the terms of the offer in the manner invited or required by the offer.
+    answer: Acceptance is assent to the terms of the offer in the manner invited or required by the offer.
   - question: What is the mirror image rule?
-    answer: >-
-      Under common law, acceptance must match the offer exactly; otherwise the response is treated as a counteroffer.
+    answer: Under common law, acceptance must match the offer exactly; otherwise the response is treated as a counteroffer.
   - question: What is consideration?
-    answer: >-
-      Consideration is the bargained-for exchange of legal value between the parties.
+    answer: Consideration is the bargained-for exchange of legal value between the parties.
   - question: What generally does not count as consideration?
-    answer: >-
-      Past consideration, preexisting duties, and illusory promises generally do not qualify.
+    answer: Past consideration, preexisting duties, and illusory promises generally do not qualify.
   - question: What is promissory estoppel?
-    answer: >-
-      Promissory estoppel can make a promise enforceable when the promisor should expect reliance and injustice can be avoided only by enforcement.
+    answer: Promissory estoppel can make a promise enforceable when the promisor should expect reliance and injustice can be
+      avoided only by enforcement.
   - question: What is capacity in contract law?
-    answer: >-
-      Capacity refers to a party's legal ability to enter a binding contract; minors, intoxicated persons, and mentally impaired persons may have limited capacity.
+    answer: Capacity refers to a party's legal ability to enter a binding contract; minors, intoxicated persons, and
+      mentally impaired persons may have limited capacity.
   - question: What makes a contract void rather than voidable?
-    answer: >-
-      A void contract has no legal effect from the start, while a voidable contract is valid unless the protected party elects to avoid it.
+    answer: A void contract has no legal effect from the start, while a voidable contract is valid unless the protected
+      party elects to avoid it.
   - question: What is the Statute of Frauds?
-    answer: >-
-      The Statute of Frauds requires certain agreements to be evidenced by a signed writing to be enforceable.
+    answer: The Statute of Frauds requires certain agreements to be evidenced by a signed writing to be enforceable.
   - question: What types of contracts commonly fall under the Statute of Frauds?
-    answer: >-
-      Contracts involving interests in land, promises that cannot be performed within one year, suretyship promises, and certain sales of goods commonly require a writing.
+    answer: Contracts involving interests in land, promises that cannot be performed within one year, suretyship promises,
+      and certain sales of goods commonly require a writing.
   - question: What is the parol evidence rule?
-    answer: >-
-      It generally bars prior or contemporaneous extrinsic evidence that contradicts a final written agreement.
+    answer: It generally bars prior or contemporaneous extrinsic evidence that contradicts a final written agreement.
   - question: What is a condition precedent?
-    answer: >-
-      A condition precedent is an event that must occur before a duty to perform becomes due.
+    answer: A condition precedent is an event that must occur before a duty to perform becomes due.
   - question: What is a condition subsequent?
-    answer: >-
-      A condition subsequent is an event that cuts off an existing duty to perform.
+    answer: A condition subsequent is an event that cuts off an existing duty to perform.
   - question: What is substantial performance?
-    answer: >-
-      Substantial performance means a party has performed enough of the contract to require the other side to perform, subject to damages for minor defects.
+    answer: Substantial performance means a party has performed enough of the contract to require the other side to perform,
+      subject to damages for minor defects.
   - question: What is a material breach?
-    answer: >-
-      A material breach is a significant failure that excuses the nonbreaching party from further performance and allows remedies.
+    answer: A material breach is a significant failure that excuses the nonbreaching party from further performance and
+      allows remedies.
   - question: What is anticipatory repudiation?
-    answer: >-
-      It occurs when a party clearly indicates before performance is due that the party will not perform.
+    answer: It occurs when a party clearly indicates before performance is due that the party will not perform.
   - question: What damages are intended to place the injured party in the position of expected performance?
-    answer: >-
-      Expectation damages seek to put the injured party in the economic position the party would have occupied if the contract had been performed.
+    answer: Expectation damages seek to put the injured party in the economic position the party would have occupied if the
+      contract had been performed.
   - question: What are consequential damages?
-    answer: >-
-      Consequential damages are special losses resulting from the breach that were foreseeable at the time of contracting.
+    answer: Consequential damages are special losses resulting from the breach that were foreseeable at the time of
+      contracting.
   - question: What are liquidated damages?
-    answer: >-
-      Liquidated damages are an agreed estimate of damages enforceable if reasonable and not a penalty.
+    answer: Liquidated damages are an agreed estimate of damages enforceable if reasonable and not a penalty.
   - question: When is specific performance generally available?
-    answer: >-
-      Specific performance is generally available when money damages are inadequate, such as for unique goods or real property.
+    answer: Specific performance is generally available when money damages are inadequate, such as for unique goods or real
+      property.
   - question: What is rescission?
-    answer: >-
-      Rescission cancels the contract and seeks to restore the parties to their precontract positions.
+    answer: Rescission cancels the contract and seeks to restore the parties to their precontract positions.
   - question: What is assignment?
-    answer: >-
-      Assignment is the transfer of contractual rights to a third party.
+    answer: Assignment is the transfer of contractual rights to a third party.
   - question: What is delegation?
-    answer: >-
-      Delegation is the transfer of contractual duties to a third party.
+    answer: Delegation is the transfer of contractual duties to a third party.
   - question: Can all duties be delegated?
-    answer: >-
-      No; duties involving personal skill, judgment, trust, or terms prohibiting delegation often cannot be delegated.
+    answer: No; duties involving personal skill, judgment, trust, or terms prohibiting delegation often cannot be delegated.
   - question: What is a third-party beneficiary?
-    answer: >-
-      A third-party beneficiary is a nonparty whom the contracting parties intended to benefit directly.
+    answer: A third-party beneficiary is a nonparty whom the contracting parties intended to benefit directly.
   - question: What is the UCC?
-    answer: >-
-      The Uniform Commercial Code is a model statute governing commercial transactions, especially the sale of goods, negotiable instruments, bank transactions, and secured transactions.
+    answer: The Uniform Commercial Code is a model statute governing commercial transactions, especially the sale of goods,
+      negotiable instruments, bank transactions, and secured transactions.
   - question: What is a good under Article 2 of the UCC?
-    answer: >-
-      A good is a movable, tangible item identified at the time of sale.
+    answer: A good is a movable, tangible item identified at the time of sale.
   - question: What is a merchant under the UCC?
-    answer: >-
-      A merchant is a person who regularly deals in goods of the kind or otherwise holds out special knowledge or skill regarding the practices or goods involved.
+    answer: A merchant is a person who regularly deals in goods of the kind or otherwise holds out special knowledge or
+      skill regarding the practices or goods involved.
   - question: What is the battle of the forms?
-    answer: >-
-      It is the UCC rule dealing with additional or different terms in acceptance or confirmation forms exchanged by merchants.
+    answer: It is the UCC rule dealing with additional or different terms in acceptance or confirmation forms exchanged by
+      merchants.
   - question: What is the perfect tender rule?
-    answer: >-
-      Under the UCC, the buyer may reject goods if they or the delivery fail in any respect to conform to the contract, subject to important seller rights and exceptions.
+    answer: Under the UCC, the buyer may reject goods if they or the delivery fail in any respect to conform to the
+      contract, subject to important seller rights and exceptions.
   - question: What is the seller's right to cure?
-    answer: >-
-      The seller may have a chance to fix a nonconforming delivery within the contract time or in some cases beyond it if the seller had reasonable grounds to believe the goods would be accepted.
+    answer: The seller may have a chance to fix a nonconforming delivery within the contract time or in some cases beyond it
+      if the seller had reasonable grounds to believe the goods would be accepted.
   - question: What is an express warranty?
-    answer: >-
-      An express warranty arises from affirmations of fact, promises, descriptions, or samples that become part of the basis of the bargain.
+    answer: An express warranty arises from affirmations of fact, promises, descriptions, or samples that become part of the
+      basis of the bargain.
   - question: What is the implied warranty of merchantability?
-    answer: >-
-      It is a warranty that merchant sellers provide that goods are fit for ordinary purposes and meet ordinary commercial standards.
+    answer: It is a warranty that merchant sellers provide that goods are fit for ordinary purposes and meet ordinary
+      commercial standards.
   - question: What is the implied warranty of fitness for a particular purpose?
-    answer: >-
-      It arises when the seller knows the buyer's special purpose and the buyer relies on the seller's skill to select suitable goods.
+    answer: It arises when the seller knows the buyer's special purpose and the buyer relies on the seller's skill to select
+      suitable goods.
   - question: Can UCC warranties be disclaimed?
-    answer: >-
-      Yes, but disclaimers must meet statutory requirements and be clear, especially for merchantability and fitness disclaimers.
+    answer: Yes, but disclaimers must meet statutory requirements and be clear, especially for merchantability and fitness
+      disclaimers.
   - question: What is risk of loss?
-    answer: >-
-      Risk of loss determines which party bears the economic loss if goods are damaged or destroyed without fault before the transaction is completed.
+    answer: Risk of loss determines which party bears the economic loss if goods are damaged or destroyed without fault
+      before the transaction is completed.
   - question: What is title in a sales transaction?
-    answer: >-
-      Title refers to ownership of goods, and UCC rules determine when it passes based on the parties' agreement and delivery terms.
+    answer: Title refers to ownership of goods, and UCC rules determine when it passes based on the parties' agreement and
+      delivery terms.
   - question: What is a negotiable instrument?
-    answer: >-
-      A negotiable instrument is an unconditional written promise or order to pay a fixed amount of money that meets UCC formal requirements.
+    answer: A negotiable instrument is an unconditional written promise or order to pay a fixed amount of money that meets
+      UCC formal requirements.
   - question: What is a note?
-    answer: >-
-      A note is a two-party negotiable instrument containing a promise to pay.
+    answer: A note is a two-party negotiable instrument containing a promise to pay.
   - question: What is a draft?
-    answer: >-
-      A draft is a three-party negotiable instrument containing an order to pay.
+    answer: A draft is a three-party negotiable instrument containing an order to pay.
   - question: What is a check?
-    answer: >-
-      A check is a draft drawn on a bank and payable on demand.
+    answer: A check is a draft drawn on a bank and payable on demand.
   - question: What is a holder in due course?
-    answer: >-
-      A holder in due course takes a negotiable instrument for value, in good faith, and without notice of certain problems, and receives elevated rights.
+    answer: A holder in due course takes a negotiable instrument for value, in good faith, and without notice of certain
+      problems, and receives elevated rights.
   - question: Why is holder-in-due-course status important?
-    answer: >-
-      It allows the holder to take the instrument free of many personal defenses that could be asserted against an ordinary holder.
+    answer: It allows the holder to take the instrument free of many personal defenses that could be asserted against an
+      ordinary holder.
   - question: What is attachment in secured transactions?
-    answer: >-
-      Attachment is the process by which a security interest becomes enforceable against the debtor with respect to collateral.
+    answer: Attachment is the process by which a security interest becomes enforceable against the debtor with respect to
+      collateral.
   - question: What are the basic requirements for attachment?
-    answer: >-
-      Value given, the debtor's rights in the collateral, and an authenticated security agreement or secured party possession or control, depending on the collateral.
+    answer: Value given, the debtor's rights in the collateral, and an authenticated security agreement or secured party
+      possession or control, depending on the collateral.
   - question: What is perfection in secured transactions?
-    answer: >-
-      Perfection gives public notice of a security interest and helps establish priority against third parties.
+    answer: Perfection gives public notice of a security interest and helps establish priority against third parties.
   - question: How is a security interest commonly perfected?
-    answer: >-
-      Common methods include filing a financing statement, possession, control, or automatic perfection for certain collateral.
+    answer: Common methods include filing a financing statement, possession, control, or automatic perfection for certain
+      collateral.
   - question: What is a financing statement?
-    answer: >-
-      A financing statement is the public filing that usually identifies the debtor, secured party, and collateral to perfect a security interest.
+    answer: A financing statement is the public filing that usually identifies the debtor, secured party, and collateral to
+      perfect a security interest.
   - question: What is a purchase-money security interest?
-    answer: >-
-      A PMSI is a security interest that enables the debtor to acquire the collateral and may receive special priority if perfection rules are met.
+    answer: A PMSI is a security interest that enables the debtor to acquire the collateral and may receive special priority
+      if perfection rules are met.
   - question: What does priority determine in secured transactions?
-    answer: >-
-      Priority determines which claimant has the superior right to collateral when multiple parties claim the same property.
+    answer: Priority determines which claimant has the superior right to collateral when multiple parties claim the same
+      property.
   - question: What is the general priority rule among perfected security interests?
-    answer: >-
-      As a general rule, the first to file or perfect has priority, subject to special statutory rules.
+    answer: As a general rule, the first to file or perfect has priority, subject to special statutory rules.
   - question: What is default in secured transactions?
-    answer: >-
-      Default is the failure to perform obligations secured by the collateral, as defined by the agreement and applicable law.
+    answer: Default is the failure to perform obligations secured by the collateral, as defined by the agreement and
+      applicable law.
   - question: What remedies does a secured party have after default?
-    answer: >-
-      The secured party may repossess collateral if it can be done without breach of the peace, dispose of it commercially reasonably, or pursue other agreement and statutory remedies.
+    answer: The secured party may repossess collateral if it can be done without breach of the peace, dispose of it
+      commercially reasonably, or pursue other agreement and statutory remedies.
   - question: What is bankruptcy?
-    answer: >-
-      Bankruptcy is a federal legal process for resolving debts of individuals or businesses through liquidation, reorganization, or repayment.
+    answer: Bankruptcy is a federal legal process for resolving debts of individuals or businesses through liquidation,
+      reorganization, or repayment.
   - question: What is the automatic stay?
-    answer: >-
-      The automatic stay immediately halts most collection actions against the debtor upon filing a bankruptcy petition.
+    answer: The automatic stay immediately halts most collection actions against the debtor upon filing a bankruptcy petition.
   - question: What is Chapter 7 bankruptcy?
-    answer: >-
-      Chapter 7 is liquidation in which nonexempt assets may be sold to pay creditors and many remaining debts may be discharged.
+    answer: Chapter 7 is liquidation in which nonexempt assets may be sold to pay creditors and many remaining debts may be
+      discharged.
   - question: What is Chapter 11 bankruptcy?
-    answer: >-
-      Chapter 11 is a reorganization chapter commonly used by businesses to restructure debts and continue operations.
+    answer: Chapter 11 is a reorganization chapter commonly used by businesses to restructure debts and continue operations.
   - question: What is Chapter 13 bankruptcy?
-    answer: >-
-      Chapter 13 is an adjustment of debts for individuals with regular income through a court-approved repayment plan.
+    answer: Chapter 13 is an adjustment of debts for individuals with regular income through a court-approved repayment plan.
   - question: What is a discharge in bankruptcy?
-    answer: >-
-      A discharge releases the debtor from personal liability for many prepetition debts.
+    answer: A discharge releases the debtor from personal liability for many prepetition debts.
   - question: Are all debts dischargeable in bankruptcy?
-    answer: >-
-      No; certain debts such as some taxes, fraud-related debts, domestic support obligations, and many student loans may be nondischargeable.
+    answer: No; certain debts such as some taxes, fraud-related debts, domestic support obligations, and many student loans
+      may be nondischargeable.
   - question: What is a preference in bankruptcy?
-    answer: >-
-      A preference is a transfer made before bankruptcy that favors one creditor over others and may be recoverable by the trustee.
+    answer: A preference is a transfer made before bankruptcy that favors one creditor over others and may be recoverable by
+      the trustee.
   - question: What is a fraudulent transfer in bankruptcy law?
-    answer: >-
-      It is a transfer made with actual intent to hinder, delay, or defraud creditors, or for less than reasonably equivalent value under specified circumstances.
+    answer: It is a transfer made with actual intent to hinder, delay, or defraud creditors, or for less than reasonably
+      equivalent value under specified circumstances.
   - question: What is a sole proprietorship?
-    answer: >-
-      A sole proprietorship is a business owned by one individual with no separate legal existence from the owner.
+    answer: A sole proprietorship is a business owned by one individual with no separate legal existence from the owner.
   - question: What is a general partnership?
-    answer: >-
-      A general partnership is an association of two or more persons carrying on a business as co-owners for profit.
+    answer: A general partnership is an association of two or more persons carrying on a business as co-owners for profit.
   - question: What liability do general partners have?
-    answer: >-
-      General partners usually have joint and several personal liability for partnership obligations.
+    answer: General partners usually have joint and several personal liability for partnership obligations.
   - question: What is a limited partnership?
-    answer: >-
-      A limited partnership has at least one general partner who manages and bears general liability and one or more limited partners whose liability is usually limited to investment.
+    answer: A limited partnership has at least one general partner who manages and bears general liability and one or more
+      limited partners whose liability is usually limited to investment.
   - question: What is an LLP?
-    answer: >-
-      A limited liability partnership is a partnership form that generally shields partners from personal liability for many partnership obligations.
+    answer: A limited liability partnership is a partnership form that generally shields partners from personal liability
+      for many partnership obligations.
   - question: What is an LLC?
-    answer: >-
-      A limited liability company is a flexible entity that generally offers limited liability to owners and allows partnership-like management or tax flexibility.
+    answer: A limited liability company is a flexible entity that generally offers limited liability to owners and allows
+      partnership-like management or tax flexibility.
   - question: What is a corporation?
-    answer: >-
-      A corporation is a separate legal entity owned by shareholders and managed by directors and officers.
+    answer: A corporation is a separate legal entity owned by shareholders and managed by directors and officers.
   - question: What is limited liability?
-    answer: >-
-      Limited liability means owners generally are not personally liable for business debts beyond their investment, absent exceptions.
+    answer: Limited liability means owners generally are not personally liable for business debts beyond their investment,
+      absent exceptions.
   - question: What is piercing the corporate veil?
-    answer: >-
-      It is an equitable doctrine allowing courts to disregard limited liability when owners misuse the entity, such as through fraud, undercapitalization, or failure to respect separateness.
+    answer: It is an equitable doctrine allowing courts to disregard limited liability when owners misuse the entity, such
+      as through fraud, undercapitalization, or failure to respect separateness.
   - question: What duties do directors generally owe a corporation?
-    answer: >-
-      Directors generally owe duties of care, loyalty, and good faith.
+    answer: Directors generally owe duties of care, loyalty, and good faith.
   - question: What is the business judgment rule?
-    answer: >-
-      It protects directors from liability for informed, good-faith business decisions made in the corporation's best interests.
+    answer: It protects directors from liability for informed, good-faith business decisions made in the corporation's best
+      interests.
   - question: What rights do shareholders generally have?
-    answer: >-
-      Shareholders generally have rights to vote, inspect certain records, receive dividends when declared, and share in residual assets after creditors.
+    answer: Shareholders generally have rights to vote, inspect certain records, receive dividends when declared, and share
+      in residual assets after creditors.
   - question: What is a derivative suit?
-    answer: >-
-      A derivative suit is an action brought by a shareholder on behalf of the corporation to enforce a corporate claim.
+    answer: A derivative suit is an action brought by a shareholder on behalf of the corporation to enforce a corporate claim.
   - question: What is worker classification?
-    answer: >-
-      Worker classification determines whether a worker is an employee or an independent contractor based on control and other factors.
+    answer: Worker classification determines whether a worker is an employee or an independent contractor based on control
+      and other factors.
   - question: Why does worker classification matter for federal law?
-    answer: >-
-      It affects employment tax withholding, payroll tax liability, benefits, labor law obligations, and penalty exposure.
+    answer: It affects employment tax withholding, payroll tax liability, benefits, labor law obligations, and penalty
+      exposure.
   - question: What are employment taxes in general terms?
-    answer: >-
-      Employment taxes generally include federal income tax withholding, Social Security and Medicare taxes, and federal unemployment tax obligations.
+    answer: Employment taxes generally include federal income tax withholding, Social Security and Medicare taxes, and
+      federal unemployment tax obligations.
   - question: What is the Federal Insurance Contributions Act?
-    answer: >-
-      FICA is the federal law imposing Social Security and Medicare payroll taxes on wages, typically shared by employers and employees.
+    answer: FICA is the federal law imposing Social Security and Medicare payroll taxes on wages, typically shared by
+      employers and employees.
   - question: What is the Federal Unemployment Tax Act?
-    answer: >-
-      FUTA is the federal law imposing employer-paid unemployment tax used to support unemployment compensation systems.
+    answer: FUTA is the federal law imposing employer-paid unemployment tax used to support unemployment compensation systems.
   - question: What is the Foreign Corrupt Practices Act in broad terms?
-    answer: >-
-      The FCPA prohibits bribery of foreign officials to obtain or retain business and also requires certain accounting controls and books-and-records compliance.
+    answer: The FCPA prohibits bribery of foreign officials to obtain or retain business and also requires certain
+      accounting controls and books-and-records compliance.
   - question: Why is anti-bribery compliance a business law topic for CPA candidates?
-    answer: >-
-      CPAs may see it tested because it affects governance, internal controls, legal compliance, and potential liability for business entities.
+    answer: CPAs may see it tested because it affects governance, internal controls, legal compliance, and potential
+      liability for business entities.
   - question: What is the best REG exam approach to business law questions?
-    answer: >-
-      Identify the legal relationship, determine who has authority or duty, ask whether formation requirements were met, then apply the key default rule and any major exception.
+    answer: Identify the legal relationship, determine who has authority or duty, ask whether formation requirements were
+      met, then apply the key default rule and any major exception.

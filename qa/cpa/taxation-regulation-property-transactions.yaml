@@ -1,288 +1,264 @@
 config:
   name: "CPA REG/TCP: Federal Taxation of Property Transactions"
-  description: High-yield CPA REG and TCP deck covering basis, amount realized, gains and losses, depreciation, section 179, MACRS, like-kind exchanges, involuntary conversions, related-party rules, installment sales, and recapture.
+  description: High-yield CPA REG and TCP deck covering basis, amount realized, gains and losses, depreciation, section
+    179, MACRS, like-kind exchanges, involuntary conversions, related-party rules, installment sales, and recapture.
   questionDelay: 1
   answerDelay: 1
+  youtube:
+    videoId: hIijHMVllf0
+    url: https://youtu.be/hIijHMVllf0
+    uploadedAt: 2026-03-09T16:13:08.654Z
+    privacy: unlisted
+    contentSha: 59bf06c1
 questions:
   - question: What is basis in federal income tax?
-    answer: >-
-      Basis is a taxpayer's tax investment in property and is the starting point for computing depreciation, gain or loss, and many other tax consequences.
+    answer: Basis is a taxpayer's tax investment in property and is the starting point for computing depreciation, gain or
+      loss, and many other tax consequences.
   - question: What is cost basis?
-    answer: >-
-      Cost basis is generally the amount paid in cash, debt, property, or services to acquire an asset, plus capitalizable acquisition costs.
+    answer: Cost basis is generally the amount paid in cash, debt, property, or services to acquire an asset, plus
+      capitalizable acquisition costs.
   - question: What is adjusted basis?
-    answer: >-
-      Adjusted basis is original basis increased by capital additions and certain income items and decreased by depreciation, amortization, casualty losses, and other reductions.
+    answer: Adjusted basis is original basis increased by capital additions and certain income items and decreased by
+      depreciation, amortization, casualty losses, and other reductions.
   - question: Why is adjusted basis important?
-    answer: >-
-      Adjusted basis is used to measure gain or loss on sale, determine depreciation recapture, and evaluate many nonrecognition transactions.
+    answer: Adjusted basis is used to measure gain or loss on sale, determine depreciation recapture, and evaluate many
+      nonrecognition transactions.
   - question: What is amount realized on a disposition?
-    answer: >-
-      Amount realized generally equals cash received plus the fair market value of property received plus liabilities assumed by the buyer minus selling expenses.
+    answer: Amount realized generally equals cash received plus the fair market value of property received plus liabilities
+      assumed by the buyer minus selling expenses.
   - question: How is realized gain or loss computed?
-    answer: >-
-      Realized gain or loss equals amount realized minus adjusted basis.
+    answer: Realized gain or loss equals amount realized minus adjusted basis.
   - question: What is the difference between realized and recognized gain?
-    answer: >-
-      Realized gain is the economic gain computed on the transaction, while recognized gain is the amount currently included in taxable income after applying any nonrecognition rule.
+    answer: Realized gain is the economic gain computed on the transaction, while recognized gain is the amount currently
+      included in taxable income after applying any nonrecognition rule.
   - question: What is a capital asset in broad terms?
-    answer: >-
-      A capital asset is generally property held by a taxpayer except for specific exclusions such as inventory, receivables, and property used in a trade or business subject to special rules.
+    answer: A capital asset is generally property held by a taxpayer except for specific exclusions such as inventory,
+      receivables, and property used in a trade or business subject to special rules.
   - question: What is a section 1231 asset?
-    answer: >-
-      A section 1231 asset is generally depreciable business property or real property used in a trade or business and held for the required holding period.
+    answer: A section 1231 asset is generally depreciable business property or real property used in a trade or business and
+      held for the required holding period.
   - question: Why are section 1231 assets important?
-    answer: >-
-      Net section 1231 gains can receive favorable capital gain treatment, while net losses may be treated as ordinary losses.
+    answer: Net section 1231 gains can receive favorable capital gain treatment, while net losses may be treated as ordinary
+      losses.
   - question: What is depreciation?
-    answer: >-
-      Depreciation is the systematic tax recovery of the cost of tangible property used in a business or income-producing activity over its recovery period.
+    answer: Depreciation is the systematic tax recovery of the cost of tangible property used in a business or
+      income-producing activity over its recovery period.
   - question: What property is generally depreciable?
-    answer: >-
-      Property must generally be used in a trade or business or held for the production of income, have a determinable useful life, and be expected to last more than one year.
+    answer: Property must generally be used in a trade or business or held for the production of income, have a determinable
+      useful life, and be expected to last more than one year.
   - question: Is land depreciable?
-    answer: >-
-      No; land is generally not depreciable because it does not wear out or have a determinable useful life.
+    answer: No; land is generally not depreciable because it does not wear out or have a determinable useful life.
   - question: What is MACRS?
-    answer: >-
-      MACRS is the primary federal tax depreciation system that assigns recovery periods and methods to eligible property.
+    answer: MACRS is the primary federal tax depreciation system that assigns recovery periods and methods to eligible
+      property.
   - question: What is the half-year convention?
-    answer: >-
-      The half-year convention generally treats property as placed in service or disposed of at the midpoint of the year unless another convention applies.
+    answer: The half-year convention generally treats property as placed in service or disposed of at the midpoint of the
+      year unless another convention applies.
   - question: What is the mid-quarter convention?
-    answer: >-
-      The mid-quarter convention generally applies when too much personal property is placed in service in the last quarter of the year, causing assets to be treated as placed in service mid-quarter.
+    answer: The mid-quarter convention generally applies when too much personal property is placed in service in the last
+      quarter of the year, causing assets to be treated as placed in service mid-quarter.
   - question: What is the mid-month convention?
-    answer: >-
-      The mid-month convention generally applies to real property and treats it as placed in service or disposed of in the middle of the month.
+    answer: The mid-month convention generally applies to real property and treats it as placed in service or disposed of in
+      the middle of the month.
   - question: What is section 179 expensing?
-    answer: >-
-      Section 179 allows taxpayers to elect immediate expensing of qualifying property, subject to taxable income and phaseout limitations.
+    answer: Section 179 allows taxpayers to elect immediate expensing of qualifying property, subject to taxable income and
+      phaseout limitations.
   - question: Why is section 179 important for REG and TCP?
-    answer: >-
-      It is a popular tested election because it accelerates cost recovery and often appears in planning questions.
+    answer: It is a popular tested election because it accelerates cost recovery and often appears in planning questions.
   - question: What is bonus depreciation in general terms?
-    answer: >-
-      Bonus depreciation allows immediate deduction of a specified percentage of qualifying property cost, subject to the law in effect for the year tested.
+    answer: Bonus depreciation allows immediate deduction of a specified percentage of qualifying property cost, subject to
+      the law in effect for the year tested.
   - question: What is listed property in a tax context?
-    answer: >-
-      Listed property refers to assets with significant potential personal use, requiring careful substantiation and potentially limited depreciation treatment.
+    answer: Listed property refers to assets with significant potential personal use, requiring careful substantiation and
+      potentially limited depreciation treatment.
   - question: What happens if business use of certain property drops significantly?
-    answer: >-
-      Prior accelerated depreciation or expensing may need to be recaptured or adjusted when business-use requirements are no longer met.
+    answer: Prior accelerated depreciation or expensing may need to be recaptured or adjusted when business-use requirements
+      are no longer met.
   - question: What is amortization?
-    answer: >-
-      Amortization is the tax recovery of certain intangible costs over a statutory or useful-life period.
+    answer: Amortization is the tax recovery of certain intangible costs over a statutory or useful-life period.
   - question: What is basis of property received by purchase?
-    answer: >-
-      Purchased property generally takes a cost basis equal to what the buyer paid plus capitalizable acquisition costs.
+    answer: Purchased property generally takes a cost basis equal to what the buyer paid plus capitalizable acquisition costs.
   - question: What is basis of property received by gift?
-    answer: >-
-      Gifted property generally takes a carryover basis from the donor, subject to special dual-basis rules when fair market value is less than donor basis.
+    answer: Gifted property generally takes a carryover basis from the donor, subject to special dual-basis rules when fair
+      market value is less than donor basis.
   - question: What is the dual-basis rule for gift property?
-    answer: >-
-      If the property's fair market value at the gift date is below the donor's basis, one basis may apply for gain and another for loss.
+    answer: If the property's fair market value at the gift date is below the donor's basis, one basis may apply for gain
+      and another for loss.
   - question: What is basis of inherited property?
-    answer: >-
-      Inherited property generally takes a basis equal to fair market value at the decedent's date of death or the applicable alternate valuation amount.
+    answer: Inherited property generally takes a basis equal to fair market value at the decedent's date of death or the
+      applicable alternate valuation amount.
   - question: Why is inherited property basis favorable?
-    answer: >-
-      It usually produces a step-up or step-down to fair market value, potentially eliminating predeath gain or loss.
+    answer: It usually produces a step-up or step-down to fair market value, potentially eliminating predeath gain or loss.
   - question: What is holding period for inherited property?
-    answer: >-
-      Inherited property generally receives long-term holding period treatment regardless of how long the heir actually holds it.
+    answer: Inherited property generally receives long-term holding period treatment regardless of how long the heir
+      actually holds it.
   - question: What is substituted basis?
-    answer: >-
-      Substituted basis is basis determined by reference to another property's basis, such as carryover basis in gifts or exchanges.
+    answer: Substituted basis is basis determined by reference to another property's basis, such as carryover basis in gifts
+      or exchanges.
   - question: What is transferred basis?
-    answer: >-
-      Transferred basis is another term for basis carried over from the prior owner or prior property in a nonrecognition transaction.
+    answer: Transferred basis is another term for basis carried over from the prior owner or prior property in a
+      nonrecognition transaction.
   - question: What is the basis of property converted from personal to business use?
-    answer: >-
-      The basis for depreciation is generally the lower of adjusted basis or fair market value at the time of conversion.
+    answer: The basis for depreciation is generally the lower of adjusted basis or fair market value at the time of conversion.
   - question: Are personal losses on sale of personal-use property deductible?
-    answer: >-
-      No; losses on the sale of personal-use property are generally not deductible.
+    answer: No; losses on the sale of personal-use property are generally not deductible.
   - question: Are gains on sale of personal-use property taxable?
-    answer: >-
-      Yes; gains on the sale of personal-use property are generally taxable unless a specific exclusion applies.
+    answer: Yes; gains on the sale of personal-use property are generally taxable unless a specific exclusion applies.
   - question: What is the character of gain from sale of investment stock?
-    answer: >-
-      Gain or loss from sale of investment stock is generally capital unless a special rule changes the result.
+    answer: Gain or loss from sale of investment stock is generally capital unless a special rule changes the result.
   - question: What is a wash sale?
-    answer: >-
-      A wash sale occurs when stock or securities are sold at a loss and substantially identical stock or securities are acquired within the specified window, disallowing the loss.
+    answer: A wash sale occurs when stock or securities are sold at a loss and substantially identical stock or securities
+      are acquired within the specified window, disallowing the loss.
   - question: What happens to a disallowed wash sale loss?
-    answer: >-
-      The disallowed loss is generally added to the basis of the replacement securities.
+    answer: The disallowed loss is generally added to the basis of the replacement securities.
   - question: What is a like-kind exchange?
-    answer: >-
-      A like-kind exchange is a qualifying exchange of eligible business or investment real property in which gain is deferred except to the extent of boot.
+    answer: A like-kind exchange is a qualifying exchange of eligible business or investment real property in which gain is
+      deferred except to the extent of boot.
   - question: What property qualifies for like-kind exchange treatment under current general rules?
-    answer: >-
-      Generally only real property held for productive use in a trade or business or for investment qualifies.
+    answer: Generally only real property held for productive use in a trade or business or for investment qualifies.
   - question: What does like-kind mean for real property?
-    answer: >-
-      Real property is broadly like-kind to other U.S. real property held for business or investment, even if the properties differ in grade or use.
+    answer: Real property is broadly like-kind to other U.S. real property held for business or investment, even if the
+      properties differ in grade or use.
   - question: What is boot in a like-kind exchange?
-    answer: >-
-      Boot is non-like-kind property or cash received in the exchange and can trigger current gain recognition.
+    answer: Boot is non-like-kind property or cash received in the exchange and can trigger current gain recognition.
   - question: How much gain is recognized when boot is received in a like-kind exchange?
-    answer: >-
-      Recognized gain is generally the lesser of realized gain or the boot received.
+    answer: Recognized gain is generally the lesser of realized gain or the boot received.
   - question: Can a loss be recognized in a like-kind exchange?
-    answer: >-
-      No; realized losses are generally not recognized in a like-kind exchange.
+    answer: No; realized losses are generally not recognized in a like-kind exchange.
   - question: What is the basis of replacement property in a like-kind exchange?
-    answer: >-
-      Replacement property basis is generally the old basis, adjusted for boot paid, boot received, gain recognized, and loss recognized if any rule applies.
+    answer: Replacement property basis is generally the old basis, adjusted for boot paid, boot received, gain recognized,
+      and loss recognized if any rule applies.
   - question: What is a deferred exchange?
-    answer: >-
-      A deferred exchange is a like-kind exchange completed through replacement property identification and acquisition within statutory deadlines rather than simultaneous swap.
+    answer: A deferred exchange is a like-kind exchange completed through replacement property identification and
+      acquisition within statutory deadlines rather than simultaneous swap.
   - question: Why are identification and exchange deadlines important in deferred exchanges?
-    answer: >-
-      Missing the statutory deadlines causes the exchange to fail and the transaction to become taxable.
+    answer: Missing the statutory deadlines causes the exchange to fail and the transaction to become taxable.
   - question: What is an involuntary conversion?
-    answer: >-
-      An involuntary conversion occurs when property is destroyed, stolen, condemned, or disposed of under threat of condemnation and the taxpayer receives insurance or other proceeds.
+    answer: An involuntary conversion occurs when property is destroyed, stolen, condemned, or disposed of under threat of
+      condemnation and the taxpayer receives insurance or other proceeds.
   - question: When can gain from an involuntary conversion be deferred?
-    answer: >-
-      Gain can often be deferred if the taxpayer timely purchases qualifying replacement property within the statutory replacement period.
+    answer: Gain can often be deferred if the taxpayer timely purchases qualifying replacement property within the statutory
+      replacement period.
   - question: How does basis of replacement property work in an involuntary conversion?
-    answer: >-
-      The basis is generally the cost of replacement property reduced by the gain deferred.
+    answer: The basis is generally the cost of replacement property reduced by the gain deferred.
   - question: What is recapture?
-    answer: >-
-      Recapture converts some or all gain from the sale of depreciated property into ordinary income to reverse prior depreciation benefits.
+    answer: Recapture converts some or all gain from the sale of depreciated property into ordinary income to reverse prior
+      depreciation benefits.
   - question: What is section 1245 recapture?
-    answer: >-
-      Section 1245 generally recaptures prior depreciation on depreciable personal property and certain real property components as ordinary income up to the gain realized.
+    answer: Section 1245 generally recaptures prior depreciation on depreciable personal property and certain real property
+      components as ordinary income up to the gain realized.
   - question: What is section 1250 recapture in broad exam terms?
-    answer: >-
-      Section 1250 relates to depreciable real property; for individuals, straight-line depreciation generally avoids classic recapture but may produce unrecaptured section 1250 gain taxed at a special rate.
+    answer: Section 1250 relates to depreciable real property; for individuals, straight-line depreciation generally avoids
+      classic recapture but may produce unrecaptured section 1250 gain taxed at a special rate.
   - question: Why are sections 1245 and 1250 heavily tested?
-    answer: >-
-      Because they determine whether gain is ordinary or capital-like and often appear in property disposition calculations.
+    answer: Because they determine whether gain is ordinary or capital-like and often appear in property disposition
+      calculations.
   - question: What is section 1231 lookback recapture conceptually?
-    answer: >-
-      Prior net section 1231 losses can cause current net section 1231 gain to be recharacterized as ordinary income to the extent of those nonrecaptured losses.
+    answer: Prior net section 1231 losses can cause current net section 1231 gain to be recharacterized as ordinary income
+      to the extent of those nonrecaptured losses.
   - question: What is an installment sale?
-    answer: >-
-      An installment sale is a disposition in which at least one payment is received after the tax year of sale, allowing eligible gain to be recognized over time.
+    answer: An installment sale is a disposition in which at least one payment is received after the tax year of sale,
+      allowing eligible gain to be recognized over time.
   - question: What is gross profit percentage in an installment sale?
-    answer: >-
-      Gross profit percentage equals gross profit divided by contract price and determines the portion of each principal payment treated as gain.
+    answer: Gross profit percentage equals gross profit divided by contract price and determines the portion of each
+      principal payment treated as gain.
   - question: Can all property dispositions use installment reporting?
-    answer: >-
-      No; some transactions, such as dealer dispositions and certain inventory sales, generally do not qualify.
+    answer: No; some transactions, such as dealer dispositions and certain inventory sales, generally do not qualify.
   - question: Is depreciation recapture deferred under the installment method?
-    answer: >-
-      No; depreciation recapture is generally recognized in the year of sale before installment gain deferral applies to the remaining gain.
+    answer: No; depreciation recapture is generally recognized in the year of sale before installment gain deferral applies
+      to the remaining gain.
   - question: What is a casualty loss?
-    answer: >-
-      A casualty loss is a loss from sudden, unexpected, or unusual events such as storms, fires, or theft, subject to differing rules for business and personal property.
+    answer: A casualty loss is a loss from sudden, unexpected, or unusual events such as storms, fires, or theft, subject to
+      differing rules for business and personal property.
   - question: How is gain or loss measured on sale of business property?
-    answer: >-
-      Gain or loss is generally amount realized minus adjusted basis, then the character rules such as sections 1231, 1245, or 1250 are applied.
+    answer: Gain or loss is generally amount realized minus adjusted basis, then the character rules such as sections 1231,
+      1245, or 1250 are applied.
   - question: What are capital losses generally limited by?
-    answer: >-
-      Capital losses first offset capital gains, and any remaining net capital loss for individuals is subject to an annual deduction limit with carryforward rules.
+    answer: Capital losses first offset capital gains, and any remaining net capital loss for individuals is subject to an
+      annual deduction limit with carryforward rules.
   - question: What is a related-party transaction?
-    answer: >-
-      It is a transaction between parties with a specified relationship under the Code, such as family members or certain commonly controlled entities.
+    answer: It is a transaction between parties with a specified relationship under the Code, such as family members or
+      certain commonly controlled entities.
   - question: Are losses on sales to related parties generally deductible?
-    answer: >-
-      No; losses on many sales or exchanges between related parties are disallowed.
+    answer: No; losses on many sales or exchanges between related parties are disallowed.
   - question: Why are related-party loss rules important?
-    answer: >-
-      They prevent taxpayers from creating artificial losses while effectively keeping property within the same economic group.
+    answer: They prevent taxpayers from creating artificial losses while effectively keeping property within the same
+      economic group.
   - question: Can a later sale by the related buyer restore a previously disallowed loss?
-    answer: >-
-      The disallowed loss may offset future gain on a later sale by the related buyer, but not create or increase a loss.
+    answer: The disallowed loss may offset future gain on a later sale by the related buyer, but not create or increase a loss.
   - question: What is ordinary income property for charitable contribution purposes?
-    answer: >-
-      It is property that would produce ordinary income or short-term capital gain if sold, limiting the contribution deduction to basis in many cases.
+    answer: It is property that would produce ordinary income or short-term capital gain if sold, limiting the contribution
+      deduction to basis in many cases.
   - question: What is capital gain property for charitable contribution purposes?
-    answer: >-
-      It is generally long-term appreciated capital asset property, often allowing a deduction measured by fair market value if all requirements are met.
+    answer: It is generally long-term appreciated capital asset property, often allowing a deduction measured by fair market
+      value if all requirements are met.
   - question: What is basis allocation when multiple assets are purchased in one transaction?
-    answer: >-
-      The total purchase price is allocated among the assets based on relative fair market values or specific statutory allocation rules.
+    answer: The total purchase price is allocated among the assets based on relative fair market values or specific
+      statutory allocation rules.
   - question: What is bargain purchase treatment in general asset acquisitions?
-    answer: >-
-      If assets are acquired in a taxable purchase for less than aggregate fair market value, cost is still allocated among the assets using the applicable allocation rules rather than simply carrying over old basis.
+    answer: If assets are acquired in a taxable purchase for less than aggregate fair market value, cost is still allocated
+      among the assets using the applicable allocation rules rather than simply carrying over old basis.
   - question: What is assumption of liability's effect on amount realized?
-    answer: >-
-      Liabilities from which the seller is relieved generally increase the seller's amount realized.
+    answer: Liabilities from which the seller is relieved generally increase the seller's amount realized.
   - question: What is assumption of liability's effect on basis to the buyer?
-    answer: >-
-      Liabilities assumed by the buyer are generally part of the buyer's cost basis in acquired property.
+    answer: Liabilities assumed by the buyer are generally part of the buyer's cost basis in acquired property.
   - question: What is holding period important for?
-    answer: >-
-      Holding period helps determine whether gain or loss is short-term or long-term and affects the character of many dispositions.
+    answer: Holding period helps determine whether gain or loss is short-term or long-term and affects the character of many
+      dispositions.
   - question: When does holding period generally begin for purchased property?
-    answer: >-
-      It generally begins on the day after the property is acquired.
+    answer: It generally begins on the day after the property is acquired.
   - question: When can holding period tack onto replacement property?
-    answer: >-
-      In many substituted-basis transactions, such as like-kind exchanges or gifts for gain property, the old holding period can carry over.
+    answer: In many substituted-basis transactions, such as like-kind exchanges or gifts for gain property, the old holding
+      period can carry over.
   - question: What is a capital improvement?
-    answer: >-
-      A capital improvement is an expenditure that adds value, prolongs useful life, or adapts property to a new use and is added to basis rather than deducted currently.
+    answer: A capital improvement is an expenditure that adds value, prolongs useful life, or adapts property to a new use
+      and is added to basis rather than deducted currently.
   - question: What is a repair for tax purposes?
-    answer: >-
-      A repair generally keeps property in ordinary operating condition and is usually currently deductible if it does not materially better, restore, or adapt the property.
+    answer: A repair generally keeps property in ordinary operating condition and is usually currently deductible if it does
+      not materially better, restore, or adapt the property.
   - question: Why do capitalization versus repair questions matter?
-    answer: >-
-      They affect timing of deductions, adjusted basis, and future gain or recapture on disposition.
+    answer: They affect timing of deductions, adjusted basis, and future gain or recapture on disposition.
   - question: What is depletion?
-    answer: >-
-      Depletion is the cost recovery method for natural resources such as minerals, oil, gas, and timber.
+    answer: Depletion is the cost recovery method for natural resources such as minerals, oil, gas, and timber.
   - question: What is cost depletion?
-    answer: >-
-      Cost depletion allocates the basis of a natural resource over the estimated units to be extracted and deducts basis based on units sold.
+    answer: Cost depletion allocates the basis of a natural resource over the estimated units to be extracted and deducts
+      basis based on units sold.
   - question: What is percentage depletion?
-    answer: >-
-      Percentage depletion allows a statutory percentage of gross income from a mineral property as a deduction, subject to limitations and eligibility rules.
+    answer: Percentage depletion allows a statutory percentage of gross income from a mineral property as a deduction,
+      subject to limitations and eligibility rules.
   - question: What is abandonment loss?
-    answer: >-
-      An abandonment loss may be recognized when business or investment property is permanently discarded without compensation and intent to abandon is shown.
+    answer: An abandonment loss may be recognized when business or investment property is permanently discarded without
+      compensation and intent to abandon is shown.
   - question: What is worthlessness loss for securities?
-    answer: >-
-      If a security becomes wholly worthless, it is generally treated as sold on the last day of the tax year, producing capital loss treatment.
+    answer: If a security becomes wholly worthless, it is generally treated as sold on the last day of the tax year,
+      producing capital loss treatment.
   - question: What is the character of gain on sale of inventory?
-    answer: >-
-      Gain or loss on sale of inventory is generally ordinary because inventory is not a capital asset.
+    answer: Gain or loss on sale of inventory is generally ordinary because inventory is not a capital asset.
   - question: What is the character of gain on sale of accounts receivable?
-    answer: >-
-      Gain is generally ordinary because receivables are excluded from capital asset treatment.
+    answer: Gain is generally ordinary because receivables are excluded from capital asset treatment.
   - question: What is a nontaxable stock split's effect on basis?
-    answer: >-
-      The shareholder generally allocates the existing basis over the total shares owned after the split.
+    answer: The shareholder generally allocates the existing basis over the total shares owned after the split.
   - question: What is a nontaxable stock dividend's effect on basis?
-    answer: >-
-      The shareholder generally reallocates total basis among old and new shares received in the nontaxable distribution.
+    answer: The shareholder generally reallocates total basis among old and new shares received in the nontaxable distribution.
   - question: What happens to basis when return of capital is received?
-    answer: >-
-      A nondividend return of capital generally reduces basis, and any excess over basis is treated as gain.
+    answer: A nondividend return of capital generally reduces basis, and any excess over basis is treated as gain.
   - question: What is the basis effect of depreciation deductions?
-    answer: >-
-      Allowed or allowable depreciation reduces basis even if the taxpayer failed to claim the deduction.
+    answer: Allowed or allowable depreciation reduces basis even if the taxpayer failed to claim the deduction.
   - question: What does allowed or allowable mean?
-    answer: >-
-      It means basis is reduced by the depreciation deduction the taxpayer actually took or should have taken, whichever is greater under the rule.
+    answer: It means basis is reduced by the depreciation deduction the taxpayer actually took or should have taken,
+      whichever is greater under the rule.
   - question: What is the tax result when property subject to recourse debt is sold?
-    answer: >-
-      The debt relief is generally included in amount realized, and any cancellation of debt issues are analyzed separately if applicable.
+    answer: The debt relief is generally included in amount realized, and any cancellation of debt issues are analyzed
+      separately if applicable.
   - question: What is the tax result when property subject to nonrecourse debt is sold?
-    answer: >-
-      The outstanding nonrecourse debt is generally included in amount realized, which can produce gain even if the property's fair market value is lower.
+    answer: The outstanding nonrecourse debt is generally included in amount realized, which can produce gain even if the
+      property's fair market value is lower.
   - question: What is a bargain sale to charity?
-    answer: >-
-      It is a part-sale, part-charitable-contribution transaction in which basis must be allocated between the sold portion and the contributed portion.
+    answer: It is a part-sale, part-charitable-contribution transaction in which basis must be allocated between the sold
+      portion and the contributed portion.
   - question: Why are basis allocation questions common on the CPA exam?
-    answer: >-
-      Because many tax consequences turn on correct basis assignment, and the exam often hides the issue inside contributions, exchanges, gifts, or mixed-use property.
+    answer: Because many tax consequences turn on correct basis assignment, and the exam often hides the issue inside
+      contributions, exchanges, gifts, or mixed-use property.
   - question: What is the best exam approach to property transaction problems?
-    answer: >-
-      Compute basis first, compute amount realized second, determine realized gain or loss third, and only then apply nonrecognition, recapture, and character rules.
+    answer: Compute basis first, compute amount realized second, determine realized gain or loss third, and only then apply
+      nonrecognition, recapture, and character rules.
