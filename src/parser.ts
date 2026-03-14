@@ -17,19 +17,18 @@ export async function parseYamlFile(filePath: string): Promise<YamlInput> {
     throw new Error(`No questions found in: ${filePath}`);
   }
 
-  // Normalize card fields: support both q/a and question/answer
+  // Normalize card fields: support both q/a and question/answer.
+  // Use nullish coalescing so numeric/boolean YAML values are coerced correctly
+  // instead of being skipped by the || operator.
   const normalizedQuestions: YamlCard[] = questions.map((card: any, i: number) => {
-    const question = card.question || card.q;
-    const answer = card.answer || card.a;
+    const question = String(card.question ?? card.q ?? '').trim();
+    const answer = String(card.answer ?? card.a ?? '').trim();
 
     if (!question || !answer) {
       throw new Error(`Card ${i + 1} is missing question or answer`);
     }
 
-    return {
-      question: String(question).trim(),
-      answer: String(answer).trim(),
-    };
+    return { question, answer };
   });
 
   const config: YamlConfig = data.config || {};

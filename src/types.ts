@@ -40,6 +40,7 @@ export interface YamlConfig {
   youtubeShorts?: YoutubeShortsInfo;  // populated after successful shorts upload
   format?: 'full' | 'shorts';        // output format (default: full)
   questionsPerShort?: number;        // questions per short video (default: 5)
+  acronyms?: Record<string, string>; // custom acronym → spoken form mappings for TTS
 }
 
 export interface YamlCard {

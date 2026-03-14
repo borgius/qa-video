@@ -3,6 +3,11 @@ import { existsSync, readdirSync } from 'fs';
 import { unlink } from 'fs/promises';
 import { dirname, join } from 'path';
 
+/** Bump when slide rendering logic changes incompatibly to invalidate stale PNGs. */
+export const SLIDE_CACHE_VERSION = 'v5';
+/** Bump when clip encoding parameters change incompatibly to invalidate stale MP4s. */
+export const CLIP_CACHE_VERSION = 'v2';
+
 /**
  * Walk up the directory tree from `startDir` looking for a `.git` directory.
  * Returns the git root path, or `null` if not found.

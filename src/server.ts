@@ -60,10 +60,16 @@ function scanYamlFiles(dir: string, filterFilename?: string) {
   return results.sort((a, b) => a.relPath.localeCompare(b.relPath));
 }
 
-/** Resolve the absolute source file path for a deck name, trying .yaml, .yml, .md in order. */
+/** Resolve the absolute source file path for a deck name, trying .yaml, .yml, .md in order.
+ * Guards against path traversal: resolved path must stay inside qaDir. */
 function resolveSourceFile(name: string): string {
+  const safeQaDir = resolve(qaDir);
   for (const ext of ['.yaml', '.yml', '.md']) {
-    const p = join(qaDir, `${name}${ext}`);
+    const p = resolve(join(qaDir, `${name}${ext}`));
+    // Reject any path that escapes the qa directory
+    if (!p.startsWith(safeQaDir + '/')) {
+      break;
+    }
     if (existsSync(p)) return p;
   }
   throw Object.assign(new Error(`Source file not found: ${name}`), { code: 'ENOENT' });

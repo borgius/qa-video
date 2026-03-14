@@ -1,43 +1,13 @@
 import { resolve } from 'path';
 import { readFileSync } from 'fs';
+import { parseCSVRow } from './csv.js';
 import { ImportDriver, ImportResult } from './types.js';
 import { YamlCard } from '../types.js';
 
 /**
- * Parse a CSV line handling quoted fields.
- * Brainscape exports: question,answer (no header row).
+ * Brainscape CSV export: question,answer (no header row).
  * The `brainscape-bene` userscript adds: question,answer,questionHtml,answerHtml,level
  */
-function parseCsvLine(line: string): string[] {
-  const fields: string[] = [];
-  let current = '';
-  let inQuotes = false;
-
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (inQuotes) {
-      if (ch === '"') {
-        if (i + 1 < line.length && line[i + 1] === '"') {
-          current += '"';
-          i++; // skip escaped quote
-        } else {
-          inQuotes = false;
-        }
-      } else {
-        current += ch;
-      }
-    } else if (ch === '"') {
-      inQuotes = true;
-    } else if (ch === ',') {
-      fields.push(current.trim());
-      current = '';
-    } else {
-      current += ch;
-    }
-  }
-  fields.push(current.trim());
-  return fields;
-}
 
 export const brainscapeDriver: ImportDriver = {
   name: 'brainscape',
@@ -55,7 +25,7 @@ export const brainscapeDriver: ImportDriver = {
     const questions: YamlCard[] = [];
 
     for (const line of lines) {
-      const fields = parseCsvLine(line);
+      const fields = parseCSVRow(line);
       if (fields.length < 2) continue;
 
       const question = fields[0];

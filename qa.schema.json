@@ -70,6 +70,13 @@
               "$ref": "#/$defs/youtube"
             }
           ]
+        },
+        "acronyms": {
+          "type": "object",
+          "description": "Custom acronym expansions for TTS narration. Keys are the words to match (case-sensitive, whole-word), values are their spoken forms.",
+          "additionalProperties": {
+            "type": "string"
+          }
         }
       }
     },

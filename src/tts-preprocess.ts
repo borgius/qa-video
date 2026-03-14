@@ -4,7 +4,7 @@
  */
 
 import { cachedPath, sha } from './cache.js';
-import { codeToTTS, parseMarkdown } from './markdown.js';
+import { codeToTTS, parseMarkdown, stripInlineMarkdown } from './markdown.js';
 import { MAX_CHUNK_CHARS } from './tts.js';
 
 // ── Audio plan types (shared by pipeline & server) ───────────────────────────
@@ -60,8 +60,9 @@ export function buildAudioPlan(
   prefix: string,
   voice: string,
   codeVoice: string,
+  customAcronyms?: Record<string, string>,
 ): AudioPlan {
-  const ttsParts = splitIntoTTSParts(text);
+  const ttsParts = splitIntoTTSParts(text, customAcronyms);
   const hasCode = ttsParts.some(p => p.isCode);
 
   if (!hasCode) {
@@ -104,19 +105,20 @@ export function buildAudioPlan(
  * Each part's text is already preprocessed for TTS.
  * Parts with empty text after preprocessing are omitted.
  */
-export function splitIntoTTSParts(text: string): TTSPart[] {
+export function splitIntoTTSParts(text: string, customAcronyms?: Record<string, string>): TTSPart[] {
   const mdSegments = parseMarkdown(text);
   const parts: TTSPart[] = [];
 
   for (const seg of mdSegments) {
     if (seg.kind === 'code') {
-      const ttsText = preprocessForTTS(codeToTTS(seg));
+      const ttsText = preprocessForTTS(codeToTTS(seg), customAcronyms);
       if (ttsText.trim()) parts.push({ text: ttsText, isCode: true });
     } else {
       // Split text segment by inline code spans
       const inlineParts = splitByInlineCode(seg.content);
       for (const ip of inlineParts) {
-        const ttsText = preprocessForTTS(ip.raw);
+        // Code spans are kept as-is (no acronym expansion); only prose is preprocessed
+        const ttsText = ip.isCode ? ip.raw : preprocessForTTS(ip.raw, customAcronyms);
         if (ttsText.trim()) parts.push({ text: ttsText, isCode: ip.isCode });
       }
     }
@@ -124,7 +126,7 @@ export function splitIntoTTSParts(text: string): TTSPart[] {
 
   // Fallback: if everything was stripped, return the whole text as prose
   if (parts.length === 0) {
-    return [{ text: preprocessForTTS(text), isCode: false }];
+    return [{ text: preprocessForTTS(text, customAcronyms), isCode: false }];
   }
 
   return parts;
@@ -300,13 +302,27 @@ const ignoreCaseAcronyms = new Map([
   ['url', 'U R L'],
 ]);
 
-export function preprocessForTTS(text: string): string {
+export function preprocessForTTS(text: string, customAcronyms?: Record<string, string>): string {
   let result = text;
 
-  // 0. Strip inline markdown markers (bold, italic, inline code)
-  result = result.replace(/`([^`]*)`/g, '$1');
-  result = result.replace(/\*{1,3}(.*?)\*{1,3}/g, '$1');
-  result = result.replace(/_{1,3}(.*?)_{1,3}/g, '$1');
+  // Protect inline code spans: strip backticks but shield content from acronym expansion
+  const codePlaceholders: string[] = [];
+  result = result.replace(/`([^`]*)`/g, (_, content) => {
+    codePlaceholders.push(content);
+    return `\x00code${codePlaceholders.length - 1}\x00`;
+  });
+
+  // 0. Strip remaining inline markdown markers (bold, italic — code already handled above)
+  result = result.replace(/\*{1,3}(.*?)\*{1,3}/gs, '$1');
+  result = result.replace(/_{1,3}(.*?)_{1,3}/gs, '$1');
+
+  // 0b. Apply per-deck custom acronyms (higher priority than built-in table)
+  if (customAcronyms) {
+    for (const [word, spoken] of Object.entries(customAcronyms)) {
+      const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      result = result.replace(new RegExp(`\\b${escaped}\\b`, 'g'), spoken);
+    }
+  }
 
   // 0. Replace newlines with a small pause (treated as end of sentence)
   result = result.replace(/\r?\n+/g, ',, ');
@@ -353,12 +369,17 @@ export function preprocessForTTS(text: string): string {
   // 2. Replace arrow characters with a spoken pause
   result = result.replace(/\s*→\s*/g, '... ');
 
-  // 3. Add a brief pause after colons (if not already followed by punctuation)
-  result = result.replace(/:(?=[^\s,.])/g, ':, ');
+  // 3. Add a brief pause after colons (if not already followed by comma or period)
+  result = result.replace(/:(?=[^,.])/g, ':, ');
 
   // 4. Add small pause before opening parenthesis and double pause after closing parenthesis
   result = result.replace(/(\S)\s*\(/g, '$1, (');
   result = result.replace(/\)\s*/g, ')... ');
+
+  // Restore protected inline code content (unexpanded)
+  if (codePlaceholders.length > 0) {
+    result = result.replace(/\x00code(\d+)\x00/g, (_, idx) => codePlaceholders[parseInt(idx)]);
+  }
 
   return result;
 }

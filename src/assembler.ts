@@ -7,6 +7,16 @@ import type { FrameSpan, Segment } from './types.js';
 
 const execFileAsync = promisify(execFile);
 
+/** Run FFmpeg with the given args, attaching stderr to thrown errors for debuggability. */
+async function runFFmpeg(args: string[]): Promise<void> {
+  try {
+    await execFileAsync(getFfmpegPath(), args);
+  } catch (err: any) {
+    const detail = (err.stderr as string | undefined)?.trim();
+    throw new Error(`FFmpeg failed: ${err.message}${detail ? `\n\nFFmpeg stderr:\n${detail}` : ''}`);
+  }
+}
+
 async function getFfmpeg() {
   const ffmpeg = await import('fluent-ffmpeg');
   return ffmpeg.default;
@@ -19,7 +29,7 @@ export async function createSegmentClip(
   // apad extends the audio stream with silence to exactly totalDuration seconds,
   // matching the looped video track length so the audio track is never shorter
   // than the video track — required for correct audio sync during concat.
-  await execFileAsync(getFfmpegPath(), [
+  await runFFmpeg([
     '-y',
     '-loop', '1', '-i', segment.imagePath,
     '-i', segment.audioPath,
@@ -40,7 +50,7 @@ export async function createSilentClip(
   durationSec: number,
   outputPath: string
 ): Promise<void> {
-  await execFileAsync(getFfmpegPath(), [
+  await runFFmpeg([
     '-y',
     '-loop', '1', '-i', imagePath,
     '-f', 'lavfi', '-i', 'anullsrc=r=48000:cl=stereo',
@@ -70,7 +80,7 @@ export async function createMultiFrameClip(
 
   if (frames.length === 1) {
     // Fast path: single image — equivalent to createSegmentClip.
-    await execFileAsync(getFfmpegPath(), [
+    await runFFmpeg([
       '-y',
       '-loop', '1', '-i', frames[0].imagePath,
       '-i', audioPath,
@@ -118,7 +128,7 @@ export async function createMultiFrameClip(
     outputPath,
   );
 
-  await execFileAsync(getFfmpegPath(), args);
+  await runFFmpeg(args);
 }
 
 /**
@@ -130,14 +140,14 @@ export async function concatenateAudioFiles(
   outputPath: string,
 ): Promise<void> {
   if (inputPaths.length === 1) {
-    await execFileAsync(getFfmpegPath(), ['-y', '-i', inputPaths[0], '-c', 'copy', outputPath]);
+    await runFFmpeg(['-y', '-i', inputPaths[0], '-c', 'copy', outputPath]);
     return;
   }
 
   const listPath = `${outputPath}.parts.txt`;
   await writeFile(listPath, inputPaths.map(p => `file '${p}'`).join('\n'), 'utf-8');
 
-  await execFileAsync(getFfmpegPath(), [
+  await runFFmpeg([
     '-y', '-f', 'concat', '-safe', '0', '-i', listPath, '-c', 'copy', outputPath,
   ]);
 

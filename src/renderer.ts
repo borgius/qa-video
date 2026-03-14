@@ -31,7 +31,18 @@ function fontForStyle(style: InlineStyle, fontSize: number): string {
   const slant = style.italic ? 'italic' : 'normal';
   return `${slant} ${weight} ${fontSize}px "Arial", "Helvetica", sans-serif`;
 }
+/** Module-level cache: font+text → pixel width. Avoids repeated canvas.measureText() for identical inputs. */
+const measureTextCache = new Map<string, number>();
 
+function cachedMeasureText(ctx: SKRSContext2D, text: string, font: string): number {
+  const key = `${font}|${text}`;
+  const hit = measureTextCache.get(key);
+  if (hit !== undefined) return hit;
+  ctx.font = font;
+  const width = ctx.measureText(text).width;
+  measureTextCache.set(key, width);
+  return width;
+}
 // ── Inline-run measurement & wrapping ────────────────────────────────────────
 
 /**
@@ -66,8 +77,8 @@ function splitRunsIntoWords(runs: InlineRun[]): InlineRun[][] {
 function measureWord(ctx: SKRSContext2D, fragments: InlineRun[], fontSize: number): number {
   let w = 0;
   for (const frag of fragments) {
-    ctx.font = fontForStyle(frag.style, fontSize);
-    w += ctx.measureText(frag.text).width;
+    const font = fontForStyle(frag.style, fontSize);
+    w += cachedMeasureText(ctx, frag.text, font);
     if (frag.style.code) w += 2 * Math.round(fontSize * 0.12);
   }
   return w;
@@ -77,8 +88,8 @@ function measureWord(ctx: SKRSContext2D, fragments: InlineRun[], fontSize: numbe
 function measureLineWidth(ctx: SKRSContext2D, runs: InlineRun[], fontSize: number): number {
   let w = 0;
   for (const run of runs) {
-    ctx.font = fontForStyle(run.style, fontSize);
-    w += ctx.measureText(run.text).width;
+    const font = fontForStyle(run.style, fontSize);
+    w += cachedMeasureText(ctx, run.text, font);
     if (run.style.code) w += 2 * Math.round(fontSize * 0.12);
   }
   return w;

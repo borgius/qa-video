@@ -1,41 +1,8 @@
 import { resolve } from 'path';
 import { readFileSync } from 'fs';
+import { parseCSVRow } from './csv.js';
 import { ImportDriver, ImportResult } from './types.js';
 import { YamlCard } from '../types.js';
-
-/**
- * Parse a CSV line handling quoted fields.
- */
-function parseCsvLine(line: string): string[] {
-  const fields: string[] = [];
-  let current = '';
-  let inQuotes = false;
-
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (inQuotes) {
-      if (ch === '"') {
-        if (i + 1 < line.length && line[i + 1] === '"') {
-          current += '"';
-          i++;
-        } else {
-          inQuotes = false;
-        }
-      } else {
-        current += ch;
-      }
-    } else if (ch === '"') {
-      inQuotes = true;
-    } else if (ch === ',') {
-      fields.push(current.trim());
-      current = '';
-    } else {
-      current += ch;
-    }
-  }
-  fields.push(current.trim());
-  return fields;
-}
 
 /** Normalize header names to detect Q/A column indices */
 const Q_HEADERS = ['question', 'front', 'term', 'prompt', 'q'];
@@ -60,7 +27,7 @@ export const gizmoDriver: ImportDriver = {
     }
 
     // Try to detect a header row
-    const firstFields = parseCsvLine(lines[0]);
+    const firstFields = parseCSVRow(lines[0]);
     let qIdx = 0;
     let aIdx = 1;
     let startLine = 0;
@@ -77,7 +44,7 @@ export const gizmoDriver: ImportDriver = {
     const questions: YamlCard[] = [];
 
     for (let i = startLine; i < lines.length; i++) {
-      const fields = parseCsvLine(lines[i]);
+      const fields = parseCSVRow(lines[i]);
       if (fields.length < 2) continue;
 
       const question = fields[qIdx] ?? '';

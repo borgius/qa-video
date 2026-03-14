@@ -64,7 +64,15 @@ export function parseMarkdown(text: string): MdSegment[] {
   // Flush remaining text.  If we were in an unclosed fence, fold it back in.
   if (inCode) textLines.push('```' + lang, ...codeLines);
   const remaining = textLines.join('\n').trim();
-  if (remaining) segments.push({ kind: 'text', content: remaining });
+  if (remaining) {
+    const last = segments[segments.length - 1];
+    if (inCode && last && last.kind === 'text') {
+      // Merge unclosed fence content back into the preceding text segment
+      last.content = (last.content + '\n' + remaining).trim();
+    } else {
+      segments.push({ kind: 'text', content: remaining });
+    }
+  }
 
   // Guarantee at least one segment
   if (segments.length === 0) segments.push({ kind: 'text', content: text });
@@ -127,7 +135,14 @@ export function parseInlineMarkdown(text: string): InlineRun[] {
       let j = i;
       while (j < text.length && text[j] === ch) { count++; j++; }
 
-      if (count >= 3) {
+      if (count >= 4) {
+        // 4+ asterisks: process as bold-toggle pairs (e.g. **** = ** + **)
+        flush();
+        const pairs = Math.floor(count / 2);
+        for (let k = 0; k < pairs; k++) bold = !bold;
+        if (count % 2 === 1) italic = !italic;
+        i += count;
+      } else if (count >= 3) {
         flush();
         bold = !bold;
         italic = !italic;
