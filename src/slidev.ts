@@ -91,7 +91,8 @@ export async function parseSlidevDeck(filePath: string): Promise<SlidevDeck> {
   // parsed.slides[0] is the global-frontmatter pseudo-slide (content is always empty).
   const globalFM = parsed.slides[0]?.frontmatter ?? {};
   const deckTitle = (globalFM.title as string | undefined) ?? basename(filePath, '.md');
-  const deckDesc = (globalFM.description as string | undefined) ?? '';
+  const rawInfo = (globalFM.info as string | undefined) ?? '';
+  const deckDesc = (globalFM.description as string | undefined) || rawInfo.trim();
 
   // Real slides begin at index 1.  Filter out purely-empty sections left by
   // consecutive `---` separators.

@@ -168,9 +168,30 @@ export function FlashcardViewer({
         isSpeaking={isSpeaking}
         zoomed={zoomed}
         format={format}
-        captionsEnabled={isSlidev && captionsEnabled}
-        captionsText={captionsText}
       />
+
+      {/* Captions overlay – floats over the bottom of the screen area */}
+      {isSlidev && captionsEnabled && captionsText && (
+        <div style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: '16px 32px 20px',
+          background: 'rgba(0, 0, 0, 0.72)',
+          backdropFilter: 'blur(6px)',
+          WebkitBackdropFilter: 'blur(6px)',
+          color: '#fff',
+          fontSize: 'clamp(13px, 1.4vw, 17px)',
+          lineHeight: 1.65,
+          textAlign: 'center',
+          borderTop: '1px solid rgba(255,255,255,0.1)',
+          boxSizing: 'border-box',
+          zIndex: 30,
+        }}>
+          {captionsText}
+        </div>
+      )}
 
       {/* Rating buttons (queue mode, floating overlay on top of slide) */}
       {isQueueMode && isCardActive && onRate && (

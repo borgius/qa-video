@@ -8,11 +8,9 @@ interface SlideCardProps {
   isSpeaking?: boolean;
   zoomed?: boolean;
   format?: 'full' | 'shorts';
-  captionsText?: string;
-  captionsEnabled?: boolean;
 }
 
-export function SlideCard({ fileName, type, cardIndex, isSpeaking, zoomed, format, captionsText, captionsEnabled }: SlideCardProps) {
+export function SlideCard({ fileName, type, cardIndex, isSpeaking, zoomed, format }: SlideCardProps) {
   const badgeColor = type === 'question' ? '#e94560' : '#0cca4a';
   const src = slideUrl(fileName, cardIndex, type, format);
   const isShorts = format === 'shorts';
@@ -35,29 +33,6 @@ export function SlideCard({ fileName, type, cardIndex, isSpeaking, zoomed, forma
       transition: 'box-shadow 0.3s ease',
     }}>
       <SlideImage key={src} src={src} alt={`${type} ${cardIndex + 1}`} />
-      {captionsEnabled && captionsText && (
-        <div style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: '12px 20px 14px',
-          background: 'rgba(0, 0, 0, 0.68)',
-          backdropFilter: 'blur(4px)',
-          WebkitBackdropFilter: 'blur(4px)',
-          color: '#fff',
-          fontSize: 'clamp(12px, 1.8cqw, 18px)',
-          lineHeight: 1.55,
-          textAlign: 'center',
-          zIndex: 20,
-          maxHeight: '38%',
-          overflowY: 'auto',
-          boxSizing: 'border-box',
-          borderTop: '1px solid rgba(255,255,255,0.08)',
-        }}>
-          {captionsText}
-        </div>
-      )}
     </div>
   );
 }

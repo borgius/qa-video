@@ -8,6 +8,7 @@ import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
 import { createRequire } from 'module';
 import { createInterface } from 'readline';
 import { runPipeline, runShortsPipeline, runSlidevPipeline } from './pipeline.js';
+import { parseSlidevDeck } from './slidev.js';
 import { PipelineConfig, DEFAULT_CONFIG } from './types.js';
 import { ensureDeps } from './ffmpeg-paths.js';
 import { parseYamlFile } from './parser.js';
@@ -548,8 +549,8 @@ function findShortVideos(inputPath: string): string[] {
   }
 }
 
-/** Resolve a single input (video path, yaml path, or bare name) to { videoPath, yamlPath? } */
-function resolveUploadTarget(input: string): { videoPath: string; yamlPath?: string } {
+/** Resolve a single input (video path, yaml path, or bare name) to { videoPath, yamlPath?, mdPath? } */
+function resolveUploadTarget(input: string): { videoPath: string; yamlPath?: string; mdPath?: string } {
   let inputPath = resolve(input);
 
   if (inputPath.endsWith('.mp4')) {
@@ -572,6 +573,12 @@ function resolveUploadTarget(input: string): { videoPath: string; yamlPath?: str
     const inputName = basename(inputPath, '.yaml').replace(/\.yml$/, '');
     const videoPath = join(resolveOutputDir(dirname(inputPath)), `${inputName}.mp4`);
     return { videoPath, yamlPath: inputPath };
+  }
+
+  if (inputPath.endsWith('.md')) {
+    const inputName = basename(inputPath, '.md');
+    const videoPath = join(resolveOutputDir(dirname(inputPath)), `${inputName}.mp4`);
+    return { videoPath, mdPath: inputPath };
   }
 
   // No extension — try yaml, yml, mp4
@@ -601,6 +608,7 @@ async function resolveMetadata(
   videoPath: string,
   yamlPath: string | undefined,
   opts: { title?: string; description?: string; tags: string },
+  mdPath?: string,
 ) {
   let title: string;
   let description: string;
@@ -610,6 +618,10 @@ async function resolveMetadata(
     title = opts.title ?? generateTitle(yamlPath, yamlData);
     description = opts.description ?? generateDescription(yamlPath, yamlData);
     contentSha = sha(yamlData.questions.map(q => q.question + q.answer).join('\n'));
+  } else if (mdPath && existsSync(mdPath)) {
+    const deck = await parseSlidevDeck(mdPath);
+    title = opts.title ?? deck.title;
+    description = opts.description ?? deck.description;
   } else {
     const videoName = basename(videoPath, '.mp4');
     title = opts.title ?? videoName.replace(/[-_]/g, ' ');
@@ -816,7 +828,7 @@ program
       const results: { file: string; status: string }[] = [];
 
       for (let i = 0; i < targets.length; i++) {
-        const { videoPath, yamlPath } = targets[i];
+        const { videoPath, yamlPath, mdPath } = targets[i];
         const label = basename(videoPath);
 
         if (isBatch) {
@@ -837,7 +849,7 @@ program
           process.exit(1);
         }
 
-        let { title, description, tags, contentSha } = await resolveMetadata(videoPath, yamlPath, opts);
+        let { title, description, tags, contentSha } = await resolveMetadata(videoPath, yamlPath, opts, mdPath);
         const shaTag = contentSha ? `qavideo-${contentSha}` : undefined;
 
         // Append SHA tag to the tags list
