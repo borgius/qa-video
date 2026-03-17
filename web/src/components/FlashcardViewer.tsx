@@ -123,8 +123,8 @@ export function FlashcardViewer({
 				flexDirection: "column",
 				alignItems: "center",
 				justifyContent: "center",
-				padding: zoomed ? "12px" : "40px",
-				gap: zoomed ? "8px" : "24px",
+				padding: zoomed ? "6px" : "12px",
+				gap: zoomed ? "4px" : "10px",
 				overflow: "auto",
 				position: "relative",
 			}}

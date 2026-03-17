@@ -69,7 +69,7 @@ export function PlaybackControls({
   return (
     <div
       style={{
-        padding: "20px",
+        padding: "10px 12px 8px",
         borderTop: "1px solid var(--sidebar-border)",
       }}
     >
@@ -80,7 +80,7 @@ export function PlaybackControls({
           height: "4px",
           background: "rgba(255,255,255,0.1)",
           borderRadius: "2px",
-          marginBottom: "12px",
+          marginBottom: "6px",
           overflow: "hidden",
         }}
       >
@@ -102,7 +102,7 @@ export function PlaybackControls({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: "16px",
+          marginBottom: "8px",
           fontSize: "12px",
           color: "var(--text-secondary)",
         }}

@@ -11,6 +11,20 @@ Generate flashcard-style videos from YAML Q&A files with offline neural TTS narr
 
 Each card shows the question (with voiceover), pauses, then shows the answer (with voiceover), then moves to the next card.
 
+## Screenshots
+
+### Serve mode
+
+Interactive browser player with topic navigation, question list, playback controls, and on-demand TTS/slide generation.
+
+![QA Video serve mode screenshot](https://raw.githubusercontent.com/borgius/qa-video/master/screenshots/serve-mode.png)
+
+### SRS mode
+
+Queue-based review mode inside the web player. Rate each revealed card with `1–4` to requeue it sooner, later, or remove it from the session.
+
+![QA Video SRS mode screenshot](https://raw.githubusercontent.com/borgius/qa-video/master/screenshots/srs-mode.png)
+
 ## Prerequisites
 
 - **Node.js** 18+
@@ -138,11 +152,51 @@ Before each upload you are prompted to edit the title and description inline (pr
 | `--force` | — | Force re-upload even if already uploaded |
 | `--dry-run` | `false` | Preview metadata without uploading |
 
+### Serve mode
+
+`serve` starts two processes together:
+
+- the **QA Video API** for loading decks and generating slides/audio on demand
+- the **web UI** for browsing topics and studying cards in the browser
+
+Use it when you want to study interactively instead of exporting an MP4.
+
+```bash
+# Serve all files in qa/ (default)
+qa-video serve
+
+# Serve a directory of YAML / Slidev decks
+qa-video serve -d path/to/cards/
+
+# Serve one specific YAML file
+qa-video serve -i qa/core-concepts.yaml
+```
+
+#### What serve mode does
+
+- Loads decks from `qa/` by default, or from `-d/--dir`
+- If you pass `-i/--input`, the UI is filtered to that single deck
+- Starts the API first, then launches the Vite web app automatically
+- Reuses cached slides and TTS audio in `.qa/` (or `--output-dir`) so repeated study sessions are faster
+- If the requested API port is already busy, it automatically tries the next available port
+
+#### Serve options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `-i, --input <path>` | — | Serve a single YAML file |
+| `-d, --dir <path>` | `qa/` | Directory containing YAML files |
+| `-p, --port <number>` | `3001` | Preferred API port; auto-increments if busy |
+| `--web-port <number>` | `5173` | Web UI port |
+| `--output-dir <path>` | *auto-resolved `.qa/`* | Output directory for TTS/slide cache |
+
 ### Web Player — SRS Mode
 
 The web player includes an **SRS (Spaced Repetition System)** mode for active recall practice. When enabled, cards are queued and reshuffled based on your self-rating after each answer.
 
 **Toggle:** Click the **SRS** button in playback controls, or press **Q**.
+
+SRS mode is available inside `qa-video serve` and is designed for study sessions rather than video export.
 
 **Rate each card (keys 1–4):**
 
@@ -155,23 +209,18 @@ The web player includes an **SRS (Spaced Repetition System)** mode for active re
 
 The session ends when all cards are rated Easy or the queue is empty.
 
-### Start web player
+#### SRS behavior
 
-```bash
-qa-video serve                           # serve all files in qa/
-qa-video serve -d path/to/cards/         # serve all files in a custom directory
-qa-video serve -i qa/core-concepts.yaml  # serve a single file
-```
+- `Again` puts the card back near the front of the remaining queue
+- `Hard` brings it back fairly soon
+- `Good` pushes it later in the same session
+- `Easy` removes it from the queue immediately
 
-#### Serve options
+You can combine SRS with:
 
-| Option | Default | Description |
-|--------|---------|-------------|
-| `-i, --input <path>` | — | Serve a single YAML file |
-| `-d, --dir <path>` | `qa/` | Directory containing YAML files |
-| `-p, --port <number>` | `3001` | API port |
-| `--web-port <number>` | `5173` | Web UI port |
-| `--output-dir <path>` | *auto-resolved `.qa/`* | Output directory for TTS/slide cache |
+- **speech mode on** for guided playback with narration
+- **speech mode off** for manual active-recall practice
+- **shuffle** to randomize the initial order before queueing begins
 
 ### Clear cached artifacts
 

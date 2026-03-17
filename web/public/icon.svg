@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="#0d0d1a"/>
+    </linearGradient>
+    <linearGradient id="card1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="100%" stop-color="#16284a"/>
+    </linearGradient>
+    <linearGradient id="card2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e94560"/>
+      <stop offset="100%" stop-color="#c73652"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e94560"/>
+      <stop offset="100%" stop-color="#0cca4a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="512" height="512" rx="108" ry="108" fill="url(#bg)"/>
+
+  <g transform="translate(256,256) scale(1.25) translate(-256,-256)">
+    <!-- Back card (blue, slightly rotated) -->
+    <g transform="translate(256,256) rotate(-8) translate(-256,-256)">
+      <rect x="96" y="148" width="320" height="200" rx="20" ry="20" fill="url(#card1)" opacity="0.85"/>
+    </g>
+
+    <!-- Front card (white) -->
+    <rect x="88" y="168" width="336" height="210" rx="20" ry="20" fill="#f0f4ff"/>
+
+    <!-- Q badge top-left of front card -->
+    <rect x="108" y="188" width="36" height="36" rx="8" ry="8" fill="#e94560"/>
+    <text x="126" y="213" font-family="'Inter','Arial',sans-serif" font-size="22" font-weight="700" fill="#ffffff" text-anchor="middle">Q</text>
+
+    <!-- Question lines on front card -->
+    <rect x="156" y="198" width="180" height="10" rx="5" fill="#c5cfe8"/>
+    <rect x="156" y="216" width="130" height="8" rx="4" fill="#dde3f0"/>
+
+    <!-- Divider -->
+    <line x1="108" y1="248" x2="404" y2="248" stroke="#dde3f0" stroke-width="1.5"/>
+
+    <!-- Answer lines -->
+    <rect x="108" y="264" width="200" height="9" rx="4" fill="#b0bdd8"/>
+    <rect x="108" y="281" width="260" height="9" rx="4" fill="#dde3f0"/>
+    <rect x="108" y="298" width="160" height="9" rx="4" fill="#dde3f0"/>
+
+    <!-- A badge bottom-right -->
+    <rect x="368" y="319" width="36" height="36" rx="8" ry="8" fill="#0cca4a"/>
+    <text x="386" y="344" font-family="'Inter','Arial',sans-serif" font-size="22" font-weight="700" fill="#ffffff" text-anchor="middle">A</text>
+
+    <!-- Accent progress bar at bottom -->
+    <rect x="88" y="396" width="336" height="6" rx="3" fill="rgba(255,255,255,0.08)"/>
+    <rect x="88" y="396" width="210" height="6" rx="3" fill="url(#accent)"/>
+  </g>
+</svg>
