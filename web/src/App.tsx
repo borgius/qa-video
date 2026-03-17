@@ -10,9 +10,9 @@ import { fetchFileDetail } from './api';
 
 export default function App() {
   const { files, loading: loadingFiles } = useFiles();
-  const playback = usePlayback();
-  const { state, currentCard, currentRealIndex, displayType, isSpeaking, queueRemaining, isCardActive } = playback;
   const { settings, updateSettings } = useSettings();
+  const playback = usePlayback(settings.speechMode ?? true);
+  const { state, currentCard, currentRealIndex, displayType, isSpeaking, queueRemaining, isCardActive } = playback;
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [zoomed, setZoomed] = useState(false);
   const [showGrid, setShowGrid] = useState(false);
@@ -49,9 +49,10 @@ export default function App() {
     onToggleSidebar: toggleSidebar,
     onToggleZoom: toggleZoom,
     onToggleQueueMode: playback.toggleQueueMode,
+    onToggleSpeechMode: () => updateSettings({ speechMode: !(settings.speechMode ?? true) }),
     onRate: playback.rateCard,
     onCloseGrid: () => setShowGrid(false),
-  }), [state.isPlaying, playback, toggleSidebar, toggleZoom]);
+  }), [state.isPlaying, playback, toggleSidebar, toggleZoom, settings.speechMode, updateSettings]);
 
   useKeyboard(keyboardActions);
 
@@ -84,6 +85,8 @@ export default function App() {
           onRestart={playback.restart}
           isQueueMode={state.isQueueMode}
           onToggleQueueMode={playback.toggleQueueMode}
+          isSpeechMode={settings.speechMode ?? true}
+          onToggleSpeechMode={() => updateSettings({ speechMode: !(settings.speechMode ?? true) })}
           loadingFiles={loadingFiles}
           onToggleSidebar={toggleSidebar}
           questions={state.fileData?.questions ?? []}
@@ -124,6 +127,7 @@ export default function App() {
           pendingRating={state.pendingRating}
           isQueueMode={state.isQueueMode}
           isCardActive={isCardActive}
+          isSpeechMode={settings.speechMode ?? true}
           format={settings.format}
           isSlidev={state.fileData?.type === 'slidev'}
           captionsText={displayType === 'question' ? currentCard?.question : currentCard?.answer}

@@ -22,6 +22,8 @@ interface SidebarProps {
   onRestart: () => void;
   isQueueMode: boolean;
   onToggleQueueMode: () => void;
+  isSpeechMode: boolean;
+  onToggleSpeechMode: () => void;
   loadingFiles: boolean;
   onToggleSidebar: () => void;
   questions: YamlCard[];
@@ -48,6 +50,8 @@ export function Sidebar({
   onRestart,
   isQueueMode,
   onToggleQueueMode,
+  isSpeechMode,
+  onToggleSpeechMode,
   loadingFiles,
   onToggleSidebar,
   questions,
@@ -94,6 +98,7 @@ export function Sidebar({
 
   const renderFileButton = (file: typeof files[0], indent = false) => (
     <button
+      type="button"
       key={file.name}
       onClick={() => onSelectFile(file.name)}
       style={{
@@ -382,6 +387,8 @@ export function Sidebar({
         onShuffle={onShuffle}
         onRestart={onRestart}
         onToggleQueueMode={onToggleQueueMode}
+        isSpeechMode={isSpeechMode}
+        onToggleSpeechMode={onToggleSpeechMode}
         hasFile={selectedFile !== null}
       />
     </aside>

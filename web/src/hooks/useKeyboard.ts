@@ -10,6 +10,7 @@ interface KeyboardActions {
   onToggleSidebar: () => void;
   onToggleZoom: () => void;
   onToggleQueueMode: () => void;
+  onToggleSpeechMode: () => void;
   onRate: (rating: Rating) => void;
   onCloseGrid: () => void;
 }
@@ -73,6 +74,10 @@ export function useKeyboard(actions: KeyboardActions) {
         case 'q':
           e.preventDefault();
           actions.onToggleQueueMode();
+          break;
+        case 't':
+          e.preventDefault();
+          actions.onToggleSpeechMode();
           break;
       }
     }

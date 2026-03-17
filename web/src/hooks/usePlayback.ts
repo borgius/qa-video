@@ -211,7 +211,7 @@ function stopAudioAndTimer(
   }
 }
 
-export function usePlayback() {
+export function usePlayback(speechMode = true) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<number | null>(null);
@@ -240,6 +240,7 @@ export function usePlayback() {
 
     switch (state.phase) {
       case 'question': {
+        if (!speechMode) break; // manual mode — wait for user input
         // For Slidev decks skip the question (title) phase entirely — go straight to notes.
         if (state.fileData?.type === 'slidev') {
           dispatch({ type: 'SET_PHASE', phase: 'answer' });
@@ -265,6 +266,7 @@ export function usePlayback() {
         break;
       }
       case 'answer': {
+        if (!speechMode) break; // manual mode — wait for user input
         dispatch({ type: 'SET_PHASE', phase: 'a-speaking' });
         playAudio(audioUrl(file, cardRealIdx, 'answer'));
         break;
@@ -377,13 +379,20 @@ export function usePlayback() {
     dispatch({ type: 'GO_TO_CARD', index });
   }, []);
   const rateCard = useCallback((rating: Rating) => {
+    if (!speechMode) {
+      // Manual mode: apply rating then immediately advance
+      stopAudioAndTimer(audioRef, timerRef);
+      if (rating !== 'easy') dispatch({ type: 'MARK_CARD', rating });
+      dispatch({ type: 'NEXT_CARD' });
+      return;
+    }
     if (rating === 'easy') {
       stopAudioAndTimer(audioRef, timerRef);
       dispatch({ type: 'SKIP_CARD' });
     } else {
       dispatch({ type: 'MARK_CARD', rating });
     }
-  }, []);
+  }, [speechMode]);
 
   // Derived state
   const currentRealIndex = state.cardOrder[state.currentCardIdx] ?? 0;
@@ -394,7 +403,9 @@ export function usePlayback() {
       : 'question';
   const isSpeaking = state.phase === 'q-speaking' || state.phase === 'a-speaking';
   const queueRemaining = state.isQueueMode ? state.cardOrder.length - state.currentCardIdx : 0;
-  const isCardActive = state.isPlaying && state.phase !== 'idle' && state.phase !== 'done';
+  const isCardActive = speechMode
+    ? (state.isPlaying && state.phase !== 'idle' && state.phase !== 'done')
+    : (state.phase !== 'idle' && state.phase !== 'done');
 
   return {
     state,

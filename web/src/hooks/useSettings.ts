@@ -6,6 +6,7 @@ const STORAGE_KEY = 'qa-video-settings';
 const defaultSettings: AppSettings = {
   format: 'full',
   questionsPerShort: 5,
+  speechMode: true,
 };
 
 function loadSettings(): AppSettings {

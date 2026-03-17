@@ -38,4 +38,5 @@ export interface FileDetail {
 export interface AppSettings {
   format: 'full' | 'shorts';
   questionsPerShort: number;
+  speechMode: boolean;
 }
